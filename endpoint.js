@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Import necessary modules
+=======
+// Import necessary modules-
+>>>>>>> origin
 const admin = require('firebase-admin');
 const cron = require('node-cron');
 
