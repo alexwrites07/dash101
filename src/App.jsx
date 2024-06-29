@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Login from './Components/Auth/Login';
+import Home from './Components/Home/Home'
 import SignUp from './Components/Auth/SignUp';
+import Navbar from './Components/Navbar/Navbar'
 
 
 
@@ -17,11 +19,12 @@ function App() {
     <>
       <div className="App">
         <BrowserRouter>
+        <Navbar/>
           <Routes>
-          
+         
   
-            <Route path="/" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/" element={<Home />} />
+          
 
   
           
