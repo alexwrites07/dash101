@@ -8,9 +8,12 @@ import FrequentlyHiringCompanies from './Jobs/Frequently';
 import HiringSection from './Jobs/HiringSection';
 import TeachingSection from './Jobs/TeachingSection';
 import TestimonialSection from './Testimonial';
-const HomePage = () => {
+import Footersection from './Footer';
+import Newssection from './Recentnews';
+
+function HomePage() {
   return (
-    <div className=" mx-auto px-4 max-w-screen-xl" style={{ marginTop: '6%'}}>
+    <div className=" mx-auto px-4 max-w-screen-xl" style={{ marginTop: '6%' }}>
       <div className="flex flex-col md:flex-row items-center ml-8">
         <div className="md:w-1/2 mr-12 ml-auto">
           <h1 className="text-4xl md:text-5xl text-blue-700 font-bold mb-4">
@@ -26,13 +29,11 @@ const HomePage = () => {
             <input
               type="text"
               placeholder="Search job title"
-              className="py-2 px-4 mr-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            />
+              className="py-2 px-4 mr-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" />
             <input
               type="text"
               placeholder="Search location"
-              className="py-2 px-4 mr-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            />
+              className="py-2 px-4 mr-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" />
             <button className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">
               Search
             </button>
@@ -44,20 +45,21 @@ const HomePage = () => {
             alt="Teacher Image"
             className="rounded-lg"
             width={350}
-            height={350}
-          />
+            height={350} />
         </div>
       </div>
-      <Catagories/>
-      <FeaturedJobs/>
-      
-      <FrequentlyHiringCompanies/>
-      <HiringSection/>
-      <TeachingSection/>
-      <TestimonialSection/>
+      <Catagories />
+      <FeaturedJobs />
 
+      <FrequentlyHiringCompanies />
+      <HiringSection />
+      <TestimonialSection />
+      <TeachingSection />
+      <Newssection />
+      <Footersection />
+      
     </div>
   );
-};
+}
 
 export default HomePage;
