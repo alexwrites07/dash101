@@ -57,11 +57,11 @@ export default function SignUp() {
                             <section className="bg-white-900">
                                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-full lg:py-0">
                                     <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white">
-                                        <img className="w-32 h-12 mr-2 -mb-2" src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp" alt="logo" />
+                                        {/* <img className="w-32 h-12 mr-2 -mb-2" src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp" alt="logo" /> */}
                                     </a>
                                     <div className="w-full bg-white rounded-lg shadow lg:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-300 dark:border-gray-700">
                                         <div className="p-6 space-y-4 lg:space-y-6 sm:p-8">
-                                            <h1 className={`text-xl font-bold leading-tight tracking-tight text-blue-700 lg:text-2xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
+                                            <h1 className={`text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
                                                 {currentRole} SignUp
                                             </h1>
                                             <form className="space-y-4 lg:space-y-6" onSubmit={(e) => {

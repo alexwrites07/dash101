@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="bg-[#041F96] text-white py-8">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap">
           {/* Contact Information */}
@@ -42,14 +42,12 @@ const Footer = () => {
             <ul>
               <li><a href="#" className="text-blue-400 hover:underline">About Us</a></li>
               <li><a href="#" className="text-blue-400 hover:underline">Contact Us</a></li>
-              <li><a href="#" className="text-blue-400 hover:underline">Terms</a></li>
-              <li><a href="#" className="text-blue-400 hover:underline">Packages</a></li>
+           
               <li><a href="#" className="text-blue-400 hover:underline">FAQ</a></li>
               <li><a href="#" className="text-blue-400 hover:underline">Site Map</a></li>
               <li><a href="#" className="text-blue-400 hover:underline">Terms of Use</a></li>
               <li><a href="#" className="text-blue-400 hover:underline">Privacy Center</a></li>
-              <li><a href="#" className="text-blue-400 hover:underline">Security Center</a></li>
-              <li><a href="#" className="text-blue-400 hover:underline">Accessibility Center</a></li>
+   
             </ul>
           </div>
         </div>

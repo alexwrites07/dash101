@@ -7,7 +7,7 @@ const FeaturedJobs = () => {
       duration: 'Full-time',
       postingTime: '1 day ago',
       location: 'New York, NY',
-      role: 'Software Engineer',
+      role: 'Coaching',
       stipend: '$80,000 - $100,000',
     },
     {
@@ -15,7 +15,7 @@ const FeaturedJobs = () => {
       duration: 'Part-time',
       postingTime: '2 days ago',
       location: 'San Francisco, CA',
-      role: 'Data Analyst',
+      role: 'Private Tutor',
       stipend: '$60,000 - $80,000',
     },
     {
@@ -23,7 +23,7 @@ const FeaturedJobs = () => {
       duration: 'Contract',
       postingTime: '3 days ago',
       location: 'Chicago, IL',
-      role: 'Marketing Specialist',
+      role: 'Professor',
       stipend: '$70,000 - $90,000',
     },
     {
@@ -31,7 +31,7 @@ const FeaturedJobs = () => {
       duration: 'Remote',
       postingTime: '4 days ago',
       location: 'Los Angeles, CA',
-      role: 'UX/UI Designer',
+      role: 'Teacher',
       stipend: '$75,000 - $95,000',
     },
     {
@@ -87,7 +87,7 @@ const FeaturedJobs = () => {
 
   return (
     <div className="max-w-full mx-auto" style={{ margin: '6% 4% 0 4%' }}>
-      <h2 className="text-3xl text-blue-700 font-bold mb-4">Featured Jobs</h2>
+      <h2 className="text-3xl text-[#041F96] font-bold mb-4">Featured Jobs</h2>
 
       {/* Sorting Options */}
       <div className="flex justify-between items-center mb-4">
@@ -105,7 +105,7 @@ const FeaturedJobs = () => {
         <div key={index} className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="md:flex-1">
-              <h3 className="text-xl font-semibold text-blue-700 mb-2">{job.role}</h3>
+              <h3 className="text-xl font-semibold text-[#041F96] mb-2">{job.role}</h3>
               <p className="text-sm text-gray-600 mb-2">{job.company}</p>
             </div>
             <div className="md:flex-1 flex justify-between mt-4 md:mt-0">
@@ -119,7 +119,7 @@ const FeaturedJobs = () => {
       ))}
  {!showAll && (
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none mr-0"
+            className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none mr-0"
             onClick={toggleShowMore}
           >
             Show More
@@ -128,7 +128,7 @@ const FeaturedJobs = () => {
       {/* Show More Button (for hiding jobs) */}
       {showAll && (
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+          className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
           onClick={toggleShowMore}
         >
           Show Less

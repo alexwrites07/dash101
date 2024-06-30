@@ -1,29 +1,29 @@
 import React from 'react';
-
+import image from '../../assets/home//WhatsApp Image 2024-06-30 at 22.26.28.jpeg';
 const jobCategories = [
   {
-    title: 'Software Engineer',
+    title: 'Coaching',
     positionOpened: '20+ positions opened',
     location: 'Remote',
-    logoSrc: 'https://via.placeholder.com/150',
+    logoSrc:{image},
   },
   {
-    title: 'Data Analyst',
+    title: 'School',
     positionOpened: '15+ positions opened',
     location: 'New York, NY',
-    logoSrc: 'https://via.placeholder.com/150',
+    logoSrc:{image},
   },
   {
-    title: 'Marketing Specialist',
+    title: 'College',
     positionOpened: '10+ positions opened',
     location: 'San Francisco, CA',
-    logoSrc: 'https://via.placeholder.com/150',
+    logoSrc:{image},
   },
   {
-    title: 'UX/UI Designer',
+    title: 'Tuition',
     positionOpened: '8+ positions opened',
     location: 'Chicago, IL',
-    logoSrc: 'https://via.placeholder.com/150',
+    logoSrc:{image},
   },
 ];
 
@@ -37,11 +37,11 @@ const Catagories = () => {
         {jobCategories.map((category, index) => (
           <div key={index} className="bg-white rounded-lg shadow-lg p-6">
             <img
-              src={category.logoSrc}
+              src={image}
               alt={category.title}
-              className="w-24 h-24 mx-auto mb-4"
+              className="rounded-full w-36 h-36 mb-4 mx-auto"
             />
-            <h2 className="text-xl font-semibold text-blue-700 mb-2 text-center">{category.title}</h2>
+            <h2 className="text-xl font-semibold text-[#041F96] mb-2 text-center">{category.title}</h2>
             <p className="text-sm text-gray-600 mb-2 text-center">{category.positionOpened}</p>
             <p className="text-sm text-gray-600 text-center">{category.location}</p>
           </div>

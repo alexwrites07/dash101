@@ -1,31 +1,43 @@
 import React from 'react';
-
+import hire from '../../../assets/home//WhatsApp Image 2024-06-30 at 22.09.53.jpeg';
+import { Link } from 'react-router-dom'; 
 const HiringSection = () => {
   return (
-    <div className="max-w-full mx-auto" style={{ margin: '6% 4% 4% 4%' }}>
-      <div className="flex items-center justify-between">
-        <div className="flex-1 pr-8 hidden lg:block">
+    <div className="max-w-full mx-auto my-16 px-4 md:px-8 lg:px-16">
+      <div className="flex flex-col lg:flex-row items-center justify-between">
+        <div className="flex-1 lg:pr-8 hidden lg:block">
           <img
-            src="https://via.placeholder.com/350x350"
+            src={hire}
             alt="Hiring Image"
-            className="rounded-lg"
+            className="rounded-lg mx-auto lg:mx-0"
+            width={350}
+            height={350}
+
           />
         </div>
-        <div className="flex-1 ml-8 lg:ml-0">
-          <h2 className="text-3xl text-blue-700 font-bold mb-4 text-right lg:text-left">Do You Need a Teacher?</h2>
-          <p className="text-lg text-gray-800 mb-4 text-right lg:text-left">
+        <div className="flex-1 lg:ml-12 text-left">
+          <h2 className="text-3xl lg:text-4xl text-[#041F96] font-bold mb-4">
+            Do You Need a Teacher?
+          </h2>
+          <p className="text-lg text-gray-800 mb-4">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eget neque non
             ligula interdum venenatis.
           </p>
-          <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none float-right lg:float-left">
-            Let's Connect
-          </button>
+          <div className="text-left">
+          <Link to="/login">
+            <button className="bg-[#041F96] text-white py-2 px-4 rounded-lg hover:bg-[#041F96] focus:outline-none">
+              Let's Connect
+            </button>
+            </Link>
+          </div>
         </div>
-        <div className="flex-1 ml-8 lg:hidden">
+        <div className="flex-1 mt-8 lg:mt-0 lg:hidden">
           <img
-            src="https://via.placeholder.com/350x350"
+            src={hire}
             alt="Hiring Image"
-            className="rounded-lg"
+            className="rounded-lg mx-auto"
+            width={350}
+            height={350}
           />
         </div>
       </div>

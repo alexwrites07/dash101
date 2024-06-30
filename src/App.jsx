@@ -6,7 +6,7 @@ import Login from './Components/Auth/Login';
 import Home from './Components/Home/Home'
 import SignUp from './Components/Auth/SignUp';
 import Navbar from './Components/Navbar/Navbar'
-
+import Footer from './Components/Home/Footer';
 
 
 function App() {
@@ -24,11 +24,13 @@ function App() {
          
   
             <Route path="/" element={<Home />} />
-          
+            <Route path="/login" element ={<Login/>}/>
+            <Route path="/signup" element ={<SignUp/>}/>
 
-  
+      
           
           </Routes>
+          <Footer/>
         </BrowserRouter>
       </div>
     </>
