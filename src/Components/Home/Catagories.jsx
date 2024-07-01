@@ -1,43 +1,56 @@
 import React from 'react';
-import image from '../../assets/home//WhatsApp Image 2024-06-30 at 22.26.28.jpeg';
+import image from '../../assets/home/WhatsApp Image 2024-06-30 at 22.26.28.jpeg';
+
 const jobCategories = [
   {
     title: 'Coaching',
     positionOpened: '20+ positions opened',
     location: 'Remote',
-    logoSrc:{image},
+    logoSrc: image,
   },
   {
     title: 'School',
     positionOpened: '15+ positions opened',
     location: 'New York, NY',
-    logoSrc:{image},
+    logoSrc: image,
   },
   {
     title: 'College',
     positionOpened: '10+ positions opened',
     location: 'San Francisco, CA',
-    logoSrc:{image},
+    logoSrc: image,
   },
   {
     title: 'Tuition',
     positionOpened: '8+ positions opened',
     location: 'Chicago, IL',
-    logoSrc:{image},
+    logoSrc: image,
+  },
+  {
+    title: 'Class',
+    positionOpened: '8+ positions opened',
+    location: 'Chicago, IL',
+    logoSrc: image,
+  },
+  {
+    title: 'Music',
+    positionOpened: '8+ positions opened',
+    location: 'Chicago, IL',
+    logoSrc: image,
   },
 ];
 
-const Catagories = () => {
+const Categories = () => {
   return (
-    <div className="max-w-full mx-auto " style={{ margin: '10% 4% 4% 4%' }}>
-    <div className='text-2xl text-center'>Popular Catagories</div>
-    <div className='text-2xs text-center'>Choose your favourite catagory</div>
+    <div className="max-w-full mx-auto" style={{ margin: '10% 5% 5% 5%', overflowX: 'auto' }}>
+      <div className='text-2xl text-center'>Popular Categories</div>
+      <div className='text-sm text-center'>Choose your favourite category</div>
 
-      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ">
+      <div className="mt-12 flex overflow-x-auto">
         {jobCategories.map((category, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-lg p-6">
+          <div key={index} className="bg-white rounded-lg shadow-lg p-6 mx-4" style={{ flex: '0 0 auto', minWidth: 'calc(20% - 8px)' }}>
             <img
-              src={image}
+              src={category.logoSrc}
               alt={category.title}
               className="rounded-full w-36 h-36 mb-4 mx-auto"
             />
@@ -51,4 +64,4 @@ const Catagories = () => {
   );
 };
 
-export default Catagories;
+export default Categories;

@@ -33,6 +33,18 @@ const FrequentlyHiringCompanies = () => {
       industry: 'Education',
       logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
     },
+    {
+      name: 'College F',
+      location: 'Boston, MA',
+      industry: 'Education',
+      logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
+    },
+    {
+      name: 'College Z',
+      location: 'Boston, MA',
+      industry: 'Education',
+      logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
+    },
   ];
 
   return (
