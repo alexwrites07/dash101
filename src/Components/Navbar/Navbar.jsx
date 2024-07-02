@@ -38,8 +38,24 @@ function Navbar() {
             </button>
             <div className={isMobileMenuOpen ? "md:flex md:items-center md:justify-end w-full md:w-auto" : "hidden md:flex md:items-center md:justify-end w-full md:w-auto"} id="mobile-menu">
               <ul className="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
+              <Link to="/">
                 <li>
                   <a href="#" className="bg-blue-700 md:bg-transparent text-white block pl-3 pr-4 py-2 md:text-[#041F96] md:p-0 rounded focus:outline-none" aria-current="page">Home</a>
+                </li>
+              </Link>
+                <Link to="/jobpost">
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Job Post</a>
+                </li>
+                </Link>
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Services</a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Pricing</a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Contact</a>
                 </li>
                 <li className="relative">
                   <button
@@ -50,21 +66,23 @@ function Navbar() {
                     aria-expanded={isDropdownOpen ? "true" : "false"}
                     aria-controls="dropdownNavbar"
                   >
-                    Dropdown
+                    Login
                     <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
                     </svg>
                   </button>
                   <div id="dropdownNavbar" className={isDropdownOpen ? "absolute right-0 mt-2 bg-white text-base z-10 list-none divide-y divide-gray-100 rounded shadow my-4 w-44" : "hidden"}>
                     <ul className="py-1" aria-labelledby="dropdownNavbarLink">
+                    <Link to="/login">
+                      <li>
+                        <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Login</a>
+                      </li>
+                      </Link>
                       <li>
                         <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Dashboard</a>
                       </li>
                       <li>
                         <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Settings</a>
-                      </li>
-                      <li>
-                        <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Earnings</a>
                       </li>
                     </ul>
                     <div className="py-1">
@@ -72,20 +90,6 @@ function Navbar() {
                     </div>
                   </div>
                 </li>
-                <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Services</a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Pricing</a>
-                </li>
-                <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Contact</a>
-                </li>
-                <Link to="/jobpost">
-                <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Job Post</a>
-                </li>
-                </Link>
               </ul>
             </div>
           </div>
