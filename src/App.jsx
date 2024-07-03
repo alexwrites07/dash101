@@ -8,7 +8,7 @@ import SignUp from './Components/Auth/SignUp';
 import Navbar from './Components/Navbar/Navbar'
 import Footer from './Components/Home/Footer';
 import JobPost from './Components/Home/Jobpost';
-
+import FindTutor from './Components/Home/Findtutor.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -28,7 +28,7 @@ function App() {
             <Route path="/login" element ={<Login/>}/>
             <Route path="/signup" element ={<SignUp/>}/>
             <Route path="/jobpost" element ={<JobPost/>}/>
-
+            <Route path="/findtutor" element ={<FindTutor/>}/>
       
           
           </Routes>
