@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import GoogleMap2 from './GoogleMap';
 
 const JobPost = () => {
   const [jobs, setJobs] = useState([
@@ -130,16 +131,11 @@ const JobPost = () => {
         
         {/* Location Filter */}
         <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">Location</label>
-            <input
-            type="text"
-            name="location"
-            id="location"
-            value={filters.location}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-            />
+          <label className="block text-gray-700 text-sm font-bold mb-2">Location</label>
+          <a href="/googlemap" className="font-medium text-primary-600 hover:underline"><button
+              className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none">Enter Location</button></a>
         </div>
+        
         
         {/* Category Filter */}
         <div className="mb-4">

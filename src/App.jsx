@@ -9,6 +9,7 @@ import Navbar from './Components/Navbar/Navbar'
 import Footer from './Components/Home/Footer';
 import JobPost from './Components/Home/Jobpost';
 import FindTutor from './Components/Home/Findtutor.jsx';
+import GoogleMap2 from './Components/Home/GoogleMap';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,6 +30,7 @@ function App() {
             <Route path="/signup" element ={<SignUp/>}/>
             <Route path="/jobpost" element ={<JobPost/>}/>
             <Route path="/findtutor" element ={<FindTutor/>}/>
+            <Route path="/googlemap" element ={<GoogleMap2/>}/>
       
           
           </Routes>
