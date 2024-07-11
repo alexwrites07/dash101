@@ -100,6 +100,7 @@ const Dashboard = () => {
                     </div>
                 </Modal.Body>
             </Modal>
+           
         </div>
     );
 };
