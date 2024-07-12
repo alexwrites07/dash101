@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-import teach from '../../../assets/home/WhatsApp Image 2024-06-30 at 22.06.41.jpeg';
+import teach from '../../../assets/home/team-analysts-working-brand-reputation-social-media.png';
 
 const TeachingSection = () => {
   return (

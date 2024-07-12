@@ -1,5 +1,5 @@
 import React from 'react';
-import hire from '../../../assets/home//WhatsApp Image 2024-06-30 at 22.09.53.jpeg';
+import hire from '../../../assets/home/happy-students-learning-math-college-school-isolated-flat-illustration.png';
 import { Link } from 'react-router-dom'; 
 const HiringSection = () => {
   return (
@@ -10,8 +10,8 @@ const HiringSection = () => {
             src={hire}
             alt="Hiring Image"
             className="rounded-lg mx-auto lg:mx-0"
-            width={350}
-            height={350}
+            width={450}
+            height={450}
 
           />
         </div>

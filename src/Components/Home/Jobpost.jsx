@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GoogleMap2 from './GoogleMap';
+import { HiFilter } from 'react-icons/hi';
 
 const JobPost = () => {
   const [jobs, setJobs] = useState([
@@ -85,6 +85,7 @@ const JobPost = () => {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false); // State for showing/hiding filters
   const jobsPerPage = 5;
 
   const parsePostingTime = (postingTime) => {
@@ -183,156 +184,179 @@ const JobPost = () => {
   });
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const visibleJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const visibleJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   const goToNextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   const goToPreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
   return (
-    <div className="max-w-full mx-auto flex" style={{ margin: '6% 4% 0 4%' }}>
-      {/* Sidebar for Filters */}
-      <div className="w-1/4 p-4 bg-gray-100 rounded-lg shadow-lg mr-6" style={{ height: 'fit-content' }}>
-        <h2 className="text-2xl text-[#041F96] font-bold mb-4">Filter Jobs</h2>
-        
-        {/* Keyword Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
-          <input
-            type="text"
-            name="keyword"
-            id="keyword"
-            value={filters.keyword}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-        
-        {/* Location Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">Location</label>
-          <a href="/googlemap" className="font-medium text-primary-600 hover:underline">
-            <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none">Enter Location</button>
-          </a>
-        </div>
-        
-        {/* Category Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">Category</label>
-          <input
-            type="text"
-            name="category"
-            id="category"
-            value={filters.category}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-        
-        {/* Job Type Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="jobType">Job Type</label>
-          <select
-            name="jobType"
-            id="jobType"
-            value={filters.jobType}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          >
-            <option value="">Select Job Type</option>
-            <option value="full-time">Full-time</option>
-            <option value="part-time">Part-time</option>
-            <option value="contract">Contract</option>
-            <option value="remote">Remote</option>
-          </select>
-        </div>
-        
-        {/* Date Posted Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="datePosted">Date Posted</label>
-          <select
-            name="datePosted"
-            id="datePosted"
-            value={filters.datePosted}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          >
-            <option value="">Anytime</option>
-            <option value="last24hours">Last 24 hours</option>
-            <option value="last7days">Last 7 days</option>
-            <option value="last14days">Last 14 days</option>
-            <option value="last30days">Last 30 days</option>
-          </select>
-        </div>
-        
-        {/* Experience Level Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
-          <select
-            name="experienceLevel"
-            id="experienceLevel"
-            value={filters.experienceLevel}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          >
-            <option value="">Select Experience Level</option>
-            <option value="0-1 years">0-1 years</option>
-            <option value="2-4 years">2-4 years</option>
-            <option value="4+ years">4+ years</option>
-          </select>
-        </div>
+    <div className="max-w-full mx-auto flex flex-col md:flex-row" style={{ margin: '6% 4% 0 4%' }}>
+      {/* Sidebar for Filters (Hidden on Small Screens) */}
+      <div className="md:hidden w-full flex justify-end mb-6">
+  <button
+    onClick={() => setShowFilters(!showFilters)}
+    className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-non"
+  >
+    <HiFilter className="w-4 h-4" />
+  </button>
+</div>
+      <div className={`md:block md:w-1/4 p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
+        <form className="space-y-4">
+          {/* Filters */}
+          {/* Keyword Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
+            <input
+              type="text"
+              name="keyword"
+              id="keyword"
+              value={filters.keyword}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
 
-        
-        {/* Career Level Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Career Level</label>
-          <select
-            name="careerLevel"
-            id="careerLevel"
-            value={filters.careerLevel}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
+          {/* Location Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">Location</label>
+            <input
+              type="text"
+              name="location"
+              id="location"
+              value={filters.location}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">Category</label>
+            <input
+              type="text"
+              name="category"
+              id="category"
+              value={filters.category}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+
+          {/* Job Type Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="jobType">Job Type</label>
+            <select
+              name="jobType"
+              id="jobType"
+              value={filters.jobType}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            >
+              <option value="">Select Job Type</option>
+              <option value="full-time">Full-time</option>
+              <option value="part-time">Part-time</option>
+              <option value="contract">Contract</option>
+              <option value="remote">Remote</option>
+            </select>
+          </div>
+
+          {/* Date Posted Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="datePosted">Date Posted</label>
+            <select
+              name="datePosted"
+              id="datePosted"
+              value={filters.datePosted}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            >
+              <option value="">Anytime</option>
+              <option value="last24hours">Last 24 hours</option>
+              <option value="last7days">Last 7 days</option>
+              <option value="last14days">Last 14 days</option>
+              <option value="last30days">Last 30 days</option>
+            </select>
+          </div>
+
+          {/* Experience Level Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
+            <input
+              type="text"
+              name="experienceLevel"
+              id="experienceLevel"
+              value={filters.experienceLevel}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+
+          {/* Career Level Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Career Level</label>
+            <input
+              type="text"
+              name="careerLevel"
+              id="careerLevel"
+              value={filters.careerLevel}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+
+          {/* Salary Range Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="salaryRange">Salary Range</label>
+            <div className="flex space-x-2">
+              <input
+                type="number"
+                name="minSalary"
+                id="minSalary"
+                placeholder="Min"
+                value={filters.minSalary}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+              <input
+                type="number"
+                name="maxSalary"
+                id="maxSalary"
+                placeholder="Max"
+                value={filters.maxSalary}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+          </div>
+
+          {/* Apply Filters Button */}
+          <button
+            type="button"
+            onClick={() => setShowFilters(false)}
+            className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
           >
-            <option value="">Select Career Level</option>
-            <option value="junior">Junior</option>
-            <option value="mid">Mid</option>
-            <option value="senior">Senior</option>
-          </select>
-        </div>
-        
-        {/* Minimum Salary Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="minSalary">Minimum Salary</label>
-          <input
-            type="number"
-            name="minSalary"
-            id="minSalary"
-            value={filters.minSalary}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-        
-        {/* Maximum Salary Filter
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxSalary">Maximum Salary</label>
-          <input
-            type="number"
-            name="maxSalary"
-            id="maxSalary"
-            value={filters.maxSalary}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div> */}
+            Apply Filters
+          </button>
+        </form>
       </div>
 
-      {/* Job Listings */}
-      <div className="w-3/4">
+      {/* Button for Small Screens */}
+  
+
+
+      {/* Jobs List */}
+      <div className="w-full ">
+        {/* Jobs header */}
+        <div className="flex items-center justify-between mb-4">
+         
+          <div className="w-full">
         <div className="flex justify-between mb-4">
           <h1 className="text-3xl font-bold text-[#041F96] mb-6">Available Jobs</h1>
           <div className="flex items-center">
@@ -349,64 +373,62 @@ const JobPost = () => {
           </div>
         </div>
         {visibleJobs.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-4 ">
           {visibleJobs.map((job, index) => (
-            <div
-              key={index}
-              className="p-6 bg-white rounded-lg shadow-md flex justify-between items-center hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="flex items-center">
-                <img
-                  src={job.profilePic}
-                  alt={`${job.company} profile`}
-                  className="w-16 h-16 rounded-full mr-4"
-                />
-                <div>
-                  <h2 className="text-xl font-bold text-[#041F96]">{job.role}</h2>
-                  <h5 className="text-gray-700 font-bold">{job.company}</h5>
-                  <div className="flex space-x-4 mt-2">
-                    <p className="text-gray-700">{job.experienceLevel}</p>
-                    <p className="text-gray-700">{job.careerLevel}</p>
-                    <p className="text-gray-700">{job.duration}</p>
-                    <p className="text-gray-700">{job.location}</p>
-                    <p className="text-gray-700">{job.stipend}</p>
-                  </div>
-                  <p className="text-gray-500 text-sm">{job.postingTime}</p>
-                </div>
-              </div>
-              <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none">Apply Now</button>
-            </div>
+          <div key={index} className="shadow  rounded flex flex-col md:flex-row items-start md:ml-12 border-b border-gray-200 py-4 mb-4">
+          <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4">
+            <img src={job.profilePic} alt="Company Logo" className="w-12 h-12 object-contain" />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between ml-4 w-full">
+          <div className="md:ml-4">
+      <h3 className="font-medium text-gray-800">{job.company}</h3>
+      <p className="text-sm text-gray-600">{job.role}</p>
+      <p className="text-sm text-gray-600">{job.location}</p>
+    </div>
+    <div className="flex md:ml-4 md:items-center mb-2">
+      <p className="text-sm text-gray-600 mr-8">{job.stipend}</p>
+      <span className="text-sm text-gray-600 mr-8">{job.experienceLevel}</span>
+      <span className="text-sm text-gray-600 mr-8">{job.careerLevel}</span>
+     
+    </div>
+    <button className=" mr-4  bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none w-[100px]">
+        Apply
+      </button>
+          </div>
+        </div>
+        
+   
           ))}
         </div>               
         ) : (
           <p className="text-gray-700">No jobs found.</p>
         )}
-        
-        {/* Pagination Controls */}
-        <div className="mb-4">
-          <div className="flex justify-center items-center mt-4">
-            <button
-              onClick={goToPreviousPage}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-[#041F96] text-white hover:bg-[#041F96]'} focus:outline-none`}
-            >
-              &larr;
-            </button>
-            
-            <span className="mx-4 text-lg">
-              {currentPage} / {totalPages}
-            </span>
-            
-            <button
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-[#041F96] text-white hover:bg-[#041F96]'} focus:outline-none`}
-            >
-              &rarr;
-            </button>
-          </div>
-        </div>
 
+        {/* Pagination */}
+        <div className="mt-8 flex justify-between items-center">
+          <button
+            onClick={goToPreviousPage}
+            className={`bg-gray-200 text-gray-600 px-4 py-2 rounded-lg ${
+              currentPage === 1 ? 'cursor-not-allowed' : 'hover:bg-gray-300'
+            }`}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <div className="text-gray-600">
+            Page {currentPage} of {totalPages}
+          </div>
+          <button
+            onClick={goToNextPage}
+            className={`bg-gray-200 text-gray-600 px-4 py-2 rounded-lg ${
+              currentPage === totalPages ? 'cursor-not-allowed' : 'hover:bg-gray-300'
+            }`}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+        </div></div>
       </div>
     </div>
   );

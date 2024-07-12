@@ -1,5 +1,5 @@
 import React from 'react';
-import TeacherImage from '../../assets/home/WhatsApp Image 2024-06-29 at 11.51.36 (1).jpeg';
+import TeacherImage from '../../assets/home/school-teacher-explaining-geography-lesson-pupil-tutor-showing-world-map-student-kid.png';
 import Catagories from './Catagories';
 import FeaturedJobs from './Jobs/Jobs';
 import FrequentlyHiringCompanies from './Jobs/Frequently';
@@ -43,8 +43,8 @@ function HomePage() {
             src={TeacherImage}
             alt="Teacher Image"
             className="rounded-lg mx-auto md:w-4/5 lg:e-4/5"
-            width={350}
-            height={350} />
+            width={500}
+            height={500} />
         </div>
       </div>
       <Catagories />

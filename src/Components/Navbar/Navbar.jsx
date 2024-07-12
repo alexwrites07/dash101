@@ -13,12 +13,16 @@ function Navbar() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <>
       <div className="max-w-full mx-auto" style={{ margin: '2% 4% 0 4%' }}>
-        <nav className="border-gray-200">
-          <div className="container mx-auto flex flex-wrap items-center justify-between">
-            <a href="#" className="flex">
+        <nav className="border-gray-200 relative">
+          <div className="container mx-auto flex items-center justify-between">
+            <a href="/" className="flex items-center">
               <img className="w-32 h-12 mr-2 -mb-2" src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp" alt="logo" />
             </a>
             <button
@@ -36,31 +40,25 @@ function Navbar() {
                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
               </svg>
             </button>
-            <div className={isMobileMenuOpen ? "md:flex md:items-center md:justify-end w-full md:w-auto" : "hidden md:flex md:items-center md:justify-end w-full md:w-auto"} id="mobile-menu">
-              <ul className="flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
-              <Link to="/">
+            <div className={isMobileMenuOpen ? "absolute top-full left-0 w-full md:flex md:items-center md:justify-end md:relative md:top-0" : "hidden md:flex md:items-center md:justify-end w-full"} id="mobile-menu">
+              <ul className="bg-white shadow-md md:shadow-none md:bg-transparent flex flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
                 <li>
-                  <a href="#" className="bg-blue-700 md:bg-transparent text-white block pl-3 pr-4 py-2 md:text-[#041F96] md:p-0 rounded focus:outline-none" aria-current="page">Home</a>
-                </li>
-              </Link>
-                <Link to="/jobpost">
-                <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Find Job</a>
-                </li>
-                </Link>
-                <Link to="/findtutor">
-                 <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Find Tutor</a>
-                 </li>
-                </Link>
-                <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Services</a>
+                  <Link to="/" className="bg-blue-700 md:bg-transparent text-white block pl-3 pr-4 py-2 md:text-[#041F96] md:p-0 rounded focus:outline-none" aria-current="page" onClick={closeMobileMenu}>Home</Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Pricing</a>
+                  <Link to="/jobpost" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Find Job</Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0">Contact</a>
+                  <Link to="/findtutor" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Find Tutor</Link>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Services</a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Pricing</a>
+                </li>
+                <li>
+                  <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Contact</a>
                 </li>
                 <li className="relative">
                   <button
@@ -78,22 +76,18 @@ function Navbar() {
                   </button>
                   <div id="dropdownNavbar" className={isDropdownOpen ? "absolute right-0 mt-2 bg-white text-base z-10 list-none divide-y divide-gray-100 rounded shadow my-4 w-44" : "hidden"}>
                     <ul className="py-1" aria-labelledby="dropdownNavbarLink">
-                    <Link to="/login">
                       <li>
-                        <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Login</a>
+                        <Link to="/login" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Login</Link>
                       </li>
-                      </Link>
-                      <Link to="/dashboard">
                       <li>
-                        <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Dashboard</a>
+                        <Link to="/dashboard" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Dashboard</Link>
                       </li>
-                      </Link>
                       <li>
-                        <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Settings</a>
+                        <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Settings</a>
                       </li>
                     </ul>
                     <div className="py-1">
-                      <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2">Sign out</a>
+                      <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Sign out</a>
                     </div>
                   </div>
                 </li>

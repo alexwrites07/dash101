@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Recentnews.css';
 
 const articles = [
   {
@@ -50,7 +51,7 @@ const ArticleCard = ({ article }) => {
   const [showFullContent, setShowFullContent] = useState(false);
 
   return (
-    <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md mx-4 mb-8 flex-shrink-0" style={{ width: 'calc(20% - 16px)', marginRight: '16px' }}>
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden flex-shrink-0 w-64 mx-4 mb-8">
       <h2 className="text-xl font-bold mb-2">{article.title}</h2>
       <img
         src={article.image}
@@ -86,8 +87,8 @@ export const NewsSection = () => {
   return (
     <section className="bg-gray-100 py-8 mb-4">
       <h1 className="text-3xl text-center text-[#041F96] font-bold mb-8">Recent News Articles</h1>
-      <div className="container mx-auto px-4 text-center overflow-x-auto" style={{ maxWidth: '100vw' }}>
-        <div className="flex flex-no-wrap justify-start" style={{ gap: '16px' }}>
+      <div className="container mx-auto px-4 text-center overflow-x-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+        <div className="flex flex-nowrap gap-4">
           {articles.map((article) => (
             <ArticleCard key={article.id} article={article} />
           ))}
