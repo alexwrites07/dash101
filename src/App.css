@@ -16,3 +16,16 @@ td {
   border: 1px solid #e5e7eb;
   padding: 8px; /* Adjust padding as needed */
 }
+.resumePreview {
+  width: 794px; 
+  font-family: 'EB Garamond', serif;
+  /* A4 width in pixels at 96 DPI */
+  height: 1123px; /* A4 height in pixels at 96 DPI */
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Optional: adds shadow for better visibility */
+  margin: auto; /* Centers the div on the page */
+  overflow: auto; /* Adds scrollbars if the content overflows */
+}
+

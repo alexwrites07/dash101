@@ -18,6 +18,7 @@ import ShortlistJobs from './Components/Home/Dashboard/ShortlistJobs';
 import AlertsJobs from './Components/Home/Dashboard/AlertJobs';
 import Messages from './Components/Home/Dashboard/Messages';
 import Meetings from './Components/Home/Dashboard/Meetings';
+import ResumeBuilder from './Components/Home/resume/builder.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,9 +44,10 @@ function AppContent() {
 
   return (
     <>
-      {!shouldHideNavbarAndFooter() && <Navbar />}
+      {shouldHideNavbarAndFooter() && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/resume" element={<ResumeBuilder />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/jobpost" element={<JobPost />} />
@@ -61,7 +63,7 @@ function AppContent() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/meetings" element={<Meetings />} />
       </Routes>
-      {!shouldHideNavbarAndFooter() && <Footer />}
+      {shouldHideNavbarAndFooter() && <Footer />}
     </>
   );
 }
