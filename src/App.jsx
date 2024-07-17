@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation} from 'react-router-dom';
 import './App.css';
 import Login from './Components/Auth/Login';
 import Home from './Components/Home/Home';
@@ -10,7 +10,7 @@ import JobPost from './Components/Home/Jobpost';
 import FindTutor from './Components/Home/Findtutor.jsx';
 import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
-import UploadResume from './Components/Home/Dashboard/UploadResume.jsx';
+import ResumeBuilder from './Components/Home/resume/builder.jsx';
 import YourProfile from './Components/Home/Dashboard/YourProfile.jsx';
 import AppliedCompany from './Components/Home/Dashboard/AppliedCompany.jsx';
 import Locations from './Components/Home/Dashboard/Locations.jsx';
@@ -18,7 +18,9 @@ import ShortlistJobs from './Components/Home/Dashboard/ShortlistJobs';
 import AlertsJobs from './Components/Home/Dashboard/AlertJobs';
 import Messages from './Components/Home/Dashboard/Messages';
 import Meetings from './Components/Home/Dashboard/Meetings';
-import ResumeBuilder from './Components/Home/resume/builder.jsx';
+import JobDetail from './Components/Home/Jobs/JobDetail.jsx';
+import JobDescription from './Components/Home/Jobs/JobDescription';
+import UploadResume from './Components/Home/Dashboard/UploadResume.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -44,17 +46,20 @@ function AppContent() {
 
   return (
     <>
-      {shouldHideNavbarAndFooter() && <Navbar />}
+      {!shouldHideNavbarAndFooter() && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/resume" element={<ResumeBuilder />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/jobpost" element={<JobPost />} />
+        <Route path='/resume' element={<ResumeBuilder/>}/>
         <Route path="/findtutor" element={<FindTutor />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
         <Route path="/dashboard" element={<YourProfile />} />
         <Route path="/upload-resume" element={<UploadResume />} />
+      
+        <Route path="/jobpost" element={<JobPost />} />
+        <Route path="/getjobs/:jobId" element={<JobDescription/>} />
+    
         <Route path="/your-profile" element={<YourProfile />} />
         <Route path="/applied-company" element={<AppliedCompany />} />
         <Route path="/locations" element={<Locations />} />
@@ -63,7 +68,7 @@ function AppContent() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/meetings" element={<Meetings />} />
       </Routes>
-      {shouldHideNavbarAndFooter() && <Footer />}
+      {!shouldHideNavbarAndFooter() && <Footer />}
     </>
   );
 }

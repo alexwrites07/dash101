@@ -38,15 +38,16 @@ function HomePage() {
             </button>
           </div>
         </div>
-        <div className="mt-8 md:mt-0  md:ml-36 lg:ml-48">
+        <div className="mt-8 md:mt-0  md:ml-24 lg:ml-36">
           <img
             src={TeacherImage}
             alt="Teacher Image"
-            className="rounded-lg mx-auto md:w-4/5 lg:e-4/5"
-            width={500}
-            height={500} />
+            className="rounded-lg mx-auto w-4/5"
+            width={800}
+            height={800} />
         </div>
       </div>
+      
       <Catagories />
       <FeaturedJobs />
       <FrequentlyHiringCompanies />
