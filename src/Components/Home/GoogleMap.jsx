@@ -58,6 +58,8 @@ const GoogleMap2 = () => {
     { lat: center.lat + 0.05, lng: center.lng }, // End of the line
   ];
 
+  const googleMapsApiKey = process.env.MAPS_APIKEY;
+
   return (
     <div className="max-w-full mx-auto flex flex-col" style={{ margin: '6% 4% 0 4%' }}>
       {/* Sidebar for Filters and Controls */}
@@ -110,7 +112,7 @@ const GoogleMap2 = () => {
         <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-lg shadow-lg mx-4" style={{ maxWidth: '500px', width: '100%' }}>
             <LoadScript
-              googleMapsApiKey="AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw"
+              // googleMapsApiKey: process.env.MAPS_APIKEY;
               onLoad={() => console.log('Google Maps loaded successfully')}
               onError={(error) => console.error('Error loading Google Maps:', error)}
             >
