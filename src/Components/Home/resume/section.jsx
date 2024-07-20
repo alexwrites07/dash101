@@ -2,7 +2,7 @@ import {MdDelete} from 'react-icons/md';
 import { IoIosAddCircle } from "react-icons/io";
 import { FaCircleMinus } from "react-icons/fa6";
 import { useState } from 'react';
-function Section({ index, section, handleInputChange, handleSubheadingChange, handleBulletChange, addSubheading, addBullet, deleteSection, deleteSubheading, deleteBullet }) {
+function Section({ index, section, handleInputChange, handleSubheadingChange, handleBulletChange, addSubheading, addBullet, deleteSection, deleteSubheading, deleteBullet,addLine }) {
   const [showDetails, setShowDetails] = useState(false); // State to manage visibility of section details
 
   const toggleDetails = () => {
@@ -20,8 +20,10 @@ function Section({ index, section, handleInputChange, handleSubheadingChange, ha
           />
         
           {showDetails ?<FaCircleMinus onClick={()=> toggleDetails()} className="text-blue-500 cursor-pointer text-3xl"/>:<IoIosAddCircle onClick={()=> toggleDetails()} className="text-green-500 cursor-pointer text-3xl" />}
+        
         </div>
-  {
+        
+    {
     showDetails && (
       <>
 
@@ -51,18 +53,24 @@ function Section({ index, section, handleInputChange, handleSubheadingChange, ha
                 
               </div>
             ))}
+            <div className="flex justify-between">
             <button
-              className="w-full mb-2 p-2 bg-blue-500 text-white rounded-md"
+              className="w-full mb-2 p-2 bg-[#041F96] text-white rounded-md"
               onClick={() => addBullet(index, subheadingIndex)}
             >
               Add Bullet
             </button>
+            <div className="w-2"></div>
+          
+            </div>
+
+          
           </div>
         ))}
         <div className="flex justify-between">
 
         <button
-          className="w-full mb-2 p-2 bg-blue-500 text-white rounded-md"
+          className="w-full mb-2 p-2 bg-[#041F96] text-white rounded-md"
           onClick={() => addSubheading(index)}
         >
           Add Subheading

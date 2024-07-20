@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Resume from './Resume.jsx';
 import Section from './Section.jsx';
 import html2pdf from 'html2pdf.js';
-
+import { Modal,Button } from 'flowbite-react';
+import AcademicDetails from './academicModal.jsx';
 function FormattingHelp() {
   return (
     <div style={styles.helpSection}>
@@ -59,10 +60,61 @@ const styles = {
   }
 };
 
+
+
+
 function ResumeBuilder() {
-  const [name, setName] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
-  const [sections, setSections] = useState([]);
+  const [name, setName] = useState('XYZ');
+  const [profileImage, setProfileImage] = useState("/economist.png");
+  const [open,setOpen] = useState(false); 
+  const [academic, setAcademic] = useState([  { year: '2022', degree: 'B.Tech in Electrical Engineering', institute: 'XYZ Institute', gpa: '9' },
+    { year: '2020', degree: 'CBSE', institute: 'ABC School', gpa: '499' }])
+  const [sections, setSections] = useState([
+  
+    {
+        "title": "INTERNSHIP",
+        "subheadings": [
+            {
+                "subtitle": "*Company Name , Remote* (Jan 2022-Feb 2022) : ~Developer~",
+                "bullets": [
+                    "Created Intuitive UI using Material Design"
+                ],
+                "lines": []
+            },
+            {
+                "subtitle": "*Company Name , Remote* (Jan 2022-Feb 2022)",
+                "bullets": [
+                    "Developed a comprehensive ERP portal"
+                ],
+                "lines": []
+            }
+        ]
+    },
+    {
+        "title": "PROJECTS",
+        "subheadings": [
+            {
+                "subtitle": "*ABC Project*",
+                "bullets": [
+                    "Implemented a real-time results feature "
+                ],
+                "lines": []
+            }
+        ]
+    },
+    {
+        "title": "EXTRA CURRICULAR ACTIVITIES",
+        "subheadings": [
+            {
+                "subtitle": " *Hackathon Participation*",
+                "bullets": [
+                    "Participated in the Smart India Hackathon organized by the Government of India"
+                ],
+                "lines": []
+            }
+        ]
+    }
+]);
 
   const addSection = () => {
     setSections([...sections, { title: '', subheadings: [{ subtitle: '', bullets: [''],lines:[] }] }]);
@@ -132,14 +184,23 @@ function ResumeBuilder() {
   };
   
   const deleteBullet = (sectionIndex, subheadingIndex, bulletIndex) => {
+    console.log(sections)
     const newSections = sections.slice();
     newSections[sectionIndex].subheadings[subheadingIndex].bullets = newSections[sectionIndex].subheadings[subheadingIndex].bullets.filter((_, i) => i !== bulletIndex);
     setSections(newSections);
   };
 
+
   return (
     <div className="flex flex-col h-screen">
+ <AcademicDetails
+        academic={academic}
+        setAcademic={setAcademic}
+        isOpen={open}
+        setIsOpen={setOpen}
+      />
       <div className="flex-grow p-8 overflow-auto">
+    
         <div className="flex gap-8">
           <div className="w-full max-w-lg space-y-4">
             <input
@@ -153,11 +214,18 @@ function ResumeBuilder() {
               type="file"
               className="p-2 border border-gray-300 rounded-md"
               onChange={handleImageChange}
-            />
+            /><br/>
+            <button
+          className="w-90 mb-2 p-2 bg-[#041F96] text-white rounded-md"
+          onClick={() =>setOpen(true)}
+        >
+          edit academic details
+        </button>
             <div>
               {sections.map((section, index) => (
                 <Section
                 key={index}
+                addLine={addLine}
                 index={index}
                 section={section}
                 handleInputChange={handleInputChange}
@@ -174,7 +242,7 @@ function ResumeBuilder() {
             <div className="flex justify-between">
 
             <button
-              className="w-full p-2 bg-blue-500 text-white rounded-md"
+              className="w-full p-2 bg-[#041F96] text-white rounded-md"
               onClick={addSection}
             >
               Add Section
@@ -190,7 +258,7 @@ function ResumeBuilder() {
           <FormattingHelp/>
           </div>
           <div className="flex-grow border-l border-gray-300 pl-8">
-            <Resume name={name} profileImage={profileImage} sections={sections} />
+            <Resume name={name} profileImage={profileImage} sections={sections} academic={academic}/>
           </div>
         </div>
       </div>
