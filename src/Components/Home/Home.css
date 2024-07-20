@@ -8,3 +8,14 @@
         margin-bottom:-5%;
     }
 }
+.home2{
+    width:100%;
+    
+}
+@media (min-width:650px)
+{
+.bnm{
+    align:center;
+    margin:  0 0% 0 10%;
+}
+}

@@ -23,16 +23,16 @@ const Meetings = () => {
   const [editingMeeting, setEditingMeeting] = useState(null);
   const [notification, setNotification] = useState('');
 
-  const CLIENT_ID = '872785347336-f1tfooq9nrhu952gm4dk53skfddd9f6b.apps.googleusercontent.com';
-  const API_KEY = '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';
+  // const CLIENT_ID= process.env.CLIENT_ID;
+  // const API_KEY = process.env.API_KEY;
   const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
   const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
   useEffect(() => {
     const initClient = () => {
       gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
+        apiKey: process.env.API_KEY,
+        clientId: process.env.CLIENT_ID,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES,
       }).then(() => {
