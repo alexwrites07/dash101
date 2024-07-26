@@ -44,7 +44,7 @@ const Messages = () => {
       <Sidebar openChat={openChat} activeChat={activeChat} />
       <div className="flex-1">
         <Header />
-        <div className="mt-24 lg:ml-64 lg:mt-24 p-4 lg:p-8 flex flex-col items-center lg:items-start">
+        <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28 flex flex-col items-center lg:items-start">
           <h1 className="text-3xl font-bold mb-6 text-gray-900">Messages</h1>
           {activeChat ? (
             <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">

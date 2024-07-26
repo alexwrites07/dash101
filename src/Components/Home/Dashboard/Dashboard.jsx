@@ -6,11 +6,16 @@ import YourProfile from './YourProfile';
 import AppliedCompany from './AppliedCompany';
 import Locations from './Locations';
 import ShortlistJobs from './ShortlistJobs';
+import FollowingEmployer from './FollowingEmployer';
 import AlertsJobs from './AlertJobs';
 import Messages from './Messages';
 import Meetings from './Meetings';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import ChangePassword from './ChangePassword';
+import DeleteProfile from './DeleteProfile';
+import UserDashboard  from './UserDashboard';
+import './Dashboard.css';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -40,24 +45,29 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="flex ">
+        <div className="flex h-screen">
             <Header />
-            <Sidebar activeTab={activeTab} />
-            {/* Main Content */}
-            <div className="mx-auto flex-1 p-6 min-h-screen pt-16">
-                <h2 className="text-black text-2xl font-semibold mb-4 ">Main Content</h2>
-                {/* Route content based on activeTab */}
-                <Routes>
-                    {/* <Route path="/dashboard" element={<div className="p-6"><h2 className="text-black text-2xl font-semibold mb-4">Dashboard Content</h2><p className="text-black">Here is the main content of the Dashboard page.</p></div>} /> */}
-                    <Route path="/upload-resume" element={<UploadResume />} />
-                    <Route path="/your-profile" element={<YourProfile />} />
-                    <Route path="/applied-company" element={<AppliedCompany />} />
-                    <Route path="/locations" element={<Locations />} />
-                    <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
-                    <Route path="/alerts-jobs" element={<AlertsJobs />} />
-                    <Route path="/messages" element={<Messages />} />
-                    <Route path="/meetings" element={<Meetings />} />
-                </Routes>
+            <div className="flex w-full">
+                <Sidebar activeTab={activeTab} />
+                <div className="main-content flex-1 p-6 min-h-screen pt-16">
+                    <h2 className="text-black text-2xl font-semibold mb-4">Main Content</h2>
+                    {/* Route content based on activeTab */}
+                    <Routes>
+                        <Route path="/dashboard" element={<div className="p-6"><h2 className="text-black text-2xl font-semibold mb-4">Dashboard Content</h2><p className="text-black">Here is the main content of the Dashboard page.</p></div>} />
+                        <Route path="/user-dashboard" element={<UserDashboard />} />
+                        <Route path="/upload-resume" element={<UploadResume />} />
+                        <Route path="/your-profile" element={<YourProfile />} />
+                        <Route path="/applied-company" element={<AppliedCompany />} />
+                        <Route path="/locations" element={<Locations />} />
+                        <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
+                        <Route path="/following-employer" element={<FollowingEmployer />} />
+                        <Route path="/alerts-jobs" element={<AlertsJobs />} />
+                        <Route path="/messages" element={<Messages />} />
+                        <Route path="/meetings" element={<Meetings />} />
+                        <Route path="/update-password" element={<ChangePassword/>} />
+                        <Route path="/delete-profile" element={<DeleteProfile />} />
+                    </Routes>
+                </div>
             </div>
 
             {/* Logout Modal */}
@@ -100,7 +110,6 @@ const Dashboard = () => {
                     </div>
                 </Modal.Body>
             </Modal>
-           
         </div>
     );
 };

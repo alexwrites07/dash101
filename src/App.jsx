@@ -21,6 +21,10 @@ import Meetings from './Components/Home/Dashboard/Meetings';
 import JobDetail from './Components/Home/Jobs/JobDetail.jsx';
 import JobDescription from './Components/Home/Jobs/JobDescription';
 import UploadResume from './Components/Home/Dashboard/UploadResume.jsx';
+import FollowingEmployer from './Components/Home/Dashboard/FollowingEmployer';
+import ChangePassword from './Components/Home/Dashboard/ChangePassword';
+import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
+import UserDashboard from './Components/Home/Dashboard/UserDashboard';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -64,9 +68,13 @@ function AppContent() {
         <Route path="/applied-company" element={<AppliedCompany />} />
         <Route path="/locations" element={<Locations />} />
         <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
+        <Route path="/following-employer" element={<FollowingEmployer />} />
         <Route path="/alerts-jobs" element={<AlertsJobs />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/meetings" element={<Meetings />} />
+        <Route path="/update-password" element={<ChangePassword/>} />
+        <Route path="/delete-profile" element={<DeleteProfile />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
       </Routes>
       {!shouldHideNavbarAndFooter() && <Footer />}
     </>
