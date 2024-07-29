@@ -25,6 +25,7 @@ import FollowingEmployer from './Components/Home/Dashboard/FollowingEmployer';
 import ChangePassword from './Components/Home/Dashboard/ChangePassword';
 import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
 import UserDashboard from './Components/Home/Dashboard/UserDashboard';
+import AboutUs from './Components/Home/AboutUs.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -63,7 +64,7 @@ function AppContent() {
       
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
-    
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/your-profile" element={<YourProfile />} />
         <Route path="/applied-company" element={<AppliedCompany />} />
         <Route path="/locations" element={<Locations />} />
