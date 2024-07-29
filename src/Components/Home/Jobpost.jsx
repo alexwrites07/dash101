@@ -30,7 +30,7 @@ const JobPost = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('https://backend.akshayy.tech/jobs?limit=100');
+      const response = await axios.get('https://backend.akshayy.tech/jobs');
       console.log('API response:', response.data);
       if (response.data && Array.isArray(response.data.jobs)) {
         const jobsWithBookmarks = response.data.jobs.map(job => ({
@@ -194,8 +194,25 @@ const JobPost = () => {
     }
   };
 
+  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 2100) {
+        setMargin({ margin: '2% 20% 0.5% 20%' });
+      } else {
+        setMargin({ margin: '2% 4% 0.5% 4%' });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Call handler right away so state gets updated with initial window size
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <div className="flex flex-col md:flex-row ">
+    <div className="flex flex-col md:flex-row " style={margin}>
           <div className="max-w-full mx-auto flex flex-col md:flex-row" style={{ margin: '4% 4% 0 4%' }}>
       {/* Sidebar for Filters (Hidden on Small Screens) */}
       <div className="md:hidden w-full flex justify-end mb-6">
@@ -386,55 +403,52 @@ const JobPost = () => {
         
         {visibleJobs.length > 0 ? (
   <div className="space-y-4">
-     {visibleJobs.map((job, index) => (
-      <>
-        
-          <div className="shadow rounded flex flex-col md:flex-row items-start md:ml-8 border-b border-gray-200 py-4 mb-4">
-            <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 w-16 h-16">
-           
-              <img src={job.images[1]} alt="Company Logo" className="w-full h-full object-contain" />
-            </div>
-            <Link to={`/getjobs/${job._id}`} key={index} className="block">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full">
-              <div className="md:ml-4 w-1/3">
-                <h3 className="font-medium text-gray-800">{job.companyName}</h3>
-                <p className="text-2xs text-[#041F96]">{job.title}</p>
-                <p className="text-gray-700 mb-2">{job.location.city}, </p>
-              </div>
-              <div className="flex md:ml-2 md:items-center mb-2 w-2/3">
-                <span className="text-sm text-gray-600 mr-8">{job.experience}</span>
-                <span className="text-sm text-gray-600 mr-8">{job.careerLevel}</span>
-                <p className="text-sm text-gray-600 mr-8">{job.salary}</p>
-              </div>
-              <div className="flex md:ml-4 md:items-center mb-2 w-3/3 mr-4">
-                {userCoords && job.location && job.location.coordinates &&
-                  <p className="text-gray-700 mb-2 mr-4">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</p>
-                }
-              </div>
-              <span className="text-sm bg-green-100 text-green-800 justify-center rounded-full w-[100px] py-1 ml-2 mr-8">
-                <p className='ml-2'> Open</p>
-              </span>
-              <div className="flex my-auto md:ml-4 md:items-center w-3/3 mr-8">
-                <button onClick={(e) => { e.stopPropagation(); toggleBookmark(index); }}>
-                  {job.isBookmarked ? (
-                    <HiBookmark className='w-6 h-6 mb-2 mr-2 bg-blue-500' />
-                  ) : (
-                    <HiOutlineBookmark className='w-6 h-6 mb-2 mr-2 ' />
-                  )}
-                </button>
-              </div>
-           
-            </div>   </Link>
-        
-      
-        <button
-                onClick={openModal}
-                className="mr-4 my-auto bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none w-[100px]"
-              >
-                Apply
-              </button>  </div>
-        </>
-      ))}
+    {visibleJobs.map((job, index) => (
+  <div className="shadow rounded flex flex-col md:flex-row items-start md:ml-8 border-b border-gray-200 py-4 mb-4" key={index}>
+    <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 w-16 h-16">
+      <img src={job.images[1]} alt="Company Logo" className="w-full h-full object-contain" />
+    </div>
+    <Link to={`/getjobs/${job._id}`} className="block">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
+        <div className="md:ml-4 w-1/3 ml-2">
+          <h3 className="font-medium text-gray-800">{job.companyName}</h3>
+          <p className="text-2xs text-[#041F96]">{job.title}</p>
+          <p className="text-gray-700 mb-2">{job.location?.city},</p>
+        </div>
+        <div className="flex md:ml-2 md:items-center mb-2 w-2/3 ml-2">
+          <span className="text-sm text-gray-600 mr-8">{job.experience}</span>
+          <span className="text-sm text-gray-600 mr-8">{job.careerLevel}</span>
+          {/* <p className="text-sm text-gray-600 mr-8">{job.salary}</p> */}
+        </div>
+        <div className="flex md:ml-4 md:items-center mb-2 w-3/3 mr-4 ml-2">
+          {userCoords && job.location?.coordinates && (
+            <p className="text-gray-700 mb-2 mr-4">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</p>
+          )}
+        </div>
+        <div className="flex md:ml-2 md:items-center mb-2 w-2/3 ml-2">
+          <span className="text-sm bg-green-100 text-green-800 justify-center rounded-full w-[50px] ml-2 py-1 mr-8">
+            <p className='ml-2'> Open</p>
+          </span>
+          <span className="flex my-auto md:ml-4 md:items-center w-3/3 mr-8">
+            <button onClick={(e) => { e.stopPropagation(); toggleBookmark(index); }}>
+              {job.isBookmarked ? (
+                <HiBookmark className='w-6 h-6 mb-2 mr-2 bg-blue-500' />
+              ) : (
+                <HiOutlineBookmark className='w-6 h-6 mb-2 mr-2 ' />
+              )}
+            </button>
+          </span>
+        </div>
+      </div>
+    </Link>
+    <button
+      onClick={openModal}
+      className="mr-4 ml-2 my-auto bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none w-[100px]"
+    >
+      Apply
+    </button>
+  </div>
+))}
   </div>
 ) : (
   <p className="text-gray-700">No jobs found.</p>
