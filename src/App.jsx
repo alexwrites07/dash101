@@ -7,7 +7,7 @@ import SignUp from './Components/Auth/SignUp';
 import Navbar from './Components/Navbar/Navbar';
 import Footer from './Components/Home/Footer';
 import JobPost from './Components/Home/Jobpost';
-import FindTutor from './Components/Home/Findtutor.jsx';
+import TutorFinder from './Components/Home/Findtutor.jsx';
 import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
 import ResumeBuilder from './Components/Home/resume/builder.jsx';
@@ -57,7 +57,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path='/resume' element={<ResumeBuilder/>}/>
-        <Route path="/findtutor" element={<FindTutor />} />
+        <Route path="/findtutor" element={<TutorFinder />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
         <Route path="/dashboard" element={<YourProfile />} />
         <Route path="/upload-resume" element={<UploadResume />} />
