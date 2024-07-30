@@ -103,7 +103,7 @@ const UserDashboard = () => {
       {/* Main Content */}
       <div className="flex-1">
         {/* Header */}
-        <Header notificationCount={notifications.length} />
+        <Header />
 
         <div className="lg:mt-12 lg:ml-64 p-2 lg:p-28 flex flex-col justify-center lg:justify-start">
           <div className="w-full">

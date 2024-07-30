@@ -26,6 +26,8 @@ import ChangePassword from './Components/Home/Dashboard/ChangePassword';
 import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
 import UserDashboard from './Components/Home/Dashboard/UserDashboard';
 import Pricing from './Components/Home/Dashboard/Pricing';
+import AboutUs from './Components/Home/AboutUs';
+import Catagories from './Components/Home/Catagories';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -61,7 +63,7 @@ function AppContent() {
         <Route path="/googlemap" element={<GoogleMap2 />} />
         <Route path="/dashboard" element={<YourProfile />} />
         <Route path="/upload-resume" element={<UploadResume />} />
-      
+        <Route path="/Catagories" element={<Catagories />} />
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/about" element={<AboutUs />} />
