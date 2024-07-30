@@ -1,18 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+
+// Replace with actual token and tutor ID
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
+const tutorId = '66992c29aedf900d3688eb7e';
 
 const UploadResume = () => {
   const [educationFields, setEducationFields] = useState([{ title: '', academy: '', year: '', description: '' }]);
   const [experienceFields, setExperienceFields] = useState([{ title: '', startDate: '', endDate: '', company: '', description: '' }]);
   const [awardFields, setAwardFields] = useState([{ title: '', year: '', description: '' }]);
 
+  useEffect(() => {
+    fetchEducationDetails();
+  }, []);
+
+  const fetchEducationDetails = async () => {
+    try {
+      const response = await fetch(`https://backend.akshayy.tech/tutor/education/${tutorId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      setEducationFields(data);
+    } catch (error) {
+      console.error('Error fetching education details:', error);
+    }
+  };
+
+  const addEducationDetails = async (newEducation) => {
+    try {
+      const response = await fetch('https://backend.akshayy.tech/addEducationDetails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newEducation)
+      });
+      if (response.ok) {
+        fetchEducationDetails();
+      }
+    } catch (error) {
+      console.error('Error adding education details:', error);
+    }
+  };
+
+  const deleteEducationDetails = async (educationId) => {
+    try {
+      const response = await fetch(`https://backend.akshayy.tech/tutor/education`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ educationId })
+      });
+      if (response.ok) {
+        fetchEducationDetails();
+      }
+    } catch (error) {
+      console.error('Error deleting education details:', error);
+    }
+  };
+
   const handleAddField = (setFields, defaultField) => {
     setFields(prevFields => [...prevFields, defaultField]);
   };
 
-  const handleRemoveField = (index, setFields) => {
-    setFields(prevFields => prevFields.filter((_, i) => i !== index));
+  const handleRemoveField = (index, setFields, fields) => {
+    const field = fields[index];
+    if (field._id) {
+      // Delete from backend if the field has an _id (indicating it's saved)
+      deleteEducationDetails(field._id);
+    } else {
+      // Just remove from state if not yet saved
+      setFields(prevFields => prevFields.filter((_, i) => i !== index));
+    }
   };
 
   const handleChange = (index, value, fieldName, fields, setFields) => {
@@ -81,7 +148,7 @@ const UploadResume = () => {
                   />
                 </div>
                 <button
-                  onClick={() => handleRemoveField(index, setEducationFields)}
+                  onClick={() => handleRemoveField(index, setEducationFields, educationFields)}
                   className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 mb-4"
                 >
                   Remove Education
@@ -93,6 +160,19 @@ const UploadResume = () => {
               className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
             >
               Add Another Education
+            </button>
+            <button
+              onClick={() => {
+                // Save all new fields to the backend
+                educationFields.forEach(field => {
+                  if (!field._id) {
+                    addEducationDetails(field);
+                  }
+                });
+              }}
+              className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 mt-4"
+            >
+              Save Education Details
             </button>
           </div>
 
@@ -146,7 +226,7 @@ const UploadResume = () => {
                   />
                 </div>
                 <button
-                  onClick={() => handleRemoveField(index, setExperienceFields)}
+                  onClick={() => handleRemoveField(index, setExperienceFields, experienceFields)}
                   className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 mb-4"
                 >
                   Remove Experience
@@ -160,6 +240,7 @@ const UploadResume = () => {
               Add Another Experience
             </button>
           </div>
+
           <div className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4 text-gray-900">Portfolio</h2>
             <div className="flex mb-4">
@@ -202,7 +283,7 @@ const UploadResume = () => {
                   />
                 </div>
                 <button
-                  onClick={() => handleRemoveField(index, setAwardFields)}
+                  onClick={() => handleRemoveField(index, setAwardFields, awardFields)}
                   className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 mb-4"
                 >
                   Remove Award

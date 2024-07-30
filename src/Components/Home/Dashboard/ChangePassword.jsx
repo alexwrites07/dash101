@@ -2,27 +2,68 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
+import axios from 'axios'; // Import Axios for HTTP requests
 
 const UpdatePassword = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); // State for success message
 
   // Password visibility states
   const [isOldPasswordVisible, setOldPasswordVisible] = useState(false);
   const [isNewPasswordVisible, setNewPasswordVisible] = useState(false);
   const [isRetypePasswordVisible, setRetypePasswordVisible] = useState(false);
 
-  const handleSubmit = (e) => {
+  // API endpoint
+  const apiUrl = 'https://backend.akshayy.tech/update_password';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
+  const tutorId = '669e250f010b0852a754e9bf';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if new password and retype password match
     if (newPassword !== retypePassword) {
       setError('New password and retype password do not match.');
+      setSuccess('');
       return;
     }
+
     setError('');
-    // Implement your logic to handle password update here
-    console.log('Password updated successfully!');
+    setSuccess('');
+
+    try {
+      // Make the API call to update the password
+      const response = await axios.post(
+        apiUrl,
+        {
+          userId: tutorId,        // Include the tutorId in the request body if needed by the API
+          newPassword: newPassword,
+          oldPassword: oldPassword, // Include the old password for verification
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include token in request headers for authentication
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      // Check if the response is successful
+      if (response.status === 200) {
+        setSuccess('Password updated successfully!');
+        setOldPassword('');
+        setNewPassword('');
+        setRetypePassword('');
+        console.log('Password updated:', response.data);
+      }
+    } catch (err) {
+      // Handle errors from the API
+      setError('Failed to update password. Please try again.');
+      console.error('Error updating password:', err);
+    }
   };
 
   return (
@@ -100,6 +141,9 @@ const UpdatePassword = () => {
 
               {/* Error Message */}
               {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+              {/* Success Message */}
+              {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
 
               {/* Change Password Button */}
               <button

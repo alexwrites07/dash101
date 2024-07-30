@@ -15,6 +15,7 @@ import Header from './Header';
 import ChangePassword from './ChangePassword';
 import DeleteProfile from './DeleteProfile';
 import UserDashboard  from './UserDashboard';
+import Pricing  from './Pricing';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -66,6 +67,7 @@ const Dashboard = () => {
                         <Route path="/meetings" element={<Meetings />} />
                         <Route path="/update-password" element={<ChangePassword/>} />
                         <Route path="/delete-profile" element={<DeleteProfile />} />
+                        <Route path="/pricing" element={<Pricing />} />
                     </Routes>
                 </div>
             </div>

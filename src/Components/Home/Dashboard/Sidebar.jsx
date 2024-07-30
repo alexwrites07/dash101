@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HiArrowSmRight, HiUser, HiViewBoards, HiShoppingBag, HiHeart, HiBell, HiChat, HiCalendar, HiLogout, HiMenu, HiLockClosed, HiTrash, HiUserGroup } from 'react-icons/hi';
+import { HiArrowSmRight, HiUser, HiViewBoards, HiShoppingBag, HiHeart, HiBell, HiChat, HiCalendar, HiLogout, HiMenu, HiLockClosed, HiTrash, HiUserGroup, HiCash } from 'react-icons/hi';
 import { NavLink } from 'react-router-dom';
 import './SideBar.css'
 
@@ -22,7 +22,8 @@ const Sidebar = ({ activeTab }) => {
         { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
         { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
         { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
-        { to: '/logout', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+        { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+        { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
     ];
 
     return (

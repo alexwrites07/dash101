@@ -6,74 +6,74 @@ import Header from './Header';
 
 
 const YourProfile = () => {
+  // State variables
   const [educationNote, setEducationNote] = useState('');
   const [experienceNote, setExperienceNote] = useState('');
   const [skillsNote, setSkillsNote] = useState('');
   const [educationNotes, setEducationNotes] = useState([]);
   const [experienceNotes, setExperienceNotes] = useState([]);
   const [skillsNotes, setSkillsNotes] = useState([]);
-  const [fullName, setFullName] = useState('vikashpanjiyar');
-  const [dob, setDOB] = useState('December 26, 2000');
-  const [gender, setGender] = useState("");
-  const [age, setAge] = useState("");
-  const [email, setEmail] = useState('vikashpanjiyar2612@gmail.com');
-  const [qualification, setQualification] = useState("");
-  const [experienceTime, setExperienceTime] = useState('Fresh');
-  const [languages, setLanguages] = useState(['English', 'Turkish', 'Japanese', 'French']);
-  const [salaryType, setSalaryType] = useState("");
-  const [salary, setSalary] = useState('100000');
-  const [categories, setCategories] = useState(['Home Tutor', 'Online Tutor', 'School Tutor', 'Advertising', 'Application', 'Customer', 'Design', 'Developer']);
-
-  const [jobTitle, setJobTitle] = useState("I'm a private tutor");
+  const [fullName, setFullName] = useState('');
+  const [dob, setDOB] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState('');
+  const [email, setEmail] = useState('');
+  const [qualification, setQualification] = useState('');
+  const [experienceTime, setExperienceTime] = useState('');
+  const [languages, setLanguages] = useState([]);
+  const [salaryType, setSalaryType] = useState('');
+  const [salary, setSalary] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [jobTitle, setJobTitle] = useState('');
   const [description, setDescription] = useState('');
   const [socialNetworks, setSocialNetworks] = useState([{ network: '', facebook: '', url: '' }]);
   const networkOptions = ['Facebook', 'Twitter', 'Instagram', 'LinkedIn', 'Other'];
-  const [contactAddress, setContactAddress] = useState('B hub, 5th floor');
-  const [location, setLocation] = useState('Patna');
-  const [mapsLocation, setMapsLocation] = useState('B-HUB, Budh Vihar, Fraser Road Area, Patna, Bihar, India');
-  const [introductionVideo, setIntroductionVideo] = useState('https://www.youtube.com/');
-  const [image, setImage] = useState('https://static.wixstatic.com/media/5a2bf8_4efbddfdec0c49ed94d0dbf3168d6863~mv2.png/v1/fill/w_460,h_460,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/PROFILE%20LOGO%20white%20letter.png');
-  const [latitude, setLatitude] = useState(25.6094616);
-  const [longitude, setLongitude] = useState(85.1350599);
-  //const mapRef = useRef(null);
-  //const markerRef = useRef(null);
+  const [contactAddress, setContactAddress] = useState('');
+  const [location, setLocation] = useState('');
+  const [mapsLocation, setMapsLocation] = useState('');
+  const [introductionVideo, setIntroductionVideo] = useState('');
+  const [image, setImage] = useState('');
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
+  const tutorId = '66992c29aedf900d3688eb7e';
+
+  useEffect(() => {
+    // Fetch tutor data from the backend
+    fetch(`https://backend.akshayy.tech/getTutor/${tutorId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Update state with the fetched data
+        setFullName(data.fullName);
+        setEmail(data.email);
+        setDOB(data.dob || '');
+        setGender(data.gender);
+        setQualification(data.highestQualification);
+        setExperienceTime(data.totalExperience);
+        setLanguages(data.languages || []);
+        setSalary(data.salary || '');
+        setCategories(data.tags || []);
+        setDescription(data.description);
+        setContactAddress(data.location.address);
+        setLocation(data.location.city);
+        setMapsLocation(data.location.address);
+        setLatitude(data.location.coordinates[1]);
+        setLongitude(data.location.coordinates[0]);
+        setImage(data.image || '');
+        setIntroductionVideo(data.introductionVideo || '');
+        // Add more fields as needed
+      })
+      .catch(error => console.error('Error fetching tutor data:', error));
+  }, [tutorId, token]);
+
 
   const mapSrc = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14601.43043416873!2d${longitude}!3d${latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1720685384704!5m2!1sen!2sin`;
 
-
-  // useEffect(() => {
-  //   // Initialize the map with a hidden element
-  //   const map = new window.google.maps.Map(mapRef.current, {
-  //     center: { lat: latitude, lng: longitude },
-  //     zoom: 13,
-  //   });
-
-  //   // Initialize the marker
-  //   const marker = new window.google.maps.Marker({
-  //     position: { lat: latitude, lng: longitude },
-  //     map: map,
-  //     draggable: true,
-  //   });
-  //   markerRef.current = marker;
-
-  //   // Add event listener for marker drag end
-  //   marker.addListener('dragend', function (event) {
-  //     const newLat = event.latLng.lat();
-  //     const newLng = event.latLng.lng();
-  //     setLatitude(newLat);
-  //     setLongitude(newLng);
-  //   });
-
-  //   return () => {
-  //     window.google.maps.event.clearListeners(marker, 'dragend');
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (markerRef.current) {
-  //     markerRef.current.setPosition({ lat: latitude, lng: longitude });
-  //   }
-  // }, [latitude, longitude]);
 
   const addNote = (note, setNotes, setNote) => {
     if (note.trim() !== '') {

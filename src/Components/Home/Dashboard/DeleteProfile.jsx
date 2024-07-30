@@ -2,13 +2,20 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import axios from 'axios'; // Ensure Axios is installed
 
 const DeleteProfile = () => {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); // State to show success message
 
-  const handleDeleteProfile = (e) => {
+  // Constants for the API call
+  const apiUrl = 'https://backend.akshayy.tech/tutor/delete';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
+  const tutorId = '669e250f010b0852a754e9bf';
+
+  const handleDeleteProfile = async (e) => {
     e.preventDefault();
 
     // Perform password validation
@@ -19,9 +26,29 @@ const DeleteProfile = () => {
 
     setError('');
 
-    // Call your backend service or API to delete the profile
-    console.log('Profile deleted successfully!');
-    // Implement your logic to handle profile deletion here
+    try {
+      // Make the API call to delete the profile
+      const response = await axios.post(apiUrl, {
+        password: password,
+        confirmation: true
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      // Check if the response is successful
+      if (response.status === 200) {
+        setSuccess('Profile deleted successfully!');
+        // Implement any additional logic after successful deletion
+        console.log('Profile deleted:', response.data);
+      }
+    } catch (err) {
+      // Handle errors from the API
+      setError('Failed to delete profile. Please check your password and try again.');
+      console.error('Error deleting profile:', err);
+    }
   };
 
   return (
@@ -62,6 +89,9 @@ const DeleteProfile = () => {
 
               {/* Error Message */}
               {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+              {/* Success Message */}
+              {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
 
               <button
                 type="submit"

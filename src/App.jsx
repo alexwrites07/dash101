@@ -25,6 +25,7 @@ import FollowingEmployer from './Components/Home/Dashboard/FollowingEmployer';
 import ChangePassword from './Components/Home/Dashboard/ChangePassword';
 import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
 import UserDashboard from './Components/Home/Dashboard/UserDashboard';
+import Pricing from './Components/Home/Dashboard/Pricing';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -75,6 +76,7 @@ function AppContent() {
         <Route path="/update-password" element={<ChangePassword/>} />
         <Route path="/delete-profile" element={<DeleteProfile />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/pricing" element={<Pricing />} />
       </Routes>
       {!shouldHideNavbarAndFooter() && <Footer />}
     </>

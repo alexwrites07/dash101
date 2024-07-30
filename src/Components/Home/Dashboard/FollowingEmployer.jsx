@@ -1,19 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
-
-const mockEmployers = [
-  { id: 1, name: 'Tech Co.', location: 'New York', type: 'Tech Company', featured: true, jobOpenings: 5, isBookmarked: false },
-  { id: 2, name: 'Design Studio', location: 'San Francisco', type: 'Design Firm', featured: false, jobOpenings: 3, isBookmarked: false },
-  { id: 3, name: 'Digital Marketing Inc.', location: 'Chicago', type: 'Marketing Agency', featured: true, jobOpenings: 2, isBookmarked: false },
-  // Add more mock data as needed
-];
+import axios from 'axios';
 
 const EmployersPage = () => {
-  const [employers, setEmployers] = useState(mockEmployers);
+  const [employers, setEmployers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
+  const [error, setError] = useState(null);
+
+  // Your token and tutor ID
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
+  const tutorId = '669e250f010b0852a754e9bf';
+
+  // Fetch data from the backend
+  useEffect(() => {
+    axios
+      .get('https://backend.akshayy.tech/tutor/following', {
+        headers: {
+          Authorization: `Bearer ${token}` // Set the Authorization header
+        }
+      })
+      .then((response) => {
+        const employersData = response.data.map((employer) => ({
+          id: employer._id,
+          name: employer.name,
+          location: employer.location.city,
+          type: 'Education Institute', // Assuming a type for demonstration
+          featured: false, // Assume default as false since it's not in backend data
+          jobOpenings: employer.jobPostings.length,
+          isBookmarked: false, // Assuming initial bookmark state
+        }));
+        setEmployers(employersData);
+      })
+      .catch((error) => {
+        console.error('Error fetching employers:', error);
+        setError('Failed to fetch employers. Please try again later.');
+      });
+  }, [token]); // Adding token to dependency array ensures refetch if token changes
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -44,7 +69,7 @@ const EmployersPage = () => {
     if (sortOption === 'jobOpenings') {
       return b.jobOpenings - a.jobOpenings;
     }
-    return filteredEmployers;
+    return 0;
   });
 
   return (
@@ -75,7 +100,9 @@ const EmployersPage = () => {
               </select>
             </div>
             <h2 className="text-xl font-semibold mb-4 text-gray-900">List of Employers</h2>
-            {sortedEmployers.length > 0 ? (
+            {error ? (
+              <p className="text-red-500">{error}</p>
+            ) : sortedEmployers.length > 0 ? (
               sortedEmployers.map((employer) => (
                 <div key={employer.id} className="mb-4 p-4 border border-gray-300 rounded-lg flex justify-between items-center">
                   <div>
