@@ -1,102 +1,37 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { HiFilter } from 'react-icons/hi';
+import './Jobpost.css';
 const TutorFinder = () => {
-  const [tutors, setTutors] = useState([
-    {
-      name: 'John Doe',
-      profilePic: 'https://img.fixthephoto.com/blog/images/gallery/news_preview_mob_image__preview_11368.png',
-      duration: 'Full-time',
-      postingTime: '1 day ago',
-      location: 'New York, NY',
-      role: 'Coaching',
-      stipend: '$80,000 - $100,000',
-    },
-    {
-      name: 'Jane Smith',
-      profilePic: 'https://img.fixthephoto.com/blog/images/gallery/news_preview_mob_image__preview_11368.png',
-      duration: 'Part-time',
-      postingTime: '2 days ago',
-      location: 'San Francisco, CA',
-      role: 'Private Tutor',
-      stipend: '$60,000 - $80,000',
-    },
-    {
-      name: 'Alice Johnson',
-      profilePic: 'https://img.fixthephoto.com/blog/images/gallery/news_preview_mob_image__preview_11368.png',
-      duration: 'Contract',
-      postingTime: '3 days ago',
-      location: 'Chicago, IL',
-      role: 'Professor',
-      stipend: '$70,000 - $90,000',
-    },
-    {
-      name: 'Michael Brown',
-      profilePic: 'https://img.fixthephoto.com/blog/images/gallery/news_preview_mob_image__preview_11368.png',
-      duration: 'Remote',
-      postingTime: '4 days ago',
-      location: 'Los Angeles, CA',
-      role: 'Teacher',
-      stipend: '$75,000 - $95,000',
-    },
-    {
-      name: 'Emily Davis',
-      profilePic: 'https://img.fixthephoto.com/blog/images/gallery/news_preview_mob_image__preview_11368.png',
-      duration: 'Full-time',
-      postingTime: '5 days ago',
-      location: 'Boston, MA',
-      role: 'Software Developer',
-      stipend: '$85,000 - $110,000',
-    },
-    {
-      name: 'David Wilson',
-      profilePic: 'https://img.fixthephoto.com/blog/images/gallery/news_preview_mob_image__preview_11368.png',
-      duration: 'Part-time',
-      postingTime: '6 days ago',
-      location: 'Austin, TX',
-      role: 'Data Scientist',
-      stipend: '$70,000 - $90,000',
-    },
-  ]);
-
-  const [sortBy, setSortBy] = useState('date'); // Default sort by date
-  const [showAll, setShowAll] = useState(false);
+  const [tutors, setTutors] = useState([]);
+  const [filteredTutors, setFilteredTutors] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
-    keyword: '',
-    location: '',
-    category: '',
-    jobType: '',
+    subjectsTaught: '',
+    city: '',
+    totalExperience: '',
+    minExpectedSalary: '',
+    maxExpectedSalary: '',
+    tags: '',
   });
 
-  const maxVisibleTutors = 5;
+  useEffect(() => {
+    fetchTutors();
+  }, []);
 
-  const toggleShowMore = () => {
-    setShowAll(!showAll);
-  };
-
-  const sortTutors = (criteria) => {
-    let sortedTutors = [...tutors];
-    switch (criteria) {
-      case 'date':
-        sortedTutors.sort((a, b) => new Date(b.postingTime) - new Date(a.postingTime));
-        break;
-      case 'role':
-        sortedTutors.sort((a, b) => a.role.localeCompare(b.role));
-        break;
-      case 'stipend':
-        sortedTutors.sort((a, b) => {
-          const aStipend = parseInt(a.stipend.replace(/[^0-9.-]+/g, ''));
-          const bStipend = parseInt(b.stipend.replace(/[^0-9.-]+/g, ''));
-          return aStipend - bStipend;
-        });
-        break;
-      default:
-        break;
+  const fetchTutors = async () => {
+    try {
+      const response = await axios.get('https://backend.akshayy.tech/getTutors');
+      if (response.data && Array.isArray(response.data)) {
+        setTutors(response.data);
+        setFilteredTutors(response.data);
+      } else {
+        console.error('Invalid data format received:', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching tutors:', error);
     }
-    setTutors(sortedTutors);
-    setSortBy(criteria);
   };
-
-  const visibleTutors = showAll ? tutors : tutors.slice(0, maxVisibleTutors);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -106,126 +41,136 @@ const TutorFinder = () => {
     });
   };
 
-  const filteredTutors = tutors.filter((tutor) => {
-    return (
-      (filters.keyword === '' || tutor.role.toLowerCase().includes(filters.keyword.toLowerCase())) &&
-      (filters.location === '' || tutor.location.toLowerCase().includes(filters.location.toLowerCase())) &&
-      (filters.category === '' || tutor.role.toLowerCase().includes(filters.category.toLowerCase())) &&
-      (filters.jobType === '' || tutor.duration.toLowerCase().includes(filters.jobType.toLowerCase()))
-    );
-  });
+  const applyFilters = () => {
+    let filteredTutors = tutors.filter((tutor) => {
+      const { subjectsTaught, location, totalExperience, jobAlerts, tags } = tutor;
+      const city = location?.city || '';
+      const minSalary = jobAlerts?.minExpectedSalary?.value ?? 0;
+      const maxSalary = jobAlerts?.maxExpectedSalary?.value ?? Infinity;
+
+      const subjectMatch = filters.subjectsTaught ? subjectsTaught.includes(filters.subjectsTaught) : true;
+      const cityMatch = filters.city ? city.toLowerCase().includes(filters.city.toLowerCase()) : true;
+      const experienceMatch = filters.totalExperience ? totalExperience >= parseInt(filters.totalExperience) : true;
+      const minSalaryMatch = filters.minExpectedSalary ? minSalary >= parseInt(filters.minExpectedSalary) : true;
+      const maxSalaryMatch = filters.maxExpectedSalary ? maxSalary <= parseInt(filters.maxExpectedSalary) : true;
+      const tagsMatch = filters.tags ? tags.includes(filters.tags) : true;
+
+      return subjectMatch && cityMatch && experienceMatch && minSalaryMatch && maxSalaryMatch && tagsMatch;
+    });
+
+    setFilteredTutors(filteredTutors);
+  };
 
   return (
-    <div className="max-w-full mx-auto flex mt-6 px-4">
-      {/* Sidebar for Filters */}
-      <div className="w-1/4 p-4 bg-gray-100 rounded-lg shadow-lg mr-6">
-        <h2 className="text-2xl text-[#041F96] font-bold mb-4">Filter Tutors</h2>
-        
-        {/* Keyword Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
-          <input
-            type="text"
-            name="keyword"
-            id="keyword"
-            value={filters.keyword}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-        
-        {/* Location Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Location</label>
-          <a href="/googlemap" className="font-medium text-primary-600 hover:underline"><button
-              className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none">Enter Location</button></a>
-        </div>
-        
-        {/* Category Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">Category</label>
-          <input
-            type="text"
-            name="category"
-            id="category"
-            value={filters.category}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-        
-        {/* Job Type Filter */}
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="jobType">Job Type</label>
-          <select
-            name="jobType"
-            id="jobType"
-            value={filters.jobType}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          >
-            <option value="">Select Job Type</option>
-            <option value="full-time">Full-time</option>
-            <option value="part-time">Part-time</option>
-            <option value="contract">Contract</option>
-            <option value="remote">Remote</option>
-          </select>
-        </div>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Find a Tutor</h1>
+        <button
+          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <HiFilter className="mr-2" /> Filters
+        </button>
       </div>
-      
-      {/* Main Content */}
-      <div className="w-3/4">
-        <div className="mb-4 flex justify-between items-center">
-          <h2 className="text-2xl text-[#041F96] font-bold">Tutor Listings</h2>
+      {showFilters && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 border rounded-lg bg-gray-100">
           <div>
-            <label htmlFor="sort" className="mr-2 text-sm font-bold text-gray-700">Sort by:</label>
-            <select
-              id="sort"
-              value={sortBy}
-              onChange={(e) => sortTutors(e.target.value)}
-              className="px-3 py-2 border rounded-lg"
-            >
-              <option value="date">Date</option>
-              <option value="role">Role</option>
-              <option value="stipend">Stipend</option>
-            </select>
+            <label className="block mb-1">Subject</label>
+            <input
+              type="text"
+              name="subjectsTaught"
+              value={filters.subjectsTaught}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg"
+            />
           </div>
-        </div>
-        
-        {filteredTutors.length > 0 ? (
-          <div className="space-y-4">
-            {filteredTutors.map((tutor, index) => (
-              <div key={index} className="p-4 bg-white rounded-lg shadow-lg flex">
-                <img
-                  src={tutor.profilePic}
-                  alt={tutor.name}
-                  className="w-24 h-24 rounded-full mr-4 object-cover"
-                />
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-800">{tutor.name}</h3>
-                  <p className="text-gray-600">{tutor.role}</p>
-                  <p className="text-gray-600">{tutor.location}</p>
-                  <p className="text-gray-600">{tutor.duration}</p>
-                  <p className="text-gray-600">{tutor.stipend}</p>
-                  <p className="text-gray-600 text-sm">{tutor.postingTime}</p>
-                </div>
-              </div>
-            ))}
+          <div>
+            <label className="block mb-1">City</label>
+            <input
+              type="text"
+              name="city"
+              value={filters.city}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg"
+            />
           </div>
-        ) : (
-          <p className="text-gray-600">No tutors found.</p>
-        )}
-        
-        {filteredTutors.length > maxVisibleTutors && (
-          <div className="mt-4 text-center">
+          <div>
+            <label className="block mb-1">Experience (years)</label>
+            <input
+              type="number"
+              name="totalExperience"
+              value={filters.totalExperience}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block mb-1">Min Salary</label>
+            <input
+              type="number"
+              name="minExpectedSalary"
+              value={filters.minExpectedSalary}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block mb-1">Max Salary</label>
+            <input
+              type="number"
+              name="maxExpectedSalary"
+              value={filters.maxExpectedSalary}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block mb-1">Tags</label>
+            <input
+              type="text"
+              name="tags"
+              value={filters.tags}
+              onChange={handleFilterChange}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+          <div className="col-span-full flex justify-end">
             <button
-              onClick={toggleShowMore}
-              className="px-4 py-2 bg-[#041F96] text-white rounded-lg"
+              className="px-4 py-2 bg-[#041F96] text-white rounded-lg hover:bg-green-600"
+              onClick={applyFilters}
             >
-              {showAll ? 'Show Less' : 'Show More'}
+              Apply Filters
             </button>
           </div>
-        )}
+        </div>
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filteredTutors.map((tutor) => (
+          
+          <div key={tutor._id} className="border rounded-lg p-4 shadow-lg bg-white">
+            <img
+              src={tutor.image}
+              alt={tutor.fullName}
+              className="w-full h-40  rounded-lg mb-4"
+            />
+            <h3 className="text-xl font-bold mb-2">{tutor.fullName}</h3>
+            <p className="text-gray-600 mb-2">{tutor.description}</p>
+            <p className="text-gray-600 mb-1">
+              <strong>Subjects:</strong> {tutor.subjectsTaught.join(', ')}
+            </p>
+            <p className="text-gray-600 mb-1">
+              <strong>Location:</strong> {tutor.location.city}, {tutor.location.state}
+            </p>
+            <p className="text-gray-600 mb-1">
+              <strong>Experience:</strong> {tutor.totalExperience} years
+            </p>
+            <p className="text-gray-600 mb-1">
+              <strong>Expected Salary:</strong>{' '}
+              {tutor.jobAlerts?.minExpectedSalary?.value ?? 'N/A'} -{' '}
+              {tutor.jobAlerts?.maxExpectedSalary?.value ?? 'N/A'}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );
