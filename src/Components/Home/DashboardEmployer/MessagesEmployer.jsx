@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';
-import Header from './Header';
+import Sidebar from './SidebarEmployer';
+import Header from './HeaderEmployer';
 
 // Sample contacts and message data
 const initialContacts = [
@@ -143,7 +143,7 @@ const Messages = () => {
       <Sidebar openChat={openChat} activeChat={activeChat} />
       <div className="flex-1">
         <Header />
-        <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28 flex flex-col lg:flex-row items-center lg:items-start h-full">
+        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col lg:flex-row items-center lg:items-start h-full">
           <div className="lg:w-1/4 bg-gray-100 p-4 lg:mr-8 h-full overflow-y-auto">
             <button
               onClick={toggleComposeForm}

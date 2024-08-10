@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Button, Modal, TextInput } from 'flowbite-react';
-import UploadResume from './UploadResume';
-import YourProfile from './YourProfile';
-import AppliedCompany from './AppliedCompany';
-import Locations from './Locations';
-import ShortlistJobs from './ShortlistJobs';
-import FollowingEmployer from './FollowingEmployer';
-import AlertsJobs from './AlertJobs';
-import Messages from './Messages';
-import Meetings from './Meetings';
-import Sidebar from './Sidebar';
-import Header from './Header';
-import ChangePassword from './ChangePassword';
-import DeleteProfile from './DeleteProfile';
-import UserDashboard  from './UserDashboard';
-import Pricing  from './Pricing';
-import './Dashboard.css';
+import UploadResumeEmployer from './SubmitJob';
+import YourProfileEmployer from './YourProfileEmployer';
+import AppliedCompanyEmployer from './AppliedCompanyEmployer';
+import LocationsEmployer from './LocationsEmployer';
+import ShortlistJobsEmployer from './ShortlistJobsEmployer';
+import AlertsJobsEmployer from './AlertJobsEmployer';
+import MessagesEmployer from './MessagesEmployer';
+import MeetingsEmployer from './MeetingsEmployer';
+import SidebarEmployer from './SidebarEmployer';
+import HeaderEmployer from './HeaderEmployer';
+import ChangePasswordEmployer from './ChangePasswordEmployer';
+import DeleteProfileEmployer from './DeleteProfileEmployer';
+import UserDashboardEmployer  from './UserDashboardEmployer';
+import PricingEmployer  from './PricingEmployer';
+import Myjobs  from './MyJobs';
+import './DashboardEmployer.css';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('/dashboard'); // Initial active tab (dashboard)
+    const [activeTab, setActiveTab] = useState('/dashboard-employer'); // Initial active tab (dashboard)
     const [openModal, setOpenModal] = useState(false);
     const [openModalReset, setOpenModalReset] = useState(false);
 
@@ -54,20 +54,20 @@ const Dashboard = () => {
                     <h2 className="text-black text-2xl font-semibold mb-4">Main Content</h2>
                     {/* Route content based on activeTab */}
                     <Routes>
-                        <Route path="/dashboard" element={<UserDashboard />} />
-                        <Route path="/user-dashboard" element={<UserDashboard />} />
-                        <Route path="/upload-resume" element={<UploadResume />} />
-                        <Route path="/your-profile" element={<YourProfile />} />
-                        <Route path="/applied-company" element={<AppliedCompany />} />
-                        <Route path="/locations" element={<Locations />} />
-                        <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
-                        <Route path="/following-employer" element={<FollowingEmployer />} />
-                        <Route path="/alerts-jobs" element={<AlertsJobs />} />
-                        <Route path="/messages" element={<Messages />} />
-                        <Route path="/meetings" element={<Meetings />} />
-                        <Route path="/update-password" element={<ChangePassword/>} />
-                        <Route path="/delete-profile" element={<DeleteProfile />} />
-                        <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/dashboard-employer" element={<UserDashboardEmployer />} />
+                    <Route path="/upload-resume-employer" element={<UploadResumeEmployer />} />
+                    <Route path="/your-profile-employer" element={<YourProfileEmployer />} />
+                    <Route path="/applied-company-employer" element={<AppliedCompanyEmployer />} />
+                    <Route path="/locations-employer" element={<LocationsEmployer />} />
+                    <Route path="/shortlist-jobs-employer" element={<ShortlistJobsEmployer />} />
+                    <Route path="/alerts-jobs-employer" element={<AlertsJobsEmployer />} />
+                    <Route path="/messages-employer" element={<MessagesEmployer />} />
+                    <Route path="/meetings-employer" element={<MeetingsEmployer />} />
+                    <Route path="/update-password-employer" element={<ChangePasswordEmployer/>} />
+                    <Route path="/delete-profile-employer" element={<DeleteProfileEmployer />} />
+                    <Route path="/user-dashboard-employer" element={<UserDashboardEmployer />} />
+                    <Route path="/pricing-employer" element={<PricingEmployer />} />
+                    <Route path="/my-jobs-employer" element={<Myjobs />} />
                     </Routes>
                 </div>
             </div>

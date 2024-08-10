@@ -13,7 +13,7 @@ import GoogleMap2 from './Components/Home/GoogleMap';
 import ResumeBuilder from './Components/Home/resume/builder.jsx';
 import YourProfile from './Components/Home/Dashboard/YourProfile.jsx';
 import AppliedCompany from './Components/Home/Dashboard/AppliedCompany.jsx';
-import Locations from './Components/Home/Dashboard/Locations.jsx';
+import Locations from './Components/Home/DashboardEmployer/LocationsEmployer.jsx';
 import ShortlistJobs from './Components/Home/Dashboard/ShortlistJobs';
 import AlertsJobs from './Components/Home/Dashboard/AlertJobs';
 import Messages from './Components/Home/Dashboard/Messages';
@@ -26,6 +26,19 @@ import ChangePassword from './Components/Home/Dashboard/ChangePassword';
 import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
 import UserDashboard from './Components/Home/Dashboard/UserDashboard';
 import Pricing from './Components/Home/Dashboard/Pricing';
+import YourProfileEmployer from './Components/Home/DashboardEmployer/YourProfileEmployer';
+import AppliedCompanyEmployer from './Components/Home/DashboardEmployer/AppliedCompanyEmployer.jsx';
+import LocationsEmployer from './Components/Home/DashboardEmployer/LocationsEmployer.jsx';
+import ShortlistJobsEmployer from './Components/Home/DashboardEmployer/ShortlistJobsEmployer';
+import AlertsJobsEmployer from './Components/Home/DashboardEmployer/AlertJobsEmployer';
+import MessagesEmployer from './Components/Home/DashboardEmployer/MessagesEmployer';
+import MeetingsEmployer from './Components/Home/DashboardEmployer/MeetingsEmployer';
+import UploadResumeEmployer from './Components/Home/DashboardEmployer/SubmitJob.jsx';
+import ChangePasswordEmployer from './Components/Home/DashboardEmployer/ChangePasswordEmployer.jsx';
+import DeleteProfileEmployer from './Components/Home/DashboardEmployer/DeleteProfileEmployer';
+import UserDashboardEmployer from './Components/Home/DashboardEmployer/UserDashboardEmployer';
+import PricingEmployer from './Components/Home/DashboardEmployer/PricingEmployer';
+import MyJobs from './Components/Home/DashboardEmployer/MyJobs.jsx';
 import AboutUs from './Components/Home/AboutUs';
 import Catagories from './Components/Home/Catagories';
 
@@ -48,8 +61,10 @@ function AppContent() {
 
   // Function to determine if Navbar and Footer should be hidden
   const shouldHideNavbarAndFooter = () => {
-    return location.pathname === '/dashboard' || location.pathname === '/your-profile' || location.pathname === '/applied-company' || location.pathname === '/upload-resume' || location.pathname === '/upload-resume'|| location.pathname === '/meetings' || location.pathname === '/messages' || location.pathname === '/alerts-jobs' || location.pathname === '/shortlist-jobs';
+    return location.pathname === '/dashboard' || location.pathname === '/user-dashboard' || location.pathname === '/your-profile' || location.pathname === '/applied-company' || location.pathname === '/upload-resume' || location.pathname === '/upload-resume'|| location.pathname === '/meetings' || location.pathname === '/messages' || location.pathname === '/alerts-jobs' || location.pathname === '/shortlist-jobs'
+    || location.pathname === '/pricing'||location.pathname === '/following-employer'||location.pathname === '/update-password'||location.pathname === '/delete-profile';
   };
+  
 
   return (
     <>
@@ -61,7 +76,7 @@ function AppContent() {
         <Route path='/resume' element={<ResumeBuilder/>}/>
         <Route path="/findtutor" element={<TutorFinder />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
-        <Route path="/dashboard" element={<YourProfile />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/Catagories" element={<Catagories />} />
         <Route path="/jobpost" element={<JobPost />} />
@@ -79,6 +94,20 @@ function AppContent() {
         <Route path="/delete-profile" element={<DeleteProfile />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/dashboard-employer" element={<UserDashboardEmployer />} />
+        <Route path="/upload-resume-employer" element={<UploadResumeEmployer />} />
+        <Route path="/your-profile-employer" element={<YourProfileEmployer />} />
+        <Route path="/applied-company-employer" element={<AppliedCompanyEmployer />} />
+        <Route path="/locations-employer" element={<LocationsEmployer />} />
+        <Route path="/shortlist-jobs-employer" element={<ShortlistJobsEmployer />} />
+        <Route path="/alerts-jobs-employer" element={<AlertsJobsEmployer />} />
+        <Route path="/messages-employer" element={<MessagesEmployer />} />
+        <Route path="/meetings-employer" element={<MeetingsEmployer />} />
+        <Route path="/update-password-employer" element={<ChangePasswordEmployer/>} />
+        <Route path="/delete-profile-employer" element={<DeleteProfileEmployer />} />
+        <Route path="/user-dashboard-employer" element={<UserDashboardEmployer />} />
+        <Route path="/pricing-employer" element={<PricingEmployer />} />
+        <Route path="/my-jobs-employer" element={<MyJobs />} />
       </Routes>
       {!shouldHideNavbarAndFooter() && <Footer />}
     </>

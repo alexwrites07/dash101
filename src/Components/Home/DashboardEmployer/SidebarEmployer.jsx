@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { HiArrowSmRight, HiUser, HiViewBoards, HiShoppingBag, HiHeart, HiBell, HiChat, HiCalendar, HiLogout, HiMenu, HiLockClosed, HiTrash, HiUserGroup, HiCash } from 'react-icons/hi';
+import { HiArrowSmRight, HiUser, HiViewBoards, HiShoppingBag, HiHeart, HiBell, HiChat, HiCalendar, HiLogout, HiMenu, HiLockClosed, HiTrash, HiUserGroup, HiCash, HiBookmark } from 'react-icons/hi';
 import { NavLink } from 'react-router-dom';
-import './SideBar.css'
+import './SideBarEmployer.css'
 
 const Sidebar = ({ activeTab }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -11,18 +11,18 @@ const Sidebar = ({ activeTab }) => {
     };
 
     const sidebarLinks = [
-        { to: '/user-dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
-        { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
-        { to: '/upload-resume', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'My Resume' },
-        { to: '/applied-company', icon: <HiShoppingBag className="w-6 h-6" />, label: 'My Applied' },
-        { to: '/shortlist-jobs', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Jobs' },
-        { to: '/alerts-jobs', icon: <HiBell className="w-6 h-6" />, label: 'Alerts Jobs' },
-        { to: '/following-employer', icon: <HiUserGroup className="w-6 h-6" />, label: 'Following Employer' },
-        { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
-        { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
-        { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
-        { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
-        { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
+        { to: '/user-dashboard-employer', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
+        { to: '/your-profile-employer', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
+        { to: '/my-jobs-employer', icon: <HiBookmark className="w-6 h-6" />, label: 'My Jobs' },
+        { to: '/upload-resume-employer', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Submit Job' },
+        { to: '/applied-company-employer', icon: <HiShoppingBag className="w-6 h-6" />, label: 'Applicants Jobs' },
+        { to: '/shortlist-jobs-employer', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Candidates' },
+        { to: '/alerts-jobs-employer', icon: <HiBell className="w-6 h-6" />, label: 'Candidate Alert' },
+        { to: '/messages-employer', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
+        { to: '/meetings-employer', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
+        { to: '/pricing-employer', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+        { to: '/update-password-employer', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
+        { to: '/delete-profile-employer', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
         { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
     ];
 

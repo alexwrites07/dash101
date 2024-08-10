@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HiBell, HiUser } from 'react-icons/hi';
 import { Menu, MenuList, MenuButton, MenuItem, MenuLink } from '@reach/menu-button';
 import '@reach/menu-button/styles.css';
-import './Header.css';
+import './HeaderEmployer.css';
 import { useNavigate } from 'react-router-dom';
 
 // Sample notifications array
@@ -40,7 +40,7 @@ const Header = () => {
     setNewNotificationCount(0);
 
     // Navigate to the user dashboard
-    navigate('/user-dashboard');
+    navigate('/user-dashboard-employer');
   };
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const Header = () => {
         const updatedNotifications = [newNotification, ...prevNotifications];
         return updatedNotifications;
       });
-    }, 10000000); // Add new notification every 10 seconds
+    }, 1000000); // Add new notification every 10 seconds
 
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
@@ -107,14 +107,14 @@ const Header = () => {
           <MenuList className="logout absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-md focus:outline-none">
             <MenuItem
               as={MenuLink}
-              href="/your-profile"
+              href="/your-profile-employer"
               className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
             >
               My Profile
             </MenuItem>
             <MenuItem
               as={MenuLink}
-              href="/logout"
+              href="/"
               className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
             >
               Logout
