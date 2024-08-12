@@ -41,6 +41,7 @@ import PricingEmployer from './Components/Home/DashboardEmployer/PricingEmployer
 import MyJobs from './Components/Home/DashboardEmployer/MyJobs.jsx';
 import AboutUs from './Components/Home/AboutUs';
 import Catagories from './Components/Home/Catagories';
+import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -75,6 +76,7 @@ function AppContent() {
         <Route path="/signup" element={<SignUp />} />
         <Route path='/resume' element={<ResumeBuilder/>}/>
         <Route path="/findtutor" element={<TutorFinder />} />
+        <Route path="/getTutor/:Id" element={<TeachingDescription />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/upload-resume" element={<UploadResume />} />

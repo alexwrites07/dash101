@@ -39,7 +39,7 @@ const JobDescription = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-[#041F96] p-6 rounded-lg shadow-lg text-white flex flex-col sm:flex-row md:justify-between items-center mb-6">
+      <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
         <div className="md:w-1/4 mb-4 md:mb-0">
           <img src={job.images[0]} alt={job.title} className="w-full h-56 object-cover rounded-md" />
         </div>
@@ -47,7 +47,7 @@ const JobDescription = () => {
           <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <p><strong>Location:</strong> {job.location.city}, {job.location.state} ({job.location.pinCode})</p>
-            <p><strong>Salary:</strong> {job.salary}</p>
+            <p><strong>Salary:</strong> {job.minimumsalary}</p>
             <p><strong>Experience:</strong> {job.experience}</p>
             <p><strong>Qualification:</strong> {job.qualification}</p>
             <p><strong>Career:</strong> {job.careerLevel}</p>
@@ -55,7 +55,7 @@ const JobDescription = () => {
             {isActive ? (
               <button
                 onClick={openModal}
-                className="bg-red-700 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+                className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
               >
                 Apply
               </button>

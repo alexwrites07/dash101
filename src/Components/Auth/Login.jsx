@@ -1,13 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../Loading/Loading";
-import SignUp from "./SignUp";
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import './Login.css'; 
+import './Login.css';
 
 export default function Login() {
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
@@ -35,8 +31,54 @@ export default function Login() {
         setTimeout(() => {
             setCurrentIndex(index);
             setIsFading(false);
-        }, 300); 
+        }, 300);
     }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        const loginData = {
+            email: email,
+            password: password,
+        };
+
+        try {
+            const response = await fetch('https://backend.akshayy.tech/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            });
+
+            const data = await response.json();
+            console.log('Login Response:', data);
+
+            if (response.ok) {
+                const type = data.type.toLowerCase();
+                const token = data.token;
+                console.log('Type:', type);
+                console.log('Token:', token);
+
+                // Store the token and type in local storage
+                localStorage.setItem('token', token);
+                localStorage.setItem('type', type);
+                // localStorage.setItem('type', type);
+
+                // Redirect to dashboard
+                navigate('/your-profile');
+            } else {
+                setError(data.message);
+                console.error('Login Error Response:', data.message);
+            }
+        } catch (error) {
+            setError('Failed to login. Please try again.');
+            console.error('Fetch Error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <>
@@ -69,9 +111,7 @@ export default function Login() {
                                             <h1 className={`text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
                                                 {currentRole} Login
                                             </h1>
-                                            <form className="space-y-4 lg:space-y-6" onSubmit={(e) => {
-                                                e.preventDefault(); 
-                                            }}>
+                                            <form className="space-y-4 lg:space-y-6" onSubmit={handleSubmit}>
                                                 <div>
                                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-blue-500">Your email</label>
                                                     <input
@@ -121,11 +161,11 @@ export default function Login() {
                                                 </button>
                                                 {error && <p style={{ color: "red" }}>{error}</p>}
                                                 <p className="flex flex-row gap-10">
-                                                    {roles.map((role, index) => (
+                                                    {/* {roles.map((role, index) => (
                                                         <a onClick={() => roleChangeInLogin(index)} key={index} className={`flex flex-row ${currentIndex === index ? 'hidden' : 'font-bold text-blue-500'}`}>
                                                             {role} ?
                                                         </a>
-                                                    ))}
+                                                    ))} */}
                                                 </p>
                                                 <p className="text-sm font-light text-gray-500">
                                                     Don’t have an account yet? <a href="/signup" className="font-medium text-primary-600 hover:underline">Sign up</a>

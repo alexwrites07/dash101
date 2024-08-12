@@ -16,6 +16,7 @@ const YourProfile = () => {
   const [fullName, setFullName] = useState('');
   const [dob, setDOB] = useState('');
   const [gender, setGender] = useState('');
+  const [highestQualification, sethighestQualification]=useState('');
   const [age, setAge] = useState('');
   const [email, setEmail] = useState('');
   const [qualification, setQualification] = useState('');
@@ -37,40 +38,56 @@ const YourProfile = () => {
   const [longitude, setLongitude] = useState(0);
   const [error, setError] = useState(null); // To handle errors if geolocation fails
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
-  const tutorId = '66992c29aedf900d3688eb7e';
 
   useEffect(() => {
-    // Fetch tutor data from the backend
-    fetch(`https://backend.akshayy.tech/getTutor/${tutorId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+    const token = localStorage.getItem('token');
+    const endpoint = localStorage.getItem('type');
+
+    const fetchData = async () => {
+      try {
+      //  endpoint === 'student' ? 'student' : 'tutor';
+        const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // Update state with fetched data
+          setFullName(data.fullName);
+          setDOB(data.dob);
+          setGender(data.gender);
+          setAge(data.age);
+          setEmail(data.email);
+          sethighestQualification(data.highestQualification);
+          settotalExperience(data.totalExperience);
+          setLanguages(data.languages);
+          setSalaryType(data.salaryType);
+          setSalary(data.salary);
+          setCategories(data.categories);
+          setDescription(data.description);
+          // setsocialMediaLinks(data.socialMediaLinks);
+          setContactAddress(data.contactAddress);
+          setLocation(data.location);
+          setMapsLocation(data.mapsLocation);
+          // setVideo(data.video);
+          setImage(data.image);
+          setLatitude(data.latitude);
+          setLongitude(data.longitude);
+        } else {
+          console.error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Update state with the fetched data
-        setFullName(data.fullName);
-        setEmail(data.email);
-        setDOB(data.dob || '');
-        setGender(data.gender);
-        setQualification(data.highestQualification);
-        setExperienceTime(data.totalExperience);
-        setLanguages(data.languages || []);
-        setSalary(data.salary || '');
-        setCategories(data.tags || []);
-        setDescription(data.description);
-        setContactAddress(data.location.address);
-        setLocation(data.location.city);
-        setMapsLocation(data.location.address);
-        setLatitude(data.location.coordinates[1]);
-        setLongitude(data.location.coordinates[0]);
-        setImage(data.image || '');
-        setIntroductionVideo(data.introductionVideo || '');
-        // Add more fields as needed
-      })
-      .catch(error => console.error('Error fetching tutor data:', error));
-  }, [tutorId, token]);
+    };
+
+    fetchData();
+  }, []); // Re-run the effect when the type changes
 
 
   // Construct the Google Maps embed URL using your API key and state values
@@ -257,13 +274,13 @@ const handleLongitudeChange = (e) => {
             </div>
 
             <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">Experience Time</label>
-              <select
+            <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
+              <input
                   className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                  value={experienceTime}
-                  onChange={(e) => setExperienceTime(e.target.value)}
+                  value={highestQualification}
+                  onChange={(e) => sethighestQualification(e.target.value)}
               >
-                <option value="">Experience</option>
+                {/* <option value="">Experience</option>
                 <option value="Fresher">Fresher</option>
                 <option value="1 Year">1 Year</option>
                 <option value="2 Year">2 Year</option>
@@ -271,11 +288,11 @@ const handleLongitudeChange = (e) => {
                 <option value="4 Year">4 Year</option>
                 <option value="5 Year">5 Year</option>
                 <option value="6 Year">6 Year</option>
-                <option value="7+ Year">7+ Year</option>
-              </select>
+                <option value="7+ Year">7+ Year</option> */}
+              </input>
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">Languages</label>
               <input
                 type="text"
@@ -283,7 +300,7 @@ const handleLongitudeChange = (e) => {
                 value={languages.join(', ')}
                 onChange={(e) => setLanguages(e.target.value.split(', '))}
               />
-            </div>
+            </div> */}
 
             <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
@@ -311,7 +328,7 @@ const handleLongitudeChange = (e) => {
               />
             </div>
 
-            <div className="lg:col-span-2">
+            {/* <div className="lg:col-span-2">
               <label className="block text-gray-700 text-sm font-bold mb-2">Categories</label>
               <input
                 type="text"
@@ -319,7 +336,7 @@ const handleLongitudeChange = (e) => {
                 value={categories.join(', ')}
                 onChange={(e) => setCategories(e.target.value.split(', '))}
               />
-            </div>
+            </div> */}
           </div>
 
           <button
@@ -423,18 +440,18 @@ const handleLongitudeChange = (e) => {
 
           <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
             <label className="block text-gray-700 text-sm font-bold mb-2">Contact Information</label>
-            <input
+            {/* <input
               type="text"
               className="w-full p-2 border border-gray-300 rounded-lg mb-4"
               value={contactAddress}
               onChange={(e) => setContactAddress(e.target.value)}
-            />
+            /> */}
 
             <label className="block text-gray-700 text-sm font-bold mb-2">Location</label>
             <input
               type="text"
               className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-              value={location}
+              value={location.city}
               onChange={(e) => setLocation(e.target.value)}
             />
 

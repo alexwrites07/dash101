@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiFilter } from 'react-icons/hi';
+import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 import './Jobpost.css';
+
 const TutorFinder = () => {
   const [tutors, setTutors] = useState([]);
+  const [distanceFilter, setDistanceFilter] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
+  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
+  const [userCoords, setUserCoords] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     subjectsTaught: '',
@@ -30,6 +36,28 @@ const TutorFinder = () => {
       }
     } catch (error) {
       console.error('Error fetching tutors:', error);
+    }
+  };
+
+  const filterByDistance = (job) => {
+    if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
+
+    const jobCoords = job.location.coordinates;
+    const distance = calculateDistance(userCoords, jobCoords);
+
+    return distance <= distanceFilter;
+  };
+
+  const fetchUserCoordinates = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setUserCoords([latitude, longitude]);
+      }, (error) => {
+        console.error('Error fetching user coordinates:', error);
+      });
+    } else {
+      console.error('Geolocation is not supported by this browser.');
     }
   };
 
@@ -62,115 +90,136 @@ const TutorFinder = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Find a Tutor</h1>
-        <button
-          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          <HiFilter className="mr-2" /> Filters
-        </button>
-      </div>
-      {showFilters && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 border rounded-lg bg-gray-100">
-          <div>
-            <label className="block mb-1">Subject</label>
-            <input
-              type="text"
-              name="subjectsTaught"
-              value={filters.subjectsTaught}
-              onChange={handleFilterChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">City</label>
-            <input
-              type="text"
-              name="city"
-              value={filters.city}
-              onChange={handleFilterChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Experience (years)</label>
-            <input
-              type="number"
-              name="totalExperience"
-              value={filters.totalExperience}
-              onChange={handleFilterChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Min Salary</label>
-            <input
-              type="number"
-              name="minExpectedSalary"
-              value={filters.minExpectedSalary}
-              onChange={handleFilterChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Max Salary</label>
-            <input
-              type="number"
-              name="maxExpectedSalary"
-              value={filters.maxExpectedSalary}
-              onChange={handleFilterChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Tags</label>
-            <input
-              type="text"
-              name="tags"
-              value={filters.tags}
-              onChange={handleFilterChange}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
-          <div className="col-span-full flex justify-end">
+    <div className="flex flex-col md:flex-row max-w-5xl mx-auto ml-6" style={margin}>
+      <div className="max-w-full mx-auto flex flex-col md:flex-row" style={{ margin: '4% 4% 0 4%' }}>
+        <div className="md:hidden w-full flex justify-end mb-6">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-non"
+          >
+            <HiFilter className="w-4 h-4" />
+          </button>
+        </div>
+        <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
+          <form className="space-y-4">
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
+              <input
+                type="text"
+                name="keyword"
+                id="keyword"
+                value={filters.keyword}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">Location</label>
+              <input
+                type="text"
+                name="location"
+                placeholder="Enter city"
+                id="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+              <button
+                type="button"
+                onClick={fetchUserCoordinates}
+                className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+              >
+                Use My Location
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distance">Distance (in km)</label>
+              <input
+                type="number"
+                name="distance"
+                id="distance"
+                placeholder="Enter distance in km"
+                value={distanceFilter}
+                onChange={(e) => setDistanceFilter(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="jobType">Job Type</label>
+              <select
+                name="jobType"
+                id="jobType"
+                placeholder="Enter Full Name"
+                value={filters.fullName}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              >
+                <option value="">Select Job Type</option>
+                <option value="full-time">Full-time</option>
+                <option value="part-time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="remote">Remote</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
+              <input
+                type="text"
+                name="experienceLevel"
+                placeholder="Subjects Taught"
+                id="experienceLevel"
+                value={filters.subjectsTaught}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Career Level</label>
+              <input
+                type="text"
+                name="careerLevel"
+                placeholder="Enter Experience Type"
+                id="careerLevel"
+                value={filters.totalExperience}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
             <button
-              className="px-4 py-2 bg-[#041F96] text-white rounded-lg hover:bg-green-600"
+              type="button"
               onClick={applyFilters}
+              className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
             >
               Apply Filters
             </button>
-          </div>
+          </form>
         </div>
-      )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {filteredTutors.map((tutor) => (
-          
-          <div key={tutor._id} className="border rounded-lg p-4 shadow-lg bg-white">
-            <img
-              src={tutor.image}
-              alt={tutor.fullName}
-              className="w-full h-40  rounded-lg mb-4"
-            />
-            <h3 className="text-xl font-bold mb-2">{tutor.fullName}</h3>
-            <p className="text-gray-600 mb-2">{tutor.description}</p>
-            <p className="text-gray-600 mb-1">
-              <strong>Subjects:</strong> {tutor.subjectsTaught.join(', ')}
-            </p>
-            <p className="text-gray-600 mb-1">
-              <strong>Location:</strong> {tutor.location.city}, {tutor.location.state}
-            </p>
-            <p className="text-gray-600 mb-1">
-              <strong>Experience:</strong> {tutor.totalExperience} years
-            </p>
-            <p className="text-gray-600 mb-1">
-              <strong>Expected Salary:</strong>{' '}
-              {tutor.jobAlerts?.minExpectedSalary?.value ?? 'N/A'} -{' '}
-              {tutor.jobAlerts?.maxExpectedSalary?.value ?? 'N/A'}
-            </p>
-          </div>
-        ))}
+        <div className="w-full flex flex-col items-center">
+        {filteredTutors.map((tutor, index) => (
+            <div className="shadow rounded flex flex-col md:flex-row items-start md:ml-8 border-b border-gray-200 py-4 mb-4 w-full" key={index}>
+              <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
+                <img src={tutor.image} alt="Company Logo" className="w-full h-full object-contain" />
+              </div>
+              <Link to={`/getTutor/${tutor._id}`} className="block w-full">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
+                  <div>
+                    <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
+                    <span className="text-gray-600 ">{tutor.jobTitle}</span>
+                    <span className="text-gray-600 mr-6">{tutor.location?.city}, {tutor.location?.state}</span>
+                    <span className="text-gray-600 mr-6">{tutor.totalExperience} years</span>
+                    <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
+                    <span className="text-gray-600 mr-6">Distance: {tutor.distanceFromUser} km</span>
+                  
+                    <span className="text-gray-600 mr-6">Salary: {tutor.jobAlerts?.minExpectedSalary?.value} - {tutor.jobAlerts?.maxExpectedSalary?.value}</span>
+                  </div>
+                  <button className="text-blue-500 hover:text-blue-600 focus:outline-none mr-8">
+                    {tutor.bookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
+                  </button>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

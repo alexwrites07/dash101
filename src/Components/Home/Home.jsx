@@ -4,7 +4,7 @@ import Catagories from './Catagories';
 import FeaturedJobs from './Jobs/Jobs';
 import FrequentlyHiringCompanies from './Jobs/Frequently';
 import HiringSection from './Jobs/HiringSection';
-import TeachingSection from './Jobs/TeachingSection';
+import TeachingSection from './Jobs/TeachingDescription';
 import TestimonialSection from './Testimonial';
 import Footersection from './Footer';
 import Newssection from './Recentnews';
