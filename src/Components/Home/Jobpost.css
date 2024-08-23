@@ -66,6 +66,13 @@
   }
   
   /* Small screen styles */
+  @media (min-width: 2408px) {
+
+.hh{
+  margin-left:50%;
+}
+
+  }
   @media (max-width: 768px) {
     .job-post-container {
       flex-direction: column;

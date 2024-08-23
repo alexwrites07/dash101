@@ -90,9 +90,10 @@ const TutorFinder = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row max-w-5xl mx-auto ml-6" style={margin}>
-      <div className="max-w-full mx-auto flex flex-col md:flex-row" style={{ margin: '4% 4% 0 4%' }}>
-        <div className="md:hidden w-full flex justify-end mb-6">
+    // <div className="lg:ml-96 ml-4">
+    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] hh" style={margin}>
+    <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row" style={{ margin: '8% 4% 0 4%' }}>
+<div className="md:hidden w-full flex justify-end mb-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-non"
@@ -100,7 +101,7 @@ const TutorFinder = () => {
             <HiFilter className="w-4 h-4" />
           </button>
         </div>
-        <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
+        <div className={`md:block w-[1800px] p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
           <form className="space-y-4">
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
@@ -220,8 +221,8 @@ const TutorFinder = () => {
             </div>
           ))}
         </div>
-      </div>
-    </div>
+    
+    </div></div>
   );
 };
 

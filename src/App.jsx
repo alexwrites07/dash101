@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation} from 'react-router-dom';
 import './App.css';
 import Login from './Components/Auth/Login';
+import DemoForm from './Components/Home/DemoForm.jsx';
 import Home from './Components/Home/Home';
 import SignUp from './Components/Auth/SignUp';
 import Navbar from './Components/Navbar/Navbar';
 import Footer from './Components/Home/Footer';
 import JobPost from './Components/Home/Jobpost';
 import TutorFinder from './Components/Home/Findtutor.jsx';
+import LearningNeeds from './Components/Home/Dashboard/LearnNeeds.jsx';
+import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
 import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
+import Reviews from './Components/Home/Dashboard/Reviews.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
 import ResumeBuilder from './Components/Home/resume/builder.jsx';
 import YourProfile from './Components/Home/Dashboard/YourProfile.jsx';
@@ -22,6 +26,7 @@ import JobDetail from './Components/Home/Jobs/JobDetail.jsx';
 import JobDescription from './Components/Home/Jobs/JobDescription';
 import UploadResume from './Components/Home/Dashboard/UploadResume.jsx';
 import FollowingEmployer from './Components/Home/Dashboard/FollowingEmployer';
+import StudentProfile from './Components/Home/Dashboard/StudentProfile.jsx';
 import ChangePassword from './Components/Home/Dashboard/ChangePassword';
 import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
 import UserDashboard from './Components/Home/Dashboard/UserDashboard';
@@ -63,7 +68,7 @@ function AppContent() {
   // Function to determine if Navbar and Footer should be hidden
   const shouldHideNavbarAndFooter = () => {
     return location.pathname === '/dashboard' || location.pathname === '/user-dashboard' || location.pathname === '/your-profile' || location.pathname === '/applied-company' || location.pathname === '/upload-resume' || location.pathname === '/upload-resume'|| location.pathname === '/meetings' || location.pathname === '/messages' || location.pathname === '/alerts-jobs' || location.pathname === '/shortlist-jobs'
-    || location.pathname === '/pricing'||location.pathname === '/following-employer'||location.pathname === '/update-password'||location.pathname === '/delete-profile';
+    || location.pathname === '/pricing'|| location.pathname === '/myclasses' ||location.pathname === '/reviews'||location.pathname === '/learningneeds' ||location.pathname === '/following-employer'||location.pathname === '/update-password'||location.pathname === '/delete-profile';
   };
   
 
@@ -74,7 +79,11 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/learningneeds" element={<LearningNeeds />} />
+        <Route path="/myclasses" element={<MyClasses/>} />
+        <Route path="/reviews" element={<Reviews/>} />
         <Route path='/resume' element={<ResumeBuilder/>}/>
+        <Route path="/demo-form" element={<DemoForm />} />
         <Route path="/findtutor" element={<TutorFinder />} />
         <Route path="/getTutor/:Id" element={<TeachingDescription />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
@@ -110,6 +119,7 @@ function AppContent() {
         <Route path="/user-dashboard-employer" element={<UserDashboardEmployer />} />
         <Route path="/pricing-employer" element={<PricingEmployer />} />
         <Route path="/my-jobs-employer" element={<MyJobs />} />
+        <Route path="/student-profile" element={<StudentProfile />} />
       </Routes>
       {!shouldHideNavbarAndFooter() && <Footer />}
     </>

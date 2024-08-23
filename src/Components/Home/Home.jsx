@@ -4,16 +4,37 @@ import Catagories from './Catagories';
 import FeaturedJobs from './Jobs/Jobs';
 import FrequentlyHiringCompanies from './Jobs/Frequently';
 import HiringSection from './Jobs/HiringSection';
-import TeachingSection from './Jobs/TeachingDescription';
+import TeachingSection from './Jobs/TeachingSection';
 import TestimonialSection from './Testimonial';
 import Footersection from './Footer';
 import Newssection from './Recentnews';
 import './Home.css';
-
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 function HomePage() {
+  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate('/demo-form');
+  };
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setMargin({ margin: '2% 12% 0.5% 12%' });
+      } else {
+        setMargin({ margin: '2% 4% 0.5% 4%' });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Call handler right away so state gets updated with initial window size
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
-    <div className="mt-12 px-4 md:px-8 lg:px-16">
-      <div className="flex flex-col md:flex-row items-center home2">
+    <div className="mt-12 px-4 md:px-8 lg:px-16 max-w-full mb-2"  style={margin}>
+      <div className="flex flex-col md:flex-row items-center home2 max-w-full mb-2"  style={{ margin: '2% 4% 0.5% 4%' }}>
         <div className="md:w-3/6 container  mx-auto lg:w-full lg:ml-12 home1 md:w-4/5">
           <h1 className="text-2xl md:text-5xl text-[#041F96] font-bold mb-4">
             Connect one to one with your tutors
@@ -25,27 +46,26 @@ function HomePage() {
             Accusantium, quasi.
           </p>
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-            <input
-              type="text"
-              placeholder="Search job title"
-              className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 w-full md:w-auto" />
-            <input
-              type="text"
-              placeholder="Search location"
-              className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 w-full md:w-auto" />
-            <button className="py-2 px-4 bg-[#041F96] text-white rounded-lg hover:bg-[#041F96] focus:outline-none w-full md:w-auto">
-              Search
-            </button>
-          </div>
+      <input
+        type="text"
+        placeholder="What do you want to learn?"
+        className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 w-full md:w-auto" />
+      <button
+        className="py-2 px-4 bg-[#041F96] text-white rounded-lg hover:bg-[#041F96] focus:outline-none w-full md:w-auto"
+        onClick={handleRedirect}>
+        Book demo
+      </button>
+    </div>
         </div>
-        <div className="mt-8 md:mt-0  md:ml-24 lg:ml-36">
-          <img
-            src={TeacherImage}
-            alt="Teacher Image"
-            className="rounded-lg mx-auto w-4/5"
-            width={800}
-            height={800} />
-        </div>
+        <div className="mt-8 ">
+  <img
+    src={TeacherImage}
+    alt="Teacher Image"
+    className="rounded-lg mx-auto"
+    style={{ width: '80%', height: '80%' }}
+  />
+</div>
+
       </div>
       
       <Catagories />

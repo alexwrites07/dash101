@@ -42,7 +42,7 @@ export default function Login() {
             email: email,
             password: password,
         };
-
+       console.log (loginData);
         try {
             const response = await fetch('https://backend.akshayy.tech/login', {
                 method: 'POST',

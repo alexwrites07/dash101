@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#041F96] text-white py-8">
+    <footer className="bg-[#041F96] text-white py-8 max-w-[1850px] mx-auto">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap">
           {/* Contact Information */}
