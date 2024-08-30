@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const Map = ({ coordinates, onCoordinatesChange }) => {
   const [currentPosition, setCurrentPosition] = useState(coordinates);
-
+  
   useEffect(() => {
     if (!coordinates) return;
 

@@ -67,7 +67,7 @@ export default function SignUp() {
         setError(null);
 
         try {
-            const response = await axios.post("https://backend.akshayy.tech/register/student/verify", {
+            const response = await axios.post("https://backend.akshayy.tech/register/tutor/verify", {
                 email,
                 otp,
             });

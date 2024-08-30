@@ -9,7 +9,6 @@ const TutorFinder = () => {
   const [tutors, setTutors] = useState([]);
   const [distanceFilter, setDistanceFilter] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
-  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
   const [userCoords, setUserCoords] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -90,18 +89,17 @@ const TutorFinder = () => {
   };
 
   return (
-    // <div className="lg:ml-96 ml-4">
-    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] hh" style={margin}>
-    <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row" style={{ margin: '8% 4% 0 4%' }}>
-<div className="md:hidden w-full flex justify-end mb-6">
+    <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
+      <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] w-4/5">
+        <div className="md:hidden w-full flex justify-end mb-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-non"
+            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none"
           >
             <HiFilter className="w-4 h-4" />
           </button>
         </div>
-        <div className={`md:block w-[1800px] p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
+        <div className={`md:block p-4 bg-gray-100 rounded-lg shadow-lg mb-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
           <form className="space-y-4">
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
@@ -195,9 +193,9 @@ const TutorFinder = () => {
             </button>
           </form>
         </div>
-        <div className="w-full flex flex-col items-center">
-        {filteredTutors.map((tutor, index) => (
-            <div className="shadow rounded flex flex-col md:flex-row items-start md:ml-8 border-b border-gray-200 py-4 mb-4 w-full" key={index}>
+        <div className="w-full flex flex-col items-center justify-center">
+          {filteredTutors.map((tutor, index) => (
+            <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
               <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
                 <img src={tutor.image} alt="Company Logo" className="w-full h-full object-contain" />
               </div>
@@ -205,24 +203,31 @@ const TutorFinder = () => {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
                   <div>
                     <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
-                    <span className="text-gray-600 ">{tutor.jobTitle}</span>
-                    <span className="text-gray-600 mr-6">{tutor.location?.city}, {tutor.location?.state}</span>
-                    <span className="text-gray-600 mr-6">{tutor.totalExperience} years</span>
-                    <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
-                    <span className="text-gray-600 mr-6">Distance: {tutor.distanceFromUser} km</span>
-                  
-                    <span className="text-gray-600 mr-6">Salary: {tutor.jobAlerts?.minExpectedSalary?.value} - {tutor.jobAlerts?.maxExpectedSalary?.value}</span>
+                    <span className="text-gray-600">{tutor.jobTitle}</span>
+                    <span className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</span>
+                    
                   </div>
-                  <button className="text-blue-500 hover:text-blue-600 focus:outline-none mr-8">
-                    {tutor.bookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
-                  </button>
+                  <div>
+                  <span className="text-gray-600 mr-6">{tutor.totalExperience} years </span>
+                    <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
+                    <span className="text-gray-600 mr-6">{tutor.distanceFromUser} km away</span>
+                  </div>
+                  <div className="mt-2 md:mt-0 flex items-center mr-8">
+                  <button className="ml-2 mr-6">
+                      {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark className="text-blue-500" />}
+                    </button>
+                    <button className="flex items-center justify-center bg-[#041F96] hover:bg-[#041F96] text-white px-4 py-2 rounded-lg">
+                      Apply Now
+                    </button>
+                   
+                  </div>
                 </div>
               </Link>
             </div>
           ))}
         </div>
-    
-    </div></div>
+      </div>
+    </div>
   );
 };
 

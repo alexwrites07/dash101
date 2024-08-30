@@ -10,18 +10,18 @@ const AppliedCompany = () => {
   const [error, setError] = useState(null);
 
   // Your token and tutor ID
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
-  const tutorId = '669e250f010b0852a754e9bf';
+  // const token = 'your-token-here';
+  // const tutorId = 'your-tutor-id-here';
 
   // Fetch data from the backend when the component mounts
   useEffect(() => {
+    const token = localStorage.getItem('token');
     fetch('https://backend.akshayy.tech/tutor/applications', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`, // Add Authorization header
-        'tutor-id': tutorId // Add custom tutor-id header if required by your API
+        
       }
     })
       .then((response) => {

@@ -4,6 +4,7 @@ import './App.css';
 import Login from './Components/Auth/Login';
 import DemoForm from './Components/Home/DemoForm.jsx';
 import Home from './Components/Home/Home';
+import Sidebar from './Components/Home/Dashboard/AdminPanel/AdminSidebar.jsx';
 import SignUp from './Components/Auth/SignUp';
 import Navbar from './Components/Navbar/Navbar';
 import Footer from './Components/Home/Footer';
@@ -11,6 +12,8 @@ import JobPost from './Components/Home/Jobpost';
 import TutorFinder from './Components/Home/Findtutor.jsx';
 import LearningNeeds from './Components/Home/Dashboard/LearnNeeds.jsx';
 import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
+import ContactUs from './Components/Home/ContactUs.jsx';
+
 import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
 import Reviews from './Components/Home/Dashboard/Reviews.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
@@ -45,8 +48,11 @@ import UserDashboardEmployer from './Components/Home/DashboardEmployer/UserDashb
 import PricingEmployer from './Components/Home/DashboardEmployer/PricingEmployer';
 import MyJobs from './Components/Home/DashboardEmployer/MyJobs.jsx';
 import AboutUs from './Components/Home/AboutUs';
+import Blog from './Components/Home/Dashboard/Blogs.jsx';
+import BlogContent from './Components/Home/BlogContent.jsx';
 import Catagories from './Components/Home/Catagories';
 import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx';
+import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -93,18 +99,25 @@ function AppContent() {
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/add-category" element ={<WidgetCatagory/>}/>
         <Route path="/your-profile" element={<YourProfile />} />
         <Route path="/applied-company" element={<AppliedCompany />} />
         <Route path="/locations" element={<Locations />} />
         <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
         <Route path="/following-employer" element={<FollowingEmployer />} />
         <Route path="/alerts-jobs" element={<AlertsJobs />} />
+        <Route path="/admin-panel" element ={<Sidebar/>}/>
         <Route path="/messages" element={<Messages />} />
         <Route path="/meetings" element={<Meetings />} />
         <Route path="/update-password" element={<ChangePassword/>} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/delete-profile" element={<DeleteProfile />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/blog/:id" element={<BlogContent />} />
+        
+        <Route path="/blogs" element={<Blog />} />
         <Route path="/dashboard-employer" element={<UserDashboardEmployer />} />
         <Route path="/upload-resume-employer" element={<UploadResumeEmployer />} />
         <Route path="/your-profile-employer" element={<YourProfileEmployer />} />

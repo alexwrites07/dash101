@@ -38,8 +38,8 @@ const Sidebar = ({ activeTab }) => {
       { to: '/shortlist-jobs', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Jobs' },
       { to: '/alerts-jobs', icon: <HiBell className="w-6 h-6" />, label: 'Alerts Jobs' },
       { to: '/following-employer', icon: <HiUserGroup className="w-6 h-6" />, label: 'Following Employer' },
-      { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
-      { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
+      // { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
+      // { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
       { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
       ...sidebarLinks,
     ];
@@ -52,7 +52,7 @@ const Sidebar = ({ activeTab }) => {
       { to: '/reviews', icon: <HiChat className="w-6 h-6" />, label: 'Reviews' },
       ...sidebarLinks,
     ];
-  } else if (userType === 'employer') {
+  } else if (userType === 'organization') {
     sidebarLinks = [
       { to: '/user-dashboard-employer', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile-employer', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },

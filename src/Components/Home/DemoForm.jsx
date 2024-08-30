@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Map from './MapDemo'; // Make sure this component uses coordinates prop correctly
+import Map from './MapDemo'; // Ensure MapDemo uses coordinates prop correctly
 
 const questions = [
-  'What do you want to be?',
+  'What do you want to learn?',
   'What is your location?',
   'Which board of education are you choosing for?',
   'What is the maximum fee you are willing to pay?',
@@ -13,7 +13,7 @@ const questions = [
 ];
 
 const suggestions = [
-  'Example: Doctor, Engineer, Teacher',
+  'Example: I want to learn Maths, I want to learn Physics, I want to learn French, etc...ca',
   '',
   'Select your board of education.',
   'Enter the fee amount and select the appropriate option.',
@@ -55,9 +55,41 @@ const DemoForm = () => {
     event.target.reset();
   };
 
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
+ 
   const handleMapChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
   };
+
+  const handlePincodeChange = async (event) => {
+    const pincode = event.target.value;
+
+    if (pincode.length === 6) { // Assuming a 6-digit pin code
+      try {
+        const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${pincode}&key=AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw`);
+        const data = await response.json();
+        
+        console.log('Geocoding API response:', data);
+  
+        if (data.status === 'OK' && data.results.length > 0) {
+          const location = data.results[0].geometry.location;
+          setCoordinates([location.lng, location.lat]);
+        } else {
+          console.error('No results found for the given pincode:', data.status, data.results);
+          // Optionally, display an error message to the user
+        }
+      } catch (error) {
+        console.error('Error fetching coordinates:', error);
+        // Optionally, display an error message to the user
+      }
+    }
+  };
+  
 
   const renderInputField = () => {
     const questionIndex = currentQuestionIndex + 1;
@@ -66,35 +98,36 @@ const DemoForm = () => {
       return (
         <div className="mb-6">
           <label className="block text-gray-700 text-lg font-semibold mb-2">
-            What is your location?
+            {questions[currentQuestionIndex]}
           </label>
           <input
             type="text"
             name="location"
-            placeholder="Address"
+            placeholder="Enter your address"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <input
             type="text"
             name="pincode"
-            placeholder="Pincode"
+            placeholder="Enter your pincode"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            onChange={handlePincodeChange} // Update map based on pincode
           />
           <input
             type="text"
             name="landmark"
-            placeholder="Landmark"
+            placeholder="Enter a landmark"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <input
             type="text"
             name="city"
-            placeholder="City"
+            placeholder="Enter your city"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <div className="w-full h-88 mb-4">
             <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
@@ -123,7 +156,6 @@ const DemoForm = () => {
                 </label>
               </div>
             ))}
-            {/* Additional checkboxes for offline option */}
             <div className="ml-6">
               <label className="flex items-center">
                 <input
@@ -152,28 +184,34 @@ const DemoForm = () => {
     if (questions[currentQuestionIndex] === 'What is the maximum fee you are willing to pay?') {
       return (
         <div className="mb-6">
-          <label className="block text-gray-700 text-lg font-semibold mb-2">
-            {questions[currentQuestionIndex]}
-          </label>
+        <label className="block text-gray-700 text-lg font-semibold mb-2">
+          {questions[currentQuestionIndex]}
+        </label>
+        <div className="flex space-x-4">
           <select
             name="fee_type"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
+            className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Select fee type</option>
             <option value="Monthly">Monthly</option>
             <option value="Hourly">Hourly</option>
+            <option value="Annually">Annually</option>
             <option value="In total">In total</option>
-            <option value="Not sure, discuss with tutor and decide">Not sure, discuss with tutor and decide</option>
+            <option value="Not sure, discuss with tutor and decide">
+              Not sure, discuss with tutor and decide
+            </option>
           </select>
           <input
             type="text"
             name="response"
             placeholder="Enter fee amount"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
+      </div>
+      
       );
     }
 
@@ -186,16 +224,16 @@ const DemoForm = () => {
           <input
             type="email"
             name="email"
-            placeholder="Email ID"
+            placeholder="Enter your email ID"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <input
             type="text"
             name="phone"
-            placeholder="Phone Number"
+            placeholder="Enter your phone number"
             required
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
       );
@@ -232,34 +270,57 @@ const DemoForm = () => {
           {questions[currentQuestionIndex]}
         </label>
         <p className="text-gray-500 text-sm mb-4">{suggestions[currentQuestionIndex]}</p>
-        <input
-          type="text"
+        <textarea
           name="response"
+          placeholder="Enter your response"
           required
-          placeholder="Type your answer here"
-          className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="shadow appearance-none border rounded mb-6 w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          rows="3"
         />
       </div>
     );
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-12 mb-12">
-      {!isSubmitted ? (
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded mb-6-md mb-6">
+      {isSubmitted ? (
+        <div className="flex flex-col items-center justify-center text-green-600">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-12 w-12"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2l4-4m0 6l2 2l4-4"
+            />
+          </svg>
+          <p className="mt-4 text-lg font-semibold">Submitted your query successfully!</p>
+        </div>
+      ) : (
         <form onSubmit={handleNext}>
           {renderInputField()}
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
-          >
-            {currentQuestionIndex < questions.length - 1 ? 'Next' : 'Submit'}
-          </button>
+          <div className="flex justify-between mt-6 mb-4">
+            <button
+              type="button"
+              onClick={handlePrevious}
+              disabled={currentQuestionIndex === 0}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded mb-6-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+            >
+              Previous
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded mb-6-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
+            </button>
+          </div>
         </form>
-      ) : (
-        <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mt-6">
-          <p className="font-bold">Form submitted successfully!</p>
-          <p>Your responses have been recorded. Thank you!</p>
-        </div>
       )}
     </div>
   );

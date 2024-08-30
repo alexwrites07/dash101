@@ -22,7 +22,7 @@ const [experienceTime, setExperienceTime] = useState('');
 const [languages, setLanguages] = useState([]);
 const [salaryType, setSalaryType] = useState(0);
 
-const [coordinates, setCoordinates] = useState({ lat: 51.505, lng: -0.09 });
+
 const [salary, setSalary] = useState(0);
 const [categories, setCategories] = useState([]);
 const [jobTitle, setJobTitle] = useState('');
@@ -40,6 +40,7 @@ const [latitude, setLatitude] = useState('');
 const [longitude, setLongitude] = useState('');
 const [error, setError] = useState(null); // To handle errors if geolocation fails
 const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
+const [coordinates, setCoordinates] = useState(["Set to your Location","Set to your Location"]);
   useEffect(() => {
     const token = localStorage.getItem('token');
     const type = localStorage.getItem('type');
@@ -76,8 +77,7 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
           setparentPhone (data.parentPhone || '');
           setIntroductionVideo(data.video);
           setLocation(data.location?.city || '');
-          setLatitude(data.location?.coordinates[0]);
-          setLatitude(data.location?.coordinates[1]);
+         
           setCategories(data.categories || []);
           
         
@@ -89,6 +89,7 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
           setImage(data.image || '');
           // setImage(data.profileImageURL || '');
           setCoordinates(data.location?.coordinates || '');
+          
         } else {
           console.error('Failed to fetch data');
         }
@@ -236,7 +237,7 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
   
       // Create the body object and assign values using dot notation
       const body = {
-   
+        
         jobAlerts: {
           minExpectedSalary: { value: salary },
           maxExpectedSalary: { value: salaryType }
@@ -273,20 +274,27 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
   const savePersonalInfo = async () => {
     try {
       const token = localStorage.getItem('token');
-  
+
       // Create the body object and assign values using dot notation
       const body = {
         gender,
         highestQualification,
         totalExperience: experienceTime,
-
-      contactNumber :contactAddress1,
-      description : description,
-       
+        jobAlerts: {
+          minExpectedSalary: { value: salary },
+          maxExpectedSalary: { value: salaryType },
+          // Providing a default value for alertDistance if it's not defined
+          alertDistance:   {
+            privateTutor: { distance: 0, flag: false },
+            organizationEducator: { distance: 0, flag: false }
+          }
+        },
+        contactNumber: contactAddress1,
+        description
       };
-  
+
       console.log('Request Body:', JSON.stringify(body, null, 2));
-  
+
       const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
         method: 'POST',
         headers: {
@@ -295,15 +303,16 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
         },
         body: JSON.stringify(body),
       });
-  
+
       const responseData = await response.json();
       console.log('Response Data:', responseData);
-  
+
       if (response.ok) {
         alert('Profile information saved successfully!');
       } else {
         alert('Failed to save profile information.');
-        console.log(response);
+        console.log('Response Status:', response.status);
+        console.log('Response Message:', responseData.message);
       }
     } catch (error) {
       console.error('Error saving profile information:', error);
@@ -619,7 +628,7 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Location</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -711,7 +720,7 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Location</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -726,12 +735,7 @@ const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
               >
                 Save Personal Info
               </button>
-              <button
-                className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                onClick={savePersonalInfo12}
-              >
-                Save Job
-              </button>
+              
             </div></div>
 </div>
 

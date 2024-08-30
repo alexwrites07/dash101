@@ -10,9 +10,10 @@ const EmployersPage = () => {
   const [sortOption, setSortOption] = useState('default');
   const [error, setError] = useState(null);
 
-  // Your token and tutor ID
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
-  const tutorId = '669e250f010b0852a754e9bf';
+
+  
+  const token = localStorage.getItem('token');
+
 
   // Fetch data from the backend
   useEffect(() => {
@@ -26,10 +27,10 @@ const EmployersPage = () => {
         const employersData = response.data.map((employer) => ({
           id: employer._id,
           name: employer.name,
-          location: employer.location.city,
+          location: employer.location?.city || 'N/A', // Use 'N/A' if city is undefined
           type: 'Education Institute', // Assuming a type for demonstration
           featured: false, // Assume default as false since it's not in backend data
-          jobOpenings: employer.jobPostings.length,
+          jobOpenings: employer.jobPostings?.length || 0, // Use 0 if jobPostings is undefined
           isBookmarked: false, // Assuming initial bookmark state
         }));
         setEmployers(employersData);
@@ -38,7 +39,8 @@ const EmployersPage = () => {
         console.error('Error fetching employers:', error);
         setError('Failed to fetch employers. Please try again later.');
       });
-  }, [token]); // Adding token to dependency array ensures refetch if token changes
+  }, [token]);
+  
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -57,11 +59,13 @@ const EmployersPage = () => {
   };
 
   const filteredEmployers = employers.filter((employer) =>
-    employer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    employer.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    employer.type.toLowerCase().includes(searchQuery.toLowerCase())
+    (employer.name?.toLowerCase().includes(searchQuery.toLowerCase()) || '')
+    ||
+    (employer.location?.toLowerCase().includes(searchQuery.toLowerCase()) || '')
+    ||
+    (employer.type?.toLowerCase().includes(searchQuery.toLowerCase()) || '')
   );
-
+  
   const sortedEmployers = filteredEmployers.sort((a, b) => {
     if (sortOption === 'name') {
       return a.name.localeCompare(b.name);

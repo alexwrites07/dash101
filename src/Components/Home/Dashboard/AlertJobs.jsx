@@ -4,16 +4,12 @@ import Header from './Header';
 import axios from 'axios';
 
 const AlertsJobs = () => {
-  const [skills, setSkills] = useState([]);
   const [jobAlerts, setJobAlerts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
   const [error, setError] = useState(null);
 
-  // Token and Tutor ID
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
-  const tutorId = '669e250f010b0852a754e9bf';
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     // Fetch job alerts from the backend
@@ -27,11 +23,17 @@ const AlertsJobs = () => {
         const jobAlertsData = response.data.map((job) => ({
           id: job._id,
           title: job.title,
-          location: job.location.city,
+          location: `${job.location.city}, ${job.location.state} ${job.location.pinCode}`,
           salary: `$${job.salary.min.toLocaleString()} - $${job.salary.max.toLocaleString()} ${job.salary.period}`,
+          experience: job.experience,
+          qualification: job.qualification,
+          careerLevel: job.careerLevel,
+          description: job.description,
+          skills: job.skillAndExperience.join(', '),
           postedDate: new Date(job.lastDateToApply).toLocaleDateString(),
-          skills: job.skillAndExperience,
-          company: 'Unknown', // Company field is not available in the backend data
+          images: job.images,
+          maxApplicants: job.maxApplicants,
+          isClosed: job.isClosed,
         }));
         setJobAlerts(jobAlertsData);
       })
@@ -52,9 +54,7 @@ const AlertsJobs = () => {
   const filteredAlerts = jobAlerts.filter(
     (alert) =>
       alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      alert.skills.some((skill) =>
-        skill.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      alert.skills.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const sortedAlerts = filteredAlerts.sort((a, b) => {
@@ -64,7 +64,7 @@ const AlertsJobs = () => {
     if (sortOption === 'postedDate') {
       return new Date(b.postedDate) - new Date(a.postedDate);
     }
-    return filteredAlerts;
+    return 0; // Default sorting
   });
 
   return (
@@ -105,7 +105,13 @@ const AlertsJobs = () => {
                   <tr>
                     <th className="py-2 px-4 border-b">Job Title</th>
                     <th className="py-2 px-4 border-b">Skills</th>
+                    <th className="py-2 px-4 border-b">Experience</th>
+                    <th className="py-2 px-4 border-b">Qualification</th>
+                    <th className="py-2 px-4 border-b">Career Level</th>
+                    <th className="py-2 px-4 border-b">Location</th>
                     <th className="py-2 px-4 border-b">Posted Date</th>
+                    <th className="py-2 px-4 border-b">Max Applicants</th>
+                    <th className="py-2 px-4 border-b">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -114,8 +120,8 @@ const AlertsJobs = () => {
                       <td className="py-2 px-4 border-b">
                         <div className="flex items-center">
                           <img
-                            src={`https://static.wixstatic.com/media/5a2bf8_4efbddfdec0c49ed94d0dbf3168d6863~mv2.png/v1/fill/w_460,h_460,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/PROFILE%20LOGO%20white%20letter.png`}
-                            alt="Profile"
+                            src={alert.images[0]}
+                            alt={alert.title}
                             className="w-12 h-12 rounded-full mr-4"
                           />
                           <div className="ml-4">
@@ -123,21 +129,27 @@ const AlertsJobs = () => {
                               {alert.title}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {alert.company}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {alert.location}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {alert.salary}
+                              {alert.description}
                             </div>
                           </div>
                         </div>
                       </td>
+                      <td className="py-2 px-4 border-b">{alert.skills}</td>
+                      <td className="py-2 px-4 border-b">{alert.experience}</td>
                       <td className="py-2 px-4 border-b">
-                        {alert.skills.join(', ')}
+                        {alert.qualification}
                       </td>
+                      <td className="py-2 px-4 border-b">
+                        {alert.careerLevel}
+                      </td>
+                      <td className="py-2 px-4 border-b">{alert.location}</td>
                       <td className="py-2 px-4 border-b">{alert.postedDate}</td>
+                      <td className="py-2 px-4 border-b">
+                        {alert.maxApplicants}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {alert.isClosed ? 'Closed' : 'Open'}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
