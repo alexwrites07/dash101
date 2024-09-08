@@ -18,7 +18,7 @@ const UpdatePassword = () => {
 
   // API endpoint
   const apiUrl = 'https://backend.akshayy.tech/update_password';
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDMyYjliZTk5ZWFlMTM2ODkzNDg5NyIsImlhdCI6MTcyNTExNTI5M30.TLmHeB5M1M9fbnp50agdf4HEMP_AGu4JNJSWwyzI6t4';
   const tutorId = '669e250f010b0852a754e9bf';
 
   const handleSubmit = async (e) => {
@@ -39,9 +39,7 @@ const UpdatePassword = () => {
       const response = await axios.post(
         apiUrl,
         {
-          userId: tutorId,        // Include the tutorId in the request body if needed by the API
-          newPassword: newPassword,
-          oldPassword: oldPassword, // Include the old password for verification
+          newPassword: newPassword, // Pass only the new password as required by the API
         },
         {
           headers: {

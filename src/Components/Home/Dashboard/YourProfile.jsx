@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Link } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Map from './Movable';
@@ -41,6 +41,13 @@ const [longitude, setLongitude] = useState('');
 const [error, setError] = useState(null); // To handle errors if geolocation fails
 const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
 const [coordinates, setCoordinates] = useState(["Set to your Location","Set to your Location"]);
+
+
+
+
+const [dob, setDOB] = useState('');
+
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const type = localStorage.getItem('type');
@@ -89,6 +96,28 @@ const [coordinates, setCoordinates] = useState(["Set to your Location","Set to y
           setImage(data.image || '');
           // setImage(data.profileImageURL || '');
           setCoordinates(data.location?.coordinates || '');
+
+
+
+
+
+          setFullName(data.fullName);
+          setEmail(data.email);
+          setDOB(data.dob || '');
+          setGender(data.gender);
+          setQualification(data.highestQualification);
+          setExperienceTime(data.totalExperience);
+          setLanguages(data.languages || []);
+          setSalary(data.salary || '');
+          setCategories(data.tags || []);
+          setDescription(data.description);
+          setContactAddress(data.location.address);
+          setLocation(data.location.city);
+          setMapsLocation(data.location.address);
+          setLatitude(data.location.coordinates[1]);
+          setLongitude(data.location.coordinates[0]);
+          setImage(data.image || '');
+          setIntroductionVideo(data.introductionVideo || '');
           
         } else {
           console.error('Failed to fetch data');
@@ -100,12 +129,30 @@ const [coordinates, setCoordinates] = useState(["Set to your Location","Set to y
 
     fetchData();
   }, []); // Re-run the effect when the type changes
+  const mapSrc = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14601.43043416873!2d${longitude}!3d${latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1720685384704!5m2!1sen!2sin`;
 
   const addNote = (note, setNotes, setNote) => {
     if (note.trim() !== '') {
       setNotes((prevNotes) => [...prevNotes, note]);
       setNote('');
     }
+  };
+
+ // Handler to update latitude state based on user input
+ const handleLatitudeChange = (e) => {
+  const newLatitude = parseFloat(e.target.value) || 0;
+  setLatitude(newLatitude);
+};
+
+// Handler to update longitude state based on user input
+const handleLongitudeChange = (e) => {
+  const newLongitude = parseFloat(e.target.value) || 0;
+  setLongitude(newLongitude);
+};
+
+
+  const editimage = () => {
+    alert('image edited!');
   };
   const handleCoordinatesChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
@@ -123,7 +170,25 @@ const [coordinates, setCoordinates] = useState(["Set to your Location","Set to y
   const addSocialNetwork = () => {
     setSocialNetworks([...socialNetworks, { network: '', url: '' }]);
   };
-
+  const fetchUserCoordinates = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLatitude(latitude.toString());
+          setLongitude(longitude.toString());
+          setError(null); // Clear any previous errors
+        },
+        (error) => {
+          console.error('Error fetching user coordinates:', error);
+          setError('Failed to fetch location. Please allow location access and try again.');
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+      setError('Geolocation is not supported by this browser.');
+    }
+  };
   const removeSocialNetwork = (index) => {
     const newSocialNetworks = [...socialNetworks];
     newSocialNetworks.splice(index, 1);
@@ -638,6 +703,299 @@ const [coordinates, setCoordinates] = useState(["Set to your Location","Set to y
                 </div>
                 </div></div>
                 )}
+                {endpoint==='organization' && 
+                 <div className="flex flex-col lg:flex-row min-h-screen">
+                 <Header />
+                 <div className="flex-1 bg-gray-100">
+                   <Sidebar />
+                 <div className="">
+          <h1 className="bold my-4"><em>Employer Profile</em></h1>
+               <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
+                 <div className="flex mb-8">
+                   <img
+                     src={image}
+                     alt="Profile"
+                     className="w-32 h-32 rounded-full"
+                   />
+                 </div>
+                 <button
+                   onClick={editimage}
+                   className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
+                 >
+                   Edit
+                 </button>
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+                     <input
+                       type="text"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={fullName}
+                       onChange={(e) => setFullName(e.target.value)}
+                     />
+                   </div>
+       
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
+                     <input
+                       type="text"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={dob}
+                       onChange={(e) => setDOB(e.target.value)}
+                     />
+                   </div>
+       
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+                     <select
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={gender}
+                       onChange={(e) => setGender(e.target.value)}
+                     >
+                       <option value="">Select Gender</option>
+                       <option value="male">Male</option>
+                       <option value="female">Female</option>
+                       <option value="other">Other</option>
+                     </select>
+                   </div>
+       
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Age</label>
+                     <select
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={age}
+                       onChange={(e) => setAge(e.target.value)}
+                     >
+                       <option value="">Select Age Range</option>
+                       <option value="18-20">18-20</option>
+                       <option value="20-25">20-25</option>
+                       <option value="25-30">25-30</option>
+                       <option value="30-35">30-35</option>
+                       <option value="35-40">35-40</option>
+                       <option value="40-45">40-45</option>
+                       <option value="45-50">45-50</option>
+                       <option value="50-55">50-55</option>
+                       <option value="55-60">55-60</option>
+                     </select>
+                   </div>
+       
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                     <input
+                       type="email"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={email}
+                       onChange={(e) => setEmail(e.target.value)}
+                     />
+                   </div>
+       
+                   <div>
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
+                     <select
+                        className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                        value={qualification}
+                        onChange={(e) => setQualification(e.target.value)}
+                     >
+                       <option value="">Select Qualification</option>
+                       <option value="Certificate">Certificate</option>
+                       <option value="Associate Degree">Associate Degree</option>
+                       <option value="Bachelor Degree">Bachelor Degree</option>
+                       <option value="Master's Degree">Master's Degree</option>
+                       <option value="Doctorate Degree">Doctorate Degree</option>
+                     </select>
+                   </div>
+       
+                   <div>
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Experience Time</label>
+                     <select
+                         className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                         value={experienceTime}
+                         onChange={(e) => setExperienceTime(e.target.value)}
+                     >
+                       <option value="">Experience</option>
+                       <option value="Fresher">Fresher</option>
+                       <option value="1 Year">1 Year</option>
+                       <option value="2 Year">2 Year</option>
+                       <option value="3 Year">3 Year</option>
+                       <option value="4 Year">4 Year</option>
+                       <option value="5 Year">5 Year</option>
+                       <option value="6 Year">6 Year</option>
+                       <option value="7+ Year">7+ Year</option>
+                     </select>
+                   </div>
+       
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Languages</label>
+                     <input
+                       type="text"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={languages.join(', ')}
+                       onChange={(e) => setLanguages(e.target.value.split(', '))}
+                     />
+                   </div>
+       
+                   <div>
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
+                     <select
+                         className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                         value={salaryType}
+                         onChange={(e) => setSalaryType(e.target.value)}
+                     >
+                       <option value="">Salary Type</option>
+                       <option value="Hourly">Hourly</option>
+                       <option value="Daily">Daily</option>
+                       <option value="Weekly">Weekly</option>
+                       <option value="Monthly">Monthly</option>
+                       <option value="Yearly<">Yearly</option>
+                     </select>
+                   </div>
+       
+                   <div>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Salary (₹)</label>
+                     <input
+                       type="text"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={salary}
+                       onChange={(e) => setSalary(e.target.value)}
+                     />
+                   </div>
+       
+                   <div className="lg:col-span-2">
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Categories</label>
+                     <input
+                       type="text"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       value={categories.join(', ')}
+                       onChange={(e) => setCategories(e.target.value.split(', '))}
+                     />
+                   </div>
+                 </div>
+       
+                 <button
+                   onClick={savePersonalInfo}
+                   className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+                 >
+                   Save Personal Information
+                 </button>
+       
+                 <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Job Title</label>
+                   <input
+                     type="text"
+                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                     value={jobTitle}
+                     onChange={(e) => setJobTitle(e.target.value)}
+                   />
+       
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                   <textarea
+                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                     value={description}
+                     onChange={(e) => setDescription(e.target.value)}
+                   ></textarea>
+                 </div>
+       
+                 <button
+                   onClick={savePersonalInfo}
+                   className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+                 >
+                   Save Job Information
+                 </button>
+               </div>  
+       
+             <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
+                 <label className="block text-gray-700 text-sm font-bold mb-2">Social Network</label>
+                 {socialNetworks.map((socialNetwork, index) => (
+                   <div key={index} className="mb-4">
+                     <div className="mb-2">
+                       <label className="block text-gray-700 text-sm font-bold mb-2">Network {index + 1}</label>
+                       <select
+                         name="network"
+                         className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+                         value={socialNetwork.network}
+                         onChange={(event) => handleNetworkChange(index, event)}
+                       >
+                         <option value="" disabled>Select Network</option>
+                         {networkOptions.map((option) => (
+                           <option key={option} value={option}>{option}</option>
+                         ))}
+                       </select>
+                     </div>
+                     {socialNetwork.network && (
+                       <>
+                         <div className="mb-2">
+                           <label className="block text-gray-700 text-sm font-bold mb-2">{socialNetwork.network}</label>
+                           <input
+                             type="text"
+                             name="facebook"
+                             placeholder={`${socialNetwork.network} Username`}
+                             className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+                             value={socialNetwork.facebook}
+                             onChange={(event) => handleNetworkChange(index, event)}
+                           />
+                         </div>
+                         <div className="mb-2">
+                           <label className="block text-gray-700 text-sm font-bold mb-2">URL</label>
+                           <input
+                             type="text"
+                             name="url"
+                             placeholder="URL"
+                             className="w-full p-2 border border-gray-300 rounded-lg mb-2"
+                             value={socialNetwork.url}
+                             onChange={(event) => handleNetworkChange(index, event)}
+                           />
+                         </div>
+                       </>
+                     )}
+                     <button
+                       onClick={() => removeSocialNetwork(index)}
+                       className="py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 mb-4"
+                     >
+                       Remove Network
+                     </button>
+                   </div>
+                 ))}
+                 <button
+                   onClick={addSocialNetwork}
+                   className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                 >
+                   Add Another Network
+                 </button>
+               </div>
+       
+                 <button
+                   onClick={savePersonalInfo}
+                   className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+                 >
+                   Save Social Network Information
+                 </button>
+                 <button
+                   onClick={savePersonalInfo}
+                   className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+                 >
+                   Save Contact Information
+                 </button>
+       
+                 <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
+                   <input
+                     type="text"
+                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                     value={introductionVideo}
+                     onChange={(e) => setIntroductionVideo(e.target.value)}
+                   />
+                 </div>
+       
+                 <button
+                   onClick={savePersonalInfo}
+                   className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+                 >
+                   Save Introduction Video
+                 </button>
+               </div>
+               </div></div>
+               }
      <button
                   onClick={savePersonalInfo2}
                   className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
@@ -746,3 +1104,4 @@ const [coordinates, setCoordinates] = useState(["Set to your Location","Set to y
   
 
 export default YourProfile;
+

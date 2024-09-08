@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";  // Import axios for API calls
 import { FaEye, FaEnvelope, FaTrash, FaMoneyBillAlt } from "react-icons/fa"; // Importing icons for actions
 import { HiLocationMarker, HiCash, HiTrash } from "react-icons/hi"; // Importing location and cash icons
 import Sidebar from "./SidebarEmployer";
@@ -6,43 +7,42 @@ import Header from "./HeaderEmployer";
 
 const ShortlistJobs = () => {
   // Mocked shortlisted candidates data
-  const [shortlistedCandidates, setShortlistedCandidates] = useState([
-    {
-      id: 1,
-      name: "vikashpanjiyar2612",
-      title: "Home Tutor, Online Tutor, School Tutor",
-      location: "Patna",
-      salary: "₹100,000 / month",
-      date: "2023-08-05",
-    },
-    {
-      id: 2,
-      name: "Dominikus Yuri",
-      title: "Customer",
-      location: "New York",
-      salary: "₹750 / month",
-      date: "2023-08-03",
-    },
-    {
-      id: 3,
-      name: "John Doe",
-      title: "Software Engineer",
-      location: "San Francisco",
-      salary: "₹150,000 / month",
-      date: "2023-08-04",
-    },
-    {
-      id: 4,
-      name: "Jane Smith",
-      title: "Graphic Designer",
-      location: "Los Angeles",
-      salary: "₹80,000 / month",
-      date: "2023-08-02",
-    },
-  ]);
+  const [shortlistedCandidates, setShortlistedCandidates] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("default");
+
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM";  // Replace with your actual token
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://backend.akshayy.tech/bookmarks', {
+          headers: {
+            Authorization: `Bearer ${token}`  // Pass the token for authorization
+          }
+        });
+        
+        // Log fetched data in a more detailed way
+        console.log("Fetched Data:", JSON.stringify(response.data, null, 2));
+        
+        const formattedData = response.data.map((candidate, index) => ({
+          id: candidate._id,  // Assuming _id is the unique identifier for each candidate
+          name: candidate.fullName || "No Name", // Ensure there is a name
+          title: candidate.subjectsTaught ? candidate.subjectsTaught.join(", ") : "No Title",  // Join subjects taught as title or default to "No Title"
+          location: candidate.location?.city || "Unknown Location",  // Handle missing locations
+          salary: `${candidate.jobAlerts?.minExpectedSalary?.value || 0} - ${candidate.jobAlerts?.maxExpectedSalary?.value || 0} / year`,
+          date: candidate.timestamp || new Date().toISOString(),  // Use timestamp or fallback to current date
+        }));
+  
+        setShortlistedCandidates(formattedData);  // Set the formatted data in state
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   // Search handler
   const handleSearch = (e) => {
@@ -66,13 +66,30 @@ const ShortlistJobs = () => {
     // Implement actual send message logic here
   };
 
-  // Remove candidate handler
-  const handleRemoveCandidate = (id) => {
-    const updatedCandidates = shortlistedCandidates.filter(
-      (candidate) => candidate.id !== id
-    );
-    setShortlistedCandidates(updatedCandidates);
+  const handleRemoveCandidate = async (id) => {
+    try {
+      const response = await axios.delete(`https://backend.akshayy.tech/bookmark`, {
+        data: { employeeId: id },  // Send employerId in the body of the request
+        headers: {
+          Authorization: `Bearer ${token}`  // Pass the token for authorization
+        }
+      });
+      
+      // If the deletion is successful, update the frontend state
+      if (response.status === 200) {
+        const updatedCandidates = shortlistedCandidates.filter(
+          (candidate) => candidate.id !== id
+        );
+        setShortlistedCandidates(updatedCandidates);
+        console.log(`Deleted candidate with ID: ${id}`);
+      } else {
+        console.error("Failed to delete candidate");
+      }
+    } catch (error) {
+      console.error("Error deleting candidate: ", error);
+    }
   };
+  
 
   // Filter candidates based on search query
   const filteredCandidates = shortlistedCandidates.filter(

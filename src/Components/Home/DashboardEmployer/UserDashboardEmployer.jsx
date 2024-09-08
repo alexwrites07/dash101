@@ -1,70 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect }  from 'react';
 import Sidebar from './SidebarEmployer';
 import Header from './HeaderEmployer';
-import { FaBriefcase, FaEye, FaStar, FaUserCheck, FaBell,FaBookmark,FaMoneyBillAlt,FaMapMarkerAlt } from 'react-icons/fa';
-
-// Import necessary modules from Chart.js
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  CategoryScale
-} from 'chart.js';
-
-import { Line } from 'react-chartjs-2';
-
-// Register the necessary components
-ChartJS.register(
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale, // Register the CategoryScale for x-axis
-  Title,
-  Tooltip,
-  Legend
-);
-
-// Sample data for the chart
-const graphData = {
-  labels: [
-    'July 12, 2024',
-    'July 14, 2024',
-    'July 16, 2024',
-    'July 18, 2024',
-    'July 20, 2024',
-    'July 22, 2024',
-    'July 24, 2024',
-    'July 26, 2024',
-  ],
-  datasets: [
-    {
-      label: 'Profile Views',
-      data: [6, 1, 2, 0, 3, 0, 5, 1],
-      fill: true,
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      borderColor: 'rgba(54, 162, 235, 1)',
-      pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-    },
-  ],
-};
-
-// Options for the chart
-const graphOptions = {
-  scales: {
-    x: {
-      type: 'category', // Specify type as 'category' for x-axis
-    },
-    y: {
-      beginAtZero: true,
-    },
-  },
-};
+import { FaBriefcase, FaEye, FaStar, FaUserCheck, FaBell, FaBookmark, FaMoneyBillAlt, FaMapMarkerAlt } from 'react-icons/fa';
 
 const UserDashboard = () => {
+  const [notifications, setNotifications] = useState([]);
   const statistics = {
     postedJobs: 1,
     review: 0,
@@ -73,14 +13,50 @@ const UserDashboard = () => {
     profileViews: 0,
   };
 
-  const notifications = [
-    { message: 'You are invited to apply for the job Physics Tutor for IIT JEE.', time: '6 days ago' },
-    { message: 'The application is undo approved on your job Chemistry Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
-    { message: 'The application is approved on your job Chemistry Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
-    { message: 'The application is removed on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
-    { message: 'The application is approved on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
-    { message: 'A new meeting is created on the job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
-  ];
+  // const notifications = [
+  //   { message: 'You are invited to apply for the job Physics Tutor for IIT JEE.', time: '6 days ago' },
+  //   { message: 'The application is undo approved on your job Chemistry Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
+  //   { message: 'The application is approved on your job Chemistry Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
+  //   { message: 'The application is removed on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
+  //   { message: 'The application is approved on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
+  //   { message: 'A new meeting is created on the job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
+  // ];
+   
+  // Calculate how many days ago a date is from now
+   const calculateDaysAgo = (date) => {
+    const now = new Date();
+    const createdDate = new Date(date);
+    const diffTime = Math.abs(now - createdDate);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('https://backend.akshayy.tech/notifications', {
+          headers: {
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM',
+          },
+        });
+        const data = await response.json();
+        
+        // Sort notifications by the most recent first
+        const sortedNotifications = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        // Add "time ago" field to each notification
+        const notificationsWithTimeAgo = sortedNotifications.map((notification) => ({
+          ...notification,
+          timeAgo: `${calculateDaysAgo(notification.createdAt)} days ago`,
+        }));
+
+        setNotifications(notificationsWithTimeAgo);
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   const jobsAppliedRecently = [
     {
@@ -92,6 +68,49 @@ const UserDashboard = () => {
       salary: '₹30,000 - ₹35,000 / month',
       urgency: 'Urgent',
       Time: 'Full Time',
+    },
+  ];
+
+  const profileViews = [
+    {
+      profilePic: 'https://randomuser.me/api/portraits/men/32.jpg',
+      username: 'John Doe',
+      role: 'Tutor',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/women/44.jpg',
+      username: 'Jane Smith',
+      role: 'Employer',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/men/52.jpg',
+      username: 'Mike Johnson',
+      role: 'Student',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/women/68.jpg',
+      username: 'Emily Brown',
+      role: 'Tutor',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/men/73.jpg',
+      username: 'David Wilson',
+      role: 'Employer',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/women/23.jpg',
+      username: 'Sophia Lee',
+      role: 'Student',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/men/83.jpg',
+      username: 'Chris Evans',
+      role: 'Tutor',
+    },
+    {
+      profilePic: 'https://randomuser.me/api/portraits/women/38.jpg',
+      username: 'Anna Scott',
+      role: 'Employer',
     },
   ];
 
@@ -112,47 +131,57 @@ const UserDashboard = () => {
              
             {/* Application Statistics */}
             <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-                  <h2 className="text-2xl font-semibold mb-4">Applications Statistics</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
-                      <FaBriefcase className="text-blue-500 text-2xl mr-4" />
-                      <div>
-                        <h3 className="text-xl font-semibold">Posted Jobs</h3>
-                        <p className="text-lg">{statistics.postedJobs}</p>
-                      </div>
-                    </div>
-                    <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
-                      <FaStar className="text-blue-500 text-2xl mr-4" />
-                      <div>
-                        <h3 className="text-xl font-semibold">Review</h3>
-                        <p className="text-lg">{statistics.review}</p>
-                      </div>
-                    </div>
-                    <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
-                      <FaEye className="text-blue-500 text-2xl mr-4" />
-                      <div>
-                        <h3 className="text-xl font-semibold">Application</h3>
-                        <p className="text-lg">{statistics.application}</p>
-                      </div>
-                    </div>
-                    <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
-                      <FaUserCheck className="text-blue-500 text-2xl mr-4" />
-                      <div>
-                        <h3 className="text-xl font-semibold">Shortlisted</h3>
-                        <p className="text-lg">{statistics.shortlisted}</p>
-                      </div>
-                    </div>
+              <h2 className="text-2xl font-semibold mb-4">Applications Statistics</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <FaBriefcase className="text-blue-500 text-2xl mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">Posted Jobs</h3>
+                    <p className="text-lg">{statistics.postedJobs}</p>
                   </div>
                 </div>
+                <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <FaStar className="text-blue-500 text-2xl mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">Review</h3>
+                    <p className="text-lg">{statistics.review}</p>
+                  </div>
+                </div>
+                <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <FaEye className="text-blue-500 text-2xl mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">Application</h3>
+                    <p className="text-lg">{statistics.application}</p>
+                  </div>
+                </div>
+                <div className="bg-blue-100 p-4 rounded-lg shadow-sm flex items-center">
+                  <FaUserCheck className="text-blue-500 text-2xl mr-4" />
+                  <div>
+                    <h3 className="text-xl font-semibold">Shortlisted</h3>
+                    <p className="text-lg">{statistics.shortlisted}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Main Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column (Graph and Stats) */}
+              {/* Left Column (Profile Views Card) */}
               <div className="lg:col-span-2">
-                {/* Profile Views Graph */}
+                {/* Profile Views Card */}
                 <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-                  <h2 className="text-2xl font-semibold mb-4">Your Profile Views</h2>
-                  <Line data={graphData} options={graphOptions} />
+                  <h2 className="text-2xl font-semibold mb-4">Total Number of Profile Views: 8</h2>
+                  <div className="space-y-2 max-h-80 overflow-y-auto">
+                    {profileViews.map((view, index) => (
+                      <div key={index} className="bg-gray-100 p-4 rounded-lg flex items-center">
+                        <img src={view.profilePic} alt={`${view.username} Profile`} className="w-12 h-12 rounded-full mr-4" />
+                        <div>
+                          <h3 className="text-xl font-semibold">{view.username}</h3>
+                          <p className="text-sm text-gray-600">{view.role}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -161,14 +190,13 @@ const UserDashboard = () => {
                 {/* Notifications */}
                 <div className="bg-white p-4 rounded-lg shadow-md mb-6">
                   <h2 className="text-2xl font-semibold mb-4">Notifications</h2>
-                  {/* Add a fixed height and overflow-y for scrolling */}
                   <ul className="space-y-2 max-h-80 overflow-y-auto">
                     {notifications.map((notification, index) => (
                       <li key={index} className="bg-gray-100 p-3 rounded-lg flex items-start">
                         <FaBell className="text-blue-500 text-xl mr-4 mt-1" />
                         <div>
                           <p>{notification.message}</p>
-                          <p className="text-sm text-gray-500">{notification.time}</p>
+                          <p className="text-sm text-gray-500">{notification.timeAgo}</p>
                         </div>
                       </li>
                     ))}
@@ -177,8 +205,8 @@ const UserDashboard = () => {
               </div>
             </div>
 
-                {/* Jobs Applied Recently */}
-                <div className="bg-white p-4 rounded-lg shadow-md mb-6 w-full">
+           {/* Jobs Applied Recently */}
+           <div className="bg-white p-4 rounded-lg shadow-md mb-6 w-full">
                   <h2 className="text-2xl font-semibold mb-4">Jobs Applied Recently</h2>
                   <div className="space-y-4">
                     {jobsAppliedRecently.map((job, index) => (

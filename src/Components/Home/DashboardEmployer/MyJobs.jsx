@@ -1,37 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from "./SidebarEmployer";
 import Header from "./HeaderEmployer";
-import { FaMapMarkerAlt } from 'react-icons/fa'; // Import location icon from react-icons
+import { FaMapMarkerAlt, FaPencilAlt, FaTimes, FaLock, FaUnlock } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const ManageJobs = () => {
-  // Sample job data with additional tags
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: 'Chemistry Tutor for IIT JEE',
-      location: 'Patna',
-      applicants: 2,
-      createdDate: '2024-07-13',
-      expiryDate: '2024-09-11',
-      status: 'Published',
-      featured: true, // Added featured status
-      urgent: false, // Added urgent status
-    },
-    {
-      id: 2,
-      title: 'Physics Tutor for IIT JEE',
-      location: 'Patna',
-      applicants: 0,
-      createdDate: '2024-07-02',
-      expiryDate: '2024-08-11',
-      status: 'Published',
-      featured: false, // Added featured status
-      urgent: true, // Added urgent status
-    },
-  ]);
-
+  const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch('https://backend.akshayy.tech/postedJobs', {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8',
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch job data');
+        }
+
+        const data = await response.json();
+        setJobs(data);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -41,34 +43,54 @@ const ManageJobs = () => {
     setSortOption(e.target.value);
   };
 
-  // Filter and sort jobs based on search query and selected sort option
+  const handleEditJob = (job) => {
+    navigate(`/edit-job/`+job.job._id);
+  };
+
+  const handleRemoveJob = async (jobId) => {
+    try {
+      const response = await fetch(`https://backend.akshayy.tech/deleteJob/${jobId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8',
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json(); 
+        throw new Error(`Failed to delete the job: ${errorData.message || response.statusText}`);
+      }
+  
+      // Update the job list after successful deletion
+      setJobs((prevJobs) => prevJobs.filter((job) => job.job._id !== jobId));
+    } catch (error) {
+      console.error('Error deleting job:', error);
+    }
+  };
+
+  const handleLockJob = (jobId) => {
+    const updatedJobs = jobs.map((job) => {
+      if (job.job._id === jobId) {
+        return { ...job, locked: !job.locked };
+      }
+      return job;
+    });
+    setJobs(updatedJobs);
+  };
+
   const filteredJobs = jobs
     .filter((job) =>
-      job.title.toLowerCase().includes(searchQuery.toLowerCase())
+      job.job.title.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
       if (sortOption === 'newest') {
-        return new Date(b.createdDate) - new Date(a.createdDate);
+        return new Date(b.job.lastDateToApply) - new Date(a.job.lastDateToApply);
       } else if (sortOption === 'oldest') {
-        return new Date(a.createdDate) - new Date(b.createdDate);
+        return new Date(a.job.lastDateToApply) - new Date(b.job.lastDateToApply);
       }
       return 0;
     });
-
-  const handleLockJob = (jobId) => {
-    console.log('Lock job:', jobId);
-    // Implement lock job logic
-  };
-
-  const handleEditJob = (jobId) => {
-    console.log('Edit job:', jobId);
-    // Implement edit job logic
-  };
-
-  const handleRemoveJob = (jobId) => {
-    console.log('Remove job:', jobId);
-    // Implement remove job logic
-  };
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -112,41 +134,35 @@ const ManageJobs = () => {
                 </thead>
                 <tbody>
                   {filteredJobs.map((job) => (
-                    <tr key={job.id}>
+                    <tr key={job.job._id}>
                       <td className="py-2 px-4 border-b">
-                        <p className="font-semibold">{job.title}</p>
-                        {job.featured && <span className="bg-yellow-200 text-yellow-800 px-2 py-1 text-sm rounded-full ml-1">Featured</span>}
-                        {job.urgent && <span className="bg-red-200 text-red-800 px-2 py-1 text-sm rounded-full ml-1">Urgent</span>}
+                        <p className="font-semibold">{job.job.title}</p>
+                        {job.job.tags.find(tag => tag.active && tag.name === 'featured') && <span className="bg-yellow-200 text-yellow-800 px-2 py-1 text-sm rounded-full ml-1">Featured</span>}
+                        {job.job.tags.find(tag => tag.active && tag.name === 'urgent') && <span className="bg-red-200 text-red-800 px-2 py-1 text-sm rounded-full ml-1">Urgent</span>}
                         <p className="text-gray-600 flex items-center">
                           <FaMapMarkerAlt className="mr-1 text-gray-500" />
-                          {job.location}
+                          {`${job.job.location.city}, ${job.job.location.state}`}
                         </p>
                       </td>
-                      <td className="py-2 px-4 border-b">{job.applicants} Applicant(s)</td>
+                      <td className="py-2 px-4 border-b">{job.totalApplicants} Applicant(s)</td>
                       <td className="py-2 px-4 border-b">
-                        Created: {new Date(job.createdDate).toLocaleDateString()}
+                        Created: {new Date(job.job.createdAt).toLocaleDateString()}
                         <br />
-                        Expiry date: {new Date(job.expiryDate).toLocaleDateString()}
+                        Expiry date: {new Date(job.job.lastDateToApply).toLocaleDateString()}
                       </td>
-                      <td className="py-2 px-4 border-b">{job.status}</td>
+                      <td className="py-2 px-4 border-b">{job.job.tags.find(tag => tag.active)?.name}</td>
                       <td className="py-2 px-4 border-b">
-                        <button
-                          onClick={() => handleLockJob(job.id)}
-                          className="text-yellow-600 hover:text-yellow-800 mr-2"
-                        >
-                          🔒
+                        <button 
+                            onClick={() => handleLockJob(job.job._id)}
+                            className={`mr-2 ${job.locked ? 'text-green-600' : 'text-blue-600'} hover:${job.locked ? 'text-green-800' : 'text-blue-800'}`}
+                          >
+                            {job.locked ? <FaUnlock /> : <FaLock />}
                         </button>
-                        <button
-                          onClick={() => handleEditJob(job.id)}
-                          className="text-blue-600 hover:text-blue-800 mr-2"
-                        >
-                          ✎
-                        </button>
-                        <button
-                          onClick={() => handleRemoveJob(job.id)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          ✖
+                        <button onClick={() => handleEditJob(job)} className="mr-2 text-blue-500">
+                            <FaPencilAlt />
+                          </button>
+                        <button onClick={() => handleRemoveJob(job.job._id)} className="text-blue-500">
+                            <FaTimes />
                         </button>
                       </td>
                     </tr>

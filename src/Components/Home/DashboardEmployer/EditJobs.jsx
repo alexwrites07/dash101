@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from "./SidebarEmployer";
 import Header from "./HeaderEmployer";
+import { useParams, useNavigate } from 'react-router-dom';
 
-const SubmitJobPost = () => {
+const EditJobs = () => {
   // State for form fields
+  // fetch jobId from route 
+  
+  const { jobid } = useParams(); // Get jobId from URL params
+  console.log("JobId: " + jobid);
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8';
   const [featuredImage, setFeaturedImage] = useState(null);
   const [jobTitle, setJobTitle] = useState('');
   const [jobDescription, setJobDescription] = useState('');
@@ -28,6 +34,68 @@ const SubmitJobPost = () => {
   const [longitude, setLongitude] = useState('');
   const [mapSrc, setMapSrc] = useState('');
   const [error, setError] = useState('');
+  const [mapsLocation, setMapsLocation] = useState('');
+
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  // Fetch job data from backend when the component mounts
+  // Fetch job data from backend when the component mounts
+useEffect(() => {
+  const fetchJobDetails = async () => {
+    try {
+      console.log("Fetching job details for job ID:", jobid); // Add debug logs
+      
+      const response = await fetch(
+        `https://backend.akshayy.tech/getJobs/${jobid}`, // Correct GET endpoint
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Use your actual token
+          },
+        }
+      );
+      
+      // Check the status of the response
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response status:', response.status);
+        console.error('Response error message:', errorText);
+        throw new Error(`Failed to fetch job details. Status: ${response.status}, Message: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Fetched job data:', data); // Log the fetched data to check the response
+
+      // Set the state with the fetched data
+      setJobTitle(data.job?.title || '');
+      setJobDescription(data.job?.description || '');
+      setCategory(data.job?.category || '');
+      setJobType(data.job?.workDetails?.mode || '');
+      setTags(data.job?.tags?.map(tag => tag.name).join(', ') || '');
+      setGender(data.job?.gender || '');
+      setJobApplyType(data.job?.applyType || '');
+      setExternalURL(data.job?.externalURL || '');
+      setApplyEmail(data.job?.applyEmail || '');
+      setMinSalary(data.job?.salary?.min || '');
+      setMaxSalary(data.job?.salary?.max || '');
+      setSalaryType(data.job?.salary?.period || '');
+      setExperience(data.job?.experience || '');
+      setCareerLevel(data.job?.careerLevel || '');
+      setQualification(data.job?.qualification || '');
+      setIntroductionVideo(data.job?.introductionVideo || '');
+      setApplicationDeadline(data.job?.lastDateToApply || '');
+      setFriendlyAddress(data.job?.location?.city || '');
+      setLatitude(data.job?.location?.coordinates[1] || '');
+      setLongitude(data.job?.location?.coordinates[0] || '');
+      updateMapSrc(data.job?.location?.coordinates[1], data.job?.location?.coordinates[0]);
+
+    } catch (error) {
+      console.error('Error fetching job details:', error.message); // Log the specific error
+      setError(`Error fetching job details: ${error.message}`);
+    }
+  };
+
+  fetchJobDetails();
+}, [jobid]);
 
   // Handlers for location
   const handleLatitudeChange = (e) => {
@@ -72,68 +140,60 @@ const SubmitJobPost = () => {
   const handlePhotoUpload = (e) => {
     setPhotos(e.target.files);
   };
-
+  
   const saveJobPost = async () => {
     const payload = {
-      title: jobTitle,
-      location: {
-        type: "Point",
-        coordinates: [parseFloat(longitude), parseFloat(latitude)],
-        city: friendlyAddress,
-        state: "CA", // Adjust as needed
-        pinCode: "Approximate PinCode", // Adjust as needed
-      },
+      description: jobDescription,
+      gender: gender,
       salary: {
-        max: parseInt(maxSalary, 10),
-        min: parseInt(minSalary, 10),
+        min: minSalary,
+        max: maxSalary,
         period: salaryType,
       },
-      workDetails: {
-        commitment: jobType,
-        mode: "In-person", // Adjust as needed
+      location: {
+        city: friendlyAddress,
+        coordinates: [parseFloat(longitude), parseFloat(latitude)],
       },
+      title: jobTitle,
       experience: experience,
-      gender: gender,
       qualification: qualification,
       careerLevel: careerLevel,
-      description: jobDescription,
-      keyResponsibilities: ["Prepare lesson plans", "Conduct tutoring sessions"], // Adjust as needed
-      skillAndExperience: ["Calculus", "Algebra"], // Adjust as needed
-      images: [], // Adjust with image URLs if applicable
-      maxApplicants: 50, // Adjust as needed
+      tags: tags.split(',').map(tag => ({ name: tag.trim(), active: true })), // Assuming each tag is active
       lastDateToApply: applicationDeadline,
-      tags: tags.split(',').map(tag => ({ name: tag.trim(), active: true })),
-      employerId: "66979a00d4e9a63603ba044e" // Replace with the actual employer ID
     };
   
-    console.log(payload); // Log the payload for debugging
-  
     try {
-      const response = await fetch('https://backend.akshayy.tech/createJob', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `https://backend.akshayy.tech/editJob/${jobid}`, // Endpoint to edit job
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Pass the token for authorization
+          },
+          body: JSON.stringify(payload), // Send the payload as JSON
+        }
+      );
   
       if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Failed to create job: ${errorMessage}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to update job. Status: ${response.status}, Message: ${errorText}`);
       }
   
       const data = await response.json();
-      console.log('Job Created:', data);
+      console.log('Job updated successfully:', data);
   
-      // Optionally, you can show a success message or redirect the user
+      // Redirect to '/my-jobs-employer' after successful update
+      navigate('/my-jobs-employer'); // Redirect to "My Jobs" page
+      // Add any success message or redirection here if necessary
+      // e.g., navigate to another page or show a success message
     } catch (error) {
-      console.error('Error creating job:', error);
-      // Optionally, you can show an error message to the user
+      console.error('Error updating job:', error);
+      setError(`Error updating job: ${error.message}`);
     }
   };
   
-  
+
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
@@ -141,7 +201,7 @@ const SubmitJobPost = () => {
       <div className="flex-1 bg-gray-100">
         <Sidebar />
         <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 ">
-          <h1 className="text-3xl font-bold mb-8 text-gray-900">Post a New Job</h1>
+          <h1 className="text-3xl font-bold mb-8 text-gray-900">Edit Job</h1>
           <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4 text-gray-900">Job Details</h2>
 
@@ -411,6 +471,14 @@ const SubmitJobPost = () => {
               />
             </div>
 
+            <label className="block text-gray-700 text-sm font-bold mb-2">Maps Location</label>
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={mapsLocation}
+              onChange={(e) => setMapsLocation(e.target.value)}
+            />
+
             <div className="relative mb-4">
                   <div className="relative w-full h-80 border border-gray-300 rounded-lg mb-4">
                     <iframe
@@ -481,12 +549,12 @@ const SubmitJobPost = () => {
                   {error && <div className="text-red-500 mt-2">{error}</div>}
                 </div>
 
-                <button
-                  className="bg-green-500 text-white p-2 rounded-lg mt-4"
-                  onClick={saveJobPost}
-                >
-                  Save Job Post
-                </button>
+            <button
+              className="bg-green-500 text-white p-2 rounded-lg mt-4"
+              onClick={saveJobPost}
+            >
+             Update
+            </button>
           </div>
         </div>
       </div>
@@ -494,4 +562,4 @@ const SubmitJobPost = () => {
   );
 };
 
-export default SubmitJobPost;
+export default EditJobs;

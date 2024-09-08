@@ -1,8 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from './SidebarEmployer';
 import Header from './HeaderEmployer';
 
 const Pricing = () => {
+  const navigate = useNavigate(); // Access history for navigation
+
   // Define the mock data for the custom payment
   const customPayment = {
     amount: '₹1,500.00',
@@ -50,12 +53,25 @@ const Pricing = () => {
     },
   ];
 
+  const navigateToWallet = () => {
+    navigate('/wallet');
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       <Sidebar />
       <div className="flex-1 bg-gray-100">
         <Header />
-        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28  flex flex-col items-center lg:items-start w-full">
+        <div className="mt-12 lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
+           {/* Wallet Navigation Button */}
+           <div className="w-full flex justify-start mb-4">
+            <button
+              onClick={navigateToWallet}
+              className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+            >
+              Go To Your Wallet
+            </button>
+          </div>
           <h1 className="text-3xl font-bold mb-8 text-gray-900">Custom Payments</h1>
           {/* Custom Payment Card */}
           <div className="w-full lg:w-2/3 grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">

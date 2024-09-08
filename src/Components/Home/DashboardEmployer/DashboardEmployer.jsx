@@ -16,6 +16,8 @@ import DeleteProfileEmployer from './DeleteProfileEmployer';
 import UserDashboardEmployer  from './UserDashboardEmployer';
 import PricingEmployer  from './PricingEmployer';
 import Myjobs  from './MyJobs';
+import EditJobs  from './EditJobs';
+import Wallet from './Wallet';
 import './DashboardEmployer.css';
 
 const Dashboard = () => {
@@ -68,6 +70,8 @@ const Dashboard = () => {
                     <Route path="/user-dashboard-employer" element={<UserDashboardEmployer />} />
                     <Route path="/pricing-employer" element={<PricingEmployer />} />
                     <Route path="/my-jobs-employer" element={<Myjobs />} />
+                    <Route path="/edit-job/:jobid" element={<EditJobs />} />
+                    <Route path="/wallet" element={<Wallet />} />
                     </Routes>
                 </div>
             </div>

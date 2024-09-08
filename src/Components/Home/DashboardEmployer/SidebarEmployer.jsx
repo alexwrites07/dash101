@@ -20,7 +20,7 @@ const Sidebar = ({ activeTab }) => {
         { to: '/alerts-jobs-employer', icon: <HiBell className="w-6 h-6" />, label: 'Candidate Alert' },
         { to: '/messages-employer', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
         { to: '/meetings-employer', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
-        { to: '/pricing-employer', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+        { to: '/wallet', icon: <HiCash className="w-6 h-6" />, label: 'Wallet' },
         { to: '/update-password-employer', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
         { to: '/delete-profile-employer', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
         { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },

@@ -1,57 +1,88 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./SidebarEmployer";
 import Header from "./HeaderEmployer";
 
 const AlertsJobs = () => {
-  // Mocked Candidate Alerts Data
-  const [candidateAlerts, setCandidateAlerts] = useState([
-    {
-      id: 1,
-      title: "Software Engineer",
-      alertQuery: [
-        "Posted Date: All",
-        "Qualification: Bachelor Degree",
-        "Qualification: Master’s Degree",
-      ],
-      numberCandidates: 10,
-      frequency: "Daily",
-    },
-    {
-      id: 2,
-      title: "Data Scientist",
-      alertQuery: [
-        "Posted Date: All",
-        "Qualification: Doctorate Degree",
-        "Qualification: Bachelor Degree",
-      ],
-      numberCandidates: 8,
-      frequency: "Weekly",
-    },
-    {
-      id: 3,
-      title: "Product Manager",
-      alertQuery: [
-        "Posted Date: Last 30 days",
-        "Qualification: Master’s Degree",
-      ],
-      numberCandidates: 5,
-      frequency: "Monthly",
-    },
-    {
-      id: 4,
-      title: "UX Designer",
-      alertQuery: [
-        "Posted Date: Last 7 days",
-        "Qualification: Bachelor Degree",
-      ],
-      numberCandidates: 15,
-      frequency: "Daily",
-    },
-  ]);
-
+  const [candidateAlerts, setCandidateAlerts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("default");
   const [error, setError] = useState(null);
+  
+  // Fetch candidate alerts from the backend when the component mounts
+  useEffect(() => {
+    const fetchCandidateAlerts = async () => {
+      try {
+        const response = await fetch('https://backend.akshayy.tech/getFilters', {
+          headers: {
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNDUwODMzNH0.Sgq8sctSRhXY3IX4JwDg5Y0JOyE7xa3YNjJtATRhwOA' // Replace with the actual token
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch candidate alerts');
+        }
+
+        const data = await response.json();
+        
+        // Transform the data to match the existing candidateAlerts structure
+        const transformedAlerts = data.map((item, index) => ({
+          id: index + 1, // Generating a unique ID for each alert
+          alertId: item.id, // Storing the alert ID for deletion
+          title: item.filter.title.join(', '),
+          alertQuery: [
+            `City: ${item.filter.location.city}`,
+            `Date Posted: ${new Date(item.filter.datePosted.$gte).toLocaleDateString()}`,
+            `Category: ${item.filter.category.join(', ')}`,
+            `Gender: ${item.filter.gender}`,
+            `Experience: ${item.filter.experienceTime.join(', ')}`,
+            `Qualification: ${item.filter.qualification.join(', ')}`,
+          ],
+          numberCandidates: item.tutorCount,
+          frequency: "Daily", // This field can be set dynamically or kept static as needed
+        }));
+
+        setCandidateAlerts(transformedAlerts);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchCandidateAlerts();
+  }, []);
+
+  // Remove alert handler (updated)
+  const handleRemoveAlert = async (alertId) => {
+    console.log("Deleting alert with ID:", alertId); // Log the alertId for debugging
+
+    try {
+      const response = await fetch('https://backend.akshayy.tech/deleteFilter', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNDUwODMzNH0.Sgq8sctSRhXY3IX4JwDg5Y0JOyE7xa3YNjJtATRhwOA' // Use the actual token
+        },
+        body: JSON.stringify({
+          alertId: alertId  // Sending the alertId to the backend
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the alert');
+      }
+
+      const result = await response.json();
+
+      // Update the UI after successful deletion
+      setCandidateAlerts((prevAlerts) =>
+        prevAlerts.filter((alert) => alert.alertId !== alertId)
+      );
+      console.log(result.message); // Log success message
+
+    } catch (error) {
+      setError(error.message);  // Show the error message in the UI
+      console.error("Error deleting the alert:", error);  // Log the error for debugging
+    }
+  };
 
   // Search handler
   const handleSearch = (e) => {
@@ -61,13 +92,6 @@ const AlertsJobs = () => {
   // Sort handler
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
-  };
-
-  // Remove alert handler
-  const handleRemoveAlert = (alertId) => {
-    setCandidateAlerts((prevAlerts) =>
-      prevAlerts.filter((alert) => alert.id !== alertId)
-    );
   };
 
   // Filter alerts based on search query
@@ -83,7 +107,7 @@ const AlertsJobs = () => {
     if (sortOption === "numberCandidates") {
       return b.numberCandidates - a.numberCandidates;
     }
-    return filteredAlerts;
+    return 0;
   });
 
   return (
@@ -127,7 +151,6 @@ const AlertsJobs = () => {
                     <th className="py-2 px-4 border-b">Title</th>
                     <th className="py-2 px-4 border-b">Alert Query</th>
                     <th className="py-2 px-4 border-b">Number Candidates</th>
-                    <th className="py-2 px-4 border-b">Frequency</th>
                     <th className="py-2 px-4 border-b">Actions</th>
                   </tr>
                 </thead>
@@ -143,10 +166,9 @@ const AlertsJobs = () => {
                       <td className="py-2 px-4 border-b">
                         {alert.numberCandidates}
                       </td>
-                      <td className="py-2 px-4 border-b">{alert.frequency}</td>
                       <td className="py-2 px-4 border-b">
                         <button
-                          onClick={() => handleRemoveAlert(alert.id)}
+                          onClick={() => handleRemoveAlert(alert.alertId)}
                           className="py-1 px-3 bg-blue-600 text-white rounded-lg hover:bg-red-700"
                         >
                           &times;
