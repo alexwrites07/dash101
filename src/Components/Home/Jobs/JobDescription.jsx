@@ -13,7 +13,7 @@ const JobDescription = () => {
     const fetchJobDetails = async () => {
       try {
         const response = await axios.get(`https://backend.akshayy.tech/getjobs/${jobId}`);
-        setJob(response.data); // Assuming response.data contains job details
+        setJob(response.data.job); // Access the job object
       } catch (error) {
         console.error('Error fetching job details:', error);
       }
@@ -34,35 +34,48 @@ const JobDescription = () => {
     return <p>Loading...</p>;
   }
 
-  const statusTag = job.tags.find(tag => tag.name === "open");
-  const isActive = statusTag && statusTag.active;
+  const statusTag = job.tags?.find(tag => tag.name === "urgent");
+  const isActive = statusTag?.active;
 
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
         <div className="md:w-1/4 mb-4 md:mb-0">
-          <img src={job.images[0]} alt={job.title} className="w-full h-56 object-cover rounded-md" />
+          {job.images.length > 0 ? (
+            <img src={job.images[0]} alt={job.title} className="w-full h-56 object-cover rounded-md" />
+          ) : (
+            <p>No image available</p> // Fallback message or placeholder image
+          )}
         </div>
         <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
           <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p><strong>Location:</strong> {job.location.city}, {job.location.state} ({job.location.pinCode})</p>
-            <p><strong>Salary:</strong> {job.minimumsalary}</p>
-            <p><strong>Experience:</strong> {job.experience}</p>
+            <p>
+              <strong>Location:</strong> 
+              {job.location ? (
+                `${job.location.city}, ${job.location.state} (${job.location.pinCode})`
+              ) : (
+                'Location information not available'
+              )}
+            </p>
+            <p><strong>Salary:</strong> {job.salary.min} - {job.salary.max} ({job.salary.period})</p>
+            <p><strong>Experience:</strong> {job.experience} years</p>
             <p><strong>Qualification:</strong> {job.qualification}</p>
-            <p><strong>Career:</strong> {job.careerLevel}</p>
+            <p><strong>Career Level:</strong> {job.careerLevel}</p>
+            <p><strong>Commitment:</strong> {job.workDetails.commitment}</p>
+            <p><strong>Mode:</strong> {job.workDetails.mode}</p>
             <p><strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}</p>
-            {isActive ? (
+            {job.isClosed ? (
+              <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
+                Closed
+              </p>
+            ) : (
               <button
                 onClick={openModal}
                 className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
               >
                 Apply
               </button>
-            ) : (
-              <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
-                Closed
-              </p>
             )}
           </div>
         </div>
@@ -76,22 +89,26 @@ const JobDescription = () => {
           <div className="text-gray-600 md:w-1/2">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Job Details</h2>
             <p className="text-black mb-4">{job.description}</p>
-            <h2 className="text-xl font-semibold mb-2">Key Responsibilities</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">Key Responsibilities</h2>
             <ul className="list-disc list-inside mb-4">
-              {job.keyResponsibilities.map((responsibility, index) => (
+              {(job.keyResponsibilities || []).map((responsibility, index) => (
                 <li key={index}>{responsibility}</li>
               ))}
             </ul>
-            <h2 className="text-xl font-semibold mb-2 mt-6">Required Skills & Experience</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2 mt-6">Required Skills & Experience</h2>
             <ul className="list-disc list-inside mb-4">
-              {job.skillAndExperience.map((skill, index) => (
+              {(job.skillAndExperience || []).map((skill, index) => (
                 <li key={index}>{skill}</li>
               ))}
             </ul>
           </div>
           <div className="md:w-2/5">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Job Location</h2>
-            <Map coordinates={job.location.coordinates} />
+            {job.location?.coordinates ? (
+              <Map coordinates={job.location.coordinates} />
+            ) : (
+              <p>Map location not available</p> // Fallback message
+            )}
           </div>
         </div>
       </div>

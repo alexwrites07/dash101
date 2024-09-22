@@ -56,7 +56,7 @@ const Pricing = () => {
       <div className="flex-1 bg-gray-100">
         <Header />
         <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
-          <h1 className="text-3xl font-bold mb-8 text-gray-900">Custom Payments</h1>
+          <h1 className="text-3xl font-bold mb-8 text-gray-900 mt-24">Custom Payments</h1>
           {/* Custom Payment Card */}
           <div className="w-full lg:w-2/3 grid grid-cols-1 lg:grid-cols-3 gap-4 mb-12">
             <div className="bg-white p-4 mb-6 rounded-lg shadow-md">

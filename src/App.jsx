@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation} from 'react-router-dom';
 import './App.css';
+import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
 import TestimonialPage from './Components/Home/Dashboard/AdminPanel/FeaturedTestinomials.jsx';
 import Login from './Components/Auth/Login';
 import InstituteProfileView from './Components/Home/Dashboard/AdminPanel/FeaturedInstitute.jsx';
@@ -15,7 +16,7 @@ import Footer from './Components/Home/Footer';
 import JobPost from './Components/Home/Jobpost';
 import AdminHeader from './Components/Home/Dashboard/AdminPanel/FeaturedHeader.jsx';
 import TutorFinder from './Components/Home/Findtutor.jsx';
-import LearningNeeds from './Components/Home/Dashboard/LearnNeeds.jsx';
+import LearningNeedsView from './Components/Home/Dashboard/AdminPanel/LearningNeeds.jsx';
 import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
 import ContactUs from './Components/Home/ContactUs.jsx';
 import TutorProfileView from './Components/Home/Dashboard/AdminPanel/TeacherProfile.jsx';
@@ -46,6 +47,7 @@ import AppliedCompanyEmployer from './Components/Home/DashboardEmployer/AppliedC
 import LocationsEmployer from './Components/Home/DashboardEmployer/LocationsEmployer.jsx';
 import ShortlistJobsEmployer from './Components/Home/DashboardEmployer/ShortlistJobsEmployer';
 import AlertsJobsEmployer from './Components/Home/DashboardEmployer/AlertJobsEmployer';
+import LearningNeeds from './Components/Home/Dashboard/LearnNeeds.jsx';
 import MessagesEmployer from './Components/Home/DashboardEmployer/MessagesEmployer';
 import MeetingsEmployer from './Components/Home/DashboardEmployer/MeetingsEmployer';
 import UploadResumeEmployer from './Components/Home/DashboardEmployer/SubmitJob.jsx';
@@ -57,6 +59,7 @@ import MyJobs from './Components/Home/DashboardEmployer/MyJobs.jsx';
 import EditJobs from './Components/Home/DashboardEmployer/EditJobs.jsx';
 import Wallet from './Components/Home/DashboardEmployer/Wallet.jsx';
 import AboutUs from './Components/Home/AboutUs';
+import BlogPage from './Components/Home/Dashboard/AdminPanel/FeaturedBlogs.jsx';
 import Blog from './Components/Home/Dashboard/Blogs.jsx';
 import BlogContent from './Components/Home/BlogContent.jsx';
 import Catagories from './Components/Home/Catagories';
@@ -64,6 +67,7 @@ import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx'
 import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
 import StudentProfileView from './Components/Home/Dashboard/AdminPanel/StudentProfile.jsx';
 import Category from './Components/Home/Dashboard/AdminPanel/Category.jsx';
+import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedHero.jsx';
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
 function App() {
   const [user, setUser] = useState(null);
@@ -88,7 +92,7 @@ function AppContent() {
     || location.pathname === '/pricing'|| location.pathname === '/myclasses' ||location.pathname === '/reviews'||location.pathname === '/learningneeds' ||location.pathname === '/following-employer'||location.pathname === '/update-password'||location.pathname === '/delete-profile' ||location.pathname === '/student-profiles'||location.pathname === '/delete-profile'||location.pathname === '/delete-profile'||location.pathname === '/widgets/featured-jobs'||
     location.pathname === '//widgets/featured-institution'||location.pathname === '/widgets/featured-testimonials'||location.pathname === '/widgets/featured-institution'||location.pathname === '/dashboard-employer' || location.pathname === '/alerts-jobs-employer' || location.pathname === '/messages-employer' || location.pathname === '/meetings-employer' || location.pathname === '/update-password-employer'||
     location.pathname === '/upload-resume-employer' || location.pathname === '/your-profile-employer' || location.pathname === '/locations-employer' || location.pathname === '/shortlist-jobs-employer'|| location.pathname === '/wallet'
-    || location.pathname === '/my-jobs-employer'||location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job';
+    || location.pathname === '/learning-need-posts'|| location.pathname === '/reviews-rating'|| location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job';
   };
   
 
@@ -113,8 +117,10 @@ function AppContent() {
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/widgets/hero-section" element={<HeroSectionManager/>}/>
         {/* <Route path="/add-category" element ={<WidgetCatagory/>}/> */}
         <Route path="/your-profile" element={<YourProfile />} />
+        <Route path="/learning-need-posts" element={<LearningNeedsView />} />
         <Route path="/applied-company" element={<AppliedCompany />} />
         <Route path="/locations" element={<Locations />} />
         <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
@@ -150,6 +156,7 @@ function AppContent() {
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/add-tags" element={<Tag/>}/>
         <Route path="/add-category" element={<Category/>}/>
+        <Route path="/blogs-admin" element={<BlogPage/>}/>
         {/* <Route path="/student-profile" element={<StudentProfile />} /> */}
         <Route path="/student-profiles" element={<StudentProfileView/>}/>
         <Route path="/tutor-profiles" element={<TutorProfileView/>}/>
@@ -159,7 +166,8 @@ function AppContent() {
         <Route path="/widgets/featured-jobs" element ={<JobPostPage/>}/>
         <Route path="widgets/featured-category" element={<FeaturedCategoryPage/>}/>
         <Route path ="/widgets/footer" element={<AdminFooterPanel/>}/>
-        <Route path ="widgets/headers" element ={<AdminHeader/>}/>
+        <Route path ="/widgets/headers" element ={<AdminHeader/>}/>
+        <Route path ="/reviews-rating" element ={<Reviewsq/>}/>
       </Routes>
       {!shouldHideNavbarAndFooter() && <Footer />}
     </>

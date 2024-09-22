@@ -13,7 +13,10 @@ const [experienceNotes, setExperienceNotes] = useState([]);
 const [skillsNotes, setSkillsNotes] = useState([]);
 const [fullName, setFullName] = useState('');
 const [classes, setclasses] = useState('X');
+const [tags, setTags] = useState('X');
+const [rating, setRating] = useState('X');
 const [gender, setGender] = useState('');
+const [video, setVideo] = useState('');
 const [highestQualification, setHighestQualification] = useState('');
 const [age, setAge] = useState('');
 const [email, setEmail] = useState('');
@@ -21,7 +24,7 @@ const [qualification, setQualification] = useState('');
 const [experienceTime, setExperienceTime] = useState('');
 const [languages, setLanguages] = useState([]);
 const [salaryType, setSalaryType] = useState(0);
-
+const [salaryPeriod, setSalaryPeriod] = useState(0);
 
 const [salary, setSalary] = useState(0);
 const [categories, setCategories] = useState([]);
@@ -79,18 +82,19 @@ const [dob, setDOB] = useState('');
           setExperienceTime(data.totalExperience || '');
           setLanguages(data.languages || []);
           setSalaryType(data.jobAlerts?.maxExpectedSalary.value || '');
+          setSalaryPeriod(data.jobAlerts?.maxExpectedSalary.period || '');
           setSalary(data.jobAlerts?.minExpectedSalary.value || '');
           setDescription(data.description || '');
           setparentPhone (data.parentPhone || '');
           setIntroductionVideo(data.video);
           setLocation(data.location?.city || '');
-         
+          setRating (data.rating || '');
           setCategories(data.categories || []);
-          
+          setTags(data.tags || '');
         
           setContactAddress(data.location?.address || '');
           setContactAddress1(data.contactNumber || '');
-          
+          setVideo(data.video|| '');
           
           setMapsLocation(data.mapsLocation || '');
           setImage(data.image || '');
@@ -143,7 +147,150 @@ const [dob, setDOB] = useState('');
   const newLatitude = parseFloat(e.target.value) || 0;
   setLatitude(newLatitude);
 };
+const qualifications = [
+  "B.Sc. in Physics",
+  "B.Sc. in Chemistry",
+  "B.Sc. in Biology",
+  "B.Sc. in Mathematics",
+  "B.Sc. in Computer Science",
+  "B.Sc. in Environmental Science",
+  "B.Sc. in Biotechnology",
+  "B.Sc. in Microbiology",
+  "B.Sc. in Biochemistry",
+  "B.Sc. in Zoology",
+  "B.Sc. in Botany",
+  "B.Sc. in Geology",
+  "B.Sc. in Statistics",
+  "B.Sc. in Food Science",
+  "B.Sc. in Nutrition",
+  "B.Com (General)",
+  "B.Com (Honors)",
+  "BBA (Bachelor of Business Administration)",
+  "BMS (Bachelor of Management Studies)",
+  "Finance",
+  "Marketing",
+  "Human Resource Management",
+  "B.A. in English",
+  "B.A. in Hindi",
+  "B.A. in History",
+  "B.A. in Geography",
+  "B.A. in Political Science",
+  "B.A. in Sociology",
+  "B.A. in Psychology",
+  "B.A. in Philosophy",
+  "B.A. in Economics",
+  "B.A. in Anthropology",
+  "B.A. in Education",
+  "B.A. in Journalism and Mass Communication",
+  "B.A. in Fine Arts",
+  "B.A. in Performing Arts",
+  "B.A. in Sanskrit",
+  "B.A. in Regional Languages",
+  "B.A. in Foreign Languages",
+  "B.Tech/B.E. in Mechanical Engineering",
+  "B.Tech/B.E. in Civil Engineering",
+  "B.Tech/B.E. in Electrical Engineering",
+  "B.Tech/B.E. in Computer Science Engineering",
+  "B.Tech/B.E. in Electronics and Communication Engineering",
+  "B.Tech/B.E. in Information Technology",
+  "B.Tech/B.E. in Chemical Engineering",
+  "B.Tech/B.E. in Aeronautical Engineering",
+  "B.Tech/B.E. in Biotechnology",
+  "B.Tech/B.E. in Environmental Engineering",
+  "MBBS (Medicine)",
+  "BDS (Dentistry)",
+  "BAMS (Ayurvedic Medicine)",
+  "BHMS (Homeopathic Medicine)",
+  "BPT (Physiotherapy)",
+  "B.Sc. Nursing",
+  "B.Pharm (Pharmacy)",
+  "Bachelor of Occupational Therapy",
+  "LLB (Bachelor of Laws)",
+  "Integrated Law courses (B.A. LLB, B.Com LLB, B.Sc. LLB)",
+  "B.Ed (Bachelor of Education)",
+  "BHM (Bachelor of Hotel Management)",
+  "BFA (Bachelor of Fine Arts)",
+  "B.Des (Bachelor of Design)",
+  "BSW (Bachelor of Social Work)",
+  "M.Sc. in Physics",
+  "M.Sc. in Chemistry",
+  "M.Sc. in Biology",
+  "M.Sc. in Mathematics",
+  "M.Sc. in Computer Science",
+  "M.Sc. in Environmental Science",
+  "M.Sc. in Biotechnology",
+  "M.Sc. in Microbiology",
+  "M.Sc. in Biochemistry",
+  "M.Sc. in Zoology",
+  "M.Sc. in Botany",
+  "M.Sc. in Geology",
+  "M.Sc. in Statistics",
+  "M.Sc. in Food Science",
+  "M.Sc. in Nutrition",
+  "M.Com (Master of Commerce)",
+  "MBA (Master of Business Administration)",
+  "M.Fin (Master of Finance)",
+  "M.HRM (Master of Human Resource Management)",
+  "M.A. in English",
+  "M.A. in Hindi",
+  "M.A. in History",
+  "M.A. in Geography",
+  "M.A. in Political Science",
+  "M.A. in Sociology",
+  "M.A. in Psychology",
+  "M.A. in Philosophy",
+  "M.A. in Economics",
+  "M.A. in Anthropology",
+  "M.A. in Education",
+  "M.A. in Journalism and Mass Communication",
+  "M.A. in Fine Arts",
+  "M.A. in Performing Arts",
+  "M.A. in Sanskrit",
+  "M.A. in Regional Languages",
+  "M.A. in Foreign Languages",
+  "M.Tech/M.E. in Mechanical Engineering",
+  "M.Tech/M.E. in Civil Engineering",
+  "M.Tech/M.E. in Electrical Engineering",
+  "M.Tech/M.E. in Computer Science Engineering",
+  "M.Tech/M.E. in Electronics and Communication Engineering",
+  "M.Tech/M.E. in Information Technology",
+  "M.Tech/M.E. in Chemical Engineering",
+  "M.Tech/M.E. in Aeronautical Engineering",
+  "M.Tech/M.E. in Biotechnology",
+  "M.Tech/M.E. in Environmental Engineering",
+  "MD (Doctor of Medicine)",
+  "MS (Master of Surgery)",
+  "MDS (Master of Dental Surgery)",
+  "MPT (Master of Physiotherapy)",
+  "M.Sc. Nursing",
+  "M.Pharm (Master of Pharmacy)",
+  "Master of Occupational Therapy",
+  "LLM (Master of Laws)",
+  "M.Ed (Master of Education)",
+  "M.Phil in Education",
+  "Ph.D. in Education",
+  "MHM (Master of Hotel Management)",
+  "MFA (Master of Fine Arts)",
+  "M.Des (Master of Design)",
+  "MSW (Master of Social Work)",
+  "Ph.D. in various disciplines",
+  "12th Pass",
+  "10th Pass"
+];
 
+const [highestQualificatio, setHighestQualificatio] = useState('');
+const [filteredQualifications, setFilteredQualifications] = useState([]);
+
+const handleInputChange = (e) => {
+  const input = e.target.value;
+  setHighestQualificatio(input);
+  
+  // Filter the qualifications based on input
+  const filtered = qualifications.filter((q) =>
+    q.toLowerCase().includes(input.toLowerCase())
+  );
+  setFilteredQualifications(filtered);
+};
 // Handler to update longitude state based on user input
 const handleLongitudeChange = (e) => {
   const newLongitude = parseFloat(e.target.value) || 0;
@@ -198,7 +345,7 @@ const handleLongitudeChange = (e) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -225,6 +372,7 @@ const handleLongitudeChange = (e) => {
           // },
           // },
           parentPhone,
+        
           // categories,
           // description:description,
           location: {
@@ -273,7 +421,7 @@ const handleLongitudeChange = (e) => {
     
         // Send the request
         const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
-          method: 'POST',
+          method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -312,7 +460,7 @@ const handleLongitudeChange = (e) => {
       console.log('Request Body:', JSON.stringify(body, null, 2));
   
       const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -346,8 +494,8 @@ const handleLongitudeChange = (e) => {
         highestQualification,
         totalExperience: experienceTime,
         jobAlerts: {
-          minExpectedSalary: { value: salary },
-          maxExpectedSalary: { value: salaryType },
+          minExpectedSalary: { value: salary, period: salaryPeriod },
+          maxExpectedSalary: { value: salaryType, period: salaryPeriod },
           // Providing a default value for alertDistance if it's not defined
           alertDistance:   {
             privateTutor: { distance: 0, flag: false },
@@ -355,13 +503,14 @@ const handleLongitudeChange = (e) => {
           }
         },
         contactNumber: contactAddress1,
-        description
+        description,
+        video
       };
 
       console.log('Request Body:', JSON.stringify(body, null, 2));
 
       const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -406,8 +555,8 @@ const handleLongitudeChange = (e) => {
       <Header />
       <div className="flex-1 bg-gray-100">
         <Sidebar />
-        <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28">
-          <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Profile</h1>
+        <div className="mt-24 lg:ml-64 lg:mt-12 p-4 lg:p-28">
+          <h1 className="text-3xl font-bold mb-8 text-gray-900 mt-12">Your Profile</h1>
           
           {endpoint === 'tutor' && (
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
@@ -439,27 +588,70 @@ const handleLongitudeChange = (e) => {
                     
                   />
                 </div>
-
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                  <input
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                  >
-                   
-                  </input>
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Highest Qualification</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Ratings</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={highestQualification}
-                    onChange={(e) => setHighestQualification(e.target.value)}
+                    value={rating}
+                    
                   />
                 </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Class Type</label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={tags}
+                    
+                  />
+                </div>
+
+                <div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+  <select
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={gender}
+    onChange={(e) => setGender(e.target.value)}
+  >
+    <option value="">Select Gender</option>
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+    <option value="others">Others</option>
+  </select>
+</div>
+
+
+<div className="relative">
+  <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={highestQualificatio}
+    onChange={(e) => {
+      setHighestQualificatio(e.target.value);
+      const filtered = qualifications.filter(q =>
+        q.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setFilteredQualifications(filtered);
+    }}
+  />
+  {/* Dropdown for filtered suggestions */}
+  {filteredQualifications.length > 0 && (
+    <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
+      {filteredQualifications.map((q, index) => (
+        <li
+          key={index}
+          onClick={() => setHighestQualificatio(q)}
+          className="cursor-pointer p-2 hover:bg-gray-100"
+        >
+          {q}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Experience</label>
@@ -490,6 +682,28 @@ const handleLongitudeChange = (e) => {
                     onChange={(e) => setSalaryType(e.target.value)}
                   />
                 </div> 
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Salary Period</label>
+                  <select
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={salaryPeriod}
+    onChange={(e) => setSalaryPeriod(e.target.value)}
+  >
+    <option value="">Select Period</option>
+    <option value="monthly">monthly</option>
+    <option value="hourly">hourly</option>
+    <option value="annually">annually</option>
+  </select>
+                </div> 
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={video}
+                    onChange={(e) => setVideo(e.target.value)}
+                  />
+                </div> 
 
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Min Salary</label>
@@ -502,7 +716,7 @@ const handleLongitudeChange = (e) => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -683,7 +897,7 @@ const handleLongitudeChange = (e) => {
            
 
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"

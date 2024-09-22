@@ -11,7 +11,6 @@ const Sidebar = ({ activeTab }) => {
   const [userType, setUserType] = useState('');
 
   useEffect(() => {
-    // Get user type from localStorage
     const type = localStorage.getItem('type');
     setUserType(type);
   }, []);
@@ -20,7 +19,6 @@ const Sidebar = ({ activeTab }) => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Define common sidebar links
   let sidebarLinks = [
     { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
     { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
@@ -38,8 +36,6 @@ const Sidebar = ({ activeTab }) => {
       { to: '/shortlist-jobs', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Jobs' },
       { to: '/alerts-jobs', icon: <HiBell className="w-6 h-6" />, label: 'Alerts Jobs' },
       { to: '/following-employer', icon: <HiUserGroup className="w-6 h-6" />, label: 'Following Employer' },
-      // { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
-      // { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
       { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
       ...sidebarLinks,
     ];
@@ -48,7 +44,7 @@ const Sidebar = ({ activeTab }) => {
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
       { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
       { to: '/learningneeds', icon: <HiUser className="w-6 h-6" />, label: 'Learning Needs' },
-      { to: '/myclasses', icon: <HiHeart className="w-6 h-6" />, label: 'My classes' },
+      { to: '/myclasses', icon: <HiHeart className="w-6 h-6" />, label: 'My Classes' },
       { to: '/reviews', icon: <HiChat className="w-6 h-6" />, label: 'Reviews' },
       ...sidebarLinks,
     ];
@@ -70,13 +66,15 @@ const Sidebar = ({ activeTab }) => {
 
   return (
     <>
-      <aside className={`lg:block fixed left-0 top-24 mt-4 z--1 w-80 h-full pt-10 shadow-lg h-16 transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} sm:translate-x-0 bg-white border-gray-700 custom-sidebar`} aria-label="Sidebar">
+      {/* Sidebar for large screens */}
+      <aside
+        className={`fixed left-0 top-24 z-20 w-80 h-full pt-10 bg-white shadow-lg border-r-2 border-gray-200 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 lg:translate-x-0`}
+        aria-label="Sidebar"
+      >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white">
           <ul className="space-y-2 font-medium">
             <li className="text-black mb-2">
-              <p>Welcome
-                {/* Replace with user email */}
-                User</p>
+              <p>Welcome User</p> {/* Replace with user email */}
             </li>
             {sidebarLinks.map((link) => (
               <li key={link.to}>
@@ -89,17 +87,24 @@ const Sidebar = ({ activeTab }) => {
                 </NavLink>
               </li>
             ))}
-            <br />
           </ul>
         </div>
       </aside>
 
-      <div className="lg:hidden fixed top-0 left-0 z-50 w-full bg-white text-black flex items-center justify-between p-4 shadow-lg">
+      {/* Button for mobile screens */}
+      <div className="lg:hidden fixed top-24 left-0 z-50 w-full text-black flex items-center justify-between p-4 ">
         <button onClick={toggleSidebar} className="text-black focus:outline-none">
           <HiMenu className="w-8 h-8" />
         </button>
-        <img className="w-32 h-12 shadow-lg" src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp" alt="logo" />
       </div>
+
+      {/* Overlay to close the sidebar on mobile */}
+      {sidebarOpen && (
+        <div
+          onClick={toggleSidebar}
+          className="fixed inset-0 bg-black opacity-50 z-10 lg:hidden"
+        ></div>
+      )}
     </>
   );
 };
