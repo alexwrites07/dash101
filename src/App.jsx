@@ -92,7 +92,20 @@ function AppContent() {
     || location.pathname === '/pricing'|| location.pathname === '/myclasses' ||location.pathname === '/reviews'||location.pathname === '/learningneeds' ||location.pathname === '/following-employer'||location.pathname === '/update-password'||location.pathname === '/delete-profile' ||location.pathname === '/student-profiles'||location.pathname === '/delete-profile'||location.pathname === '/delete-profile'||location.pathname === '/widgets/featured-jobs'||
     location.pathname === '//widgets/featured-institution'||location.pathname === '/widgets/featured-testimonials'||location.pathname === '/widgets/featured-institution'||location.pathname === '/dashboard-employer' || location.pathname === '/alerts-jobs-employer' || location.pathname === '/messages-employer' || location.pathname === '/meetings-employer' || location.pathname === '/update-password-employer'||
     location.pathname === '/upload-resume-employer' || location.pathname === '/your-profile-employer' || location.pathname === '/locations-employer' || location.pathname === '/shortlist-jobs-employer'|| location.pathname === '/wallet'
-    || location.pathname === '/learning-need-posts'|| location.pathname === '/reviews-rating'|| location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job';
+    || location.pathname === '/learning-need-posts'|| location.pathname === '/reviews-rating'|| location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job'
+    || location.pathname === "/add-tags"
+    || location.pathname === "/add-category"
+    || location.pathname === "/blogs-admin"
+    || location.pathname === "/student-profiles"
+    || location.pathname === "/tutor-profiles"
+    || location.pathname === "/organization-profiles"
+    || location.pathname === "/widgets/featured-institution"
+    || location.pathname === "/widgets/featured-testimonials"
+    || location.pathname === "/widgets/featured-jobs"
+    || location.pathname === "/widgets/featured-category"
+    || location.pathname === "/widgets/footer"
+    || location.pathname === "/widgets/headers" 
+    || location.pathname === "/reviews-rating";
   };
   
 
@@ -164,7 +177,7 @@ function AppContent() {
         <Route path="/widgets/featured-institution" element={<InstituteProfileView/>}/>
         <Route path="/widgets/featured-testimonials" element ={<TestimonialPage/>}/>
         <Route path="/widgets/featured-jobs" element ={<JobPostPage/>}/>
-        <Route path="widgets/featured-category" element={<FeaturedCategoryPage/>}/>
+        <Route path="/widgets/featured-category" element={<FeaturedCategoryPage/>}/>
         <Route path ="/widgets/footer" element={<AdminFooterPanel/>}/>
         <Route path ="/widgets/headers" element ={<AdminHeader/>}/>
         <Route path ="/reviews-rating" element ={<Reviewsq/>}/>
