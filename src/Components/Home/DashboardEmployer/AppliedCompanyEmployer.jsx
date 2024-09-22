@@ -17,9 +17,10 @@ const AppliedCompany = () => {
   const [jobs, setJobs] = useState([]); // Store jobs with applicants here
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("newest");
-  const [filterJob, setFilterJob] = useState("");
+  const [filterJob, setFilterJob] = useState(""); // Filter by job title
   const [statusFilter, setStatusFilter] = useState("All");
 
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM';
   // Fetch job data including applicants
   useEffect(() => {
     const fetchJobs = async () => {
@@ -43,7 +44,41 @@ const AppliedCompany = () => {
 
   const handleSearch = (e) => setSearchQuery(e.target.value);
   const handleSortChange = (e) => setSortOption(e.target.value);
-  const handleFilterChange = (e) => setFilterJob(e.target.value);
+  const handleFilterChange = (e) => setFilterJob(e.target.value); // Handle job title filter
+
+  const updateApplicantStatus = async (jobId, applicantId, newStatus) => {
+    try {
+      const response = await axios.patch(
+        `https://backend.akshayy.tech/jobs/${jobId}/applicants/${applicantId}`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the token here
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // Update the local state to reflect the change
+        setJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job._id === jobId
+              ? {
+                  ...job,
+                  applicants: job.applicants.map((applicant) =>
+                    applicant._id === applicantId
+                      ? { ...applicant, status: newStatus }
+                      : applicant
+                  ),
+                }
+              : job
+          )
+        );
+      }
+    } catch (error) {
+      console.error(`Error updating applicant status to ${newStatus}`, error);
+    }
+  };
 
   const handleApprove = (jobId, applicantId) => {
     setJobs((prevJobs) =>
@@ -96,6 +131,18 @@ const AppliedCompany = () => {
     );
   };
 
+  // const handleApprove = (jobId, applicantId) => {
+  //   updateApplicantStatus(jobId, applicantId, "Accepted");
+  // };
+
+  // const handleReject = (jobId, applicantId) => {
+  //   updateApplicantStatus(jobId, applicantId, "Declined");
+  // };
+
+  // const handleUndo = (jobId, applicantId) => {
+  //   updateApplicantStatus(jobId, applicantId, "Pending");
+  // };
+
   const handleRemove = (jobId, applicantId) => {
     setJobs((prevJobs) =>
       prevJobs.map((job) =>
@@ -111,6 +158,7 @@ const AppliedCompany = () => {
     );
   };
 
+  // Filter candidates based on search query and status
   const filteredCandidates = (applicants) =>
     applicants.filter((applicant) => {
       const matchesSearch =
@@ -122,6 +170,7 @@ const AppliedCompany = () => {
       return matchesSearch && matchesStatus;
     });
 
+  // Sort candidates
   const sortedCandidates = (applicants) => {
     return filteredCandidates(applicants).sort((a, b) => {
       if (sortOption === "name") {
@@ -131,6 +180,7 @@ const AppliedCompany = () => {
     });
   };
 
+  // Group applicants by job and display them under the respective job title
   const renderCandidates = (job) => {
     const total = job.applicants.length;
     const approved = job.applicants.filter(
@@ -245,6 +295,67 @@ const AppliedCompany = () => {
     );
   };
 
+  // Filter the jobs based on the selected filter job title
+  const filteredJobs = filterJob
+    ? jobs.filter((job) => job.title === filterJob)
+    : jobs;
+  
+    const handleAddMeeting = async (e) => {
+      e.preventDefault();
+      
+      if (!meetingTitle || !meetingDate || !meetingTime || !meetingDuration) {
+        setNotification('Please fill in all required fields.');
+        return;
+      }
+    
+      const meetingData = {
+        repeatAfterDays,
+        meetingTitle,
+        participantsEmail: meetingParticipants.filter(Boolean),
+        date: meetingDate.toISOString().split('T')[0],
+        time: meetingTime,
+        duration: parseInt(meetingDuration),
+        meetingLink,
+      };
+    
+      try {
+        const url = editingMeeting !== null
+          ? `https://backend.akshayy.tech/meetings/${meetings[editingMeeting]._id}`
+          : 'https://backend.akshayy.tech/meetings';
+    
+        const method = editingMeeting !== null ? 'PUT' : 'POST';
+    
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Add token
+          },
+          body: JSON.stringify(meetingData),
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          if (editingMeeting !== null) {
+            setMeetings((prevMeetings) =>
+              prevMeetings.map((meeting, index) => (index === editingMeeting ? data : meeting))
+            );
+            setNotification('Meeting updated successfully.');
+          } else {
+            setMeetings([...meetings, data]);
+            setNotification('Meeting added successfully.');
+          }
+          resetForm();
+        } else {
+          setNotification('Failed to add/edit meeting');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        setNotification('An error occurred while saving the meeting.');
+      }
+    };
+    
+
   return (
     <>
       <div className="flex flex-col lg:flex-row">
@@ -285,7 +396,7 @@ const AppliedCompany = () => {
                 <option value="salary">Sort by Salary</option>
               </select>
             </div>
-            {jobs.map((job) => renderCandidates(job))}
+            {filteredJobs.map((job) => renderCandidates(job))}
           </div>
         </div>
       </div>

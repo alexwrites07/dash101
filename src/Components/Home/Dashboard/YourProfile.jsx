@@ -410,15 +410,25 @@ const handleLongitudeChange = (e) => {
           <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Profile</h1>
           
           {endpoint === 'tutor' && (
+            <div className="flex-1 bg-gray-100">
+            <Sidebar />
+            <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28">
+              <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Profile</h1>
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4 text-gray-900">Tutor Profile</h2>
-              <div className="">
-              
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Profile Image URL</label><div>
-                <img className='w-16 h-16 ' src={image}></img></div>
-           
-              </div><br></br>
-             
+             <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
+              <div className="flex mb-8">
+                <img
+                  src={image}
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full"
+                />
+              </div>
+              <button
+                onClick={editimage}
+                className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
+              >
+                Edit
+              </button>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
@@ -426,73 +436,127 @@ const handleLongitudeChange = (e) => {
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
                     value={fullName}
-                    
+                    onChange={(e) => setFullName(e.target.value)}
                   />
                 </div>
-
+    
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={email}
-                    
+                    value={dob}
+                    onChange={(e) => setDOB(e.target.value)}
                   />
                 </div>
-
+    
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                  <input
+                  <select
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
                   >
-                   
-                  </input>
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
                 </div>
-
+    
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Highest Qualification</label>
-                  <input
-                    type="text"
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Age</label>
+                  <select
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={highestQualification}
-                    onChange={(e) => setHighestQualification(e.target.value)}
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                  >
+                    <option value="">Select Age Range</option>
+                    <option value="18-20">18-20</option>
+                    <option value="20-25">20-25</option>
+                    <option value="25-30">25-30</option>
+                    <option value="30-35">30-35</option>
+                    <option value="35-40">35-40</option>
+                    <option value="40-45">40-45</option>
+                    <option value="45-50">45-50</option>
+                    <option value="50-55">50-55</option>
+                    <option value="55-60">55-60</option>
+                  </select>
+                </div>
+    
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                  <input
+                    type="email"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-
+    
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Experience</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={experienceTime}
-                    onChange={(e) => setExperienceTime(e.target.value)}
-                  />
+                <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
+                  <select
+                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                     value={qualification}
+                     onChange={(e) => setQualification(e.target.value)}
+                  >
+                    <option value="">Select Qualification</option>
+                    <option value="Certificate">Certificate</option>
+                    <option value="Associate Degree">Associate Degree</option>
+                    <option value="Bachelor Degree">Bachelor Degree</option>
+                    <option value="Master's Degree">Master's Degree</option>
+                    <option value="Doctorate Degree">Doctorate Degree</option>
+                  </select>
                 </div>
-
-                {/* <div>
+    
+                <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Experience Time</label>
+                  <select
+                      className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                      value={experienceTime}
+                      onChange={(e) => setExperienceTime(e.target.value)}
+                  >
+                    <option value="">Experience</option>
+                    <option value="Fresher">Fresher</option>
+                    <option value="1 Year">1 Year</option>
+                    <option value="2 Year">2 Year</option>
+                    <option value="3 Year">3 Year</option>
+                    <option value="4 Year">4 Year</option>
+                    <option value="5 Year">5 Year</option>
+                    <option value="6 Year">6 Year</option>
+                    <option value="7+ Year">7+ Year</option>
+                  </select>
+                </div>
+    
+                <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Languages</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
                     value={languages.join(', ')}
-                    onChange={(e) => setLanguages(e.target.value.split(',').map(lang => lang.trim()))}
+                    onChange={(e) => setLanguages(e.target.value.split(', '))}
                   />
-                </div> */}
-
+                </div>
+    
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Max Salary</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={salaryType}
-                    onChange={(e) => setSalaryType(e.target.value)}
-                  />
-                </div> 
-
+                <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
+                  <select
+                      className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                      value={salaryType}
+                      onChange={(e) => setSalaryType(e.target.value)}
+                  >
+                    <option value="">Salary Type</option>
+                    <option value="Hourly">Hourly</option>
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Yearly<">Yearly</option>
+                  </select>
+                </div>
+    
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Min Salary</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Salary (₹)</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -500,28 +564,59 @@ const handleLongitudeChange = (e) => {
                     onChange={(e) => setSalary(e.target.value)}
                   />
                 </div>
-
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
+    
+                <div className="lg:col-span-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Categories</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={contactAddress1}
-                    onChange={(e) => setContactAddress1(e.target.value)}
+                    value={categories.join(', ')}
+                    onChange={(e) => setCategories(e.target.value.split(', '))}
                   />
                 </div>
-                
+              </div>
 
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
-                  <textarea
-                    rows="4"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-
+              <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                  value={introductionVideo}
+                  onChange={(e) => setIntroductionVideo(e.target.value)}
+                />
+              </div>
+    
+              <button
+                onClick={savePersonalInfo}
+                className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+              >
+                Save Personal Information
+              </button>
+    
+              <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Job Title</label>
+                <input
+                  type="text"
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                />
+    
+                <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></textarea>
+              </div>
+    
+              <button
+                onClick={savePersonalInfo}
+                className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
+              >
+                Save Job Information
+              </button>
+            </div> 
            
 
                 
@@ -641,18 +736,18 @@ const handleLongitudeChange = (e) => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
+              <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+              <select
+                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
 
 
              

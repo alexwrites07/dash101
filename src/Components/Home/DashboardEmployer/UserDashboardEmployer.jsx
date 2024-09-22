@@ -13,15 +13,6 @@ const UserDashboard = () => {
     profileViews: 0,
   };
 
-  // const notifications = [
-  //   { message: 'You are invited to apply for the job Physics Tutor for IIT JEE.', time: '6 days ago' },
-  //   { message: 'The application is undo approved on your job Chemistry Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
-  //   { message: 'The application is approved on your job Chemistry Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
-  //   { message: 'The application is removed on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '6 days ago' },
-  //   { message: 'The application is approved on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
-  //   { message: 'A new meeting is created on the job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
-  // ];
-   
   // Calculate how many days ago a date is from now
    const calculateDaysAgo = (date) => {
     const now = new Date();

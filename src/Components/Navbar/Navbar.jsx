@@ -57,9 +57,6 @@ function Navbar() {
                     <a href="/admin-panel" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Admin</a>
                   </li>
                   <li>
-                    <a href="#" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Pricing</a>
-                  </li>
-                  <li>
                     <a href="/contact" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Contact</a>
                   </li>
                   <li className="relative">

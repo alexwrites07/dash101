@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Sidebar from '../Dashboard/AdminPanel/AdminSidebar';
+import Header from './Header';
 import { Link } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
@@ -40,25 +42,25 @@ const BlogGrid = ({ blogs }) => {
   );
 };
 
-// Sidebar Component
-const Sidebar = ({ categories, onCategoryClick }) => {
-  return (
-    <div className="w-full sm:w-1/3 lg:w-1/4 p-4 bg-gray-100">
-      <h3 className="text-xl font-bold mb-4">Categories</h3>
-      <ul>
-        {categories.map((category, index) => (
-          <li
-            key={index}
-            className="cursor-pointer text-blue-500 hover:underline mb-2"
-            onClick={() => onCategoryClick(category)}
-          >
-            {category}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+// // Sidebar Component
+// const Sidebar = ({ categories, onCategoryClick }) => {
+//   return (
+//     <div className="w-full sm:w-1/3 lg:w-1/4 p-4 bg-gray-100">
+//       <h3 className="text-xl font-bold mb-4">Categories</h3>
+//       <ul>
+//         {categories.map((category, index) => (
+//           <li
+//             key={index}
+//             className="cursor-pointer text-blue-500 hover:underline mb-2"
+//             onClick={() => onCategoryClick(category)}
+//           >
+//             {category}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
 
 // Blog Component
 const Blog = () => {
@@ -106,7 +108,7 @@ const Blog = () => {
     // Add more sample blog entries as needed
   ];
 
-  const categories = [...new Set(blogs.map((blog) => blog.category))];
+  // const categories = [...new Set(blogs.map((blog) => blog.category))];
 
   const filteredBlogs = blogs.filter(
     (blog) =>
@@ -115,14 +117,16 @@ const Blog = () => {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row">
-      <Sidebar categories={categories} onCategoryClick={setSelectedCategory} />
-      <div className="w-full lg:w-3/4">
+    <div className="flex flex-col lg:flex-row min-h-screen">
+      <Header />
+      <div className="flex-1 bg-gray-100">
+        <Sidebar/>
+      <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-24 flex flex-col items-center lg:items-start">
         <div className="flex justify-center my-4">
           <input
             type="text"
             placeholder="Search blogs..."
-            className="border rounded-lg py-2 px-4 w-3/4 lg:w-1/2"
+            className="border rounded-lg py-2 px-4 w-3/4"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -130,6 +134,7 @@ const Blog = () => {
         <BlogGrid blogs={filteredBlogs} />
       </div>
       
+      </div>
     </div>
   );
 };

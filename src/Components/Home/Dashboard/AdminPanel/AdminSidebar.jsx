@@ -37,7 +37,7 @@ const Sidebar = ({ activeTab }) => {
     {
       to: '#', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Widgets', dropdown: true, onClick: toggleWidgets,
       subLinks: [
-        { to: '/widgets/hero-section', label: 'Hero Section' },
+        // { to: '/widgets/hero-section', label: 'Hero Section' },
         { to: '/widgets/footer', label: 'Footer' },
         { to: '/widgets/headers', label: 'Headers' },
         { to: '/widgets/featured-category', label: 'Featured Category' },
@@ -46,15 +46,11 @@ const Sidebar = ({ activeTab }) => {
         { to: '/widgets/featured-testimonials', label: 'Featured Testimonials' },
       ]
     },
-    { to: '/faqs', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'FAQs' },
-    { to: '/about-us', icon: <HiUserGroup className="w-6 h-6" />, label: 'About Us' },
-    { to: '/contact-us', icon: <HiBell className="w-6 h-6" />, label: 'Contact Us' },
-    { to: '/coins', icon: <HiCash className="w-6 h-6" />, label: 'Coins' },
-    { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
-    { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
-    { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
-    { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
-    { to: '/logout', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+    // { to: '/faqs', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'FAQs' },
+    // { to: '/about-us', icon: <HiUserGroup className="w-6 h-6" />, label: 'About Us' },
+    // { to: '/contact-us', icon: <HiBell className="w-6 h-6" />, label: 'Contact Us' },
+    // { to: '/coins', icon: <HiCash className="w-6 h-6" />, label: 'Coins' },
+    // { to: '/logout', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
   ];
 
   return (
