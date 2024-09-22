@@ -561,8 +561,7 @@ const handleLongitudeChange = (e) => {
           {endpoint === 'tutor' && (
             <div className="flex-1 bg-gray-100">
             <Sidebar />
-            <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28">
-              <h1 className="text-3xl font-bold mb-8 text-gray-900">Your Profile</h1>
+            <div className="">
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
              <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
               <div className="flex mb-8">
