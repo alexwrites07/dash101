@@ -27,9 +27,9 @@ const TutorFinder = () => {
   const fetchTutors = async () => {
     try {
       const response = await axios.get('https://backend.akshayy.tech/getTutors');
-      if (response.data && Array.isArray(response.data)) {
-        setTutors(response.data);
-        setFilteredTutors(response.data);
+      if (response.data && response.data.tutors && Array.isArray(response.data.tutors)) {
+        setTutors(response.data.tutors);
+        setFilteredTutors(response.data.tutors);
       } else {
         console.error('Invalid data format received:', response.data);
       }
@@ -37,6 +37,7 @@ const TutorFinder = () => {
       console.error('Error fetching tutors:', error);
     }
   };
+  
 
   const filterByDistance = (job) => {
     if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
@@ -212,12 +213,12 @@ const TutorFinder = () => {
                     <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
                     <span className="text-gray-600 mr-6">{tutor.distanceFromUser} km away</span>
                   </div>
-                  <div className="mt-2 md:mt-0 flex items-center mr-8">
+                  <div className="mt-2 md:mt-0 flex items-center mr-4">
                   <button className="ml-2 mr-6">
                       {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark className="text-blue-500" />}
                     </button>
-                    <button className="flex items-center justify-center bg-[#041F96] hover:bg-[#041F96] text-white px-4 py-2 rounded-lg">
-                      Apply Now
+                    <button className=" items-center justify-center bg-[#041F96] hover:bg-[#041F96] text-white px-4 py-2 rounded-lg">
+                      Apply<br></br> Now
                     </button>
                    
                   </div>

@@ -7,12 +7,12 @@ import axios from "axios";
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    // const [fullName, setfullName] = useState("");
     const [name, setName] = useState("");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [otp, setOtp] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
     const roles = ["Teacher", "Institution", "Students", "Admin"];
     const [currentIndex, setCurrentIndex] = useState(1);
@@ -35,6 +35,7 @@ export default function SignUp() {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
+        setSuccessMessage(""); // Clear any previous success message
 
         const apiRoutes = {
             Teacher: "https://backend.akshayy.tech/register/tutor",
@@ -48,11 +49,10 @@ export default function SignUp() {
         }
         try {
             const response = await axios.post(apiRoutes[currentRole], {
-                fullName: "demo-name", // Use a demo name or the actual name input
+                fullName: name || "demo-name", // Use actual name input if available
                 email,
                 password,
             });
-            // If OTP is sent successfully
             setIsOtpSent(true);
         } catch (err) {
             setError("Signup failed. Please try again.");
@@ -71,9 +71,9 @@ export default function SignUp() {
                 email,
                 otp,
             });
-            // Redirect to profile if OTP verification is successful
-            
-            navigate("/login");
+            // Redirect to login page with success message
+            setSuccessMessage("You are successfully signed up now. Please log in with your credentials.");
+            setTimeout(() => navigate("/login"), 2000); // Redirect after a short delay
         } catch (err) {
             setError("OTP verification failed. Please try again.");
         } finally {
@@ -96,7 +96,7 @@ export default function SignUp() {
                     <LoadingSpinner />
                 </div>
             ) : (
-                <div className=" lg:h-1/2 h-[800px] w-screen p-3 bg-white-900">
+                <div className="lg:h-1/2 h-[800px] w-screen p-3 bg-white-900">
                     <div className={`${currentIndex === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} overflow-hidden lg:flex lg:flex-row flex-col-reverse h-full w-full flex items-center justify-center bg-white-900 rounded-[20px]`}>
                         <div className="overflow-hidden lg:w-3/5 h-full flex justify-center place-items-top lg:place-items-center bg-white-900 rounded-[20px]">
                             <img
@@ -163,53 +163,55 @@ export default function SignUp() {
                                                             Sign Up
                                                         </button>
                                                         {error && <p style={{ color: "red" }}>{error}</p>}
-                                                        <p className="flex flex-row gap-10">
+                                                        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+                                                        <div className="flex justify-center gap-4 mt-4">
                                                             {roles.map((role, index) => (
-                                                                <a onClick={() => roleChangeInLogin(index)} key={index} className={`flex flex-row ${currentIndex === index ? 'hidden' : 'font-bold text-blue-500'}`}>
-                                                                    {role} ?
-                                                                </a>
+                                                                <button
+                                                                    key={index}
+                                                                    onClick={() => roleChangeInLogin(index)}
+                                                                    className={`px-4 py-2 font-bold rounded-lg text-black ${currentIndex === index ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'}`}
+                                                                >
+                                                                    {role}
+                                                                </button>
                                                             ))}
-                                                        </p>
+                                                        </div>
                                                     </form>
                                                 </>
                                             ) : (
-                                                <>
-                                                    <h1 className="text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl">OTP Verification</h1>
-                                                    <form className="space-y-4 lg:space-y-6" onSubmit={handleOtpSubmit}>
-                                                        <div>
-                                                            <label htmlFor="otp" className="block mb-1 text-sm font-medium text-blue-500">Enter OTP</label>
-                                                            <input
-type="text"
-name="otp"
-id="otp"
-className="bg-gray-50 border border-gray-300 text-black sm
-rounded-lg focus
-focus
-block w-full p-2.5 placeholder-gray-400 text-black focus
-border-blue-500"
-placeholder="123456"
-required=""
-onChange={(e) => setOtp(e.target.value)}
-/>
-</div>
-<button
-                                                         type="submit"
-                                                         className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                                     >
-Verify OTP
-</button>
-{error && <p style={{ color: "red" }}>{error}</p>}
-</form>
-</>
-)}
-</div>
-</div>
-</div>
-</section>
-</div>
-</div>
-</div>
-)}
-</>
-);
+                                                <form className="space-y-4 lg:space-y-6" onSubmit={handleOtpSubmit}>
+                                                    <h1 className="text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl">
+                                                        Enter OTP
+                                                    </h1>
+                                                    <div>
+                                                        <label htmlFor="otp" className="block mb-1 text-sm font-medium text-blue-500">OTP</label>
+                                                        <input
+                                                            type="text"
+                                                            name="otp"
+                                                            id="otp"
+                                                            className="bg-gray-50 border border-gray-300 text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
+                                                            placeholder="Enter OTP"
+                                                            required=""
+                                                            onChange={(e) => setOtp(e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        type="submit"
+                                                        className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                                    >
+                                                        Verify OTP
+                                                    </button>
+                                                    {error && <p style={{ color: "red" }}>{error}</p>}
+                                                    {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+                                                </form>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    );
 }

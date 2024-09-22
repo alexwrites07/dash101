@@ -82,7 +82,7 @@ const EmployersPage = () => {
       <div className="flex-1 bg-gray-100">
         <Header />
         <div className="mt-4 lg:ml-64 lg:mt-4 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
-          <h1 className="text-3xl font-bold mb-6 text-gray-900">Employers</h1>
+          <h1 className="text-3xl font-bold mb-6 text-gray-900 mt-24">Employers</h1>
 
           <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
             <div className="flex justify-between mb-4">

@@ -31,7 +31,7 @@ const Sidebar = ({ activeTab }) => {
     { to: '/organization-profiles', icon: <HiUser className="w-6 h-6" />, label: 'Organisation Profiles' },
     { to: '/learning-need-posts', icon: <HiViewBoards className="w-6 h-6" />, label: 'Learning Need Posts' },
     { to: '/reviews-rating', icon: <HiHeart className="w-6 h-6" />, label: 'Reviews & Rating' },
-    { to: '/blogs', icon: <HiChat className="w-6 h-6" />, label: 'Blogs' },
+    { to: '/blogs-admin', icon: <HiChat className="w-6 h-6" />, label: 'Blogs' },
     { to: '/add-category', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Category' },
     { to: '/add-tags', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Tags' },
     {
