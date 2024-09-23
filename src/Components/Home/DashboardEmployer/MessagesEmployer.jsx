@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './SidebarEmployer';
 import Header from './HeaderEmployer';
+import axios from 'axios';
 
-// Sample contacts and message data
+// Uncommented initialContacts and initialMessages
 const initialContacts = [
   {
     id: 1,
@@ -47,15 +48,45 @@ const Messages = () => {
   const [contacts, setContacts] = useState(initialContacts);
   const [messages, setMessages] = useState(initialMessages);
   const [searchTerm, setSearchTerm] = useState('');
-  const [composeVisible, setComposeVisible] = useState(false); // State for compose form visibility
-  const [newContactName, setNewContactName] = useState(''); // State for new contact name
+  const [composeVisible, setComposeVisible] = useState(false);
+  const [newContactName, setNewContactName] = useState('');
 
-  const handleSendMessage = (e) => {
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8'; // Replace with your actual token logic
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const response = await axios.get('https://backend.akshayy.tech/conversations', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const conversations = response.data;
+
+        const formattedContacts = conversations.map((conversation) => {
+          const contact = conversation.participants.find(p => p.participantId !== 'your_user_id');
+          return {
+            id: conversation._id,
+            name: contact.name,
+            lastMessage: conversation.lastMessage ? conversation.lastMessage : 'No messages yet',
+            roomId: conversation.roomId,
+          };
+        });
+
+        setContacts(formattedContacts);
+      } catch (error) {
+        console.error('Error fetching conversations:', error);
+      }
+    };
+
+    fetchConversations();
+  }, []);
+
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!messageInput.trim() || !activeChat) return;
 
     const newMessage = {
-      id: messages[activeChat].length + 1,
       sender: 'You',
       message: messageInput,
       timestamp: new Date().toISOString(),
@@ -66,18 +97,27 @@ const Messages = () => {
       [activeChat]: [...prevMessages[activeChat], newMessage],
     }));
 
+    try {
+      // Send the message to the backend
+      const response = await axios.post('https://backend.akshayy.tech/send-message', {
+        recipientId: activeChat.id, // Assuming `id` is the participant ID
+        message: messageInput,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(response.data.message); // Output: Message sent
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+
     setMessageInput('');
   };
 
   const openChat = (contact) => {
     setActiveChat(contact);
-    setComposeVisible(false); // Hide compose form when a chat is opened
-    if (!messages[contact]) {
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [contact]: [],
-      }));
-    }
   };
 
   const closeChat = () => {
@@ -87,13 +127,12 @@ const Messages = () => {
   const deleteConversation = () => {
     if (!activeChat) return;
 
-    // Remove the contact and their messages
     setContacts((prevContacts) =>
-      prevContacts.filter((contact) => contact.name !== activeChat)
+      prevContacts.filter((contact) => contact.name !== activeChat.name)
     );
     setMessages((prevMessages) => {
       const newMessages = { ...prevMessages };
-      delete newMessages[activeChat];
+      delete newMessages[activeChat.name];
       return newMessages;
     });
 
@@ -104,40 +143,6 @@ const Messages = () => {
     contact.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const toggleComposeForm = () => {
-    setComposeVisible(!composeVisible);
-    if (composeVisible) {
-      setActiveChat(null); // Clear active chat when opening compose form
-    }
-  };
-
-  const handleNewContactSubmit = (e) => {
-    e.preventDefault();
-    if (!newContactName.trim()) return;
-
-    // Check if the contact already exists
-    const existingContact = contacts.find((contact) => contact.name === newContactName);
-    if (existingContact) {
-      setActiveChat(newContactName);
-      toggleComposeForm();
-      return;
-    }
-
-    // Add the new contact to the contacts list
-    const newContact = {
-      id: contacts.length + 1,
-      name: newContactName,
-      username: newContactName.toLowerCase().replace(/\s/g, ''),
-      lastMessage: 'Just now',
-    };
-
-    setContacts([...contacts, newContact]);
-    setMessages({ ...messages, [newContactName]: [] });
-    setActiveChat(newContactName);
-    setNewContactName('');
-    toggleComposeForm();
-  };
-
   return (
     <div className="flex flex-col lg:flex-row h-screen">
       <Sidebar openChat={openChat} activeChat={activeChat} />
@@ -145,12 +150,6 @@ const Messages = () => {
         <Header />
         <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col lg:flex-row items-center lg:items-start h-full">
           <div className="lg:w-1/4 bg-gray-100 p-4 lg:mr-8 h-full overflow-y-auto">
-            <button
-              onClick={toggleComposeForm}
-              className="mb-4 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 w-full"
-            >
-              Compose New Message
-            </button>
             <h2 className="text-xl font-semibold mb-4 text-gray-900">Search Contacts...</h2>
             <input
               type="text"
@@ -165,10 +164,8 @@ const Messages = () => {
               {filteredContacts.map((contact) => (
                 <div
                   key={contact.id}
-                  onClick={() => openChat(contact.name)}
-                  className={`cursor-pointer p-2 rounded-lg mb-2 ${
-                    activeChat === contact.name ? 'bg-blue-100' : 'bg-white'
-                  }`}
+                  onClick={() => openChat(contact)}
+                  className={`cursor-pointer p-2 rounded-lg mb-2 ${activeChat === contact ? 'bg-blue-100' : 'bg-white'}`}
                 >
                   <h3 className="text-md font-medium text-gray-700">{contact.name}</h3>
                   <p className="text-sm text-gray-500">{contact.lastMessage}</p>
@@ -178,88 +175,52 @@ const Messages = () => {
           </div>
 
           <div className="flex-1 p-4 h-full">
-            {composeVisible ? (
-              <section className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900">Compose Message</h2>
-                <form className="flex flex-col" onSubmit={handleNewContactSubmit}>
-                  <label className="text-md text-gray-700 mb-2">Recipient:</label>
-                  <input
-                    type="text"
-                    value={newContactName}
-                    onChange={(e) => setNewContactName(e.target.value)}
-                    className="p-2 mb-4 border rounded-lg"
-                    placeholder="Enter recipient's name"
-                  />
-
-                  <label className="text-md text-gray-700 mb-2">Message:</label>
-                  <textarea
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
-                    className="p-2 mb-4 border rounded-lg"
-                    rows="5"
-                    placeholder="Enter your message here"
-                  ></textarea>
-
-                  <button
-                    type="submit"
-                    className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
-                    Send Message
-                  </button>
-                </form>
-              </section>
-            ) : (
+            {activeChat ? (
               <>
                 <div className="flex justify-between items-center mb-4">
                   <h1 className="text-3xl font-bold text-gray-900">Messages</h1>
-                  {activeChat && (
-                    <button
-                      onClick={deleteConversation}
-                      className="py-1 px-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                    >
-                      Delete Conversation
-                    </button>
-                  )}
+                  <button
+                    onClick={deleteConversation}
+                    className="py-1 px-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  >
+                    Delete Conversation
+                  </button>
                 </div>
 
-                {activeChat ? (
-                  <div className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900">Chat with {activeChat}</h2>
-                    <div className="flex-1 overflow-y-auto mb-4 max-h-full">
-                      {messages[activeChat].map((msg) => (
-                        <div
-                          key={msg.id}
-                          className={`mb-2 p-2 rounded-lg ${
-                            msg.sender === 'You' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'
-                          }`}
-                        >
-                          <p className="text-md">{msg.message}</p>
-                          <span className="text-sm text-gray-500">{new Date(msg.timestamp).toLocaleString()}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <form className="flex flex-col" onSubmit={handleSendMessage}>
-                      <textarea
-                        value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
-                        className="p-2 mb-4 border rounded-lg resize-none"
-                        rows="3"
-                        placeholder="Type your message here"
-                      ></textarea>
-                      <button
-                        type="submit"
-                        className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                <div className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col">
+                  <h2 className="text-xl font-semibold mb-4 text-gray-900">Chat with {activeChat.name}</h2>
+                  <div className="flex-1 overflow-y-auto mb-4 max-h-full">
+                    {messages[activeChat.name]?.map((msg, index) => (
+                      <div
+                        key={index}
+                        className={`mb-2 p-2 rounded-lg ${msg.sender === 'You' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'}`}
                       >
-                        Send
-                      </button>
-                    </form>
+                        <p className="text-md">{msg.message}</p>
+                        <span className="text-sm text-gray-500">{new Date(msg.timestamp).toLocaleString()}</span>
+                      </div>
+                    ))}
                   </div>
-                ) : (
-                  <div className="bg-white p-4 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900">Select a contact to start chatting</h2>
-                  </div>
-                )}
+                  <form className="flex flex-col" onSubmit={handleSendMessage}>
+                    <textarea
+                      value={messageInput}
+                      onChange={(e) => setMessageInput(e.target.value)}
+                      className="p-2 mb-4 border rounded-lg resize-none"
+                      rows="3"
+                      placeholder="Type your message here"
+                    ></textarea>
+                    <button
+                      type="submit"
+                      className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      Send
+                    </button>
+                  </form>
+                </div>
               </>
+            ) : (
+              <div className="bg-white p-4 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold mb-4 text-gray-900">Select a contact to start chatting</h2>
+              </div>
             )}
           </div>
         </div>

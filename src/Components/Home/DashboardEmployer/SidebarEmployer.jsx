@@ -12,7 +12,7 @@ const Sidebar = ({ activeTab }) => {
 
     const sidebarLinks = [
         { to: '/user-dashboard-employer', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
-        { to: '/your-profile-employer', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
+        { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
         { to: '/my-jobs-employer', icon: <HiBookmark className="w-6 h-6" />, label: 'My Jobs' },
         { to: '/upload-resume-employer', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Submit Job' },
         { to: '/applied-company-employer', icon: <HiShoppingBag className="w-6 h-6" />, label: 'Applicants Jobs' },

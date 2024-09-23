@@ -105,6 +105,7 @@ function AppContent() {
     || location.pathname === "/widgets/featured-category"
     || location.pathname === "/widgets/footer"
     || location.pathname === "/widgets/headers" 
+     || location.pathname === "/my-jobs-employer"
     || location.pathname === "/reviews-rating";
   };
   
@@ -153,7 +154,7 @@ function AppContent() {
         <Route path="/blogs" element={<Blog />} />
         <Route path="/dashboard-employer" element={<UserDashboardEmployer />} />
         <Route path="/upload-resume-employer" element={<UploadResumeEmployer />} />
-        <Route path="/your-profile" element={<YourProfileEmployer />} />
+        {/* <Route path="/your-profile-employer" element={<YourProfileEmployer />} /> */}
         <Route path="/applied-company-employer" element={<AppliedCompanyEmployer />} />
         <Route path="/locations-employer" element={<LocationsEmployer />} />
         <Route path="/shortlist-jobs-employer" element={<ShortlistJobsEmployer />} />
