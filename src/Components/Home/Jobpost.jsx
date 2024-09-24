@@ -373,7 +373,7 @@ const JobPost = () => {
             onClick={applyFilters}
             className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
           >
-            Apply Filters
+            View
           </button>
         </form>
         </div>
