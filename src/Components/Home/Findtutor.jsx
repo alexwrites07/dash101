@@ -29,7 +29,7 @@ const TutorFinder = () => {
       const response = await axios.get('https://backend.akshayy.tech/getTutors');
       if (response.data && response.data.tutors && Array.isArray(response.data.tutors)) {
         setTutors(response.data.tutors);
-        setFilteredTutors(response.data.tutors);
+        setFilteredTutors(response.data.tutors); // Set the initial filtered tutors
       } else {
         console.error('Invalid data format received:', response.data);
       }
@@ -37,16 +37,34 @@ const TutorFinder = () => {
       console.error('Error fetching tutors:', error);
     }
   };
-  
 
-  const filterByDistance = (job) => {
-    if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
+  const calculateDistance = (coords1, coords2) => {
+    const toRadians = (degrees) => (degrees * Math.PI) / 180;
+    const R = 6371;
 
-    const jobCoords = job.location.coordinates;
-    const distance = calculateDistance(userCoords, jobCoords);
+    if (!coords1 || !coords2 || coords1.length !== 2 || coords2.length !== 2) {
+      console.error('Invalid coordinates format');
+      return NaN;
+    }
 
-    return distance <= distanceFilter;
+    const [lat1, lon1] = coords1;
+    const [lon2, lat2] = coords2;
+
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const rLat1 = toRadians(lat1);
+    const rLat2 = toRadians(lat2);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(rLat1) * Math.cos(rLat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c;
+
+    return distance;
   };
+
 
   const fetchUserCoordinates = () => {
     if (navigator.geolocation) {
@@ -70,7 +88,7 @@ const TutorFinder = () => {
   };
 
   const applyFilters = () => {
-    let filteredTutors = tutors.filter((tutor) => {
+    const filtered = tutors.filter((tutor) => {
       const { subjectsTaught, location, totalExperience, jobAlerts, tags } = tutor;
       const city = location?.city || '';
       const minSalary = jobAlerts?.minExpectedSalary?.value ?? 0;
@@ -86,7 +104,7 @@ const TutorFinder = () => {
       return subjectMatch && cityMatch && experienceMatch && minSalaryMatch && maxSalaryMatch && tagsMatch;
     });
 
-    setFilteredTutors(filteredTutors);
+    setFilteredTutors(filtered);
   };
 
   return (
@@ -102,25 +120,22 @@ const TutorFinder = () => {
         </div>
         <div className={`md:block p-4 bg-gray-100 rounded-lg shadow-lg mb-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
           <form className="space-y-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
+            {/* <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subjectsTaught">Subjects Taught</label>
               <input
                 type="text"
-                name="keyword"
-                id="keyword"
-                value={filters.keyword}
+                name="subjectsTaught"
+                value={filters.subjectsTaught}
                 onChange={handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
-            </div>
+            </div> */}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">Location</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">City</label>
               <input
                 type="text"
-                name="location"
-                placeholder="Enter city"
-                id="location"
-                value={filters.location}
+                name="city"
+                value={filters.city}
                 onChange={handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -133,54 +148,41 @@ const TutorFinder = () => {
               </button>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distance">Distance (in km)</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="totalExperience">Total Experience (Years)</label>
               <input
                 type="number"
-                name="distance"
-                id="distance"
-                placeholder="Enter distance in km"
-                value={distanceFilter}
-                onChange={(e) => setDistanceFilter(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="jobType">Job Type</label>
-              <select
-                name="jobType"
-                id="jobType"
-                placeholder="Enter Full Name"
-                value={filters.fullName}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              >
-                <option value="">Select Job Type</option>
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="contract">Contract</option>
-                <option value="remote">Remote</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
-              <input
-                type="text"
-                name="experienceLevel"
-                placeholder="Subjects Taught"
-                id="experienceLevel"
-                value={filters.subjectsTaught}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Career Level</label>
-              <input
-                type="text"
-                name="careerLevel"
-                placeholder="Enter Experience Type"
-                id="careerLevel"
+                name="totalExperience"
                 value={filters.totalExperience}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="minExpectedSalary">Min Expected Salary</label>
+              <input
+                type="number"
+                name="minExpectedSalary"
+                value={filters.minExpectedSalary}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxExpectedSalary">Max Expected Salary</label>
+              <input
+                type="number"
+                name="maxExpectedSalary"
+                value={filters.maxExpectedSalary}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">Tags</label>
+              <input
+                type="text"
+                name="tags"
+                value={filters.tags}
                 onChange={handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -195,37 +197,43 @@ const TutorFinder = () => {
           </form>
         </div>
         <div className="w-full flex flex-col items-center justify-center">
-          {filteredTutors.map((tutor, index) => (
-            <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
-              <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
-                <img src={tutor.image} alt="Company Logo" className="w-full h-full object-contain" />
-              </div>
-              <Link to={`/getTutor/${tutor._id}`} className="block w-full">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
-                  <div>
-                    <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
-                    <span className="text-gray-600">{tutor.jobTitle}</span>
-                    <span className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</span>
-                    
-                  </div>
-                  <div>
-                  <span className="text-gray-600 mr-6">{tutor.totalExperience} years </span>
-                    <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
-                    <span className="text-gray-600 mr-6">{tutor.distanceFromUser} km away</span>
-                  </div>
-                  <div className="mt-2 md:mt-0 flex items-center mr-4">
-                  <button className="ml-2 mr-6">
-                      {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark className="text-blue-500" />}
-                    </button>
-                    <button className=" items-center justify-center bg-[#041F96] hover:bg-[#041F96] text-white px-4 py-2 rounded-lg">
-                      Apply<br></br> Now
-                    </button>
-                   
-                  </div>
+          {filteredTutors.length > 0 ? (
+            filteredTutors.map((tutor, index) => (
+              <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
+                <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
+                  <img src={tutor.image} alt="Tutor Logo" className="w-full h-full object-contain" />
                 </div>
-              </Link>
-            </div>
-          ))}
+                <Link to={`/getTutor/${tutor._id}`} className="block w-full">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
+                    <div>
+                      <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
+                      <span className="text-gray-600">{tutor.jobTitle}</span>
+                      <span className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-600 mr-6">{tutor.totalExperience} years</span>
+                      <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
+                      <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
+          {userCoords && tutor.location?.coordinates && (
+            <p className="text-gray-700 mr-4">Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km</p>
+          )}
+        </div>
+                    </div>
+                    <div className="mt-2 md:mt-0 flex items-center mr-4">
+                      <button className="ml-2 mr-6">
+                        {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark />}
+                      </button>
+                      <button className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <div>No tutors match your criteria.</div>
+          )}
         </div>
       </div>
     </div>

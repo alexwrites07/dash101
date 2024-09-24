@@ -1,4 +1,5 @@
-import React, { useState, Link} from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Correct import
 import Sidebar from './Sidebar';
 import Header from '../DashboardEmployer/HeaderEmployer';
 
@@ -9,14 +10,14 @@ const LearningNeeds = () => {
       connected: 5,
       datePosted: 'August 10, 2024',
       tags: ['Math', 'Algebra', 'High School'],
-      imageUrl: 'https://via.placeholder.com/150'
+      imageUrl: 'https://via.placeholder.com/150',
     },
     {
       title: 'Post Title 2',
       connected: 3,
       datePosted: 'August 12, 2024',
       tags: ['Science', 'Physics', 'Grade 10'],
-      imageUrl: 'https://via.placeholder.com/150'
+      imageUrl: 'https://via.placeholder.com/150',
     },
   ]);
 
@@ -48,10 +49,11 @@ const LearningNeeds = () => {
             </button>
           </div>
         ))}
-         <Link to ='/demo-form'><button className="mt-2 py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">
-              Book a Demo
-            </button>
-            </Link> 
+        <Link to="/demo-form">
+          <button className="mt-2 py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">
+            Book a Demo
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -41,6 +41,7 @@ const Sidebar = ({ activeTab }) => {
     ];
   } else if (userType === 'student') {
     sidebarLinks = [
+    
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
       { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
       { to: '/learningneeds', icon: <HiUser className="w-6 h-6" />, label: 'Learning Needs' },

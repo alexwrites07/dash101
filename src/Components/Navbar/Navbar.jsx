@@ -54,7 +54,7 @@ function Navbar() {
                     <Link to="/findtutor" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Find Tutor</Link>
                   </li>
                   <li>
-                    <a href="/student-profiles" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Admin</a>
+                    <a href="/about" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>About</a>
                   </li>
                   <li>
                     <a href="/contact" className="text-gray-700 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-[#041F96] md:p-0" onClick={closeMobileMenu}>Contact</a>
@@ -68,7 +68,7 @@ function Navbar() {
                       aria-expanded={isDropdownOpen ? "true" : "false"}
                       aria-controls="dropdownNavbar"
                     >
-                      Login
+                     Authentication
                       <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd"></path>
                       </svg>
@@ -79,7 +79,7 @@ function Navbar() {
                           <Link to="/login" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Login</Link>
                         </li>
                         <li>
-                          <Link to="/dashboard" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Dashboard</Link>
+                          <Link to="/signup" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Sign Up</Link>
                         </li>
                         {/* <li>
                           <a href="#" className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2" onClick={closeMobileMenu}>Settings</a>

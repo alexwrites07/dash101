@@ -86,7 +86,7 @@ const [dob, setDOB] = useState('');
           setSalary(data.jobAlerts?.minExpectedSalary.value || '');
           setDescription(data.description || '');
           setparentPhone (data.parentPhone || '');
-          setIntroductionVideo(data.video);
+          
           setLocation(data.location?.city || '');
           setRating (data.rating || '');
           setCategories(data.categories || []);
@@ -120,8 +120,8 @@ const [dob, setDOB] = useState('');
           setMapsLocation(data.location.address);
           setLatitude(data.location.coordinates[1]);
           setLongitude(data.location.coordinates[0]);
-          setImage(data.image || '');
-          setIntroductionVideo(data.introductionVideo || '');
+          // setImage(data.image || '');
+          
           
         } else {
           console.error('Failed to fetch data');
@@ -564,13 +564,13 @@ const handleLongitudeChange = (e) => {
             <div className="">
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
              <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
-              <div className="flex mb-8">
+              {/* <div className="flex mb-8">
                 <img
                   src={image}
                   alt="Profile"
                   className="w-32 h-32 rounded-full"
                 />
-              </div>
+              </div> */}
               <button
                 onClick={editimage}
                 className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
@@ -677,7 +677,7 @@ const handleLongitudeChange = (e) => {
 
 
 <div className="relative">
-  <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Degree</label>
   <input
     type="text"
     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -690,13 +690,16 @@ const handleLongitudeChange = (e) => {
       setFilteredQualifications(filtered);
     }}
   />
-  {/* Dropdown for filtered suggestions */}
+ 
   {filteredQualifications.length > 0 && (
     <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
       {filteredQualifications.map((q, index) => (
         <li
           key={index}
-          onClick={() => setHighestQualificatio(q)}
+          onClick={() => {
+            setHighestQualificatio(q);
+            setFilteredQualifications([]);  // Clear the list after selection
+          }}
           className="cursor-pointer p-2 hover:bg-gray-100"
         >
           {q}
@@ -705,6 +708,7 @@ const handleLongitudeChange = (e) => {
     </ul>
   )}
 </div>
+
 
                 <div>
                 <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
@@ -767,14 +771,18 @@ const handleLongitudeChange = (e) => {
                     <option value="Yearly<">Yearly</option>
                   </select>
                 </div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Max Salary</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={salaryType}
-                    onChange={(e) => setSalaryType(e.target.value)}
-                  />
-                </div> 
+                <div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">Max Salary</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg"
+    value={salaryType}
+    onChange={(e) => setSalaryType(e.target.value)}
+  />
+</div>
+
+                </div>
+
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Salary Period</label>
                   <select
@@ -799,22 +807,14 @@ const handleLongitudeChange = (e) => {
                 </div> 
 
 
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Salary (₹)</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={salary}
-                    onChange={(e) => setSalary(e.target.value)}
-                  />
-                </div>
+             
 
     
                 <div className="lg:col-span-2">
                   <label className="block text-gray-700 text-sm font-bold mb-2">Categories</label>
 
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Phone Number</label>
+                
 
                   <input
                     type="text"
@@ -824,32 +824,8 @@ const handleLongitudeChange = (e) => {
                   />
                 </div>
               </div>
-
               <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                  value={introductionVideo}
-                  onChange={(e) => setIntroductionVideo(e.target.value)}
-                />
-              </div>
-    
-              <button
-                onClick={savePersonalInfo}
-                className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
-              >
-                Save Personal Information
-              </button>
-    
-              <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Job Title</label>
-                <input
-                  type="text"
-                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                />
+                
     
                 <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
                 <textarea
@@ -858,13 +834,18 @@ const handleLongitudeChange = (e) => {
                   onChange={(e) => setDescription(e.target.value)}
                 ></textarea>
               </div>
+           
     
               <button
                 onClick={savePersonalInfo}
                 className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
               >
-                Save Job Information
+                Save Personal Information
               </button>
+    
+             
+    
+              
             </div> 
            
 
@@ -955,13 +936,13 @@ const handleLongitudeChange = (e) => {
 {endpoint === 'student' && (
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4 text-gray-900">Student Profile</h2>
-              <div className="flex mb-8">
+              {/* <div className="flex mb-8">
                 <img
                   src={image}
                   alt="Profile"
                   className="w-32 h-32 rounded-full"
                 />
-              </div>
+              </div> */}
              
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
@@ -1041,7 +1022,7 @@ const handleLongitudeChange = (e) => {
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={location.city}
+                    value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
@@ -1056,13 +1037,13 @@ const handleLongitudeChange = (e) => {
           <h1 className="bold my-4"><em>Employer Profile</em></h1>
                <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
-                 <div className="flex mb-8">
+                 {/* <div className="flex mb-8">
                    <img
                      src={image}
                      alt="Profile"
                      className="w-32 h-32 rounded-full"
                    />
-                 </div>
+                 </div> */}
                  <button
                    onClick={editimage}
                    className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
@@ -1150,7 +1131,7 @@ const handleLongitudeChange = (e) => {
                      </select>
                    </div>
        
-                   <div>
+                   {/* <div>
                    <label className="block text-gray-700 text-sm font-bold mb-2">Experience Time</label>
                      <select
                          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -1167,7 +1148,7 @@ const handleLongitudeChange = (e) => {
                        <option value="6 Year">6 Year</option>
                        <option value="7+ Year">7+ Year</option>
                      </select>
-                   </div>
+                   </div> */}
        
                    <div>
                      <label className="block text-gray-700 text-sm font-bold mb-2">Languages</label>
@@ -1180,7 +1161,7 @@ const handleLongitudeChange = (e) => {
                    </div>
        
                    <div>
-                   <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
+                   <label className="block text-gray-700 text-sm font-bold mb-2">Type of Teachers you require</label>
                      <select
                          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
                          value={salaryType}
@@ -1196,7 +1177,7 @@ const handleLongitudeChange = (e) => {
                    </div>
        
                    <div>
-                     <label className="block text-gray-700 text-sm font-bold mb-2">Salary (₹)</label>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Salary you will offer (₹)</label>
                      <input
                        type="text"
                        className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -1206,7 +1187,7 @@ const handleLongitudeChange = (e) => {
                    </div>
        
                    <div className="lg:col-span-2">
-                     <label className="block text-gray-700 text-sm font-bold mb-2">Categories</label>
+                     <label className="block text-gray-700 text-sm font-bold mb-2">Categories (Teachers) </label>
                      <input
                        type="text"
                        className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -1248,7 +1229,7 @@ const handleLongitudeChange = (e) => {
                  </button>
                </div>  
        
-             <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
+             {/* <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
                  <label className="block text-gray-700 text-sm font-bold mb-2">Social Network</label>
                  {socialNetworks.map((socialNetwork, index) => (
                    <div key={index} className="mb-4">
@@ -1319,15 +1300,15 @@ const handleLongitudeChange = (e) => {
                    className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
                  >
                    Save Contact Information
-                 </button>
+                 </button> */}
        
                  <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
                    <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
                    <input
                      type="text"
                      className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                     value={introductionVideo}
-                     onChange={(e) => setIntroductionVideo(e.target.value)}
+                     value={video}
+                     onChange={(e) => setVideo(e.target.value)}
                    />
                  </div>
        

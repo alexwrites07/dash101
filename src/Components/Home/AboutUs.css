@@ -1,0 +1,46 @@
+@keyframes moveBlob {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(5px, -5px);
+    }
+    50% {
+      transform: translate(-5px, 5px);
+    }
+    75% {
+      transform: translate(5px, 5px);
+    }
+  }
+  
+  .ameboid {
+    width: 400px;
+    height: 400px;
+    background-color: #1967D212;
+    border-radius: 50%;
+    animation: moveBlob 6s infinite;
+    margin-left: 20%;
+    clip-path: polygon(60% 0%, 90% 10%, 100% 40%, 90% 70%, 60% 90%, 40% 90%, 10% 70%, 0% 40%, 10% 10%, 40% 0%);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  }
+  
+  .testimonial-enter {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  
+  .testimonial-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .testimonial-exit {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .testimonial-exit-active {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  

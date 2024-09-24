@@ -40,7 +40,7 @@ const Header = () => {
     setNewNotificationCount(0);
 
     // Navigate to the user dashboard
-    navigate('/user-dashboard');
+    // navigate('/user-dashboard');
   };
 
   useEffect(() => {
