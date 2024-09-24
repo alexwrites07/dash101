@@ -315,18 +315,21 @@ const JobPost = () => {
           </div> */}
 
           {/* Experience Level Filter */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
             <input
               type="text"
               name="experienceLevel"
               placeholder="Enter Years of Experience"
               id="experienceLevel"
-              value={filters.experienceLevel}
+              value={filters.experience
+
+
+              }
               onChange={handleFilterChange}
               className="w-full px-3 py-2 border rounded-lg"
             />
-          </div>
+          </div> */}
 
           {/* Career Level Filter */}
           <div className="mb-4">
@@ -437,16 +440,17 @@ const JobPost = () => {
                 <HiOutlineBookmark className='w-6 h-6 mb-2 mr-2 ' />
               )}
             </button>
+            <button
+            className="mr-4 ml-2 my-auto bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none w-[100px]"
+    >
+      View
+    </button>
           </span>
         </div>
       </div>
+    
     </Link>
-    <button
-      onClick={openModal}
-      className="mr-4 ml-2 my-auto bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none w-[100px]"
-    >
-      Apply
-    </button>
+   
   </div>
 ))}
   </div>

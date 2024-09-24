@@ -5,6 +5,7 @@ import Map from './Map';
 import StarRating from './StarRating';
 import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import '../Home.css';
+import { Link } from 'react-router-dom';
 
 const TeachingDescription = () => {
   const { Id } = useParams();
@@ -79,12 +80,13 @@ const TeachingDescription = () => {
             <p><strong>Experience:</strong> {job.totalExperience} years</p>
             <p><strong>Qualification:</strong> {job.highestQualification}</p>
             {!isActive ? (
+              <Link to="/login">
               <button
-                onClick={openModal}
-                className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+                className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
               >
                 Invite
               </button>
+            </Link>
             ) : (
               <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
                 Closed

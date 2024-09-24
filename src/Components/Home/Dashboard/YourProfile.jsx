@@ -107,7 +107,9 @@ const [dob, setDOB] = useState('');
 
           setFullName(data.fullName);
           setEmail(data.email);
-          setDOB(data.dob || '');
+          setDOB(new Date(data.dob).toISOString().slice(0, 10));
+
+
           setGender(data.gender);
           setQualification(data.highestQualification);
           setExperienceTime(data.totalExperience);

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Map'; // Import the Map component
 import '../Home.css';
+import { Link } from 'react-router-dom';
 
 const JobDescription = () => {
   const { jobId } = useParams();
@@ -70,12 +71,22 @@ const JobDescription = () => {
                 Closed
               </p>
             ) : (
+              <>
+                <Link to="/login">
               <button
-                onClick={openModal}
-                className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+                // onClick={openModal}
+                className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
               >
                 Apply
               </button>
+              </Link>
+               <button
+               // onClick={openModal}
+               className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+             >
+               Buy Contacts (100 coins)
+             </button>
+             </>
             )}
           </div>
         </div>
