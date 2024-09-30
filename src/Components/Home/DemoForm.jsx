@@ -3,31 +3,32 @@ import Map from './MapDemo'; // Ensure MapDemo uses coordinates prop correctly
 
 const questions = [
   'What do you want to learn?',
-  'What is your location?',
+  'Write a short description for your learning need?',
   'Which board of education are you choosing for?',
+  'What is your location?',
   'What is the maximum fee you are willing to pay?',
   'When do you plan to start your tuition?',
   'How would you like to attend your tuition classes?',
   'Do you have any tutor gender preference?',
-  'Share your contact details (Email ID and Phone Number)'
+  'Share your contact details (Email ID and Phone Number)',
 ];
 
 const suggestions = [
-  'Example: I want to learn Maths, I want to learn Physics, I want to learn French, etc...ca',
-  '',
-  'Select your board of education.',
-  'Enter the fee amount and select the appropriate option.',
-  'Select when you want to start your tuition.',
-  'Select your preferred mode of tuition.',
-  'Select your tutor gender preference.',
-  'Please enter your Email ID and Phone Number'
+  'Learning Language', 'Spoken English', 'French Language', 'Hindi Language', 'German Language',
+  'Spanish Language', 'Japanese Language', 'Kannada Language', 'Arabic Language', 'Phonics',
+  'Chinese Language', 'Tamil Language', 'Telugu Language', 'Sanskrit Language', 'Korean Language',
+  'Marathi Speaking', 'Russian Language', 'Italian Language', 'Malayalam Speaking', 'Bengali Speaking',
+  'Urdu Language', 'Accent Training Classes', 'Gujarati Speaking', 'Dutch Language', 'Punjabi Speaking',
+  'Portuguese Language', 'Swedish Language', 'Language Translation Services', 'Persian Language',
+  'Thai Language', 'Elocution', 'Danish Language', 'Turkish Language', 'Polish Language', 'Finnish Language',
+  'Hebrew Language', 'Latin Language',
 ];
 
 const options = {
-  3: ['ICSE', 'CBSE', 'State Board', 'International Baccalaureate', 'IGCSE', 'None of the above'],
+  2: ['ICSE', 'CBSE', 'State Board', 'International Baccalaureate', 'IGCSE', 'None of the above'],
   5: ['Not sure, just want to see options', 'Immediately', 'Within a month'],
   6: ['Live Interactive Online Classes (recommended)', 'Offline at my home or nearby classes'],
-  7: ['No preference', 'Male only', 'Female only']
+  7: ['No preference', 'Male only', 'Female only'],
 };
 
 const DemoForm = () => {
@@ -35,292 +36,328 @@ const DemoForm = () => {
   const [responses, setResponses] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [coordinates, setCoordinates] = useState([51.505, -0.09]);
+  const [inputValue, setInputValue] = useState('');
+  const [inputValue1, setInputValue1] = useState(''); // For fee input
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [contactDetails, setContactDetails] = useState({ email: '', phone: '' });
 
   const handleNext = (event) => {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    const response = formData.getAll('response') || formData.get('response');
-    setResponses(prevResponses => ({
-      ...prevResponses,
-      [questions[currentQuestionIndex]]: response
-    }));
+    let newResponses = { ...responses };
+
+    // Handle the responses for each question
+    switch (currentQuestionIndex) {
+      case 0:
+      case 1: // Handling for the learning needs description
+        newResponses[questions[currentQuestionIndex]] = inputValue;
+        break;
+      case 2: // Board of education
+        newResponses[questions[currentQuestionIndex]] = inputValue;
+        break;
+      case 3: // Location
+        newResponses[questions[currentQuestionIndex]] = { coordinates, location: inputValue1 };
+        break;
+      case 4: // Maximum fee
+        newResponses[questions[currentQuestionIndex]] = { paymentType: inputValue, amount: inputValue1 };
+        break;
+      case 5:
+      case 6: // Plans to start tuition and class type
+        newResponses[questions[currentQuestionIndex]] = selectedOptions;
+        break;
+      case 7: // Tutor gender preference
+        newResponses[questions[currentQuestionIndex]] = selectedOptions;
+        break;
+      case 8: // Contact details
+        newResponses[questions[currentQuestionIndex]] = contactDetails;
+        break;
+      default:
+        break;
+    }
+
+    setResponses(newResponses);
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
+      resetInputState();
     } else {
       setIsSubmitted(true);
-      console.log('Form submitted:', responses);
+      console.log('Form submitted:', newResponses);
     }
-
-    event.target.reset();
   };
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
+      resetInputState();
     }
   };
 
- 
   const handleMapChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
   };
 
-  const handlePincodeChange = async (event) => {
-    const pincode = event.target.value;
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setInputValue(value);
 
-    if (pincode.length === 6) { // Assuming a 6-digit pin code
-      try {
-        const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${pincode}&key=AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw`);
-        const data = await response.json();
-        
-        console.log('Geocoding API response:', data);
-  
-        if (data.status === 'OK' && data.results.length > 0) {
-          const location = data.results[0].geometry.location;
-          setCoordinates([location.lng, location.lat]);
-        } else {
-          console.error('No results found for the given pincode:', data.status, data.results);
-          // Optionally, display an error message to the user
-        }
-      } catch (error) {
-        console.error('Error fetching coordinates:', error);
-        // Optionally, display an error message to the user
-      }
+    if (currentQuestionIndex === 0) {
+      const filtered = suggestions.filter((suggestion) =>
+        suggestion.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredSuggestions(filtered);
     }
   };
-  
+
+  const handleSuggestionClick = (suggestion) => {
+    setInputValue(suggestion);
+    setFilteredSuggestions([]);
+  };
+
+  const handleOptionChange = (event) => {
+    const value = event.target.value;
+    const checked = event.target.checked;
+
+    if (checked) {
+      setSelectedOptions((prev) => [...prev, value]);
+    } else {
+      setSelectedOptions((prev) => prev.filter((option) => option !== value));
+    }
+  };
+
+  const handleContactChange = (event) => {
+    const { name, value } = event.target;
+    setContactDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetInputState = () => {
+    setInputValue(''); // Clear input value
+    setInputValue1(''); // Clear fee input
+    setFilteredSuggestions([]); // Clear filtered suggestions
+    setSelectedOptions([]); // Clear selected options
+  };
 
   const renderInputField = () => {
-    const questionIndex = currentQuestionIndex + 1;
-
-    if (questions[currentQuestionIndex] === 'What is your location?') {
-      return (
-        <div className="mb-6">
-          <label className="block text-gray-700 text-lg font-semibold mb-2">
-            {questions[currentQuestionIndex]}
-          </label>
-          <input
-            type="text"
-            name="location"
-            placeholder="Enter your address"
-            required
-            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <input
-            type="text"
-            name="pincode"
-            placeholder="Enter your pincode"
-            required
-            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            onChange={handlePincodeChange} // Update map based on pincode
-          />
-          <input
-            type="text"
-            name="landmark"
-            placeholder="Enter a landmark"
-            required
-            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <input
-            type="text"
-            name="city"
-            placeholder="Enter your city"
-            required
-            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <div className="w-full h-88 mb-4">
-            <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
+    switch (currentQuestionIndex) {
+      case 0: // What do you want to learn?
+        return (
+          <div className="mt-4 mb-6">
+            
+            <input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder="Enter your choice"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            {filteredSuggestions.length > 0 && (
+              <ul className="border border-gray-300 rounded-md mt-1">
+                {filteredSuggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className="cursor-pointer hover:bg-gray-200 px-3 py-2"
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        </div>
-      );
-    }
+        );
 
-    if (questions[currentQuestionIndex] === 'How would you like to attend your tuition classes?') {
-      return (
-        <div className="mb-6">
-          <label className="block text-gray-700 text-lg font-semibold mb-2">
-            {questions[currentQuestionIndex]}
-          </label>
-          <div className="flex flex-col space-y-2">
-            {options[questionIndex].map((option, index) => (
-              <div key={index}>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="response"
-                    value={option}
-                    className="mr-2"
-                  />
-                  {option}
-                </label>
-              </div>
-            ))}
-            <div className="ml-6">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="response"
-                  value="At home"
-                  className="mr-2"
-                />
-                At home
-              </label>
-              <label className="flex items-center mt-2">
-                <input
-                  type="checkbox"
-                  name="response"
-                  value="Nearby classes"
-                  className="mr-2"
-                />
-                Nearby classes
-              </label>
+      case 1: // Learning needs description
+        return (
+          <div className="mt-4 mb-6">
+            <textarea
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              height={400}
+              placeholder="Enter your description"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        );
+
+      case 2: // Board of education
+        return (
+          <div className="mt-4 mb-6">
+            <select
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select your board</option>
+              {options[2].map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+          </div>
+        );
+
+      case 3: // Location
+        return (
+          <div className="mt-4 mb-6">
+            <input
+              type="text"
+              placeholder="Enter your address"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={(e) => setInputValue1(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Enter your pincode"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onChange={handleInputChange}
+            />
+            <input
+              type="text"
+              placeholder="Enter a landmark"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <input
+              type="text"
+              placeholder="Enter your city"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <div className="w-full h-88 mb-4">
+              <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
             </div>
           </div>
-        </div>
-      );
-    }
+        );
 
-    if (questions[currentQuestionIndex] === 'What is the maximum fee you are willing to pay?') {
-      return (
-        <div className="mb-6">
-        <label className="block text-gray-700 text-lg font-semibold mb-2">
-          {questions[currentQuestionIndex]}
-        </label>
-        <div className="flex space-x-4">
-          <select
-            name="fee_type"
-            required
-            className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">Select fee type</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Hourly">Hourly</option>
-            <option value="Annually">Annually</option>
-            <option value="In total">In total</option>
-            <option value="Not sure, discuss with tutor and decide">
-              Not sure, discuss with tutor and decide
-            </option>
-          </select>
-          <input
-            type="text"
-            name="response"
-            placeholder="Enter fee amount"
-            required
-            className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-      </div>
-      
-      );
-    }
+      case 4: // Maximum fee
+        return (
+          <div className="mt-4 mb-6">
+            <select
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Select payment type</option>
+              {options[5].map((option, index) => (
+                <option key={index} value={option}>{option}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              value={inputValue1}
+              onChange={(e) => setInputValue1(e.target.value)}
+              placeholder="Enter fee amount"
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        );
 
-    if (questions[currentQuestionIndex] === 'Share your contact details (Email ID and Phone Number)') {
-      return (
-        <div className="mb-6">
-          <label className="block text-gray-700 text-lg font-semibold mb-2">
-            {questions[currentQuestionIndex]}
-          </label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email ID"
-            required
-            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Enter your phone number"
-            required
-            className="shadow appearance-none border rounded mb-6 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-      );
-    }
-
-    if (questionIndex in options) {
-      return (
-        <div className="mb-6">
-          <label className="block text-gray-700 text-lg font-semibold mb-2">
-            {questions[currentQuestionIndex]}
-          </label>
-          <p className="text-gray-500 text-sm mb-4">{suggestions[currentQuestionIndex]}</p>
-          <div className="flex flex-col space-y-2">
-            {options[questionIndex].map((option, index) => (
-              <label key={index} className="flex items-center">
+      case 5: // When do you plan to start?
+        return (
+          <div className="mt-4 mb-6">
+            {options[5].map((option, index) => (
+              <label key={index} className="flex items-center mb-2">
                 <input
-                  type="radio"
-                  name="response"
+                  type="checkbox"
                   value={option}
+                  onChange={handleOptionChange}
                   className="mr-2"
-                  required
                 />
                 {option}
               </label>
             ))}
           </div>
-        </div>
-      );
-    }
+        );
 
-    return (
-      <div className="mb-6">
-        <label className="block text-gray-700 text-lg font-semibold mb-2">
-          {questions[currentQuestionIndex]}
-        </label>
-        <p className="text-gray-500 text-sm mb-4">{suggestions[currentQuestionIndex]}</p>
-        <textarea
-          name="response"
-          placeholder="Enter your response"
-          required
-          className="shadow appearance-none border rounded mb-6 w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          rows="3"
-        />
-      </div>
-    );
+      case 6: // How would you like to attend your tuition classes?
+        return (
+          <div className="mt-4 mb-6">
+            {options[6].map((option, index) => (
+              <label key={index} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  value={option}
+                  onChange={handleOptionChange}
+                  className="mr-2"
+                />
+                {option}
+              </label>
+            ))}
+          </div>
+        );
+
+      case 7: // Tutor gender preference
+        return (
+          <div className="mt-4 mb-6">
+            {options[7].map((option, index) => (
+              <label key={index} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  value={option}
+                  onChange={handleOptionChange}
+                  className="mr-2"
+                />
+                {option}
+              </label>
+            ))}
+          </div>
+        );
+
+      case 8: // Contact details
+        return (
+          <div className="mt-4 mb-6">
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={contactDetails.email}
+              onChange={handleContactChange}
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Enter your phone number"
+              value={contactDetails.phone}
+              onChange={handleContactChange}
+              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-md rounded mb-6-md mb-6">
-      {isSubmitted ? (
-        <div className="flex flex-col items-center justify-center text-green-600">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-12 w-12"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12l2 2l4-4m0 6l2 2l4-4"
-            />
-          </svg>
-          <p className="mt-4 text-lg font-semibold">Submitted your query successfully!</p>
-        </div>
-      ) : (
-        <form onSubmit={handleNext}>
+    <div className="container mx-auto w-2/5 my-10 p-4 shadow-lg">
+      
+      <form onSubmit={handleNext}>
+        <div className="mb-4">
+          <h3 className="text-lg">{questions[currentQuestionIndex]}</h3>
           {renderInputField()}
-          <div className="flex justify-between mt-6 mb-4">
+        </div>
+        <div className="flex justify-between">
+          {currentQuestionIndex > 0 && (
             <button
               type="button"
               onClick={handlePrevious}
-              disabled={currentQuestionIndex === 0}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded mb-6-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+              className="bg-blue-500 text-white px-4 py-2 rounded"
             >
               Previous
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded mb-6-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
-            </button>
-          </div>
-        </form>
+          )}
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
+          </button>
+        </div>
+      </form>
+      {isSubmitted && (
+        <div className="mt-4 text-green-500">
+          Your responses have been submitted successfully!
+        </div>
       )}
     </div>
   );
