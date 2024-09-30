@@ -1,47 +1,100 @@
 import React, { useState, useEffect } from 'react';
-import { HiSearch, HiSortAscending, HiFilter } from 'react-icons/hi';
+import { HiSearch, HiSortAscending } from 'react-icons/hi';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // To handle navigation
 import Header from '../Header';
 import Sidebar from './AdminSidebar';
 
 const TutorProfileView = () => {
-  const [allTutors, setAllTutors] = useState([
-    { id: 1, name: 'Michael Scott', subject: 'Business Management', description: 'Expert in business strategies and management.' },
-    { id: 2, name: 'Pam Beesly', subject: 'Art', description: 'Passionate about painting and fine arts.' },
-    { id: 3, name: 'Jim Halpert', subject: 'Marketing', description: 'Specializes in digital marketing strategies.' },
-    { id: 4, name: 'Dwight Schrute', subject: 'Agriculture', description: 'Knowledgeable in sustainable farming techniques.' },
-  ]);
-
+  const [tutors, setTutors] = useState([]);
   const [selectedTutors, setSelectedTutors] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [filterSubject, setFilterSubject] = useState('');
-
+  const [selectedStudentId, setSelectedStudentId] = useState(null); // Store selected student for deletion
+  const [otp, setOtp] = useState(''); // Store OTP input
+  const [isOtpModalVisible, setIsOtpModalVisible] = useState(false); // Control OTP modal
+  const navigate = useNavigate(); // Initialize useNavigate
+  const token = localStorage.getItem('token');
   useEffect(() => {
-    const filteredTutors = allTutors.filter(tutor => {
-      const matchesSearch = tutor.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = filterSubject ? tutor.subject === filterSubject : true;
-      return matchesSearch && matchesFilter;
-    });
-
-    const sortedTutors = filteredTutors.sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return a.name.localeCompare(b.name);
-      } else {
-        return b.name.localeCompare(a.name);
+    const fetchTutors = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('https://backend.akshayy.tech/admin/getTutors', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        setTutors(data.tutors || []);
+      } catch (error) {
+        console.error("Error fetching tutors:", error);
       }
-    });
+    };
 
-    setAllTutors(sortedTutors);
-  }, [searchQuery, filterSubject, sortOrder]);
+    fetchTutors();
+  }, []);
 
   const addToSelected = (tutor) => {
-    setSelectedTutors([...selectedTutors, tutor]);
-    setAllTutors(allTutors.filter(t => t.id !== tutor.id));
+    // Instead of adding to selected, navigate to edit page
+    navigate(`/edit-tutor/${tutor._id}`); // Redirect to edit page with tutor ID
   };
 
   const removeFromSelected = (tutor) => {
-    setAllTutors([...allTutors, tutor]);
-    setSelectedTutors(selectedTutors.filter(t => t.id !== tutor.id));
+    setSelectedTutors(selectedTutors.filter(selected => selected._id !== tutor._id));
+  };
+
+  const filteredTutors = tutors.filter(tutor =>
+    tutor.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedTutors = filteredTutors.sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.fullName.localeCompare(b.fullName);
+    } else {
+      return b.fullName.localeCompare(a.fullName);
+    }
+  });
+  const handleDeleteClick = async (studentId) => {
+    setSelectedStudentId(studentId);
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const payload = {
+        entityType: 'Tutor',
+        entityId: studentId,
+      };
+
+      await axios.post('https://backend.akshayy.tech/admin/hardDeleteEntity', payload, { headers });
+      alert('OTP has been sent to your email.'); // Notify the admin
+      console.log (payload);
+      setIsOtpModalVisible(true); // Show OTP input modal
+    } catch (error) {
+      console.error('Error sending delete request:', error);
+    }
+  };
+
+  // Handle OTP verification and final deletion (Step 2: verify OTP and delete)
+  const handleConfirmDelete = async () => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const payload = {
+        entityType: 'Tutor',
+        entityId: selectedStudentId,
+        otp,
+      };
+     
+      await axios.post('https://backend.akshayy.tech/admin/verifyAndHardDeleteEntity', payload, { headers });
+      alert('Tutor profile deleted successfully');
+      setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId)); // Update UI
+      setIsOtpModalVisible(false); // Hide OTP input modal
+    } catch (error) {
+      console.error('Error verifying OTP and deleting:', error);
+    }
   };
 
   return (
@@ -64,28 +117,17 @@ const TutorProfileView = () => {
             placeholder="Search tutors..."
             className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <select
-            onChange={(e) => setFilterSubject(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Subjects</option>
-            <option value="Business Management">Business Management</option>
-            <option value="Art">Art</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Agriculture">Agriculture</option>
-          </select>
         </div>
 
         <div className="flex flex-col space-y-6 w-3/5">
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Selected Tutors</h2>
+            {/* <h2 className="text-2xl font-semibold">Selected Tutors</h2> */}
             {selectedTutors.length > 0 ? (
               selectedTutors.map(tutor => (
-                <div key={tutor.id} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+                <div key={tutor._id} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
                   <div className="flex w-full justify-between space-x-4">
-                    <h3 className="text-lg font-medium">{tutor.name}</h3>
-                    <p className="text-sm text-gray-600">{tutor.subject}</p>
-                    <p className="text-gray-700 truncate">{tutor.description}</p>
+                    <h3 className="text-lg font-medium">{tutor.fullName}</h3>
+                    <p className="text-gray-700 truncate">{tutor.email}</p>
                   </div>
                   <button
                     onClick={() => removeFromSelected(tutor)}
@@ -96,31 +138,64 @@ const TutorProfileView = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No selected tutors.</p>
+              <p className="text-gray-500"></p>
             )}
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Unselected Tutors</h2>
-            {allTutors.length > 0 ? (
-              allTutors.map(tutor => (
-                <div key={tutor.id} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
-                  <div className="flex w-full justify-between space-x-4">
-                    <h3 className="text-lg font-medium">{tutor.name}</h3>
-                    <p className="text-sm text-gray-600">{tutor.subject}</p>
-                    <p className="text-gray-700 truncate">{tutor.description}</p>
+            {/* <h2 className="text-2xl font-semibold">Unselected Tutors</h2> */}
+            {sortedTutors.length > 0 ? (
+              sortedTutors.map(tutor => (
+                <div key={tutor._id} className="flex flex-col space-y-2 p-4 border border-gray-200 rounded-md">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium">{tutor.fullName}</h3>
+                    <h3 className="text-lg font-medium">{tutor.email}</h3>
+                    <button
+                      onClick={() => addToSelected(tutor)} // Navigate to edit on click
+                      className="ml-4 text-white bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(tutor._id)} // Handle deletion
+                      className="ml-4 text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md"
+                    >
+                      Delete
+                    </button>
                   </div>
-                  <button
-                    onClick={() => addToSelected(tutor)}
-                    className="ml-4 text-white bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md"
-                  >
-                    Add
-                  </button>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No unselected tutors.</p>
+              <p className="text-gray-500">No tutors.</p>
             )}
+              {isOtpModalVisible && (
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-md shadow-md">
+              <h2 className="text-lg font-semibold mb-4">Enter OTP to confirm deletion</h2>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter OTP"
+                className="px-4 py-2 border border-gray-300 rounded-md w-full mb-4"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setIsOtpModalVisible(false)}
+                  className="bg-gray-300 px-4 py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Confirm Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
           </div>
         </div>
       </div>

@@ -45,15 +45,15 @@ function HomePage() {
             alias voluptatibus, facilis dolorem asperiores eaque! Eius, vero!
             Accusantium, quasi.
           </p>
-          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-      <input
+          <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-1">
+      {/* <input
         type="text"
         placeholder="What do you want to learn?"
-        className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 w-full md:w-auto" />
+        className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 w-full md:w-auto" /> */}
       <button
         className="py-2 px-4 bg-[#041F96] text-white rounded-lg hover:bg-[#041F96] focus:outline-none w-full md:w-auto"
         onClick={handleRedirect}>
-        Book demo
+        Book demo with our Tutor
       </button>
     </div>
         </div>

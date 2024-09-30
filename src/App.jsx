@@ -4,6 +4,8 @@ import './App.css';
 import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
 import TestimonialPage from './Components/Home/Dashboard/AdminPanel/FeaturedTestinomials.jsx';
 import Login from './Components/Auth/Login';
+import EditTutor from './Components/Home/Dashboard/AdminPanel/TeacherEdit.jsx';
+import StudentEdit from './Components/Home/Dashboard/AdminPanel/StudentEdit.jsx';
 import InstituteProfileView from './Components/Home/Dashboard/AdminPanel/FeaturedInstitute.jsx';
 import DemoForm from './Components/Home/DemoForm.jsx';
 import EmployerProfileView from './Components/Home/Dashboard/AdminPanel/OrganisationProfile.jsx';
@@ -19,6 +21,7 @@ import TutorFinder from './Components/Home/Findtutor.jsx';
 import LearningNeedsView from './Components/Home/Dashboard/AdminPanel/LearningNeeds.jsx';
 import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
 import ContactUs from './Components/Home/ContactUs.jsx';
+import EditEmployerProfile from './Components/Home/Dashboard/AdminPanel/OrgEdit.jsx';
 import TutorProfileView from './Components/Home/Dashboard/AdminPanel/TeacherProfile.jsx';
 import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
 import Reviews from './Components/Home/Dashboard/Reviews.jsx';
@@ -173,6 +176,9 @@ function AppContent() {
         <Route path="/blogs-admin" element={<BlogPage/>}/>
         {/* <Route path="/student-profile" element={<StudentProfile />} /> */}
         <Route path="/student-profiles" element={<StudentProfileView/>}/>
+        <Route path="/edit-student/:studentId" element={<StudentEdit />} />
+        <Route path="/edit-tutor/:id" element={<EditTutor />} /> {/* Add this route */}
+        <Route path="/edit-employer/:id" element={<EditEmployerProfile />} />
         <Route path="/tutor-profiles" element={<TutorProfileView/>}/>
         <Route path="/organization-profiles" element={<EmployerProfileView/>}/>
         <Route path="/widgets/featured-institution" element={<InstituteProfileView/>}/>

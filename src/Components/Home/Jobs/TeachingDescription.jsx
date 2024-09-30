@@ -62,6 +62,8 @@ const TeachingDescription = () => {
   const statusTag = job.tags?.find(tag => tag.name === "open");
   const isActive = statusTag && statusTag.active;
 
+  console.log(job.video);
+
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
@@ -104,42 +106,54 @@ const TeachingDescription = () => {
 
       <div className="flex flex-col md:flex-row md:justify-between">
         <div className="bg-white p-6 rounded-lg  md:w-3/5">
-          <div className="text-gray-600">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Details</h2>
-            <p className="text-black mb-4">{job.description}</p>
+        <div className="text-gray-600">
+  <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Details</h2>
+  <p className="text-black mb-4">{job.description}</p>
 
-            {/* Display Education */}
-            <h2 className="text-xl font-semibold mb-2">Education</h2>
-            {job.education?.map((edu, index) => (
-              <div key={index}>
-                <p><strong>Degree:</strong> {edu.title}</p>
-                <p><strong>Academy:</strong> {edu.academy}</p>
-                <p><strong>Year:</strong> {new Date(edu.year).getFullYear()}</p>
-                <p><strong>Description:</strong> {edu.description}</p>
-              </div>
-            ))}
+  {/* Display Education */}
+  <h2 className="text-xl font-semibold mb-2">Education</h2>
+  {job.education?.map((edu, index) => (
+    <div key={index}>
+      <p><strong>Degree:</strong> {edu.title}</p>
+      <p><strong>Academy:</strong> {edu.academy}</p>
+      <p><strong>Year:</strong> {new Date(edu.year).getFullYear()}</p>
+      <p><strong>Description:</strong> {edu.description}</p>
+    </div>
+  ))}
 
-            {/* Display Past Experiences */}
-            <h2 className="text-xl font-semibold mb-2 mt-6">Experience/Achievements</h2>
-            {job.pastExperiences?.map((experience, index) => (
-              <div key={index}>
-                <p><strong>Role:</strong> {experience.title}</p>
-                <p><strong>Company:</strong> {experience.company}</p>
-                <p><strong>Duration:</strong> {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}</p>
-                <p><strong>Description:</strong> {experience.description}</p>
-              </div>
-            ))}
+  {/* Display Past Experiences */}
+  <h2 className="text-xl font-semibold mb-2 mt-6">Experience/Achievements</h2>
+  {job.pastExperiences?.map((experience, index) => (
+    <div key={index}>
+      <p><strong>Role:</strong> {experience.title}</p>
+      <p><strong>Company:</strong> {experience.company}</p>
+      <p>
+        <strong>Duration:</strong> {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}
+      </p>
+      <p><strong>Description:</strong> {experience.description}</p>
+    </div>
+  ))}
 
-            {/* Display Awards */}
-            <h2 className="text-xl font-semibold mb-2 mt-6">Awards</h2>
-            {job.awards?.map((award, index) => (
-              <div key={index}>
-                <p><strong>Award:</strong> {award.title}</p>
-                <p><strong>Year:</strong> {new Date(award.year).getFullYear()}</p>
-                <p><strong>Description:</strong> {award.description}</p>
-              </div>
-            ))}
-          </div>
+  {/* Display Awards */}
+  <h2 className="text-xl font-semibold mb-2 mt-6">Awards</h2>
+  {job.awards?.map((award, index) => (
+    <div key={index}>
+      <p><strong>Award:</strong> {award.title}</p>
+      <p><strong>Year:</strong> {new Date(award.year).getFullYear()}</p>
+      <p><strong>Description:</strong> {award.description}</p>
+    </div>
+  ))}
+
+  {/* Video Player */}
+  <div className="flex justify-center mt-8">
+    <video controls className="w-full max-w-lg rounded-md">
+      <source src={job.video} type="video/mp4" />
+      
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
           
           <div className="mt-8 flex flex-col items-center">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Rate this Tutor</h2>

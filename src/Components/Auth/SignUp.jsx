@@ -47,12 +47,28 @@ export default function SignUp() {
             navigate("/404");
             return;
         }
+
         try {
-            const response = await axios.post(apiRoutes[currentRole], {
-                fullName: name || "demo-name", // Use actual name input if available
-                email,
-                password,
-            });
+            // Separate payload based on the role, but do not modify the structure
+            let payload;
+            if (currentRole === "Institution") {
+                payload = {
+                    name: "Institution Name",
+                    username: name || "demo-name",
+                    email,
+                    password,
+                };
+            } else {
+                payload = {
+                    fullName: "User Full Name",
+                    username: name || "demo-name",
+                    email,
+                    password,
+                };
+            }
+
+            const response = await axios.post(apiRoutes[currentRole], payload);
+            console.log(response);
             setIsOtpSent(true);
         } catch (err) {
             setError("Signup failed. Please try again.");
@@ -65,9 +81,16 @@ export default function SignUp() {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-
+    
+        // Define verification API routes for different roles
+        const verificationApiRoutes = {
+            Teacher: "https://backend.akshayy.tech/register/tutor/verify",
+            Institution: "https://backend.akshayy.tech/register/organization/verify",
+            Students: "https://backend.akshayy.tech/register/student/verify",
+        };
+    
         try {
-            const response = await axios.post("https://backend.akshayy.tech/register/tutor/verify", {
+            const response = await axios.post(verificationApiRoutes[currentRole], {
                 email,
                 otp,
             });
@@ -80,6 +103,7 @@ export default function SignUp() {
             setIsLoading(false);
         }
     }
+    
 
     function roleChangeInLogin(index) {
         setIsFading(true);

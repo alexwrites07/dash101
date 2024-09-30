@@ -10,6 +10,7 @@ const TutorFinder = () => {
   const [distanceFilter, setDistanceFilter] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
+  const [rating, setRating] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     subjectsTaught: '',
@@ -208,6 +209,7 @@ const TutorFinder = () => {
                     <div>
                       <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
                       <span className="text-gray-600">{tutor.jobTitle}</span>
+                      <span className="text-gray-600 mr-4">{tutor.rating}</span>
                       <span className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</span>
                     </div>
                     <div>

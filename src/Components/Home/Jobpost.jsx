@@ -224,7 +224,7 @@ const JobPost = () => {
   </button>
 </div>
 
-      <div className="w-full md:mr-4 md:-ml-4 bg-gray-100 rounded-lg shadow-lg mb-4 md:mb-0 md:mr-4">
+      <div className="w-2/5 md:mr-4 md:-ml-4 bg-gray-100 rounded-lg shadow-lg mb-4 md:mb-0 md:mr-4">
       
       <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
         <form className="space-y-4">
@@ -244,7 +244,7 @@ const JobPost = () => {
 
           {/* Location Filter */}
           <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">Location</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">City</label>
           <input
             type="text"
             name="location"
@@ -315,21 +315,18 @@ const JobPost = () => {
           </div> */}
 
           {/* Experience Level Filter */}
-          {/* <div className="mb-4">
+          <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
             <input
               type="text"
               name="experienceLevel"
               placeholder="Enter Years of Experience"
               id="experienceLevel"
-              value={filters.experience
-
-
-              }
+              value={filters.experience}
               onChange={handleFilterChange}
               className="w-full px-3 py-2 border rounded-lg"
             />
-          </div> */}
+          </div>
 
           {/* Career Level Filter */}
           <div className="mb-4">

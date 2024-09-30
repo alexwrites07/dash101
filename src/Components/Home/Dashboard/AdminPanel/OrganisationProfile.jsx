@@ -1,47 +1,110 @@
 import React, { useState, useEffect } from 'react';
-import { HiSearch, HiSortAscending, HiFilter } from 'react-icons/hi';
+import { HiSearch, HiSortAscending } from 'react-icons/hi';
 import Header from '../Header';
 import Sidebar from './AdminSidebar';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import axios from 'axios'; // Import axios for making API requests
 
 const EmployerProfileView = () => {
-  const [allEmployers, setAllEmployers] = useState([
-    { id: 1, name: 'Dunder Mifflin', industry: 'Paper Manufacturing', description: 'Leading provider of paper products.' },
-    { id: 2, name: 'Scranton Business Park', industry: 'Real Estate', description: 'Commercial real estate company.' },
-    { id: 3, name: 'Vance Refrigeration', industry: 'HVAC', description: 'Specializes in HVAC systems and services.' },
-    { id: 4, name: 'Athlead', industry: 'Sports Management', description: 'Sports talent management and marketing.' },
-  ]);
-
+  const [organizations, setOrganizations] = useState([]);
   const [selectedEmployers, setSelectedEmployers] = useState([]);
+  const [selectedStudentId, setSelectedStudentId] = useState(null); // Store selected student for deletion
+ 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterIndustry, setFilterIndustry] = useState('');
+  const [otp, setOtp] = useState(''); // Store OTP input
+  const [isOtpModalVisible, setIsOtpModalVisible] = useState(false); // Control OTP modal
+  const navigate = useNavigate(); // Initialize useNavigate
+  const token = localStorage.getItem('token');
+
 
   useEffect(() => {
-    const filteredEmployers = allEmployers.filter(employer => {
-      const matchesSearch = employer.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = filterIndustry ? employer.industry === filterIndustry : true;
-      return matchesSearch && matchesFilter;
-    });
-
-    const sortedEmployers = filteredEmployers.sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return a.name.localeCompare(b.name);
-      } else {
-        return b.name.localeCompare(a.name);
+    const fetchOrganizations = async () => {
+      try {
+        const response = await axios.get('https://backend.akshayy.tech/admin/getOrgs', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass the bearer token in headers
+          },
+        });
+        setOrganizations(response.data.organizations);
+      } catch (error) {
+        console.error('Error fetching organizations:', error);
       }
-    });
+    };
 
-    setAllEmployers(sortedEmployers);
-  }, [searchQuery, filterIndustry, sortOrder]);
+    fetchOrganizations();
+  }, [token]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
 
   const addToSelected = (employer) => {
     setSelectedEmployers([...selectedEmployers, employer]);
-    setAllEmployers(allEmployers.filter(e => e.id !== employer.id));
+    setOrganizations(organizations.filter((e) => e.name !== employer.name));
   };
 
   const removeFromSelected = (employer) => {
-    setAllEmployers([...allEmployers, employer]);
-    setSelectedEmployers(selectedEmployers.filter(e => e.id !== employer.id));
+    setOrganizations([...organizations, employer]);
+    setSelectedEmployers(selectedEmployers.filter((e) => e.name !== employer.name));
+  };
+
+  // Function to handle edit button click
+  const handleEdit = (id) => {
+    navigate(`/edit-employer/${id}`); // Redirect to the edit page with the employer's ID
+  };
+
+  // Apply search filtering
+  const filteredOrganizations = organizations.filter((org) =>
+    org.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Sort organizations
+  const sortedOrganizations = filteredOrganizations.sort((a, b) => {
+    return sortOrder === 'asc'
+      ? a.name.localeCompare(b.name)
+      : b.name.localeCompare(a.name);
+  });
+  const handleDeleteClick = async (studentId) => {
+    setSelectedStudentId(studentId);
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const payload = {
+        entityType: 'Organization',
+        entityId: studentId,
+      };
+
+      await axios.post('https://backend.akshayy.tech/admin/hardDeleteEntity', payload, { headers });
+      alert('OTP has been sent to your email.'); // Notify the admin
+      console.log (payload);
+      setIsOtpModalVisible(true); // Show OTP input modal
+    } catch (error) {
+      console.error('Error sending delete request:', error);
+    }
+  };
+
+  // Handle OTP verification and final deletion (Step 2: verify OTP and delete)
+  const handleConfirmDelete = async () => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const payload = {
+        entityType: 'Organization',
+        entityId: selectedStudentId,
+        otp,
+      };
+     
+      await axios.post('https://backend.akshayy.tech/admin/verifyAndHardDeleteEntity', payload, { headers });
+      alert('Tutor profile deleted successfully');
+      setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId)); // Update UI
+      setIsOtpModalVisible(false); // Hide OTP input modal
+    } catch (error) {
+      console.error('Error verifying OTP and deleting:', error);
+    }
   };
 
   return (
@@ -60,32 +123,24 @@ const EmployerProfileView = () => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search employers..."
             className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <select
-            onChange={(e) => setFilterIndustry(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Industries</option>
-            <option value="Paper Manufacturing">Paper Manufacturing</option>
-            <option value="Real Estate">Real Estate</option>
-            <option value="HVAC">HVAC</option>
-            <option value="Sports Management">Sports Management</option>
-          </select>
         </div>
 
         <div className="flex flex-col space-y-6 w-3/5">
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Selected Employers</h2>
             {selectedEmployers.length > 0 ? (
-              selectedEmployers.map(employer => (
-                <div key={employer.id} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+              selectedEmployers.map((employer) => (
+                <div
+                  key={employer.name}
+                  className="flex justify-between items-center p-4 border border-gray-200 rounded-md"
+                >
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{employer.name}</h3>
-                    <p className="text-sm text-gray-600">{employer.industry}</p>
-                    <p className="text-gray-700 truncate">{employer.description}</p>
+                    <p className="text-gray-700 truncate">{employer.email}</p>
                   </div>
                   <button
                     onClick={() => removeFromSelected(employer)}
@@ -96,31 +151,68 @@ const EmployerProfileView = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No selected employers.</p>
+              <p className="text-gray-500"></p>
             )}
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Unselected Employers</h2>
-            {allEmployers.length > 0 ? (
-              allEmployers.map(employer => (
-                <div key={employer.id} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+            {/* <h2 className="text-2xl font-semibold">Unselected Employers</h2> */}
+            {sortedOrganizations.length > 0 ? (
+              sortedOrganizations.map((org) => (
+                <div
+                  key={org.name}
+                  className="flex justify-between items-center p-4 border border-gray-200 rounded-md"
+                >
                   <div className="flex w-full justify-between space-x-4">
-                    <h3 className="text-lg font-medium">{employer.name}</h3>
-                    <p className="text-sm text-gray-600">{employer.industry}</p>
-                    <p className="text-gray-700 truncate">{employer.description}</p>
+                    <h3 className="text-lg font-medium">{org.name}</h3>
+                    <p className="text-gray-700 truncate">{org.email}</p>
                   </div>
+
                   <button
-                    onClick={() => addToSelected(employer)}
+                    onClick={() => handleEdit(org._id)} // Redirect to the edit page on click
                     className="ml-4 text-white bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md"
                   >
-                    Add
+                    Edit
                   </button>
+                  <button
+                      onClick={() => handleDeleteClick(org._id)} // Handle deletion
+                      className="ml-4 text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md"
+                    >
+                      Delete
+                    </button>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No unselected employers.</p>
+              <p className="text-gray-500">No employers.</p>
             )}
+             {isOtpModalVisible && (
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-md shadow-md">
+              <h2 className="text-lg font-semibold mb-4">Enter OTP to confirm deletion</h2>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter OTP"
+                className="px-4 py-2 border border-gray-300 rounded-md w-full mb-4"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setIsOtpModalVisible(false)}
+                  className="bg-gray-300 px-4 py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Confirm Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
           </div>
         </div>
       </div>
