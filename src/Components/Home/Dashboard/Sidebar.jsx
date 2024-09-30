@@ -24,7 +24,7 @@ const Sidebar = ({ activeTab }) => {
     { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
     { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
     { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
-    { to: '/logout', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+    { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
   ];
 
   if (userType === 'tutor') {

@@ -3,84 +3,79 @@ import Sidebar from './SidebarEmployer';
 import Header from './HeaderEmployer';
 import axios from 'axios';
 
-// Uncommented initialContacts and initialMessages
-const initialContacts = [
-  {
-    id: 1,
-    name: 'vikashpanjiyar2000',
-    username: 'qwe',
-    lastMessage: '3 weeks',
-  },
-  {
-    id: 2,
-    name: 'Alice',
-    username: 'alice123',
-    lastMessage: '2 days',
-  },
-  {
-    id: 3,
-    name: 'Bob',
-    username: 'bob456',
-    lastMessage: '1 day',
-  },
-];
-
-const initialMessages = {
-  vikashpanjiyar2000: [
-    { id: 1, sender: 'vikashpanjiyar2000', message: 'hello sir', timestamp: '2024-07-02T08:47:00Z' },
-    { id: 2, sender: 'You', message: 'hi', timestamp: '2024-07-02T08:49:00Z' },
-    { id: 3, sender: 'You', message: 'how are you', timestamp: '2024-07-02T08:49:00Z' },
-    { id: 4, sender: 'vikashpanjiyar2000', message: 'i am fine', timestamp: '2024-07-09T10:14:00Z' },
-    { id: 5, sender: 'You', message: 'can you teach me', timestamp: '2024-07-09T10:16:00Z' },
-    { id: 6, sender: 'vikashpanjiyar2000', message: 'i can teach you at very low cost', timestamp: '2024-07-12T09:04:00Z' },
-    { id: 7, sender: 'You', message: 'timestamp check', timestamp: '2024-07-12T09:04:00Z' },
-  ],
-  Alice: [
-    { id: 1, sender: 'Alice', message: 'Hi Bob!', timestamp: '2024-07-10T10:00:00Z' },
-    { id: 2, sender: 'You', message: 'Hey Alice!', timestamp: '2024-07-10T10:05:00Z' },
-  ],
-  Bob: [],
-};
-
 const Messages = () => {
   const [activeChat, setActiveChat] = useState(null);
   const [messageInput, setMessageInput] = useState('');
-  const [contacts, setContacts] = useState(initialContacts);
-  const [messages, setMessages] = useState(initialMessages);
+  const [contacts, setContacts] = useState([]); // Initialize contacts as an empty array
+  const [messages, setMessages] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [composeVisible, setComposeVisible] = useState(false);
   const [newContactName, setNewContactName] = useState('');
 
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8'; // Replace with your actual token logic
 
+  // Fetch contacts
   useEffect(() => {
-    const fetchConversations = async () => {
+    const fetchContacts = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/conversations', {
+        const response = await axios.get('https://backend.akshayy.tech/purchasedContacts', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const conversations = response.data;
-
-        const formattedContacts = conversations.map((conversation) => {
-          const contact = conversation.participants.find(p => p.participantId !== 'your_user_id');
-          return {
-            id: conversation._id,
-            name: contact.name,
-            lastMessage: conversation.lastMessage ? conversation.lastMessage : 'No messages yet',
-            roomId: conversation.roomId,
-          };
-        });
-
+  
+        console.log("Contacts API Response:", response.data); // Log the entire response data
+  
+        const formattedContacts = response.data.purchasedContacts.map((contact) => ({
+          id: contact._id || contact.conversationId, // Make sure you use the correct field for ID
+          name: contact.name,
+          username: contact.username,
+          lastMessage: 'No messages yet',
+        }));
+  
         setContacts(formattedContacts);
       } catch (error) {
-        console.error('Error fetching conversations:', error);
+        console.error('Error fetching contacts:', error);
       }
     };
-
-    fetchConversations();
+  
+    fetchContacts();
   }, []);
+  
+  
+  // Fetch messages for a selected chat
+  const openChat = async (contact) => {
+    console.log("Selected Contact:", contact); // Log the contact object to verify if `id` is present
+  
+    if (!contact.id) {
+      console.error("Contact ID is missing.");
+      return; // Exit if the id is not available
+    }
+  
+    setActiveChat(contact);
+    
+    try {
+      const response = await axios.get(`https://backend.akshayy.tech/conversations/${contact.id}/messages`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const fetchedMessages = response.data.map((msg) => ({
+        id: msg._id,
+        sender: msg.sender === 'your_user_id' ? 'You' : msg.sender, // Adjust this logic according to sender ID
+        message: msg.message,
+        timestamp: msg.timestamp,
+      }));
+  
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [contact.name]: fetchedMessages,
+      }));
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };  
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -94,7 +89,7 @@ const Messages = () => {
 
     setMessages((prevMessages) => ({
       ...prevMessages,
-      [activeChat]: [...prevMessages[activeChat], newMessage],
+      [activeChat.name]: [...(prevMessages[activeChat.name] || []), newMessage],
     }));
 
     try {
@@ -114,10 +109,6 @@ const Messages = () => {
     }
 
     setMessageInput('');
-  };
-
-  const openChat = (contact) => {
-    setActiveChat(contact);
   };
 
   const closeChat = () => {
@@ -161,16 +152,16 @@ const Messages = () => {
 
             <h2 className="text-xl font-semibold mb-2 text-gray-900">All Contacts</h2>
             <div className="overflow-y-auto max-h-96">
-              {filteredContacts.map((contact) => (
-                <div
-                  key={contact.id}
-                  onClick={() => openChat(contact)}
-                  className={`cursor-pointer p-2 rounded-lg mb-2 ${activeChat === contact ? 'bg-blue-100' : 'bg-white'}`}
-                >
-                  <h3 className="text-md font-medium text-gray-700">{contact.name}</h3>
-                  <p className="text-sm text-gray-500">{contact.lastMessage}</p>
-                </div>
-              ))}
+            {filteredContacts.map((contact, index) => (
+              <div
+                key={contact.id || index} // Use index as a fallback if id is not unique
+                onClick={() => openChat(contact)}
+                className={`cursor-pointer p-2 rounded-lg mb-2 ${activeChat === contact ? 'bg-blue-100' : 'bg-white'}`}
+              >
+                <h3 className="text-md font-medium text-gray-700">{contact.name}</h3>
+                <p className="text-sm text-gray-500">{contact.lastMessage}</p>
+              </div>
+            ))}
             </div>
           </div>
 
@@ -190,15 +181,15 @@ const Messages = () => {
                 <div className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col">
                   <h2 className="text-xl font-semibold mb-4 text-gray-900">Chat with {activeChat.name}</h2>
                   <div className="flex-1 overflow-y-auto mb-4 max-h-full">
-                    {messages[activeChat.name]?.map((msg, index) => (
-                      <div
-                        key={index}
-                        className={`mb-2 p-2 rounded-lg ${msg.sender === 'You' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'}`}
-                      >
-                        <p className="text-md">{msg.message}</p>
-                        <span className="text-sm text-gray-500">{new Date(msg.timestamp).toLocaleString()}</span>
-                      </div>
-                    ))}
+                  {messages[activeChat.name]?.map((msg, index) => (
+                    <div
+                      key={msg.id || index} // Ensure msg.id is unique, or use index as a fallback
+                      className={`mb-2 p-2 rounded-lg ${msg.sender === 'You' ? 'bg-blue-50 text-right' : 'bg-gray-50 text-left'}`}
+                    >
+                      <p className="text-md">{msg.message}</p>
+                      <span className="text-sm text-gray-500">{new Date(msg.timestamp).toLocaleString()}</span>
+                    </div>
+                  ))}
                   </div>
                   <form className="flex flex-col" onSubmit={handleSendMessage}>
                     <textarea

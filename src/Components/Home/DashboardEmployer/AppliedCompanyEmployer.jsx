@@ -50,7 +50,7 @@ const AppliedCompany = () => {
     try {
       const response = await axios.patch(
         `https://backend.akshayy.tech/jobs/${jobId}/applicants/${applicantId}`,
-        { status: newStatus },
+        { newStatus: newStatus },
         {
           headers: {
             Authorization: `Bearer ${token}`, // Add the token here
@@ -80,68 +80,68 @@ const AppliedCompany = () => {
     }
   };
 
-  const handleApprove = (jobId, applicantId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job._id === jobId
-          ? {
-              ...job,
-              applicants: job.applicants.map((applicant) =>
-                applicant._id._id === applicantId
-                  ? { ...applicant, status: "Accepted" }
-                  : applicant
-              ),
-            }
-          : job
-      )
-    );
-  };
-
-  const handleReject = (jobId, applicantId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job._id === jobId
-          ? {
-              ...job,
-              applicants: job.applicants.map((applicant) =>
-                applicant._id._id === applicantId
-                  ? { ...applicant, status: "Rejected" }
-                  : applicant
-              ),
-            }
-          : job
-      )
-    );
-  };
-
-  const handleUndo = (jobId, applicantId) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job._id === jobId
-          ? {
-              ...job,
-              applicants: job.applicants.map((applicant) =>
-                applicant._id._id === applicantId
-                  ? { ...applicant, status: "Pending" }
-                  : applicant
-              ),
-            }
-          : job
-      )
-    );
-  };
-
   // const handleApprove = (jobId, applicantId) => {
-  //   updateApplicantStatus(jobId, applicantId, "Accepted");
+  //   setJobs((prevJobs) =>
+  //     prevJobs.map((job) =>
+  //       job._id === jobId
+  //         ? {
+  //             ...job,
+  //             applicants: job.applicants.map((applicant) =>
+  //               applicant._id._id === applicantId
+  //                 ? { ...applicant, status: "Accepted" }
+  //                 : applicant
+  //             ),
+  //           }
+  //         : job
+  //     )
+  //   );
   // };
 
   // const handleReject = (jobId, applicantId) => {
-  //   updateApplicantStatus(jobId, applicantId, "Declined");
+  //   setJobs((prevJobs) =>
+  //     prevJobs.map((job) =>
+  //       job._id === jobId
+  //         ? {
+  //             ...job,
+  //             applicants: job.applicants.map((applicant) =>
+  //               applicant._id._id === applicantId
+  //                 ? { ...applicant, status: "Rejected" }
+  //                 : applicant
+  //             ),
+  //           }
+  //         : job
+  //     )
+  //   );
   // };
 
   // const handleUndo = (jobId, applicantId) => {
-  //   updateApplicantStatus(jobId, applicantId, "Pending");
+  //   setJobs((prevJobs) =>
+  //     prevJobs.map((job) =>
+  //       job._id === jobId
+  //         ? {
+  //             ...job,
+  //             applicants: job.applicants.map((applicant) =>
+  //               applicant._id._id === applicantId
+  //                 ? { ...applicant, status: "Pending" }
+  //                 : applicant
+  //             ),
+  //           }
+  //         : job
+  //     )
+  //   );
   // };
+
+  const handleApprove = (jobId, applicantId) => {
+    updateApplicantStatus(jobId, applicantId, "Accepted");
+  };
+
+  const handleReject = (jobId, applicantId) => {
+    updateApplicantStatus(jobId, applicantId, "Declined");
+  };
+
+  const handleUndo = (jobId, applicantId) => {
+    updateApplicantStatus(jobId, applicantId, "Pending");
+  };
 
   const handleRemove = (jobId, applicantId) => {
     setJobs((prevJobs) =>
