@@ -20,10 +20,10 @@ const Sidebar = ({ activeTab }) => {
   };
 
   let sidebarLinks = [
-    { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
-    { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
     { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
     { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
+    { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
+    { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
     { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
   ];
 
