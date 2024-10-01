@@ -3,6 +3,7 @@ import Sidebar from "./SidebarEmployer";
 import Header from "./HeaderEmployer";
 import { FaMapMarkerAlt, FaPencilAlt, FaTimes, FaLock, FaUnlock } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const ManageJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -10,23 +11,20 @@ const ManageJobs = () => {
   const [sortOption, setSortOption] = useState('default');
   const navigate = useNavigate();
 
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8'; // Replace with actual token
+
+  // Fetch posted jobs from API
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch('https://backend.akshayy.tech/postedJobs', {
-          method: 'GET',
+        const response = await axios.get('https://backend.akshayy.tech/postedJobs', {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8',
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch job data');
-        }
-
-        const data = await response.json();
-        setJobs(data);
+        setJobs(response.data); // Assuming the jobs data is in response.data
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
@@ -35,50 +33,69 @@ const ManageJobs = () => {
     fetchJobs();
   }, []);
 
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
+  // Toggle job open/close status
+  const handleLockJob = async (jobId) => {
+    try {
+      const response = await axios.patch(
+        `https://backend.akshayy.tech/jobs/${jobId}/toggle-close`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      
+      const updatedJob = response.data.job;
+
+      // Update the job in local state with new 'isClosed' value
+      const updatedJobs = jobs.map((job) =>
+        job.job._id === updatedJob._id ? { ...job, job: { ...job.job, isClosed: updatedJob.isClosed } } : job
+      );
+      setJobs(updatedJobs);
+
+      console.log('Job status toggled:', response.data.message);
+    } catch (error) {
+      console.error('Error toggling job status:', error);
+    }
   };
 
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-  };
-
+  // Handle editing a job
   const handleEditJob = (job) => {
-    navigate(`/edit-job/`+job.job._id);
+    navigate(`/edit-job/` + job.job._id);
   };
 
+  // Handle removing a job
   const handleRemoveJob = async (jobId) => {
     try {
-      const response = await fetch(`https://backend.akshayy.tech/deleteJob/${jobId}`, {
-        method: 'DELETE',
+      const response = await axios.delete(`https://backend.akshayy.tech/deleteJob/${jobId}`, {
         headers: {
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8',
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-  
-      if (!response.ok) {
-        const errorData = await response.json(); 
-        throw new Error(`Failed to delete the job: ${errorData.message || response.statusText}`);
+
+      if (response.status === 200) {
+        // Update job list after successful deletion
+        setJobs((prevJobs) => prevJobs.filter((job) => job.job._id !== jobId));
       }
-  
-      // Update the job list after successful deletion
-      setJobs((prevJobs) => prevJobs.filter((job) => job.job._id !== jobId));
     } catch (error) {
       console.error('Error deleting job:', error);
     }
   };
 
-  const handleLockJob = (jobId) => {
-    const updatedJobs = jobs.map((job) => {
-      if (job.job._id === jobId) {
-        return { ...job, locked: !job.locked };
-      }
-      return job;
-    });
-    setJobs(updatedJobs);
+  // Handle search input
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
+  // Handle sorting by date
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  // Filter and sort jobs
   const filteredJobs = jobs
     .filter((job) =>
       job.job.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -150,19 +167,19 @@ const ManageJobs = () => {
                         <br />
                         Expiry date: {new Date(job.job.lastDateToApply).toLocaleDateString()}
                       </td>
-                      <td className="py-2 px-4 border-b">{job.job.tags.find(tag => tag.active)?.name}</td>
+                      <td className="py-2 px-4 border-b">{job.job.isClosed ? 'Closed' : 'Open'}</td>
                       <td className="py-2 px-4 border-b">
                         <button 
-                            onClick={() => handleLockJob(job.job._id)}
-                            className={`mr-2 ${job.locked ? 'text-green-600' : 'text-blue-600'} hover:${job.locked ? 'text-green-800' : 'text-blue-800'}`}
-                          >
-                            {job.locked ? <FaUnlock /> : <FaLock />}
+                          onClick={() => handleLockJob(job.job._id)}
+                          className={`mr-2 ${job.job.isClosed ? 'text-green-600' : 'text-blue-600'} hover:${job.job.isClosed ? 'text-green-800' : 'text-blue-800'}`}
+                        >
+                          {job.job.isClosed ? <FaUnlock /> : <FaLock />}
                         </button>
                         <button onClick={() => handleEditJob(job)} className="mr-2 text-blue-500">
-                            <FaPencilAlt />
-                          </button>
+                          <FaPencilAlt />
+                        </button>
                         <button onClick={() => handleRemoveJob(job.job._id)} className="text-blue-500">
-                            <FaTimes />
+                          <FaTimes />
                         </button>
                       </td>
                     </tr>
