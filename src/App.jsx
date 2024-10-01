@@ -23,7 +23,7 @@ import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
 import ContactUs from './Components/Home/ContactUs.jsx';
 import EditEmployerProfile from './Components/Home/Dashboard/AdminPanel/OrgEdit.jsx';
 import TutorProfileView from './Components/Home/Dashboard/AdminPanel/TeacherProfile.jsx';
-import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
+// import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
 import Reviews from './Components/Home/Dashboard/Reviews.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
 import AdminFooterPanel from './Components/Home/Dashboard/AdminPanel/FeaturedFooter.jsx';
@@ -36,16 +36,16 @@ import AlertsJobs from './Components/Home/Dashboard/AlertJobs';
 import Messages from './Components/Home/Dashboard/Messages';
 import Tag from './Components/Home/Dashboard/AdminPanel/Tags.jsx';
 import Meetings from './Components/Home/Dashboard/Meetings';
-import JobDetail from './Components/Home/Jobs/JobDetail.jsx';
+// import JobDetail from './Components/Home/Jobs/JobDetail.jsx';
 import JobDescription from './Components/Home/Jobs/JobDescription';
 import UploadResume from './Components/Home/Dashboard/UploadResume.jsx';
 import FollowingEmployer from './Components/Home/Dashboard/FollowingEmployer';
-import StudentProfile from './Components/Home/Dashboard/StudentProfile.jsx';
+// import StudentProfile from './Components/Home/Dashboard/StudentProfile.jsx';
 import ChangePassword from './Components/Home/Dashboard/ChangePassword';
 import DeleteProfile from './Components/Home/Dashboard/DeleteProfile';
 import UserDashboard from './Components/Home/Dashboard/UserDashboard';
 import Pricing from './Components/Home/Dashboard/Pricing';
-import YourProfileEmployer from './Components/Home/DashboardEmployer/YourProfileEmployer';
+// import YourProfileEmployer from './Components/Home/DashboardEmployer/YourProfileEmployer';
 import AppliedCompanyEmployer from './Components/Home/DashboardEmployer/AppliedCompanyEmployer.jsx';
 import LocationsEmployer from './Components/Home/DashboardEmployer/LocationsEmployer.jsx';
 import ShortlistJobsEmployer from './Components/Home/DashboardEmployer/ShortlistJobsEmployer';
@@ -67,11 +67,12 @@ import Blog from './Components/Home/Dashboard/Blogs.jsx';
 import BlogContent from './Components/Home/BlogContent.jsx';
 import Catagories from './Components/Home/Catagories';
 import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx';
-import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
+// import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
 import StudentProfileView from './Components/Home/Dashboard/AdminPanel/StudentProfile.jsx';
 import Category from './Components/Home/Dashboard/AdminPanel/Category.jsx';
 import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedHero.jsx';
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
+import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -109,7 +110,8 @@ function AppContent() {
     || location.pathname === "/widgets/footer"
     || location.pathname === "/widgets/headers" 
      || location.pathname === "/my-jobs-employer"
-    || location.pathname === "/reviews-rating";
+    || location.pathname === "/reviews-rating"
+    || location.pathname === "/edit-job-post";
   };
   
 
@@ -172,6 +174,7 @@ function AppContent() {
         <Route path="/edit-job/:jobid" element={<EditJobs />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/add-tags" element={<Tag/>}/>
+        <Route path="/edit-job-post" element={<EditJobPost/>}/>
         <Route path="/add-category" element={<Category/>}/>
         <Route path="/blogs-admin" element={<BlogPage/>}/>
         {/* <Route path="/student-profile" element={<StudentProfile />} /> */}
