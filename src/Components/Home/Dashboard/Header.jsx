@@ -14,6 +14,12 @@ const initialNotifications = [
   { message: 'The application is approved on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
   { message: 'A new meeting is created on the job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
 ];
+// const [userType, setUserType] = useState('');
+
+// useEffect(() => {
+//   const type = localStorage.getItem('type');
+//   setUserType(type);
+// }, []);
 
 const Header = () => {
   const navigate = useNavigate();
@@ -40,7 +46,8 @@ const Header = () => {
     setNewNotificationCount(0);
 
     // Navigate to the user dashboard
-    // navigate('/user-dashboard');
+
+    navigate('/user-dashboard');
   };
 
   useEffect(() => {
