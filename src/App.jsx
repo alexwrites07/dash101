@@ -73,6 +73,7 @@ import Category from './Components/Home/Dashboard/AdminPanel/Category.jsx';
 import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedHero.jsx';
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
+import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -111,7 +112,8 @@ function AppContent() {
     || location.pathname === "/widgets/headers" 
      || location.pathname === "/my-jobs-employer"
     || location.pathname === "/reviews-rating"
-    || location.pathname === "/edit-job-post";
+    || location.pathname === "/edit-job-post"
+    || location.pathname === "/add-learning-need";;
   };
   
 
@@ -175,6 +177,7 @@ function AppContent() {
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/add-tags" element={<Tag/>}/>
         <Route path="/edit-job-post" element={<EditJobPost/>}/>
+        <Route path="/add-learning-need" element={<AddLearning/>}/>
         <Route path="/add-category" element={<Category/>}/>
         <Route path="/blogs-admin" element={<BlogPage/>}/>
         {/* <Route path="/student-profile" element={<StudentProfile />} /> */}
