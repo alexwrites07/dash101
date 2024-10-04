@@ -43,7 +43,7 @@ function HomePage() {
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptatem
             maxime commodi eum voluptatum fugiat rerum explicabo, velit officiis
             alias voluptatibus, facilis dolorem asperiores eaque! Eius, vero!
-            Accusantium, quasi.
+            Accusantium.
           </p>
           <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-1">
       {/* <input
