@@ -139,23 +139,6 @@ const DemoForm = () => {
       setSelectedOptions([]); // Clear selected options
     };
  
-    
-//   return (
-//     <div className="md:ml-24">
-//       <div className="flex flex-col items-center p-6 space-y-6 mt-24">
-//         <Sidebar />
-//         <div className="flex flex-col space-y-6 w-3/5">
-//            <Header />
-//           <div className="space-y-4">
-//             <h2 className="text-2xl font-semibold">Selected Learning Needs (Approved)</h2>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default LearningNeedsForm;
 
 const renderInputField = () => {
     switch (currentQuestionIndex) {
@@ -371,7 +354,7 @@ const renderInputField = () => {
   };
 
   return (
-    <div className="md:mt-32">
+    <div className="md:mt-48">
     <Sidebar />
       <Header />
     <div className="container mx-auto w-2/5 my-10 p-4 shadow-lg">
