@@ -58,6 +58,7 @@ const AboutUs = () => {
               <img src="https://avyudha.com/wp-content/uploads/2021/03/g3.jpg" alt="Image 3" className="w-full h-auto object-cover" />
             </div>
           </div>
+          <br></br>
 
           {/* Section 3 */}
           <div className="col-span-1 flex flex-col space-y-2 sm:block">
