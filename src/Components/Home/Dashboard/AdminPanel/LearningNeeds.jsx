@@ -10,8 +10,7 @@ const LearningNeedsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzU3MTQ0YTZjY2Q0YjExM2UwMjMxOCIsImlhdCI6MTcyNzUyODE0Nn0.-YaZ6iMa48JdqRnh60YMP9zzXnlmaCuXhm51Ss1KCkM'; // Use the provided token
-
+  const token = localStorage.getItem('token');
   // Fetch learning needs from API
   useEffect(() => {
     const fetchLearningNeeds = async () => {
@@ -88,31 +87,32 @@ const LearningNeedsView = () => {
     }
   };
 
-      // Filter and sort approved learning needs
-    const filteredApprovedLearningNeeds = approvedLearningNeeds
-    .filter((learningNeed) =>
-      (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase()) // Handle undefined name
-    )
-    .sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return new Date(a.datePosted) - new Date(b.datePosted);
-      } else {
-        return new Date(b.datePosted) - new Date(a.datePosted);
-      }
-    });
+// Filter and sort approved learning needs
+const filteredApprovedLearningNeeds = approvedLearningNeeds
+  .filter((learningNeed) =>
+    (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return new Date(a.datePosted) - new Date(b.datePosted);
+    } else {
+      return new Date(b.datePosted) - new Date(a.datePosted);
+    }
+  });
 
-    // Filter and sort unapproved learning needs
-    const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
-    .filter((learningNeed) =>
-      (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase()) // Handle undefined name
-    )
-    .sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return new Date(a.datePosted) - new Date(b.datePosted);
-      } else {
-        return new Date(b.datePosted) - new Date(a.datePosted);
-      }
-    });
+// Filter and sort unapproved learning needs
+const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
+  .filter((learningNeed) =>
+    (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return new Date(a.datePosted) - new Date(b.datePosted);
+    } else {
+      return new Date(b.datePosted) - new Date(a.datePosted);
+    }
+  });
+
 
 
   return (

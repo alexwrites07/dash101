@@ -66,7 +66,14 @@ const TutorFinder = () => {
     return distance;
   };
 
+  const filterByDistance = (job) => {
+    if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
 
+    const jobCoords = job.location.coordinates;
+    const distance = calculateDistance(userCoords, jobCoords);
+
+    return distance <= distanceFilter;
+  };
   const fetchUserCoordinates = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -94,19 +101,26 @@ const TutorFinder = () => {
       const city = location?.city || '';
       const minSalary = jobAlerts?.minExpectedSalary?.value ?? 0;
       const maxSalary = jobAlerts?.maxExpectedSalary?.value ?? Infinity;
-
+  
       const subjectMatch = filters.subjectsTaught ? subjectsTaught.includes(filters.subjectsTaught) : true;
       const cityMatch = filters.city ? city.toLowerCase().includes(filters.city.toLowerCase()) : true;
       const experienceMatch = filters.totalExperience ? totalExperience >= parseInt(filters.totalExperience) : true;
       const minSalaryMatch = filters.minExpectedSalary ? minSalary >= parseInt(filters.minExpectedSalary) : true;
       const maxSalaryMatch = filters.maxExpectedSalary ? maxSalary <= parseInt(filters.maxExpectedSalary) : true;
       const tagsMatch = filters.tags ? tags.includes(filters.tags) : true;
-
-      return subjectMatch && cityMatch && experienceMatch && minSalaryMatch && maxSalaryMatch && tagsMatch;
+  
+      let isMatch = subjectMatch && cityMatch && experienceMatch && minSalaryMatch && maxSalaryMatch && tagsMatch;
+      
+      // Handle distance filter after other filters
+      if (distanceFilter && !filterByDistance(tutor)) isMatch = false;
+      
+      return isMatch;
     });
-
+  
     setFilteredTutors(filtered);
   };
+
+   
 
   return (
     <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
@@ -148,6 +162,18 @@ const TutorFinder = () => {
                 Use My Location
               </button>
             </div>
+            <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="distance">Distance (in km)</label>
+          <input
+            type="number"
+            name="distance"
+            id="distance"
+            placeholder="Enter distance in km"
+            value={distanceFilter}
+            onChange={(e) => setDistanceFilter(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+        </div>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="totalExperience">Total Experience (Years)</label>
               <input

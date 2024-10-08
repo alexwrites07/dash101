@@ -15,6 +15,7 @@ const JobPost = () => {
     category: '',
     jobType: '',
     experience: '',
+    qualification:'',
     careerLevel: '',
     salary: '',
   });
@@ -149,7 +150,7 @@ const JobPost = () => {
   const applyFilters = () => {
     // Filter jobs based on current filters and distance filter
     let filteredJobs = jobs.filter((job) => {
-      const { keyword, location, category, jobType, experience, careerLevel, salary } = filters;
+      const { keyword, location, category, jobType, experience,qualification, careerLevel, salary } = filters;
 
       let isMatch = true;
 
@@ -160,7 +161,7 @@ const JobPost = () => {
       if (experience && job.experience && !job.experience.toLowerCase().includes(experience.toLowerCase())) isMatch = false;
       if (careerLevel && job.careerLevel && !job.careerLevel.toLowerCase().includes(careerLevel.toLowerCase())) isMatch = false;
       if (salary && job.salary && parseInt(job.salary.replace(/[^0-9.-]+/g, '')) < parseInt(salary)) isMatch = false;
-
+      if (qualification && job.qualification && !job.qualification.toLowerCase().includes(qualification.toLowerCase())) isMatch = false;
       if (distanceFilter && !filterByDistance(job)) isMatch = false;
 
       return isMatch;
@@ -278,23 +279,7 @@ const JobPost = () => {
         </div>
 
           {/* Job Type Filter */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="jobType">Job Type</label>
-            <select
-              name="jobType"
-              id="jobType"
-              placeholder="Enter Role"
-              value={filters.jobType}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            >
-              <option value="">Select Job Type</option>
-              <option value="full-time">Full-time</option>
-              <option value="part-time">Part-time</option>
-              <option value="contract">Contract</option>
-              <option value="remote">Remote</option>
-            </select>
-          </div>
+       
 
           {/* Date Posted Filter */}
           {/* <div className="mb-4">
@@ -330,13 +315,13 @@ const JobPost = () => {
 
           {/* Career Level Filter */}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Career Level</label>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Qualification</label>
             <input
               type="text"
-              name="careerLevel"
+              name="qualification"
               placeholder="Enter Career Type"
               id="careerLevel"
-              value={filters.careerLevel}
+              value={filters.qualification}
               onChange={handleFilterChange}
               className="w-full px-3 py-2 border rounded-lg"
             />

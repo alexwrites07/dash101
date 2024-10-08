@@ -15,6 +15,7 @@ const TeachingDescription = () => {
   const [comment, setComment] = useState('');
   const [submittedComment, setSubmittedComment] = useState('');
   const [error, setError] = useState(null);
+  const [reviews, setReviews] = useState([]); // State for reviews
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -27,7 +28,20 @@ const TeachingDescription = () => {
       }
     };
 
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${Id}`);
+        // Filter reviews based on reviewedId matching tutor's ID
+        const filteredReviews = response.data.reviews.filter(review => review.reviewedId === Id);
+        setReviews(filteredReviews);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+        
+      }
+    };
+
     fetchJobDetails();
+    fetchReviews();
   }, [Id]);
 
   const openModal = () => {
@@ -62,8 +76,6 @@ const TeachingDescription = () => {
   const statusTag = job.tags?.find(tag => tag.name === "open");
   const isActive = statusTag && statusTag.active;
 
-  console.log(job.video);
-
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
@@ -83,20 +95,20 @@ const TeachingDescription = () => {
             <p><strong>Qualification:</strong> {job.highestQualification}</p>
             {!isActive ? (
               <Link to="/login">
-              <button
-                className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
-              >
-                Invite
-              </button>
-            </Link>
+                <button
+                  className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+                >
+                  Invite
+                </button>
+              </Link>
             ) : (
               <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
                 Closed
               </p>
             )}
-             <button className="text-blue-500 ml-6 hover:text-blue-600 focus:outline-none mr-8">
-                {job.bookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
-             </button>
+            <button className="text-blue-500 ml-6 hover:text-blue-600 focus:outline-none mr-8">
+              {job.bookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
+            </button>
           </div>
         </div>
         <div className="md:w-1/4 flex flex-col items-end">
@@ -105,106 +117,103 @@ const TeachingDescription = () => {
       </div>
 
       <div className="flex flex-col md:flex-row md:justify-between">
-        <div className="bg-white p-6 rounded-lg  md:w-3/5">
-        <div className="text-gray-600">
-  <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Details</h2>
-  <p className="text-black mb-4">{job.description}</p>
+        <div className="bg-white p-6 rounded-lg md:w-3/5">
+          <div className="text-gray-600">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Details</h2>
+            <p className="text-black mb-4">{job.description}</p>
 
-  {/* Display Education */}
-  <h2 className="text-xl font-semibold mb-2">Education</h2>
-  {job.education?.map((edu, index) => (
-    <div key={index}>
-      <p><strong>Degree:</strong> {edu.title}</p>
-      <p><strong>Academy:</strong> {edu.academy}</p>
-      <p><strong>Year:</strong> {new Date(edu.year).getFullYear()}</p>
-      <p><strong>Description:</strong> {edu.description}</p>
-    </div>
-  ))}
+            {/* Display Education */}
+            <h2 className="text-xl font-semibold mb-2">Education</h2>
+            {job.education?.map((edu, index) => (
+              <div key={index}>
+                <p><strong>Degree:</strong> {edu.title}</p>
+                <p><strong>Academy:</strong> {edu.academy}</p>
+                <p><strong>Year:</strong> {new Date(edu.year).getFullYear()}</p>
+                <p><strong>Description:</strong> {edu.description}</p>
+              </div>
+            ))}
 
-  {/* Display Past Experiences */}
-  <h2 className="text-xl font-semibold mb-2 mt-6">Experience/Achievements</h2>
-  {job.pastExperiences?.map((experience, index) => (
-    <div key={index}>
-      <p><strong>Role:</strong> {experience.title}</p>
-      <p><strong>Company:</strong> {experience.company}</p>
-      <p>
-        <strong>Duration:</strong> {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}
-      </p>
-      <p><strong>Description:</strong> {experience.description}</p>
-    </div>
-  ))}
+            {/* Display Past Experiences */}
+            <h2 className="text-xl font-semibold mb-2 mt-6">Experience/Achievements</h2>
+            {job.pastExperiences?.map((experience, index) => (
+              <div key={index}>
+                <p><strong>Role:</strong> {experience.title}</p>
+                <p><strong>Company:</strong> {experience.company}</p>
+                <p>
+                  <strong>Duration:</strong> {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}
+                </p>
+                <p><strong>Description:</strong> {experience.description}</p>
+              </div>
+            ))}
 
-  {/* Display Awards */}
-  <h2 className="text-xl font-semibold mb-2 mt-6">Awards</h2>
-  {job.awards?.map((award, index) => (
-    <div key={index}>
-      <p><strong>Award:</strong> {award.title}</p>
-      <p><strong>Year:</strong> {new Date(award.year).getFullYear()}</p>
-      <p><strong>Description:</strong> {award.description}</p>
-    </div>
-  ))}
+            {/* Display Awards */}
+            <h2 className="text-xl font-semibold mb-2 mt-6">Awards</h2>
+            {job.awards?.map((award, index) => (
+              <div key={index}>
+                <p><strong>Award:</strong> {award.title}</p>
+                <p><strong>Year:</strong> {new Date(award.year).getFullYear()}</p>
+                <p><strong>Description:</strong> {award.description}</p>
+              </div>
+            ))}
 
-  {/* Video Player */}
-  <div className="flex justify-center mt-8">
-    <video controls className="w-full max-w-lg rounded-md">
-      <source src={job.video} type="video/mp4" />
-      
-      Your browser does not support the video tag.
-    </video>
-  </div>
-</div>
+            {/* Video Player */}
+            <div className="flex justify-center mt-8">
+              <video controls className="w-full max-w-lg rounded-md">
+                <source src={job.video} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
 
-          
-          <div className="mt-8 flex flex-col items-center">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Rate this Tutor</h2>
-            <StarRating />
-
-            {/* Comment Section */}
-            <div className="mt-4">
-              <textarea
-                value={comment}
-                onChange={handleCommentChange}
-                placeholder="Write your comments here..."
-                className="w-full p-2 border rounded-lg"
-              />
-              <button
-                onClick={handleSubmit}
-                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Submit Comment
-              </button>
-              {submittedComment && (
-                <div className="mt-4 p-2 border border-gray-300 rounded-lg">
-                  <h4 className="font-semibold">Your Comment:</h4>
-                  <p>{submittedComment}</p>
+            {/* Reviews Section */}
+            <h2 className="text-xl font-semibold mb-4 mt-8">Reviews</h2>
+            {reviews.length > 0 ? (
+              reviews.map(review => (
+                <div key={review._id} className="border-b mb-4 pb-2">
+                  <p><strong>{review.reviewerName}</strong></p>
+                  <StarRating rating={review.rating} /> {/* You can pass the rating value here to your StarRating component */}
+                  <p>{review.description}</p>
+                  <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
                 </div>
-              )}
+              ))
+            ) : (
+              <p>No reviews available.</p>
+            )}
+
+            <div className="mt-8 flex flex-col items-center">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">Rate this Tutor</h2>
+              <StarRating />
+
+              {/* Comment Section */}
+              <div className="mt-4">
+                <textarea
+                  value={comment}
+                  onChange={handleCommentChange}
+                  placeholder="Write your comments here..."
+                  className="w-full p-2 border rounded-lg"
+                />
+                <button
+                  onClick={handleSubmit}
+                  className="mt-2 bg-blue-500 text-white font-bold py-2 px-4 rounded"
+                >
+                  Submit
+                </button>
+                {submittedComment && <p className="mt-2 text-green-500">{submittedComment}</p>}
+              </div>
             </div>
           </div>
         </div>
-        
-        <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg md:w-2/5 ml-4 mt-12">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Information</h2>
-          <p><strong>Location:</strong> <br />{job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
-          <p><strong>Areas:</strong><br /> {job.preferredTeachingAreas}</p>
-          <p><strong>Gender:</strong> <br />{job.gender}</p>
-          <p><strong>Years of Experience:</strong> <br />{job.totalExperience}</p>
-          <p><strong>Subjects:</strong> <br />{job.subjectsTaught}</p>
-          <p><strong>Qualification:</strong> <br />{job.highestQualification}</p>
-      
-        <div className="bg-white p-6 rounded-lg   ml-4 mt-12">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 mt-6">Job Location</h2>
+
+        <div className="bg-white p-6 rounded-lg md:w-2/5 md:ml-4 mt-4 md:mt-0">
+          <h2 className="text-xl font-semibold mb-4">Map Location</h2>
           {job.location?.coordinates ? (
-            <Map coordinates={job.location.coordinates} />
-          ) : (
-            <p>Location not available</p>
-          )}
-      
-      </div>
+              <Map coordinates={job.location.coordinates} />
+            ) : (
+              <p>Map location not available</p> // Fallback message
+            )}
         </div>
-        
       </div>
-   
- </div> ); };
+    </div>
+  );
+};
 
 export default TeachingDescription;

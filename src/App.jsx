@@ -60,12 +60,15 @@ import UserDashboardEmployer from './Components/Home/DashboardEmployer/UserDashb
 import PricingEmployer from './Components/Home/DashboardEmployer/PricingEmployer';
 import MyJobs from './Components/Home/DashboardEmployer/MyJobs.jsx';
 import EditJobs from './Components/Home/DashboardEmployer/EditJobs.jsx';
+import CategoryEdit from './Components/Home/Dashboard/AdminPanel/CategoryEdit.jsx';
 import Wallet from './Components/Home/DashboardEmployer/Wallet.jsx';
 import AboutUs from './Components/Home/AboutUs';
 import BlogPage from './Components/Home/Dashboard/AdminPanel/FeaturedBlogs.jsx';
 import Blog from './Components/Home/Dashboard/Blogs.jsx';
+import EditTags from './Components/Home/Dashboard/AdminPanel/EditTags.jsx';
 import BlogContent from './Components/Home/BlogContent.jsx';
 import Catagories from './Components/Home/Catagories';
+import EditBlogPage from './Components/Home/Dashboard/AdminPanel/EditBlogs.jsx';
 import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx';
 // import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
 import StudentProfileView from './Components/Home/Dashboard/AdminPanel/StudentProfile.jsx';
@@ -139,6 +142,7 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/edit-tags/:id" element={<EditTags />} />
         <Route path="/learningneeds" element={<LearningNeeds />} />
         <Route path="/myclasses" element={<MyClasses/>} />
         <Route path="/reviews" element={<Reviews/>} />
@@ -187,19 +191,21 @@ function AppContent() {
         <Route path="/delete-profile-employer" element={<DeleteProfileEmployer />} />
         <Route path="/user-dashboard-employer" element={<UserDashboardEmployer />} />
         <Route path="/pricing-employer" element={<PricingEmployer />} />
+        <Route path="/edit-category/:id" element={<CategoryEdit />}  />
         <Route path="/my-jobs-employer" element={<MyJobs />} />
         <Route path="/edit-job/:jobid" element={<EditJobs />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/add-tags" element={<Tag/>}/>
         <Route path="/edit-job-post" element={<EditJobPost/>}/>
         <Route path="/add-learning-need" element={<AddLearning/>}/>
-        <Route path="/add-category" element={<Category/>}/>
+        <Route path="/add-category" element={<FeaturedCategoryPage/>}/>
         <Route path="/blogs-admin" element={<BlogPage/>}/>
         {/* <Route path="/student-profile" element={<StudentProfile />} /> */}
         <Route path="/student-profiles" element={<StudentProfileView/>}/>
         <Route path="/edit-student/:studentId" element={<StudentEdit />} />
         <Route path="/edit-tutor/:id" element={<EditTutor />} /> {/* Add this route */}
         <Route path="/edit-employer/:id" element={<EditEmployerProfile />} />
+        <Route path="/edit-blog/:id" element={<EditBlogPage />} />
         <Route path="/tutor-profiles" element={<TutorProfileView/>}/>
         <Route path="/organization-profiles" element={<EmployerProfileView/>}/>
         <Route path="/widgets/featured-institution" element={<InstituteProfileView/>}/>
