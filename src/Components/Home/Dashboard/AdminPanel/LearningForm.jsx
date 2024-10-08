@@ -33,6 +33,8 @@ const options = {
   7: ['No preference', 'Male only', 'Female only'],
 };
 
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzU3MTQ0YTZjY2Q0YjExM2UwMjMxOCIsImlhdCI6MTcyNzUyODE0Nn0.-YaZ6iMa48JdqRnh60YMP9zzXnlmaCuXhm51Ss1KCkM'; // Use the provided token
+
 const DemoForm = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [responses, setResponses] = useState({});
@@ -44,49 +46,73 @@ const DemoForm = () => {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [contactDetails, setContactDetails] = useState({ email: '', phone: '' });
   
-    const handleNext = (event) => {
+    const handleNext = async (event) => {
       event.preventDefault();
       let newResponses = { ...responses };
-  
+    
       // Handle the responses for each question
       switch (currentQuestionIndex) {
         case 0:
-        case 1: // Handling for the learning needs description
+        case 1:
           newResponses[questions[currentQuestionIndex]] = inputValue;
           break;
-        case 2: // Board of education
-          newResponses[questions[currentQuestionIndex]] = inputValue;
+        case 2:
+          newResponses['board'] = inputValue; // board of education
           break;
-        case 3: // Location
-          newResponses[questions[currentQuestionIndex]] = { coordinates, location: inputValue1 };
+        case 3:
+          newResponses['location'] = inputValue1; // location
           break;
-        case 4: // Maximum fee
-          newResponses[questions[currentQuestionIndex]] = { paymentType: inputValue, amount: inputValue1 };
+        case 4:
+          newResponses['salary'] = { max: inputValue1, period: 'monthly' }; // maximum fee
           break;
         case 5:
-        case 6: // Plans to start tuition and class type
-          newResponses[questions[currentQuestionIndex]] = selectedOptions;
+          newResponses['start'] = selectedOptions[0]; // start tuition date
           break;
-        case 7: // Tutor gender preference
-          newResponses[questions[currentQuestionIndex]] = selectedOptions;
+        case 6:
+          newResponses['typeOfClass'] = selectedOptions[0]; // type of class
           break;
-        case 8: // Contact details
-          newResponses[questions[currentQuestionIndex]] = contactDetails;
+        case 7:
+          newResponses['genderPreference'] = selectedOptions[0]; // gender preference
+          break;
+        case 8:
+          newResponses['email'] = contactDetails.email;
+          newResponses['phone'] = contactDetails.phone;
           break;
         default:
           break;
       }
-  
-      setResponses(newResponses);
-  
+    
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         resetInputState();
       } else {
         setIsSubmitted(true);
-        console.log('Form submitted:', newResponses);
+    
+        // Make the POST request
+        try {
+          const response = await fetch('https://backend.akshayy.tech/submit-learning-need', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`, // Include the token here
+            },
+            body: JSON.stringify(newResponses), // Send the form data as JSON
+          });
+    
+          const data = await response.json();
+          if (response.ok) {
+            alert('Form submitted successfully');
+            console.log('Response from server:', data);
+          } else {
+            alert('Error submitting form');
+            console.log('Error:', data);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
       }
     };
+    
   
     const handlePrevious = () => {
       if (currentQuestionIndex > 0) {

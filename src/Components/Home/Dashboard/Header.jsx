@@ -14,12 +14,6 @@ const initialNotifications = [
   { message: 'The application is approved on your job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
   { message: 'A new meeting is created on the job Physics Tutor for IIT JEE by vikashpanjiyar2000.', time: '2 weeks ago' },
 ];
-// const [userType, setUserType] = useState('');
-
-// useEffect(() => {
-//   const type = localStorage.getItem('type');
-//   setUserType(type);
-// }, []);
 
 const Header = () => {
   const navigate = useNavigate();
@@ -46,7 +40,6 @@ const Header = () => {
     setNewNotificationCount(0);
 
     // Navigate to the user dashboard
-
     navigate('/user-dashboard');
   };
 
@@ -68,24 +61,24 @@ const Header = () => {
   }, [notifications]); // Dependency on notifications to recalculate on updates
 
 
-  // Simulate adding new notifications
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      // Simulate a new notification
-      const newNotification = {
-        message: `New job alert: Tutor position available - ${new Date().toLocaleTimeString()}`,
-        time: new Date().toISOString(),
-      };
+  // // Simulate adding new notifications
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     // Simulate a new notification
+  //     const newNotification = {
+  //       message: `New job alert: Tutor position available - ${new Date().toLocaleTimeString()}`,
+  //       time: new Date().toISOString(),
+  //     };
 
-      // Update notifications
-      setNotifications((prevNotifications) => {
-        const updatedNotifications = [newNotification, ...prevNotifications];
-        return updatedNotifications;
-      });
-    }, 10000000); // Add new notification every 10 seconds
+  //     // Update notifications
+  //     setNotifications((prevNotifications) => {
+  //       const updatedNotifications = [newNotification, ...prevNotifications];
+  //       return updatedNotifications;
+  //     });
+  //   }, 10000000); // Add new notification every 10 seconds
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
 
   return (
     <header className="header fixed top-0 left-0 right-0 z-1000 bg-white text-black flex items-center justify-between p-12 shadow-lg h-16">

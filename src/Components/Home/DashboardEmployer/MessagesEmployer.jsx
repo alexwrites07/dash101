@@ -14,102 +14,110 @@ const Messages = () => {
 
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8'; // Replace with your actual token logic
 
-  // Fetch contacts
-  useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const response = await axios.get('https://backend.akshayy.tech/purchasedContacts', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        console.log("Contacts API Response:", response.data); // Log the entire response data
-  
-        const formattedContacts = response.data.purchasedContacts.map((contact) => ({
-          id: contact.id || contact.conversationId, // Make sure you use the correct field for ID
-          name: contact.name,
-          username: contact.username,
-          lastMessage: 'No messages yet',
-        }));
-  
-        setContacts(formattedContacts);
-      } catch (error) {
-        console.error('Error fetching contacts:', error);
-      }
-    };
-  
-    fetchContacts();
-  }, []);
-  
-  
-  // Fetch messages for a selected chat
-  const openChat = async (contact) => {
-    console.log("Selected Contact:", contact); // Log the contact object to verify if `id` is present
-  
-    if (!contact.id) {
-      console.error("Contact ID is missing.");
-      return; // Exit if the id is not available
-    }
-  
-    setActiveChat(contact);
-    
+// Fetch contacts
+useEffect(() => {
+  const fetchContacts = async () => {
     try {
-      const response = await axios.get(`https://backend.akshayy.tech/conversations/${contact.id}/messages`, {
+      const response = await axios.get('https://backend.akshayy.tech/purchasedContacts', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
-      const fetchedMessages = response.data.map((msg) => ({
-        id: msg._id,
-        sender: msg.sender === 'your_user_id' ? 'You' : msg.sender, // Adjust this logic according to sender ID
-        message: msg.message,
-        timestamp: msg.timestamp,
-      }));
-  
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [contact.name]: fetchedMessages,
-      }));
+
+      console.log("Contacts API Response:", response.data); // Log the entire response data
+
+      // Map the response data to format contacts correctly
+      const formattedContacts = response.data.purchasedContacts.map((contact) => ({
+        id: contact.contactInfo.id, // Contact ID
+        name: contact.name, // Name of the contact
+        conversationId: contact.conversationId || contact.roomId, // Check if the conversation ID is returned in the API response
+        email: contact.contactInfo.email,
+        contactNumber: contact.contactInfo.contactNumber,
+        resume: contact.contactInfo.resume,
+      }));     
+
+      // Set formatted contacts into the state
+      setContacts(formattedContacts);
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      console.error('Error fetching contacts:', error);
     }
-  };  
+  };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!messageInput.trim() || !activeChat) return;
+  fetchContacts();
+}, []);
+  
+  
+const openChat = async (contact) => {
+  const conversationId = contact.conversationId || contact.roomId; // Use the conversation ID
+  
+  if (!conversationId) {
+    console.error("Conversation ID is missing.");
+    return;
+  }
 
-    const newMessage = {
-      sender: 'You',
-      message: messageInput,
-      timestamp: new Date().toISOString(),
-    };
+  try {
+    const response = await axios.get(`https://backend.akshayy.tech/conversations/${conversationId}/messages`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const fetchedMessages = response.data.map((msg) => ({
+      id: msg._id,
+      sender: msg.sender === 'your_user_id' ? 'You' : msg.sender,
+      message: msg.message,
+      timestamp: msg.timestamp,
+    }));
 
     setMessages((prevMessages) => ({
       ...prevMessages,
-      [activeChat.name]: [...(prevMessages[activeChat.name] || []), newMessage],
+      [contact.name]: fetchedMessages,
     }));
 
-    try {
-      // Send the message to the backend
-      const response = await axios.post('https://backend.akshayy.tech/send-message', {
-        recipientId: activeChat.id, // Assuming `id` is the participant ID
-        message: messageInput,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+  }
+};
 
-      console.log(response.data.message); // Output: Message sent
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
 
-    setMessageInput('');
+const handleSendMessage = async (e) => {
+  e.preventDefault();
+  if (!messageInput.trim() || !activeChat) return;
+
+  const newMessage = {
+    sender: 'You',
+    message: messageInput,
+    timestamp: new Date().toISOString(),
   };
+
+  // Add the new message to the chat UI before sending it
+  setMessages((prevMessages) => ({
+    ...prevMessages,
+    [activeChat.name]: [...(prevMessages[activeChat.name] || []), newMessage],
+  }));
+
+  try {
+    // Send the message to the backend using the endpoint
+    const response = await axios.post('https://backend.akshayy.tech/send-message', {
+      recipientId: activeChat.id, // Assuming `id` is the recipient's ID
+      message: messageInput,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Handle the response, if needed
+    console.log(response.data.message); // Output: Message sent
+    console.log('Conversation ID:', response.data.conversationId); // Log the conversation ID
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
+
+  // Clear the message input field after sending the message
+  setMessageInput('');
+};
+
 
   const closeChat = () => {
     setActiveChat(null);

@@ -32,10 +32,10 @@ const Sidebar = ({ activeTab }) => {
     { to: '/learning-need-posts', icon: <HiViewBoards className="w-6 h-6" />, label: 'Learning Need Posts' },
     { to: '/reviews-rating', icon: <HiHeart className="w-6 h-6" />, label: 'Reviews & Rating' },
     { to: '/blogs-admin', icon: <HiChat className="w-6 h-6" />, label: 'Blogs' },
+    { to: '/add-learning-need', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Learning Need' },
     { to: '/add-category', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Category' },
     { to: '/add-tags', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Tags' },
     { to: '/edit-job-post', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Edit-Job' },
-    { to: '/add-learning-need', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Learning Need' },
     {
       to: '#', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Widgets', dropdown: true, onClick: toggleWidgets,
       subLinks: [

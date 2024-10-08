@@ -25,11 +25,12 @@ const JobsView = () => {
           name: job.title,
           company: job.location.city,
           datePosted: job.lastDateToApply,
-          isClosed: job.isClosed, // Added isClosed field
+          isClosed: job.isClosed,
           applicantId: 'fakeApplicantId', // Placeholder for applicantId (replace with actual)
           jobId: job._id,
+          postedBy: job.postedBy.name || 'Unknown User', // Assuming `postedBy.name` is returned by the API
         }));
-
+  
         setAllJobs(fetchedJobs);
         setAcceptedJobs(fetchedJobs.filter((job) => !job.isClosed)); // Only open jobs
         setDeclinedJobs(fetchedJobs.filter((job) => job.isClosed)); // Only closed jobs
@@ -37,9 +38,10 @@ const JobsView = () => {
         console.error('Error fetching jobs:', error);
       }
     };
-
+  
     fetchJobs();
   }, []);
+  
 
   // Toggle job close/open status
   const toggleJobStatus = async (jobId) => {
@@ -121,9 +123,14 @@ const JobsView = () => {
                   className="flex justify-between items-center p-4 border border-gray-200 rounded-md"
                 >
                   <div className="flex w-full justify-between space-x-4">
-                    <h3 className="text-lg font-medium">{job.name}</h3>
-                    <p className="text-sm text-gray-600">{job.company}</p>
-                    <p className="text-gray-700">{new Date(job.datePosted).toLocaleDateString()}</p>
+                    <div>
+                      <h3 className="text-lg font-medium">{job.name}</h3>
+                      <p className="text-sm text-gray-600">{job.company}</p>
+                      <p className="text-sm text-gray-500">Posted by: {job.postedBy}</p> {/* Display user */}
+                    </div>
+                    <p className="text-gray-700">
+                      {new Date(job.datePosted).toLocaleDateString()}
+                    </p>
                   </div>
                   <button
                     onClick={() => handleDecline(job)} // Move job to Declined (close)
@@ -150,6 +157,7 @@ const JobsView = () => {
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{job.name}</h3>
                     <p className="text-sm text-gray-600">{job.company}</p>
+                    <p className="text-sm text-gray-500">Posted by: {job.postedBy}</p> {/* New line */}
                     <p className="text-gray-700">{new Date(job.datePosted).toLocaleDateString()}</p>
                   </div>
                   <button

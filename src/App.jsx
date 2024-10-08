@@ -93,11 +93,26 @@ function AppContent() {
 
   // Function to determine if Navbar and Footer should be hidden
   const shouldHideNavbarAndFooter = () => {
-    return location.pathname === '/dashboard' || location.pathname === '/user-dashboard' || location.pathname === '/your-profile' || location.pathname === '/applied-company' || location.pathname === '/upload-resume' || location.pathname === '/upload-resume'|| location.pathname === '/meetings' || location.pathname === '/messages' || location.pathname === '/alerts-jobs' || location.pathname === '/shortlist-jobs'
-    || location.pathname === '/pricing'|| location.pathname === '/myclasses' ||location.pathname === '/reviews'||location.pathname === '/learningneeds' ||location.pathname === '/following-employer'||location.pathname === '/update-password'||location.pathname === '/delete-profile' ||location.pathname === '/student-profiles'||location.pathname === '/delete-profile'||location.pathname === '/delete-profile'||location.pathname === '/widgets/featured-jobs'||
-    location.pathname === '//widgets/featured-institution'||location.pathname === '/widgets/featured-testimonials'||location.pathname === '/widgets/featured-institution'||location.pathname === '/dashboard-employer' || location.pathname === '/alerts-jobs-employer' || location.pathname === '/messages-employer' || location.pathname === '/meetings-employer' || location.pathname === '/update-password-employer'||
-    location.pathname === '/upload-resume-employer' || location.pathname === '/your-profile-employer' || location.pathname === '/locations-employer' || location.pathname === '/shortlist-jobs-employer'|| location.pathname === '/wallet'
-    || location.pathname === '/learning-need-posts'|| location.pathname === '/reviews-rating'|| location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job'
+    return location.pathname === '/dashboard' || location.pathname === '/user-dashboard' 
+    || location.pathname === '/your-profile' || location.pathname === '/applied-company'
+     || location.pathname === '/upload-resume' || location.pathname === '/upload-resume'
+     || location.pathname === '/meetings' || location.pathname === '/messages'
+     || location.pathname === '/alerts-jobs' || location.pathname === '/shortlist-jobs'
+    || location.pathname === '/pricing'|| location.pathname === '/myclasses' 
+    ||location.pathname === '/reviews'||location.pathname === '/learningneeds' 
+    ||location.pathname === '/following-employer'||location.pathname === '/update-password'
+    ||location.pathname === '/delete-profile' ||location.pathname === '/student-profiles'
+    ||location.pathname === '/delete-profile'||location.pathname === '/delete-profile'||location.pathname === '/widgets/featured-jobs'
+    ||location.pathname === '//widgets/featured-institution'||location.pathname === '/widgets/featured-testimonials'
+    ||location.pathname === '/widgets/featured-institution'||location.pathname === '/dashboard-employer' 
+    || location.pathname === '/alerts-jobs-employer' || location.pathname === '/messages-employer' 
+    || location.pathname === '/meetings-employer' || location.pathname === '/update-password-employer'
+    || location.pathname === '/upload-resume-employer' || location.pathname === '/your-profile-employer' 
+    || location.pathname === '/locations-employer' || location.pathname === '/shortlist-jobs-employer'
+    || location.pathname === '/wallet' ||location.pathname === '/edit-job/:jobid'
+    || location.pathname === '/learning-need-posts'|| location.pathname === '/reviews-rating'
+    || location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'
+    ||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job'
     || location.pathname === "/add-tags"
     || location.pathname === "/add-category"
     || location.pathname === "/blogs-admin"

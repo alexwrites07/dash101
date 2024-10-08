@@ -23,7 +23,7 @@ const LearningNeedsView = () => {
         });
 
         const fetchedNeeds = response.data.map((need) => ({
-          id: need._id,
+          id: need._id,  // Ensure this is correctly set
           name: need.email, // Use email as the name placeholder
           need: need.requirement,
           location: need.location,
@@ -32,8 +32,9 @@ const LearningNeedsView = () => {
           board: need.board,
           genderPreference: need.genderPreference,
           available: need.available,
-          isApproved: need.isApproved, // Track approval status
+          isApproved: need.isApproved,
         }));
+        
 
         // Separate approved and unapproved learning needs
         const approved = fetchedNeeds.filter((ln) => ln.isApproved);
@@ -87,10 +88,10 @@ const LearningNeedsView = () => {
     }
   };
 
-  // Filter and sort approved learning needs
-  const filteredApprovedLearningNeeds = approvedLearningNeeds
+      // Filter and sort approved learning needs
+    const filteredApprovedLearningNeeds = approvedLearningNeeds
     .filter((learningNeed) =>
-      learningNeed.name.toLowerCase().includes(searchQuery.toLowerCase())
+      (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase()) // Handle undefined name
     )
     .sort((a, b) => {
       if (sortOrder === 'asc') {
@@ -100,10 +101,10 @@ const LearningNeedsView = () => {
       }
     });
 
-  // Filter and sort unapproved learning needs
-  const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
+    // Filter and sort unapproved learning needs
+    const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
     .filter((learningNeed) =>
-      learningNeed.name.toLowerCase().includes(searchQuery.toLowerCase())
+      (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase()) // Handle undefined name
     )
     .sort((a, b) => {
       if (sortOrder === 'asc') {
@@ -112,6 +113,7 @@ const LearningNeedsView = () => {
         return new Date(b.datePosted) - new Date(a.datePosted);
       }
     });
+
 
   return (
     <div className="md:ml-24">
@@ -141,7 +143,7 @@ const LearningNeedsView = () => {
             <h2 className="text-2xl font-semibold">Selected Learning Needs (Approved)</h2>
             {filteredApprovedLearningNeeds.length > 0 ? (
               filteredApprovedLearningNeeds.map((learningNeed) => (
-                <div key={learningNeed.id} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+                <div key={`${learningNeed.id}-${learningNeed.datePosted}`} className="flex justify-between items-center p-4 border border-gray-200 rounded-md">
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{learningNeed.name}</h3>
                     <p className="text-sm text-gray-600">{learningNeed.need}</p>
