@@ -2,64 +2,106 @@ import React, { useState, useEffect } from 'react';
 import { HiSearch, HiSortAscending } from 'react-icons/hi';
 import Header from '../Header';
 import Sidebar from './AdminSidebar';
+import axios from 'axios';
 
 const BlogPage = () => {
-  const [allBlogs, setAllBlogs] = useState([
-    { 
-      id: 1, 
-      title: 'The Future of AI', 
-      author: 'Jane Doe', 
-      description: 'A deep dive into the advancements in artificial intelligence and its impact on industries.', 
-      image: 'https://via.placeholder.com/300x200', 
-      date: 'September 1, 2024' 
-    },
-    { 
-      id: 2, 
-      title: 'Understanding Blockchain', 
-      author: 'John Smith', 
-      description: 'Exploring the fundamentals of blockchain technology and its applications.', 
-      image: 'https://via.placeholder.com/300x200', 
-      date: 'August 22, 2024' 
-    },
-    { 
-      id: 3, 
-      title: 'Top Web Development Trends', 
-      author: 'Alice Johnson', 
-      description: 'An overview of the latest trends in web development for 2024.', 
-      image: 'https://via.placeholder.com/300x200', 
-      date: 'August 10, 2024' 
-    },
-  ]);
-
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [selectedBlogs, setSelectedBlogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [newBlog, setNewBlog] = useState({
+    by: '',
+    tags: '',
+    body: ''
+  });
+  const [imageFile, setImageFile] = useState([]);
 
   useEffect(() => {
-    const filteredBlogs = allBlogs.filter(blog => 
-      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.author.toLowerCase().includes(searchQuery.toLowerCase())
+    const fetchBlogs = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get('https://backend.akshayy.tech/blogs', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setAllBlogs(response.data);
+          setFilteredBlogs(response.data); // Set the initial filtered blogs
+        } catch (error) {
+          console.error('Error fetching blogs:', error);
+        }
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  // Filter and sort blogs
+  useEffect(() => {
+    // Apply filtering based on the search query
+    const filtered = allBlogs.filter(
+      blog =>
+        blog.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        blog.by?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const sortedBlogs = filteredBlogs.sort((a, b) => {
+    // Apply sorting based on the selected sort order
+    const sorted = [...filtered].sort((a, b) => {
       if (sortOrder === 'asc') {
-        return a.title.localeCompare(b.title);
+        return a.title?.localeCompare(b.title);
       } else {
-        return b.title.localeCompare(a.title);
+        return b.title?.localeCompare(a.title);
       }
     });
 
-    setAllBlogs(sortedBlogs);
-  }, [searchQuery, sortOrder]);
+    setFilteredBlogs(sorted);
+  }, [searchQuery, sortOrder, allBlogs]);
 
   const addToSelected = (blog) => {
     setSelectedBlogs([...selectedBlogs, blog]);
-    setAllBlogs(allBlogs.filter(b => b.id !== blog.id));
+    setFilteredBlogs(filteredBlogs.filter(b => b._id !== blog._id));
   };
 
   const removeFromSelected = (blog) => {
-    setAllBlogs([...allBlogs, blog]);
-    setSelectedBlogs(selectedBlogs.filter(b => b.id !== blog.id));
+    setFilteredBlogs([...filteredBlogs, blog]);
+    setSelectedBlogs(selectedBlogs.filter(b => b._id !== blog._id));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('by', newBlog.by);
+    formData.append('tags', newBlog.tags.split(','));
+    formData.append('body', newBlog.body);
+
+    if (imageFile && imageFile.length > 0) {
+      for (let i = 0; i < imageFile.length; i++) {
+        formData.append('images', imageFile[i]);
+      }
+    }
+
+    try {
+      await axios.post('https://backend.akshayy.tech/blogs', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+        
+      setNewBlog({ by: '', tags: '', body: '' });
+      setImageFile([]);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error creating new blog:', error);
+    }
+  };
+
+  const getImageId = (imagePath) => {
+    const parts = imagePath.split('/');
+    return parts[parts.length - 1];
   };
 
   return (
@@ -84,18 +126,57 @@ const BlogPage = () => {
           />
         </div>
 
+        <div className="w-3/5 mb-6">
+          <h2 className="text-2xl font-semibold mb-4">Create New Blog</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Author"
+              value={newBlog.by}
+              onChange={(e) => setNewBlog({ ...newBlog, by: e.target.value })}
+              className="px-4 py-2 border border-gray-300 rounded-md w-full"
+            />
+            <input
+              type="text"
+              placeholder="Tags (comma separated)"
+              value={newBlog.tags}
+              onChange={(e) => setNewBlog({ ...newBlog, tags: e.target.value })}
+              className="px-4 py-2 border border-gray-300 rounded-md w-full"
+            />
+            <textarea
+              placeholder="Body"
+              value={newBlog.body}
+              onChange={(e) => setNewBlog({ ...newBlog, body: e.target.value })}
+              className="px-4 py-2 border border-gray-300 rounded-md w-full"
+            ></textarea>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => setImageFile(e.target.files)}
+              className="px-4 py-2 border border-gray-300 rounded-md w-full"
+            />
+            <button
+              type="submit"
+              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+
         {/* Selected Blogs Section */}
         <div className="w-3/5">
           <h2 className="text-2xl font-semibold mb-4">Selected Blogs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {selectedBlogs.length > 0 ? (
               selectedBlogs.map(blog => (
-                <div key={blog.id} className="border border-gray-200 rounded-md shadow-lg overflow-hidden">
-                  <img src={blog.image} alt={blog.title} className="w-full h-48 object-cover" />
+                <div key={blog._id} className="border border-gray-200 rounded-md shadow-lg overflow-hidden">
+                  <img src={blog.images[0]} alt={blog.title} className="w-full h-48 object-cover" />
                   <div className="p-4">
                     <h3 className="text-lg font-semibold mb-2">{blog.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">By {blog.author} • {blog.date}</p>
-                    <p className="text-gray-700 mb-4">{blog.description}</p>
+                    <p className="text-sm text-gray-600 mb-2">By {blog.by} • {new Date(blog.date).toDateString()}</p>
+                    <p className="text-gray-700 mb-4">{blog.body}</p>
                     <button
                       onClick={() => removeFromSelected(blog)}
                       className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
@@ -115,25 +196,29 @@ const BlogPage = () => {
         <div className="w-3/5">
           <h2 className="text-2xl font-semibold mb-4">Unselected Blogs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allBlogs.length > 0 ? (
-              allBlogs.map(blog => (
-                <div key={blog.id} className="border border-gray-200 rounded-md shadow-lg overflow-hidden">
-                  <img src={blog.image} alt={blog.title} className="w-full h-48 object-cover" />
+            {filteredBlogs.length > 0 ? (
+              filteredBlogs.map(blog => (
+                <div key={blog._id} className="border border-gray-200 rounded-md shadow-lg overflow-hidden">
+                  <img
+                    src={`https://backend.akshayy.tech/blogs/${blog._id}/download/image/${getImageId(blog.images[blog.images.length - 1])}`}
+                    alt={blog.title}
+                    className="w-full h-48 object-cover"
+                  />
                   <div className="p-4">
                     <h3 className="text-lg font-semibold mb-2">{blog.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">By {blog.author} • {blog.date}</p>
-                    <p className="text-gray-700 mb-4">{blog.description}</p>
+                    <p className="text-sm text-gray-600 mb-2">By {blog.by} • {new Date(blog.date).toDateString()}</p>
+                    <p className="text-gray-700 mb-4">{blog.body}</p>
                     <button
-                      onClick={() => addToSelected(blog)}
-                      className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                      onClick={() => window.location.href = `/edit-blog/${blog._id}`}
+                      className="bg-yellow-500 text-white px-4 py-2 ml-2 rounded-md hover:bg-yellow-600"
                     >
-                      Add
+                      Edit
                     </button>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No unselected blogs available.</p>
+              <p className="text-gray-500">No blogs found.</p>
             )}
           </div>
         </div>
