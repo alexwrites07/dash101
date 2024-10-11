@@ -40,8 +40,8 @@ const Sidebar = ({ activeTab }) => {
       to: '#', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Widgets', dropdown: true, onClick: toggleWidgets,
       subLinks: [
         // { to: '/widgets/hero-section', label: 'Hero Section' },
-        { to: '/widgets/footer', label: 'Footer' },
-        { to: '/widgets/headers', label: 'Headers' },
+        // { to: '/widgets/footer', label: 'Footer' },
+        // { to: '/widgets/headers', label: 'Headers' },
         { to: '/widgets/featured-category', label: 'Featured Category' },
         { to: '/widgets/featured-jobs', label: 'Featured Jobs Post' },
         { to: '/widgets/featured-institution', label: 'Featured Institution' },

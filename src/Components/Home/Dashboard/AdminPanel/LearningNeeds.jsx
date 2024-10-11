@@ -5,25 +5,26 @@ import Sidebar from './AdminSidebar';
 import axios from 'axios';
 
 const LearningNeedsView = () => {
-  const [unapprovedLearningNeeds, setUnapprovedLearningNeeds] = useState([]); // Store unapproved learning needs
-  const [approvedLearningNeeds, setApprovedLearningNeeds] = useState([]); // Store approved learning needs
+  const [unapprovedLearningNeeds, setUnapprovedLearningNeeds] = useState([]);
+  const [approvedLearningNeeds, setApprovedLearningNeeds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
 
   const token = localStorage.getItem('token');
+
   // Fetch learning needs from API
   useEffect(() => {
     const fetchLearningNeeds = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/learning-needs', {
+        const response = await axios.get('https://backend.akshayy.tech/admin/learning-needs', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         const fetchedNeeds = response.data.map((need) => ({
-          id: need._id,  // Ensure this is correctly set
-          name: need.email, // Use email as the name placeholder
+          id: need._id,
+          name: need.email,
           need: need.requirement,
           location: need.location,
           datePosted: need.createdAt,
@@ -33,9 +34,7 @@ const LearningNeedsView = () => {
           available: need.available,
           isApproved: need.isApproved,
         }));
-        
 
-        // Separate approved and unapproved learning needs
         const approved = fetchedNeeds.filter((ln) => ln.isApproved);
         const unapproved = fetchedNeeds.filter((ln) => !ln.isApproved);
 
@@ -74,7 +73,6 @@ const LearningNeedsView = () => {
 
       const updatedNeed = response.data.document;
 
-      // Update the learning need in both lists with the new approval status
       if (updatedNeed.isApproved) {
         setUnapprovedLearningNeeds((prev) => prev.filter((ln) => ln.id !== updatedNeed._id));
         setApprovedLearningNeeds((prev) => [...prev, updatedNeed]);
@@ -87,33 +85,15 @@ const LearningNeedsView = () => {
     }
   };
 
-// Filter and sort approved learning needs
-const filteredApprovedLearningNeeds = approvedLearningNeeds
-  .filter((learningNeed) =>
-    (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  .sort((a, b) => {
-    if (sortOrder === 'asc') {
-      return new Date(a.datePosted) - new Date(b.datePosted);
-    } else {
-      return new Date(b.datePosted) - new Date(a.datePosted);
-    }
-  });
+  // Filter and sort approved learning needs
+  const filteredApprovedLearningNeeds = approvedLearningNeeds
+    .filter((learningNeed) => learningNeed.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => (sortOrder === 'asc' ? new Date(a.datePosted) - new Date(b.datePosted) : new Date(b.datePosted) - new Date(a.datePosted)));
 
-// Filter and sort unapproved learning needs
-const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
-  .filter((learningNeed) =>
-    (learningNeed.name || '').toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  .sort((a, b) => {
-    if (sortOrder === 'asc') {
-      return new Date(a.datePosted) - new Date(b.datePosted);
-    } else {
-      return new Date(b.datePosted) - new Date(a.datePosted);
-    }
-  });
-
-
+  // Filter and sort unapproved learning needs
+  const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
+    .filter((learningNeed) => learningNeed.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => (sortOrder === 'asc' ? new Date(a.datePosted) - new Date(b.datePosted) : new Date(b.datePosted) - new Date(a.datePosted)));
 
   return (
     <div className="md:ml-24">
@@ -138,7 +118,7 @@ const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
         </div>
 
         <div className="flex flex-col space-y-6 w-3/5">
-          {/* Selected Learning Needs Section */}
+          {/* Approved Learning Needs */}
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Selected Learning Needs (Approved)</h2>
             {filteredApprovedLearningNeeds.length > 0 ? (
@@ -162,7 +142,7 @@ const filteredUnapprovedLearningNeeds = unapprovedLearningNeeds
             )}
           </div>
 
-          {/* Unselected Learning Needs Section */}
+          {/* Unapproved Learning Needs */}
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Unselected Learning Needs (Unapproved)</h2>
             {filteredUnapprovedLearningNeeds.length > 0 ? (

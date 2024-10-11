@@ -1,22 +1,40 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Assuming you're using axios
 import { HiSortAscending } from 'react-icons/hi';
 import Header from '../Header';
 import Sidebar from './AdminSidebar';
 
 const InstituteProfileView = () => {
-  const [allInstitutes, setAllInstitutes] = useState([
-    { id: 1, name: 'ABC Institute', category: 'Engineering', description: 'Leading institute in technology.' },
-    { id: 2, name: 'XYZ Academy', category: 'Medical', description: 'Top-notch medical coaching.' },
-    { id: 3, name: '123 Learning Center', category: 'Commerce', description: 'Excellence in commerce education.' },
-    { id: 4, name: 'DEF Coaching', category: 'Arts', description: 'Focus on creativity and arts.' },
-  ]);
-
-  const [filteredInstitutes, setFilteredInstitutes] = useState(allInstitutes);
+  const [allInstitutes, setAllInstitutes] = useState([]);
+  const [filteredInstitutes, setFilteredInstitutes] = useState([]);
   const [selectedInstitutes, setSelectedInstitutes] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterCategory, setFilterCategory] = useState('');
   const [filterDescription, setFilterDescription] = useState('');
+
+  // Fetch featured organizations data from the backend
+  useEffect(() => {
+    const fetchInstitutes = async () => {
+      try {
+        const response = await axios.get('https://backend.akshayy.tech/featured-organizations');
+        const institutes = response.data.map((institute, index) => ({
+          id: index + 1, // Assign an id based on index
+          name: institute.name,
+          category: institute.category || 'Unknown', // Fallback if no category
+          description: institute.description || 'No description available',
+          subjectsRequired: institute.subjectsRequired.join(', '),
+          address: institute.location.address,
+        }));
+        setAllInstitutes(institutes);
+        setFilteredInstitutes(institutes);
+      } catch (error) {
+        console.error('Error fetching institutes:', error);
+      }
+    };
+
+    fetchInstitutes();
+  }, []);
 
   useEffect(() => {
     const filtered = allInstitutes.filter(institute => {
@@ -73,10 +91,8 @@ const InstituteProfileView = () => {
               className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">All Categories</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Medical">Medical</option>
-              <option value="Commerce">Commerce</option>
-              <option value="Arts">Arts</option>
+              <option value="Technology">Technology</option>
+              <option value="Educational">Educational</option>
             </select>
             <input
               type="text"

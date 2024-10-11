@@ -11,37 +11,35 @@ const JobsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM'; // Replace with your actual token
+  const token = localStorage.getItem('token');
 
   // Fetch jobs from the API endpoint when the component mounts
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/jobs', {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await axios.get('https://backend.akshayy.tech/admin/jobs', {
+          headers: { Authorization: `Bearer ${token}` }, // Authorization header corrected
         });
-        const fetchedJobs = response.data.jobs.map((job) => ({
-          id: job._id,
-          name: job.title,
-          company: job.location.city,
-          datePosted: job.lastDateToApply,
-          isClosed: job.isClosed,
-          applicantId: 'fakeApplicantId', // Placeholder for applicantId (replace with actual)
-          jobId: job._id,
-          postedBy: job.postedBy.name || 'Unknown User', // Assuming `postedBy.name` is returned by the API
+
+        const fetchedJobs = response.data.map((job) => ({
+          id: job._id,  // Map _id to id
+          name: job.title,  // title to name
+          company: job.location.city,  // location.city to company
+          datePosted: job.lastDateToApply,  // lastDateToApply to datePosted
+          isClosed: new Date(job.lastDateToApply) < new Date(),  // Check if the job's last date has passed
+          postedBy: job.employername || 'Unknown Employer',  // Assuming employerName is available
         }));
-  
+
         setAllJobs(fetchedJobs);
-        setAcceptedJobs(fetchedJobs.filter((job) => !job.isClosed)); // Only open jobs
-        setDeclinedJobs(fetchedJobs.filter((job) => job.isClosed)); // Only closed jobs
+        setAcceptedJobs(fetchedJobs.filter((job) => !job.isClosed));  // Only open jobs
+        setDeclinedJobs(fetchedJobs.filter((job) => job.isClosed));  // Only closed jobs
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
     };
-  
+
     fetchJobs();
-  }, []);
-  
+  }, []);  
 
   // Toggle job close/open status
   const toggleJobStatus = async (jobId) => {
@@ -49,22 +47,22 @@ const JobsView = () => {
       const response = await axios.patch(
         `https://backend.akshayy.tech/jobs/${jobId}/toggle-close`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } }  // Authorization header fixed
       );
-      console.log(response.data.message); // Log success message
+      console.log(response.data.message);  // Log success message
 
       // Update the job status locally
-      const updatedJob = response.data.job;
+      const updatedJob = response.data;
       const updatedJobs = allJobs.map((job) =>
         job.id === updatedJob._id ? { ...job, isClosed: updatedJob.isClosed } : job
       );
       setAllJobs(updatedJobs);
-      setAcceptedJobs(updatedJobs.filter(job => !job.isClosed)); // Open jobs in accepted section
-      setDeclinedJobs(updatedJobs.filter(job => job.isClosed)); // Closed jobs in declined section
+      setDeclinedJobs(updatedJobs.filter(job => !job.isClosed));  // Open jobs in accepted section
+      setAcceptedJobs(updatedJobs.filter(job => job.isClosed));  // Closed jobs in declined section
     } catch (error) {
       console.error('Error toggling job status:', error);
     }
-  };
+  };  
 
   const handleDecline = (job) => {
     toggleJobStatus(job.id); // Toggle status to "closed"
@@ -126,7 +124,7 @@ const JobsView = () => {
                     <div>
                       <h3 className="text-lg font-medium">{job.name}</h3>
                       <p className="text-sm text-gray-600">{job.company}</p>
-                      <p className="text-sm text-gray-500">Posted by: {job.postedBy}</p> {/* Display user */}
+                      <p className="text-sm text-gray-500">Posted by: {job.postedBy}</p>
                     </div>
                     <p className="text-gray-700">
                       {new Date(job.datePosted).toLocaleDateString()}
@@ -157,7 +155,7 @@ const JobsView = () => {
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{job.name}</h3>
                     <p className="text-sm text-gray-600">{job.company}</p>
-                    <p className="text-sm text-gray-500">Posted by: {job.postedBy}</p> {/* New line */}
+                    <p className="text-sm text-gray-500">Posted by: {job.postedBy}</p>
                     <p className="text-gray-700">{new Date(job.datePosted).toLocaleDateString()}</p>
                   </div>
                   <button
