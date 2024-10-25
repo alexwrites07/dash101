@@ -1,52 +1,27 @@
-import React, { useRef } from 'react';
-
-const companies = [
-  {
-    name: 'College A',
-    location: 'New York, NY',
-    industry: 'Technology',
-    logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
-  },
-  {
-    name: 'School B',
-    location: 'San Francisco, CA',
-    industry: 'Finance',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Emmanuel_College_Front_Court%2C_Cambridge%2C_UK_-_Diliff.jpg',
-  },
-  {
-    name: 'College C',
-    location: 'Chicago, IL',
-    industry: 'Healthcare',
-    logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
-  },
-  {
-    name: 'School D',
-    location: 'Los Angeles, CA',
-    industry: 'Marketing',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Emmanuel_College_Front_Court%2C_Cambridge%2C_UK_-_Diliff.jpg',
-  },
-  {
-    name: 'College E',
-    location: 'Boston, MA',
-    industry: 'Education',
-    logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
-  },
-  {
-    name: 'College F',
-    location: 'Boston, MA',
-    industry: 'Education',
-    logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
-  },
-  {
-    name: 'College Z',
-    location: 'Boston, MA',
-    industry: 'Education',
-    logo: 'https://media.cntraveler.com/photos/56953a3965492c403b26f6f0/master/pass/ucla-cr-alamy.jpg',
-  },
-];
-
+import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 const FrequentlyHiringCompanies = () => {
+  const [companies, setCompanies] = useState([]);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    // Fetch companies from the backend API
+    axios
+      .get('https://backend.akshayy.tech/featured-organizations')
+      .then((response) => {
+        const fetchedCompanies = response.data.map((company) => ({
+          name: company.name,
+          location: `${company.location.city}, ${company.location.state}`,
+          industry: company.category || 'Unknown Industry',
+          logo: company.logo || 'https://via.placeholder.com/150', // Fallback logo in case of missing logo
+        }));
+        setCompanies(fetchedCompanies);
+      })
+      .catch((error) => {
+        console.error('Error fetching companies:', error);
+      });
+  }, []);
 
   const scrollByCardCount = (cardCount) => {
     if (containerRef.current) {
@@ -58,11 +33,11 @@ const FrequentlyHiringCompanies = () => {
   };
 
   const scrollLeft = () => {
-    scrollByCardCount(-1); // Scroll left by 2 cards
+    scrollByCardCount(-1); // Scroll left by 1 card
   };
 
   const scrollRight = () => {
-    scrollByCardCount(1); // Scroll right by 2 cards
+    scrollByCardCount(1); // Scroll right by 1 card
   };
 
   return (
@@ -75,10 +50,12 @@ const FrequentlyHiringCompanies = () => {
         <div className="flex overflow-x-auto space-x-4 mt-12 mb-8 ml-4 mr-4" ref={containerRef}>
           {companies.map((company, index) => (
             <div key={index} className="flex-shrink-0 bg-white rounded-lg shadow-lg p-6 mb-3" style={{ minWidth: '270px', maxWidth: '400px' }}>
+              
               <img src={company.logo} alt={`${company.name} Logo`} className="w-36 h-36 object-contain mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-[#041F96] mb-2">{company.name}</h3>
               <p className="text-sm text-gray-600">{company.location}</p>
               <p className="text-sm text-gray-600">{company.industry}</p>
+           
             </div>
           ))}
         </div>

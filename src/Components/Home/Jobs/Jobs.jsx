@@ -1,86 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const FeaturedJobs = () => {
-  const [jobs, setJobs] = useState([
-    {
-      company: 'Example Company 1',
-      duration: 'Full-time',
-      postingTime: '1 day ago',
-      location: 'New York, NY',
-      role: 'Coaching',
-      stipend: '$80,000 - $100,000',
-    },
-    {
-      company: 'Example Company 2',
-      duration: 'Part-time',
-      postingTime: '2 days ago',
-      location: 'San Francisco, CA',
-      role: 'Private Tutor',
-      stipend: '$60,000 - $80,000',
-    },
-    {
-      company: 'Example Company 3',
-      duration: 'Contract',
-      postingTime: '3 days ago',
-      location: 'Chicago, IL',
-      role: 'Professor',
-      stipend: '$70,000 - $90,000',
-    },
-    {
-      company: 'Example Company 4',
-      duration: 'Remote',
-      postingTime: '4 days ago',
-      location: 'Los Angeles, CA',
-      role: 'Teacher',
-      stipend: '$75,000 - $95,000',
-    },
-    {
-      company: 'Example Company 5',
-      duration: 'Full-time',
-      postingTime: '5 days ago',
-      location: 'Boston, MA',
-      role: 'Software Developer',
-      stipend: '$85,000 - $110,000',
-    },
-    {
-      company: 'Example Company 6',
-      duration: 'Part-time',
-      postingTime: '6 days ago',
-      location: 'Austin, TX',
-      role: 'Data Scientist',
-      stipend: '$70,000 - $90,000',
-    },
-  ]);
-
-  const [sortBy, setSortBy] = useState('date'); // Default sort by date
+  const [jobs, setJobs] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const maxVisibleJobs = 4;
 
+  useEffect(() => {
+    // Fetch jobs from the backend API
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get('https://backend.akshayy.tech/featured-jobs');
+        setJobs(response.data);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      }
+    };
+    fetchJobs();
+  }, []);
+
   const toggleShowMore = () => {
     setShowAll(!showAll);
-  };
-
-  const sortJobs = (criteria) => {
-    let sortedJobs = [...jobs];
-    switch (criteria) {
-      case 'date':
-        sortedJobs.sort((a, b) => new Date(b.postingTime) - new Date(a.postingTime));
-        break;
-      case 'role':
-        sortedJobs.sort((a, b) => a.role.localeCompare(b.role));
-        break;
-      case 'stipend':
-        sortedJobs.sort((a, b) => {
-          const aStipend = parseInt(a.stipend.replace(/[^0-9.-]+/g, ''));
-          const bStipend = parseInt(b.stipend.replace(/[^0-9.-]+/g, ''));
-          return aStipend - bStipend;
-        });
-        break;
-      default:
-        break;
-    }
-    setJobs(sortedJobs);
-    setSortBy(criteria);
   };
 
   const visibleJobs = showAll ? jobs.length : maxVisibleJobs;
@@ -89,43 +29,33 @@ const FeaturedJobs = () => {
     <div className="max-w-full mx-auto" style={{ margin: '6% 4% 0 4%' }}>
       <h2 className="text-3xl text-[#041F96] font-bold mb-4">Featured Jobs</h2>
 
-      {/* Sorting Options */}
-      <div className="flex justify-between items-center mb-4">
-        {/* <div className="flex space-x-4">
-          <span className={`cursor-pointer ${sortBy === 'date' ? 'font-semibold' : ''}`} onClick={() => sortJobs('date')}>Sort by Date</span>
-          <span className={`cursor-pointer ${sortBy === 'role' ? 'font-semibold' : ''}`} onClick={() => sortJobs('role')}>Sort by Role</span>
-          <span className={`cursor-pointer ${sortBy === 'stipend' ? 'font-semibold' : ''}`} onClick={() => sortJobs('stipend')}>Sort by Stipend</span>
-        </div> */}
-        {/* Show More Button */}
-       
-      </div>
-
       {/* Job Listings */}
       {jobs.slice(0, visibleJobs).map((job, index) => (
         <div key={index} className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="md:flex-1">
-              <h3 className="text-xl font-semibold text-[#041F96] mb-2">{job.role}</h3>
-              <p className="text-sm text-gray-600 mb-2">{job.company}</p>
+              <h3 className="text-xl font-semibold text-[#041F96] mb-2">{job.title}</h3>
+              <p className="text-sm text-gray-600 mb-2">{job.location.city}, {job.location.state}</p>
+              <p className="text-sm text-gray-600 mb-2">{job.experience} experience</p>
+              <p className="text-sm text-gray-600 mb-2">{job.salary.min} - {job.salary.max} {job.salary.period}</p>
             </div>
             <div className="md:flex-1 flex justify-between mt-4 md:mt-0">
-              <p className="text-sm text-gray-600">{job.duration}</p>
-              <p className="text-sm text-gray-600">{job.postingTime}</p>
-              <p className="text-sm text-gray-600">{job.location}</p>
-              <p className="text-sm text-gray-600">{job.stipend}</p>
+              <p className="text-sm text-gray-600">{job.workDetails.commitment}</p>
+              <p className="text-sm text-gray-600">Apply by: {new Date(job.lastDateToApply).toLocaleDateString()}</p>
             </div>
           </div>
         </div>
       ))}
- {!showAll && (
-          <button
-            className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none mr-0"
-            onClick={toggleShowMore}
-          >
-            Show More
-          </button>
-        )}
-      {/* Show More Button (for hiding jobs) */}
+
+      {/* Show More / Show Less Button */}
+      {!showAll && (
+        <button
+          className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+          onClick={toggleShowMore}
+        >
+          Show More
+        </button>
+      )}
       {showAll && (
         <button
           className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"

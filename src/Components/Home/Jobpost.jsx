@@ -389,49 +389,59 @@ const JobPost = () => {
         {visibleJobs.length > 0 ? (
   <div className="space-y-4">
     {visibleJobs.map((job, index) => (
-  <div className="shadow rounded flex flex-col md:flex-row items-start md:ml-8 border-b border-gray-200 py-4 mb-4" key={index}>
-    <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 w-16 h-16">
-      <img src={job.images[1]} alt="Company Logo" className="w-full h-full object-contain" />
-    </div>
-    <Link to={`/getjobs/${job._id}`} className="block">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
-        <div className="md:ml-4 w-1/3 ml-2">
-          <h3 className="font-medium text-gray-800">{job.companyName}</h3>
-          <p className="text-2xs text-[#041F96]">{job.title}</p>
-          <p className="text-gray-700 mb-2">{job.location?.city},</p>
-        </div>
-        <div className="flex md:ml-2 md:items-center mb-2 w-2/3 ml-2">
-          <span className="text-sm text-gray-600 mr-8">{job.experience}</span>
-          <span className="text-sm text-gray-600 mr-8">{job.careerLevel}</span>
-          {/* <p className="text-sm text-gray-600 mr-8">{job.salary}</p> */}
-        </div>
-        <div className="flex md:ml-4 md:items-center mb-2 w-3/3 mr-4 ml-2">
-          {userCoords && job.location?.coordinates && (
-            <p className="text-gray-700 mb-2 mr-4">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</p>
-          )}
-        </div>
-        <div className="flex md:ml-2 md:items-center mb-2 w-2/3 ml-2">
-          <span className="text-sm bg-green-100 text-green-800 justify-center rounded-full w-[50px] ml-2 py-1 mr-8">
-            <p className='ml-2'> Open</p>
-          </span>
-          <span className="flex my-auto md:ml-4 md:items-center w-3/3 mr-8">
-            <button onClick={(e) => { e.stopPropagation(); toggleBookmark(index); }}>
-              {job.isBookmarked ? (
-                <HiBookmark className='w-6 h-6 mb-2 mr-2 bg-blue-500' />
-              ) : (
-                <HiOutlineBookmark className='w-6 h-6 mb-2 mr-2 ' />
-              )}
-            </button>
-            <button
-            className="mr-4 ml-2 my-auto bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none w-[100px]"
-    >
-      View
-    </button>
-          </span>
-        </div>
-      </div>
+  <div className="shadow rounded  items-start md:ml-8 border-b border-gray-200 py-4 mb-4" key={index}>
     
-    </Link>
+    <Link to={`/getjobs/${job._id}`} className="block">
+  <div className="flex flex-col md:flex-row w-full items-center ml-2 space-y-2 md:space-y-0">
+    {/* Company Info Section */}
+    <div className="flex flex-col items-center justify-center w-full md:w-1/4 max-w-[200px] md:ml-4 ml-2">
+      <img 
+        src={job.images[1]} 
+        alt="Company Logo" 
+        className="w-16 h-16 mb-2 object-contain" 
+      />
+    </div>
+
+    {/* Job Info Section */}
+    <div className="flex flex-col md:flex-row justify-center w-full md:w-3/4 ml-2 max-w-[350px] md:ml-4">
+  <h3 className="font-medium text-gray-800 text-center md:text-left md:mr-2 md:ml-8">{job.companyName}</h3>
+  <p className="text-xl text-[#041F96] text-center md:text-left md:mr-2 md:ml-8">{job.title}</p>
+  <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-4">{job.careerLevel}</p>
+</div>
+
+
+    {/* Distance Section */}
+    <div className="flex justify-center w-3/5 md:w-1/4 mt-2 md:mt-0 mx-8">
+      {userCoords && job.location?.coordinates && (
+        <p className="text-gray-700 text-2xs text-center">
+          Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
+        </p>
+      )}
+    </div>
+
+    {/* Status and Actions Section */}
+    <div className="flex items-center justify-center w-full md:w-1/4 mt-2 md:mt-0 space-x-4 mr-12">
+      <span className="text-sm bg-green-100 text-green-800 rounded-full px-3 py-1">
+        Open
+      </span>
+      <button onClick={(e) => { e.stopPropagation(); toggleBookmark(index); }} className="focus:outline-none">
+        {job.isBookmarked ? (
+          <HiBookmark className="w-6 h-6 text-blue-500" />
+        ) : (
+          <HiOutlineBookmark className="w-6 h-6" />
+        )}
+      </button>
+      <button
+        className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none"
+      >
+        View
+      </button>
+    </div>
+  </div>
+</Link>
+
+
    
   </div>
 ))}

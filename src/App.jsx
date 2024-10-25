@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes, useLocation} from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import './App.css';
 import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
 import TestimonialPage from './Components/Home/Dashboard/AdminPanel/FeaturedTestinomials.jsx';
@@ -10,6 +10,7 @@ import InstituteProfileView from './Components/Home/Dashboard/AdminPanel/Feature
 import DemoForm from './Components/Home/DemoForm.jsx';
 import EmployerProfileView from './Components/Home/Dashboard/AdminPanel/OrganisationProfile.jsx';
 import Home from './Components/Home/Home';
+import Error404 from './Components/Home/Error.jsx';
 import Sidebar from './Components/Home/Dashboard/AdminPanel/AdminSidebar.jsx';
 import SignUp from './Components/Auth/SignUp';
 import JobPostPage from './Components/Home/Dashboard/AdminPanel/FeaturedJobPost.jsx';
@@ -77,6 +78,18 @@ import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedH
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
+// PrivateRoute component to handle access to admin routes
+function AdminRoute({ element: Component, ...rest }) {
+  const userType = localStorage.getItem('type'); // Get userType from localStorage
+
+  // Check if userType exists and is "admin"
+  if (userType && userType === 'admin') {
+    return <Component {...rest} />;
+  } else {
+    return <Navigate to="/error" />;  // Redirect to /error if not admin
+  }
+}
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -166,7 +179,7 @@ function AppContent() {
         <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
         <Route path="/following-employer" element={<FollowingEmployer />} />
         <Route path="/alerts-jobs" element={<AlertsJobs />} />
-        <Route path="/admin-panel" element ={<Sidebar/>}/>
+        
         <Route path="/messages" element={<Messages />} />
         <Route path="/meetings" element={<Meetings />} />
         <Route path="/update-password" element={<ChangePassword/>} />
@@ -176,12 +189,21 @@ function AppContent() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/blog/:id" element={<BlogContent />} />
-        
+        <Route path="/error" element={<Error404 />} />
         <Route path="/blogs" element={<Blog />} />
         <Route path="/dashboard-employer" element={<UserDashboardEmployer />} />
         <Route path="/upload-resume-employer" element={<UploadResumeEmployer />} />
         {/* <Route path="/your-profile-employer" element={<YourProfileEmployer />} /> */}
         <Route path="/applied-company-employer" element={<AppliedCompanyEmployer />} />
+        <Route
+          path="/admin-panel"
+          element={<AdminRoute element={Sidebar} />} // Protected route for admin-panel
+        />
+        
+        {/* Catch-all route for undefined paths */}
+        
+        {/* Catch-all route for undefined paths */}
+        <Route path="*" element={<Navigate to="/error" />} />  
         <Route path="/locations-employer" element={<LocationsEmployer />} />
         <Route path="/shortlist-jobs-employer" element={<ShortlistJobsEmployer />} />
         <Route path="/alerts-jobs-employer" element={<AlertsJobsEmployer />} />

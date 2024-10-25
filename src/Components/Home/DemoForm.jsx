@@ -1,264 +1,305 @@
 import React, { useState } from 'react';
-import Map from './MapDemo'; // Ensure MapDemo uses coordinates prop correctly
+import Map from './MapDemo'; // Import your Map component
 
 const questions = [
-  'What do you want to learn?',
-  'Write a short description for your learning need?',
-  'Which board of education are you choosing for?',
-  'What is your location?',
-  'What is the maximum fee you are willing to pay?',
-  'When do you plan to start your tuition?',
-  'How would you like to attend your tuition classes?',
-  'Do you have any tutor gender preference?',
-  'Share your contact details (Email ID and Phone Number)',
+  {
+    id: 'learningNeed',
+    question: 'What do you want to learn? *',
+    type: 'text',
+    placeholder: 'Enter your choice',
+  },
+  {
+    id: 'description',
+    question: 'Write a short description for your learning need?',
+    type: 'textarea',
+    placeholder: 'Describe your learning needs...',
+  },
+  {
+    id: 'board',
+    question: 'Which board of education are you choosing for?',
+    type: 'select',
+    options: ['ICSE', 'CBSE', 'State Board', 'International Baccalaureate', 'IGCSE', 'None of the above'],
+  },
+  {
+    id: 'location',
+    question: 'What is your location? *',
+    type: 'location', // Custom type for the map
+  },
+  {
+    id: 'startTime',
+    question: 'When do you plan to start your tuition? *',
+    type: 'select',
+    options: ['Not sure, just want to see options', 'Immediately', 'Within a month'],
+  },
+  {
+    id: 'fee',
+    question: 'What is the maximum fee you are willing to pay? *',
+    type: 'fee',
+  },
+  {
+    id: 'attendance',
+    question: 'How would you like to attend your tuition classes? *',
+    type: 'checkbox',
+    options: ['Live Interactive Online Classes (recommended)', 'Offline at my home', 'Nearby classes'],
+  },
+  {
+    id: 'genderPreference',
+    question: 'Do you have any tutor gender preference? *',
+    type: 'radio',
+    options: ['Male', 'Female', 'Others'],
+  },
+  {
+    id: 'contactDetails',
+    question: 'Share your contact details (Email ID and Phone Number) *',
+    type: 'contact', // Custom type for email and phone input
+  },
 ];
-
-const suggestions = [
-  'Learning Language', 'Spoken English', 'French Language', 'Hindi Language', 'German Language',
-  'Spanish Language', 'Japanese Language', 'Kannada Language', 'Arabic Language', 'Phonics',
-  'Chinese Language', 'Tamil Language', 'Telugu Language', 'Sanskrit Language', 'Korean Language',
-  'Marathi Speaking', 'Russian Language', 'Italian Language', 'Malayalam Speaking', 'Bengali Speaking',
-  'Urdu Language', 'Accent Training Classes', 'Gujarati Speaking', 'Dutch Language', 'Punjabi Speaking',
-  'Portuguese Language', 'Swedish Language', 'Language Translation Services', 'Persian Language',
-  'Thai Language', 'Elocution', 'Danish Language', 'Turkish Language', 'Polish Language', 'Finnish Language',
-  'Hebrew Language', 'Latin Language',
-];
-
-const options = {
-  2: ['ICSE', 'CBSE', 'State Board', 'International Baccalaureate', 'IGCSE', 'None of the above'],
-  5: ['Not sure, just want to see options', 'Immediately', 'Within a month'],
-  6: ['Live Interactive Online Classes (recommended)', 'Offline at my home or nearby classes'],
-  7: ['No preference', 'Male only', 'Female only'],
-};
 
 const DemoForm = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [responses, setResponses] = useState({});
+  const [responses, setResponses] = useState({
+    learningNeed: '',
+    description: '',
+    board: '',
+    location: {
+      coordinates: ["set loaction","set loaction"],
+      address: '',
+      landmark: '',
+      city: '',
+      pinCode: '',
+      state: '',
+    },
+    fee: { interval: 'monthly', amount: '' },
+    startTime: '',
+    attendance: [],
+    genderPreference: '',
+    contactDetails: { email: '', phone: '' },
+  });
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [coordinates, setCoordinates] = useState([51.505, -0.09]);
-  const [inputValue, setInputValue] = useState('');
-  const [inputValue1, setInputValue1] = useState(''); // For fee input
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [contactDetails, setContactDetails] = useState({ email: '', phone: '' });
+  const [otp, setOtp] = useState('');
+  const [isOtpSent, setIsOtpSent] = useState(false);
 
-  const handleNext = (event) => {
+  const [coordinates, setCoordinates] = useState(["set loaction","set loaction"]);
+
+  const handleNext = async (event) => {
     event.preventDefault();
-    let newResponses = { ...responses };
 
-    // Handle the responses for each question
-    switch (currentQuestionIndex) {
-      case 0:
-      case 1: // Handling for the learning needs description
-        newResponses[questions[currentQuestionIndex]] = inputValue;
-        break;
-      case 2: // Board of education
-        newResponses[questions[currentQuestionIndex]] = inputValue;
-        break;
-      case 3: // Location
-        newResponses[questions[currentQuestionIndex]] = { coordinates, location: inputValue1 };
-        break;
-      case 4: // Maximum fee
-        newResponses[questions[currentQuestionIndex]] = { paymentType: inputValue, amount: inputValue1 };
-        break;
-      case 5:
-      case 6: // Plans to start tuition and class type
-        newResponses[questions[currentQuestionIndex]] = selectedOptions;
-        break;
-      case 7: // Tutor gender preference
-        newResponses[questions[currentQuestionIndex]] = selectedOptions;
-        break;
-      case 8: // Contact details
-        newResponses[questions[currentQuestionIndex]] = contactDetails;
-        break;
-      default:
-        break;
-    }
+    if (currentQuestionIndex === questions.length - 1) {
+      try {
+        const response = await fetch('https://backend.akshayy.tech/submit-learning-need', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(responses),
+        });
 
-    setResponses(newResponses);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
 
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      resetInputState();
+        const data = await response.json();
+        console.log('Response from server:', data);
+        setIsSubmitted(true);
+        setIsOtpSent(true);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        setIsSubmitted(false);
+      }
     } else {
-      setIsSubmitted(true);
-      console.log('Form submitted:', newResponses);
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      resetInputState();
     }
   };
 
-  const handleMapChange = (newCoordinates) => {
-    setCoordinates(newCoordinates);
+  const handleLocationChange = (event, field) => {
+    const { value } = event.target;
+    setResponses((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        [field]: value,
+      },
+    }));
   };
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-    setInputValue(value);
+  const handleFeeChange = (event) => {
+    const { name, value } = event.target;
+    setResponses((prev) => ({
+      ...prev,
+      fee: {
+        ...prev.fee,
+        [name]: value,
+      },
+    }));
+  };
 
-    if (currentQuestionIndex === 0) {
-      const filtered = suggestions.filter((suggestion) =>
-        suggestion.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredSuggestions(filtered);
+  const fetchCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { longitude, latitude } = position.coords;
+        setCoordinates([longitude, latitude]);
+        setResponses((prev) => ({
+          ...prev,
+          location: {
+            ...prev.location,
+            coordinates: [longitude, latitude],
+          },
+        }));
+      }, (error) => {
+        console.error("Error fetching location:", error);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
     }
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setInputValue(suggestion);
-    setFilteredSuggestions([]);
+  const handleChange = (event, key) => {
+    const { value } = event.target;
+    setResponses((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
-  const handleOptionChange = (event) => {
+  const handleCheckboxChange = (event, key) => {
     const value = event.target.value;
     const checked = event.target.checked;
 
-    if (checked) {
-      setSelectedOptions((prev) => [...prev, value]);
-    } else {
-      setSelectedOptions((prev) => prev.filter((option) => option !== value));
+    setResponses((prev) => {
+      const updatedArray = checked
+        ? [...prev[key], value]
+        : prev[key].filter((item) => item !== value);
+      return {
+        ...prev,
+        [key]: updatedArray,
+      };
+    });
+  };
+
+  const handleContactChange = (event, key) => {
+    const { name, value } = event.target;
+    setResponses((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [name]: value,
+      },
+    }));
+  };
+
+  const handleMapChange = (newCoordinates) => {
+    setResponses((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        coordinates: newCoordinates,
+      },
+    }));
+  };
+
+  const handleOtpSubmit = async (event) => {
+    event.preventDefault();
+    const payload = {
+      phone: responses.contactDetails.phone,
+      otp: otp,
+    };
+
+    try {
+      const response = await fetch('https://backend.akshayy.tech/verify-learning-need-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('OTP verification response:', data);
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
     }
   };
 
-  const handleContactChange = (event) => {
-    const { name, value } = event.target;
-    setContactDetails((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const resetInputState = () => {
-    setInputValue(''); // Clear input value
-    setInputValue1(''); // Clear fee input
-    setFilteredSuggestions([]); // Clear filtered suggestions
-    setSelectedOptions([]); // Clear selected options
-  };
-
-  const renderInputField = () => {
-    switch (currentQuestionIndex) {
-      case 0: // What do you want to learn?
+  const renderInputField = (question) => {
+    switch (question.type) {
+      case 'fee':
         return (
-          <div className="mt-4 mb-6">
-            
-            <input
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              placeholder="Enter your choice"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            {filteredSuggestions.length > 0 && (
-              <ul className="border border-gray-300 rounded-md mt-1">
-                {filteredSuggestions.map((suggestion, index) => (
-                  <li
-                    key={index}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    className="cursor-pointer hover:bg-gray-200 px-3 py-2"
-                  >
-                    {suggestion}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        );
-
-      case 1: // Learning needs description
-        return (
-          <div className="mt-4 mb-6">
-            <textarea
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              height={400}
-              placeholder="Enter your description"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-        );
-
-      case 2: // Board of education
-        return (
-          <div className="mt-4 mb-6">
+          <div className="mt-8 mb-6 flex items-center">
             <select
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              name="interval"
+              value={responses.fee.interval}
+              onChange={handleFeeChange}
+              className="shadow appearance-none border rounded mr-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select your board</option>
-              {options[2].map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-        );
-
-      case 3: // Location
-        return (
-          <div className="mt-4 mb-6">
-            <input
-              type="text"
-              placeholder="Enter your address"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              onChange={(e) => setInputValue1(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Enter your pincode"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
-              placeholder="Enter a landmark"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <input
-              type="text"
-              placeholder="Enter your city"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <div className="w-full h-88 mb-4">
-              <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
-            </div>
-          </div>
-        );
-
-      case 4: // Maximum fee
-        return (
-          <div className="mt-4 mb-6">
-            <select
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Select payment type</option>
-              {options[5].map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
+              <option value="monthly">Monthly</option>
+              <option value="hourly">Hourly</option>
+              <option value="daily">Daily</option>
+              <option value="yearly">Yearly</option>
             </select>
             <input
               type="text"
-              value={inputValue1}
-              onChange={(e) => setInputValue1(e.target.value)}
-              placeholder="Enter fee amount"
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              name="amount"
+              placeholder="Enter your maximum fee"
+              value={responses.fee.amount}
+              onChange={handleFeeChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         );
-
-      case 5: // When do you plan to start?
+      case 'text':
         return (
-          <div className="mt-4 mb-6">
-            {options[5].map((option, index) => (
-              <label key={index} className="flex items-center mb-2">
+          <input
+            type="text"
+            value={responses[question.id]}
+            onChange={(e) => handleChange(e, question.id)}
+            placeholder={question.placeholder}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      case 'textarea':
+        return (
+          <textarea
+            value={responses[question.id]}
+            onChange={(e) => handleChange(e, question.id)}
+            placeholder={question.placeholder}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      case 'select':
+        return (
+          <select
+            value={responses[question.id]}
+            onChange={(e) => handleChange(e, question.id)}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select an option</option>
+            {question.options.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        );
+      case 'checkbox':
+        return (
+          <div className="flex flex-col">
+            {question.options.map((option, index) => (
+              <label key={index} className="flex items-center">
                 <input
                   type="checkbox"
                   value={option}
-                  onChange={handleOptionChange}
+                  checked={responses[question.id].includes(option)}
+                  onChange={(e) => handleCheckboxChange(e, question.id)}
                   className="mr-2"
                 />
                 {option}
@@ -266,16 +307,16 @@ const DemoForm = () => {
             ))}
           </div>
         );
-
-      case 6: // How would you like to attend your tuition classes?
+      case 'radio':
         return (
-          <div className="mt-4 mb-6">
-            {options[6].map((option, index) => (
-              <label key={index} className="flex items-center mb-2">
+          <div className="flex flex-col">
+            {question.options.map((option, index) => (
+              <label key={index} className="flex items-center">
                 <input
-                  type="checkbox"
+                  type="radio"
                   value={option}
-                  onChange={handleOptionChange}
+                  checked={responses[question.id] === option}
+                  onChange={(e) => handleChange(e, question.id)}
                   className="mr-2"
                 />
                 {option}
@@ -283,83 +324,125 @@ const DemoForm = () => {
             ))}
           </div>
         );
-
-      case 7: // Tutor gender preference
+      case 'location':
         return (
-          <div className="mt-4 mb-6">
-            {options[7].map((option, index) => (
-              <label key={index} className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  value={option}
-                  onChange={handleOptionChange}
-                  className="mr-2"
-                />
-                {option}
-              </label>
-            ))}
+          <div>
+              
+              <input
+              type="text"
+              placeholder="Landmark"
+              value={responses.location.landmark}
+              onChange={(e) => handleLocationChange(e, 'landmark')}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+            />
+            <input
+              type="text"
+              placeholder="City"
+              value={responses.location.city}
+              onChange={(e) => handleLocationChange(e, 'city')}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+            />
+             <input
+              type="text"
+              placeholder="State"
+              value={responses.location.state}
+              onChange={(e) => handleLocationChange(e, 'state')}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+            />
+            <input
+              type="text"
+              placeholder="Pin Code"
+              value={responses.location.pinCode}
+              onChange={(e) => handleLocationChange(e, 'pinCode')}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+            />
+
+            <Map coordinates={coordinates} onChange={handleMapChange} />
+            <button
+              type="button"
+              onClick={fetchCurrentLocation}
+              className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+            >
+              Get Current Location
+            </button>
+
           </div>
         );
-
-      case 8: // Contact details
+      case 'contact':
         return (
-          <div className="mt-4 mb-6">
+          <div>
             <input
               type="email"
               name="email"
-              placeholder="Enter your email"
-              value={contactDetails.email}
-              onChange={handleContactChange}
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Email ID"
+              value={responses.contactDetails.email}
+              onChange={(e) => handleContactChange(e, 'contactDetails')}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
             />
             <input
-              type="tel"
+              type="text"
               name="phone"
-              placeholder="Enter your phone number"
-              value={contactDetails.phone}
-              onChange={handleContactChange}
-              className="shadow appearance-none border rounded mb-2 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Phone Number"
+              value={responses.contactDetails.phone}
+              onChange={(e) => handleContactChange(e, 'contactDetails')}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         );
-
       default:
         return null;
     }
   };
 
   return (
-    <div className="container mx-auto w-2/5 my-10 p-4 shadow-lg">
-      
-      <form onSubmit={handleNext}>
-        <div className="mb-4">
-          <h3 className="text-lg">{questions[currentQuestionIndex]}</h3>
-          {renderInputField()}
-        </div>
-        <div className="flex justify-between">
-          {currentQuestionIndex > 0 && (
-            <button
-              type="button"
-              onClick={handlePrevious}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Previous
-            </button>
+    <form onSubmit={handleNext} className="max-w-2xl my-6 mx-auto mt-8">
+      {isSubmitted ? (
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Thank you!</h2>
+          <p className="mt-8">An OTP has been sent to your contact details. Please verify it below.</p>
+          {isOtpSent && (
+            <form onSubmit={handleOtpSubmit} className="mt-8">
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                placeholder="Enter OTP"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                className="mt-8 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+              >
+                Verify OTP
+              </button>
+            </form>
           )}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
-          </button>
         </div>
-      </form>
-      {isSubmitted && (
-        <div className="mt-4 text-green-500">
-          Your responses have been submitted successfully!
+      ) : (
+        <div>
+          <h2 className="text-lg font-bold">{questions[currentQuestionIndex].question}</h2>
+          {renderInputField(questions[currentQuestionIndex])}
+
+          <div className="flex justify-between mt-6">
+            {currentQuestionIndex > 0 && (
+              <button
+                type="button"
+                onClick={handlePrevious}
+                className="bg-gray-300 text-black font-semibold py-2 px-4 rounded"
+              >
+                Previous
+              </button>
+            )}
+            <button
+              type="submit"
+              className="bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+            >
+              {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
+            </button>
+          </div>
         </div>
       )}
-    </div>
+    </form>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import PlayStoreImage from '../../assets/playstore.png'; // Add your play store logo image here
 
 const Footer = () => {
   return (
@@ -11,6 +12,18 @@ const Footer = () => {
             <p>Call us: 123 456 7890</p>
             <p>Darbhanga, Bihar, India.</p>
             <p>Email: kridha@kridha.com</p>
+            
+      {/* Download App Section */}
+      <div className="flex  mt-12 mb-6">
+        <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">
+          <img
+            src={PlayStoreImage}
+            alt="Download our app from Play Store"
+            className="w-48"
+            style={{ cursor: 'pointer' }}
+          />
+        </a>
+      </div>
           </div>
 
           {/* For Tutors */}

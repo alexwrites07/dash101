@@ -109,7 +109,7 @@ export default function Login() {
                                     <div className="w-full rounded-lg shadow lg:mt-0 sm:max-w-md xl:p-0 bg-gray-300 border-gray-700">
                                         <div className="p-6 space-y-4 lg:space-y-6 sm:p-8">
                                             <h1 className={`text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
-                                                {currentRole} Login
+                                                 Login
                                             </h1>
                                             <form className="space-y-4 lg:space-y-6" onSubmit={handleSubmit}>
                                                 <div>

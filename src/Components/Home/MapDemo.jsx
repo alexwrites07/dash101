@@ -54,3 +54,8 @@ const Map = ({ coordinates, onCoordinatesChange }) => {
 };
 
 export default Map;
+
+
+
+
+
