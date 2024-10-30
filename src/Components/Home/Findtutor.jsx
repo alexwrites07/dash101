@@ -16,15 +16,32 @@ const TutorFinder = () => {
     subjectsTaught: '',
     city: '',
     totalExperience: '',
+    gender:'',
+    highestQualification:'',
     minExpectedSalary: '',
     maxExpectedSalary: '',
     tags: '',
+    categories:'',
   });
 
   useEffect(() => {
     fetchTutors();
   }, []);
-
+  const categorySuggestions = [
+    "Spoken English",
+    "French Language",
+    "Hindi Language",
+    "German Language",
+    "LKG Tuition",
+    "UKG Tuition",
+    "Class 1 Tuition",
+    "Class 3 Tuition",
+    "Dance",
+    "Handwriting",
+    "Summer Camp",
+    "ui",
+    "Choreography",
+  ];
   const fetchTutors = async () => {
     try {
       const response = await axios.get('https://backend.akshayy.tech/getTutors');
@@ -97,28 +114,73 @@ const TutorFinder = () => {
 
   const applyFilters = () => {
     const filtered = tutors.filter((tutor) => {
-      const { subjectsTaught, location, totalExperience, jobAlerts, tags } = tutor;
+      const {
+        subjectsTaught,
+        location,
+        totalExperience,
+        highestQualification,
+        gender,
+        jobAlerts,
+        tags,
+        categories,
+      } = tutor;
       const city = location?.city || '';
       const minSalary = jobAlerts?.minExpectedSalary?.value ?? 0;
       const maxSalary = jobAlerts?.maxExpectedSalary?.value ?? Infinity;
   
-      const subjectMatch = filters.subjectsTaught ? subjectsTaught.includes(filters.subjectsTaught) : true;
-      const cityMatch = filters.city ? city.toLowerCase().includes(filters.city.toLowerCase()) : true;
-      const experienceMatch = filters.totalExperience ? totalExperience >= parseInt(filters.totalExperience) : true;
-      const minSalaryMatch = filters.minExpectedSalary ? minSalary >= parseInt(filters.minExpectedSalary) : true;
-      const maxSalaryMatch = filters.maxExpectedSalary ? maxSalary <= parseInt(filters.maxExpectedSalary) : true;
-      const tagsMatch = filters.tags ? tags.includes(filters.tags) : true;
+      const subjectMatch = filters.subjectsTaught
+        ? subjectsTaught.includes(filters.subjectsTaught)
+        : true;
+      const cityMatch = filters.city
+        ? city.toLowerCase().includes(filters.city.toLowerCase())
+        : true;
+      const experienceMatch = filters.totalExperience
+        ? totalExperience >= parseInt(filters.totalExperience)
+        : true;
+      const qualMatch = filters.highestQualification
+        ? highestQualification
+            ?.toLowerCase()
+            .includes(filters.highestQualification.toLowerCase())
+        : true;
+      const minSalaryMatch = filters.minExpectedSalary
+        ? minSalary >= parseInt(filters.minExpectedSalary)
+        : true;
+      const maxSalaryMatch = filters.maxExpectedSalary
+        ? maxSalary <= parseInt(filters.maxExpectedSalary)
+        : true;
+      const genderMatch = filters.gender
+        ? gender.toLowerCase() === filters.gender.toLowerCase()
+        : true;
   
-      let isMatch = subjectMatch && cityMatch && experienceMatch && minSalaryMatch && maxSalaryMatch && tagsMatch;
-      
+      // New category match check
+      const categoryMatch = filters.categories
+        ? categories.includes(filters.categories) // Check if the category exists in the tags array
+        : true;
+  
+      let isMatch =
+        subjectMatch &&
+        cityMatch &&
+        experienceMatch &&
+        qualMatch &&
+        minSalaryMatch &&
+        maxSalaryMatch &&
+        genderMatch &&
+        categoryMatch; // Include category match in the overall match criteria
+  
       // Handle distance filter after other filters
       if (distanceFilter && !filterByDistance(tutor)) isMatch = false;
-      
+  
       return isMatch;
     });
   
+  
+  
+  
     setFilteredTutors(filtered);
   };
+  
+  
+  
 
    
 
@@ -126,6 +188,7 @@ const TutorFinder = () => {
     <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
       <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] w-4/5">
         <div className="md:hidden w-full flex justify-end mb-6">
+          
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none"
@@ -174,8 +237,26 @@ const TutorFinder = () => {
             className="w-full px-3 py-2 border rounded-lg"
           />
         </div>
+       
+<div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categories">Categories</label>
+  <select
+    name="categories"
+    value={filters.categories}
+    onChange={handleFilterChange}
+    className="w-full px-3 py-2 border rounded-lg"
+  >
+    <option value="">Select Category</option>
+    {categorySuggestions.map((category, index) => (
+      <option key={index} value={category}>
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="totalExperience">Total Experience (Years)</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="totalExperience">Experience (Years)</label>
               <input
                 type="number"
                 name="totalExperience"
@@ -185,35 +266,32 @@ const TutorFinder = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="minExpectedSalary">Min Expected Salary</label>
-              <input
-                type="number"
-                name="minExpectedSalary"
-                value={filters.minExpectedSalary}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxExpectedSalary">Max Expected Salary</label>
-              <input
-                type="number"
-                name="maxExpectedSalary"
-                value={filters.maxExpectedSalary}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">Tags</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="highestQualification">Qualification</label>
               <input
                 type="text"
-                name="tags"
-                value={filters.tags}
+                name="highestQualification"
+                value={filters.highestQualification}
                 onChange={handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
             </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="gender">Gender</label>
+               
+            <select
+            value={filters.gender}
+            onChange={handleFilterChange}
+ 
+  className="border rounded px-3 py-2"
+>
+ 
+  <option value="">All Genders</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Others">Others</option>
+</select>
+</div>
             <button
               type="button"
               onClick={applyFilters}
@@ -223,7 +301,8 @@ const TutorFinder = () => {
             </button>
           </form>
         </div>
-        <div className="w-full flex flex-col items-center justify-center">
+        <div className="flex flex-col items-start justify-start w-full">
+          <div className='text-bold text-xl ml-4'>Tutors</div>
           {filteredTutors.length > 0 ? (
             filteredTutors.map((tutor, index) => (
               <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
@@ -235,7 +314,7 @@ const TutorFinder = () => {
                     <div>
                       <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
                       <span className="text-gray-600">{tutor.jobTitle}</span>
-                      <span className="text-gray-600 mr-4">{tutor.rating}</span>
+                      {/* <span className="text-gray-600 mr-4">Rating - {tutor.rating}</span> */}
                       <span className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</span>
                     </div>
                     <div>

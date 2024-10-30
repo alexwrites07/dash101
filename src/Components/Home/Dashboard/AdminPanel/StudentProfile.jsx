@@ -3,19 +3,19 @@ import { HiSearch, HiSortAscending } from 'react-icons/hi';
 import Header from '../Header';
 import Sidebar from './AdminSidebar';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // To handle navigation
+import { useNavigate } from 'react-router-dom';
 
 const StudentProfileView = () => {
   const [allStudents, setAllStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
-  const [selectedStudentId, setSelectedStudentId] = useState(null); // Store selected student for deletion
-  const [otp, setOtp] = useState(''); // Store OTP input
-  const [isOtpModalVisible, setIsOtpModalVisible] = useState(false); // Control OTP modal
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [otp, setOtp] = useState('');
+  const [isOtpModalVisible, setIsOtpModalVisible] = useState(false);
 
   const token = localStorage.getItem('token');
   const userType = localStorage.getItem('type');
-  const navigate = useNavigate(); // To navigate to the edit page
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userType === 'admin') {
@@ -24,24 +24,20 @@ const StudentProfileView = () => {
           const headers = {
             Authorization: `Bearer ${token}`,
           };
-
           const studentsRes = await axios.get('https://backend.akshayy.tech/admin/getStudents', { headers });
           setAllStudents(studentsRes.data.students);
         } catch (error) {
           console.error('Error fetching data', error);
         }
       };
-
       fetchAllData();
     }
   }, [token, userType]);
 
-  // Navigate to edit page with student _id
   const handleEditClick = (studentId) => {
     navigate(`/edit-student/${studentId}`);
   };
 
-  // Handle delete profile request (Step 1: trigger OTP)
   const handleDeleteClick = async (studentId) => {
     setSelectedStudentId(studentId);
     try {
@@ -54,15 +50,13 @@ const StudentProfileView = () => {
       };
 
       await axios.post('https://backend.akshayy.tech/admin/hardDeleteEntity', payload, { headers });
-      alert('OTP has been sent to your email.'); // Notify the admin
-      console.log (payload);
-      setIsOtpModalVisible(true); // Show OTP input modal
+      alert('OTP has been sent to your email.');
+      setIsOtpModalVisible(true);
     } catch (error) {
       console.error('Error sending delete request:', error);
     }
   };
 
-  // Handle OTP verification and final deletion (Step 2: verify OTP and delete)
   const handleConfirmDelete = async () => {
     try {
       const headers = {
@@ -73,15 +67,21 @@ const StudentProfileView = () => {
         entityId: selectedStudentId,
         otp,
       };
-     
+
       await axios.post('https://backend.akshayy.tech/admin/verifyAndHardDeleteEntity', payload, { headers });
       alert('Student profile deleted successfully');
-      setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId)); // Update UI
-      setIsOtpModalVisible(false); // Hide OTP input modal
+      setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId));
+      setIsOtpModalVisible(false);
     } catch (error) {
       console.error('Error verifying OTP and deleting:', error);
     }
   };
+
+  const filteredStudents = allStudents.filter((student) =>
+    student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    student.parentphone?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="md:ml-24">
@@ -107,28 +107,27 @@ const StudentProfileView = () => {
         </div>
 
         <div className="flex flex-col space-y-6 w-3/5">
-          {/* Render unselected students */}
           <div className="space-y-4">
-            {/* <h2 className="text-2xl font-semibold">Students</h2> */}
-            {allStudents.length > 0 ? (
-              allStudents.map((student) => (
+            {filteredStudents.length > 0 ? (
+              filteredStudents.map((student) => (
                 <div
-                  key={student._id} // Ensure the _id field is used
+                  key={student._id}
                   className="flex justify-between items-center p-4 border border-gray-200 rounded-md"
                 >
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{student.fullName}</h3>
                     <p className="text-gray-600">{student.email}</p>
+                    <p className="text-gray-600">{student.parentphone}</p>
                   </div>
                   <div className="flex space-x-4">
                     <button
-                      onClick={() => handleEditClick(student._id)} // Use _id to navigate
+                      onClick={() => handleEditClick(student._id)}
                       className="ml-4 text-white bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDeleteClick(student._id)} // Handle deletion
+                      onClick={() => handleDeleteClick(student._id)}
                       className="ml-4 text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md"
                     >
                       Delete
@@ -137,12 +136,11 @@ const StudentProfileView = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500"></p>
+              <p className="text-gray-500">No students found.</p>
             )}
           </div>
         </div>
 
-        {/* OTP Modal */}
         {isOtpModalVisible && (
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
             <div className="bg-white p-6 rounded-md shadow-md">

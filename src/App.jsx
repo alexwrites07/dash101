@@ -22,6 +22,7 @@ import TutorFinder from './Components/Home/Findtutor.jsx';
 import LearningNeedsView from './Components/Home/Dashboard/AdminPanel/LearningNeeds.jsx';
 import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
 import ContactUs from './Components/Home/ContactUs.jsx';
+import EditLearningNeed from './Components/Home/Dashboard/AdminPanel/EditLearningNeeds.jsx';
 import EditEmployerProfile from './Components/Home/Dashboard/AdminPanel/OrgEdit.jsx';
 import TutorProfileView from './Components/Home/Dashboard/AdminPanel/TeacherProfile.jsx';
 // import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
@@ -78,7 +79,8 @@ import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedH
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
-// PrivateRoute component to handle access to admin routes
+import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
+
 function AdminRoute({ element: Component, ...rest }) {
   const userType = localStorage.getItem('type'); // Get userType from localStorage
 
@@ -167,6 +169,7 @@ function AppContent() {
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/Catagories" element={<Catagories />} />
+        <Route path="/jobs/edit/:id" element={<EditJob />} />
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/about" element={<AboutUs />} />
@@ -199,7 +202,7 @@ function AppContent() {
           path="/admin-panel"
           element={<AdminRoute element={Sidebar} />} // Protected route for admin-panel
         />
-        
+           <Route path="/edit-learning-need/:id" element={<EditLearningNeed/>} />
         {/* Catch-all route for undefined paths */}
         
         {/* Catch-all route for undefined paths */}

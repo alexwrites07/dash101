@@ -26,6 +26,20 @@ const TutorProfile = () => {
             },
             minExpectedSalary: { value: 0, flag: false, period: 'monthly' },
             maxExpectedSalary: { value: 0, flag: false, period: 'monthly' }
+        },
+        education: [],
+        pastExperiences: [],
+        awards: [],
+        categories: {
+            qualifications: [],
+            languages: [],
+            preferredClasses: [],
+            hobbies: [],
+            itProgrammingCourses: [],
+            examCoaching: [],
+            topicBasedLearning: [],
+            teachingLevels: [],
+            subjectsTaught: []
         }
     });
 
@@ -49,15 +63,19 @@ const TutorProfile = () => {
 
             const data = await response.json();
             setTutor(data);
-            setUpdatedData({
-                ...updatedData,
+            setUpdatedData((prev) => ({
+                ...prev,
                 fullName: data.fullName,
                 gender: data.gender,
                 dob: data.dob,
                 description: data.description,
                 location: { ...data.location },
-                jobAlerts: { ...data.jobAlerts }
-            });
+                jobAlerts: { ...data.jobAlerts },
+                education: data.education || [],
+                pastExperiences: data.pastExperiences || [],
+                awards: data.awards || [],
+                categories: { ...data.categories }
+            }));
         } catch (error) {
             setError('Error fetching tutor details');
             console.error(error);
@@ -122,148 +140,160 @@ const TutorProfile = () => {
         updateTutorProfile();
     };
 
-    if (loading) return <div className="text-center text-xl">Loading...</div>;
-    if (error) return <div className="text-red-500 text-center">{error}</div>;
+    // Functions to add/remove categories, education, experience, and awards
+    const addEducation = () => {
+        setUpdatedData((prev) => ({
+            ...prev,
+            education: [...prev.education, { title: '', academy: '', year: '', description: '' }]
+        }));
+    };
+
+    const removeEducation = (index) => {
+        const newEducation = updatedData.education.filter((_, i) => i !== index);
+        setUpdatedData((prev) => ({ ...prev, education: newEducation }));
+    };
+
+    const addExperience = () => {
+        setUpdatedData((prev) => ({
+            ...prev,
+            pastExperiences: [...prev.pastExperiences, { title: '', start_date: '', end_date: '', company: '', description: '' }]
+        }));
+    };
+
+    const removeExperience = (index) => {
+        const newExperiences = updatedData.pastExperiences.filter((_, i) => i !== index);
+        setUpdatedData((prev) => ({ ...prev, pastExperiences: newExperiences }));
+    };
+
+    const addAward = () => {
+        setUpdatedData((prev) => ({
+            ...prev,
+            awards: [...prev.awards, { title: '', year: '', description: '' }]
+        }));
+    };
+
+    const removeAward = (index) => {
+        const newAwards = updatedData.awards.filter((_, i) => i !== index);
+        setUpdatedData((prev) => ({ ...prev, awards: newAwards }));
+    };
+
+    // Render functions for education, experience, and awards
+    const renderEducation = () => updatedData.education.map((edu, index) => (
+        <div key={index} className="border p-2 rounded mb-2">
+            <input type="text" placeholder="Title" value={edu.title} onChange={(e) => {
+                const newEducation = [...updatedData.education];
+                newEducation[index].title = e.target.value;
+                setUpdatedData({ ...updatedData, education: newEducation });
+            }} className="border rounded w-full p-1" />
+            <input type="text" placeholder="Academy" value={edu.academy} onChange={(e) => {
+                const newEducation = [...updatedData.education];
+                newEducation[index].academy = e.target.value;
+                setUpdatedData({ ...updatedData, education: newEducation });
+            }} className="border rounded w-full p-1 mt-1" />
+            <input type="date" value={edu.year} onChange={(e) => {
+                const newEducation = [...updatedData.education];
+                newEducation[index].year = e.target.value;
+                setUpdatedData({ ...updatedData, education: newEducation });
+            }} className="border rounded w-full p-1 mt-1" />
+            <textarea placeholder="Description" value={edu.description} onChange={(e) => {
+                const newEducation = [...updatedData.education];
+                newEducation[index].description = e.target.value;
+                setUpdatedData({ ...updatedData, education: newEducation });
+            }} className="border rounded w-full p-1 mt-1" rows="2" />
+            <button type="button" onClick={() => removeEducation(index)} className="text-red-500 mt-1">Remove</button>
+        </div>
+    ));
+
+    const renderExperiences = () => updatedData.pastExperiences.map((exp, index) => (
+        <div key={index} className="border p-2 rounded mb-2">
+            <input type="text" placeholder="Title" value={exp.title} onChange={(e) => {
+                const newExperiences = [...updatedData.pastExperiences];
+                newExperiences[index].title = e.target.value;
+                setUpdatedData({ ...updatedData, pastExperiences: newExperiences });
+            }} className="border rounded w-full p-1" />
+            <input type="date" value={exp.start_date} onChange={(e) => {
+                const newExperiences = [...updatedData.pastExperiences];
+                newExperiences[index].start_date = e.target.value;
+                setUpdatedData({ ...updatedData, pastExperiences: newExperiences });
+            }} className="border rounded w-full p-1 mt-1" />
+            <input type="date" value={exp.end_date} onChange={(e) => {
+                const newExperiences = [...updatedData.pastExperiences];
+                newExperiences[index].end_date = e.target.value;
+                setUpdatedData({ ...updatedData, pastExperiences: newExperiences });
+            }} className="border rounded w-full p-1 mt-1" />
+            <input type="text" placeholder="Company" value={exp.company} onChange={(e) => {
+                const newExperiences = [...updatedData.pastExperiences];
+                newExperiences[index].company = e.target.value;
+                setUpdatedData({ ...updatedData, pastExperiences: newExperiences });
+            }} className="border rounded w-full p-1 mt-1" />
+            <textarea placeholder="Description" value={exp.description} onChange={(e) => {
+                const newExperiences = [...updatedData.pastExperiences];
+                newExperiences[index].description = e.target.value;
+                setUpdatedData({ ...updatedData, pastExperiences: newExperiences });
+            }} className="border rounded w-full p-1 mt-1" rows="2" />
+            <button type="button" onClick={() => removeExperience(index)} className="text-red-500 mt-1">Remove</button>
+        </div>
+    ));
+
+    const renderAwards = () => updatedData.awards.map((award, index) => (
+        <div key={index} className="border p-2 rounded mb-2">
+            <input type="text" placeholder="Title" value={award.title} onChange={(e) => {
+                const newAwards = [...updatedData.awards];
+                newAwards[index].title = e.target.value;
+                setUpdatedData({ ...updatedData, awards: newAwards });
+            }} className="border rounded w-full p-1" />
+            <input type="date" value={award.year} onChange={(e) => {
+                const newAwards = [...updatedData.awards];
+                newAwards[index].year = e.target.value;
+                setUpdatedData({ ...updatedData, awards: newAwards });
+            }} className="border rounded w-full p-1 mt-1" />
+            <textarea placeholder="Description" value={award.description} onChange={(e) => {
+                const newAwards = [...updatedData.awards];
+                newAwards[index].description = e.target.value;
+                setUpdatedData({ ...updatedData, awards: newAwards });
+            }} className="border rounded w-full p-1 mt-1" rows="2" />
+            <button type="button" onClick={() => removeAward(index)} className="text-red-500 mt-1">Remove</button>
+        </div>
+    ));
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h1 className="text-3xl font-bold text-center mb-4">Tutor Profile</h1>
-            {tutor && (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Full Name:</label>
-                        <input
-                            type="text"
-                            name="fullName"
-                            value={updatedData.fullName}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Gender:</label>
-                        <select
-                            name="gender"
-                            value={updatedData.gender}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        >
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Date of Birth:</label>
-                        <input
-                            type="date"
-                            name="dob"
-                            value={updatedData.dob ? updatedData.dob.split('T')[0] : ''}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Description:</label>
-                        <textarea
-                            name="description"
-                            value={updatedData.description}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                            rows="4"
-                        />
-                    </div>
-                    <h3 className="text-lg font-semibold mt-6">Location</h3>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Address:</label>
-                        <input
-                            type="text"
-                            name="address"
-                            value={updatedData.location.address}
-                            onChange={handleLocationChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">City:</label>
-                        <input
-                            type="text"
-                            name="city"
-                            value={updatedData.location.city}
-                            onChange={handleLocationChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">State:</label>
-                        <input
-                            type="text"
-                            name="state"
-                            value={updatedData.location.state}
-                            onChange={handleLocationChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Pin Code:</label>
-                        <input
-                            type="text"
-                            name="pinCode"
-                            value={updatedData.location.pinCode}
-                            onChange={handleLocationChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <h3 className="text-lg font-semibold mt-6">Job Alerts</h3>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Minimum Expected Salary:</label>
-                        <input
-                            type="number"
-                            name="minExpectedSalary"
-                            value={updatedData.jobAlerts.minExpectedSalary.value}
-                            onChange={(e) => {
-                                setUpdatedData({
-                                    ...updatedData,
-                                    jobAlerts: {
-                                        ...updatedData.jobAlerts,
-                                        minExpectedSalary: {
-                                            ...updatedData.jobAlerts.minExpectedSalary,
-                                            value: e.target.value
-                                        }
-                                    }
-                                });
-                            }}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Maximum Expected Salary:</label>
-                        <input
-                            type="number"
-                            name="maxExpectedSalary"
-                            value={updatedData.jobAlerts.maxExpectedSalary.value}
-                            onChange={(e) => {
-                                setUpdatedData({
-                                    ...updatedData,
-                                    jobAlerts: {
-                                        ...updatedData.jobAlerts,
-                                        maxExpectedSalary: {
-                                            ...updatedData.jobAlerts.maxExpectedSalary,
-                                            value: e.target.value
-                                        }
-                                    }
-                                });
-                            }}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="mt-6 w-full bg-blue-500 text-white font-bold py-2 rounded-md shadow hover:bg-blue-600 transition duration-300"
-                    >
-                        Update Profile
-                    </button>
+        <div className="p-4 max-w-3xl mx-auto">
+            {loading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p>{error}</p>
+            ) : (
+                <form onSubmit={handleSubmit}>
+                    <h2 className="text-2xl mb-4">Tutor Profile</h2>
+                    <input type="text" name="fullName" placeholder="Full Name" value={updatedData.fullName} onChange={handleInputChange} className="border rounded w-full p-2 mb-2" required />
+                    <select name="gender" value={updatedData.gender} onChange={handleInputChange} className="border rounded w-full p-2 mb-2">
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <input type="date" name="dob" value={updatedData.dob} onChange={handleInputChange} className="border rounded w-full p-2 mb-2" required />
+                    <textarea name="description" value={updatedData.description} onChange={handleInputChange} placeholder="Description" className="border rounded w-full p-2 mb-2" rows="3" />
+                    
+                    <h3 className="text-xl mt-4 mb-2">Location</h3>
+                    <input type="text" name="address" placeholder="Address" value={updatedData.location.address} onChange={handleLocationChange} className="border rounded w-full p-2 mb-2" required />
+                    <input type="text" name="city" placeholder="City" value={updatedData.location.city} onChange={handleLocationChange} className="border rounded w-full p-2 mb-2" required />
+                    <input type="text" name="state" placeholder="State" value={updatedData.location.state} onChange={handleLocationChange} className="border rounded w-full p-2 mb-2" required />
+                    <input type="text" name="pinCode" placeholder="Pin Code" value={updatedData.location.pinCode} onChange={handleLocationChange} className="border rounded w-full p-2 mb-2" required />
+
+                    <h3 className="text-xl mt-4 mb-2">Education</h3>
+                    {renderEducation()}
+                    <button type="button" onClick={addEducation} className="bg-blue-500 text-white rounded p-2 mb-4">Add Education</button>
+
+                    <h3 className="text-xl mt-4 mb-2">Experience</h3>
+                    {renderExperiences()}
+                    <button type="button" onClick={addExperience} className="bg-blue-500 text-white rounded p-2 mb-4">Add Experience</button>
+
+                    <h3 className="text-xl mt-4 mb-2">Awards</h3>
+                    {renderAwards()}
+                    <button type="button" onClick={addAward} className="bg-blue-500 text-white rounded p-2 mb-4">Add Award</button>
+
+                    <button type="submit" className="bg-green-500 text-white rounded p-2">Update Profile</button>
                 </form>
             )}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HiSearch, HiSortAscending } from 'react-icons/hi';
 import Header from '../Header';
+
 import Sidebar from './AdminSidebar';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import axios from 'axios'; // Import axios for making API requests
@@ -57,7 +58,9 @@ const EmployerProfileView = () => {
 
   // Apply search filtering
   const filteredOrganizations = organizations.filter((org) =>
-    org.name.toLowerCase().includes(searchQuery.toLowerCase())
+    org.name.toLowerCase().includes(searchQuery.toLowerCase())||
+  org.contactNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  org.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Sort organizations

@@ -65,7 +65,9 @@ export default function Login() {
                 localStorage.setItem('token', token);
                 localStorage.setItem('type', type);
                 // localStorage.setItem('type', type);
-
+                if (type==='admin')
+                    navigate('/student-profiles');
+                else
                 // Redirect to dashboard
                 navigate('/your-profile');
             } else {

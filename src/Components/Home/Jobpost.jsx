@@ -14,10 +14,11 @@ const JobPost = () => {
     location: '',
     category: '',
     jobType: '',
-    experience: '',
-    qualification:'',
+    totalExperience: '',
+    gender:'',
     careerLevel: '',
     salary: '',
+    skillAndExperience:'',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -70,7 +71,22 @@ const JobPost = () => {
     const [amount, unit] = postingTime.split(' ');
     return new Date(now - amount * timeMapping[unit]);
   };
- 
+  const categorySuggestions = [
+    "Spoken English",
+    "French Language",
+    "Hindi Language",
+    "German Language",
+    "LKG Tuition",
+    "UKG Tuition",
+    "Class 1 Tuition",
+    "Class 3 Tuition",
+    "Dance",
+    "Handwriting",
+    "Summer Camp",
+    "ui",
+    "Calculus",
+    "Choreography",
+  ];
 
   const openModal = (e) => {
     e.stopPropagation();
@@ -103,13 +119,14 @@ const JobPost = () => {
     setSortBy(criteria);
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({
-      ...filters,
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
       [name]: value,
-    });
+    }));
   };
+  
 
   const calculateDistance = (coords1, coords2) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
@@ -150,26 +167,33 @@ const JobPost = () => {
   const applyFilters = () => {
     // Filter jobs based on current filters and distance filter
     let filteredJobs = jobs.filter((job) => {
-      const { keyword, location, category, jobType, experience,qualification, careerLevel, salary } = filters;
-
+      const { keyword, location, category, jobType, totalExperience, gender, careerLevel, salary,skillAndExperience } = filters;
+  
       let isMatch = true;
-
+  
       if (keyword && job.title && !job.title.toLowerCase().includes(keyword.toLowerCase())) isMatch = false;
       if (location && job.location && job.location.city && !job.location.city.toLowerCase().includes(location.toLowerCase())) isMatch = false;
       if (category && job.category && !job.category.toLowerCase().includes(category.toLowerCase())) isMatch = false;
       if (jobType && job.jobType && !job.jobType.toLowerCase().includes(jobType.toLowerCase())) isMatch = false;
-      if (experience && job.experience && !job.experience.toLowerCase().includes(experience.toLowerCase())) isMatch = false;
+      if (totalExperience && job.totalExperience && !job.totalExperience.toLowerCase().includes(totalExperience.toLowerCase())) isMatch = false;
       if (careerLevel && job.careerLevel && !job.careerLevel.toLowerCase().includes(careerLevel.toLowerCase())) isMatch = false;
       if (salary && job.salary && parseInt(job.salary.replace(/[^0-9.-]+/g, '')) < parseInt(salary)) isMatch = false;
-      if (qualification && job.qualification && !job.qualification.toLowerCase().includes(qualification.toLowerCase())) isMatch = false;
+      if (skillAndExperience && job.skillAndExperience !== "") {
+        const skillExists = job.skillAndExperience.includes(skillAndExperience);
+        if (!skillExists) isMatch = false;
+      }
+      // Gender filter - case insensitive
+      if (gender && job.gender && !job.gender.toLowerCase().includes(gender.toLowerCase())) isMatch = false;
+  
       if (distanceFilter && !filterByDistance(job)) isMatch = false;
-
+  
       return isMatch;
     });
-
+  
     setFilteredJobs(filteredJobs); // Update filtered jobs with new filters
     setShowFilters(false);
   };
+  
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const visibleJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
@@ -225,13 +249,13 @@ const JobPost = () => {
   </button>
 </div>
 
-      <div className="w-2/5 md:mr-4 md:-ml-4 bg-gray-100 rounded-lg shadow-lg mb-4 md:mb-0 md:mr-4">
+      <div className="w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4">
       
       <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
         <form className="space-y-4">
           {/* Filters */}
           {/* Keyword Filter */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
             <input
               type="text"
@@ -241,7 +265,7 @@ const JobPost = () => {
               onChange={handleFilterChange}
               className="w-full px-3 py-2 border rounded-lg"
             />
-          </div>
+          </div> */}
 
           {/* Location Filter */}
           <div className="mb-4">
@@ -278,79 +302,41 @@ const JobPost = () => {
           />
         </div>
 
-          {/* Job Type Filter */}
-       
-
-          {/* Date Posted Filter */}
-          {/* <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="datePosted">Date Posted</label>
-            <select
-              name="datePosted"
-              id="datePosted"
-              value={filters.datePosted}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            >
-              <option value="">Anytime</option>
-              <option value="last24hours">Last 24 hours</option>
-              <option value="last7days">Last 7 days</option>
-              <option value="last14days">Last 14 days</option>
-              <option value="last30days">Last 30 days</option>
-            </select>
-          </div> */}
-
-          {/* Experience Level Filter */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experienceLevel">Experience Level</label>
-            <input
-              type="text"
-              name="experienceLevel"
-              placeholder="Enter Years of Experience"
-              id="experienceLevel"
-              value={filters.experience}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
+        <div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="skillAndExperience">Categories</label>
+  <select
+    name="skillAndExperience"
+    value={filters.skillAndExperience}
+    onChange={handleFilterChange}
+    className="w-full px-3 py-2 border rounded-lg"
+  >
+    <option value="">Select Category</option>
+    {categorySuggestions.map((skillAndExperience, index) => (
+      <option key={index} value={skillAndExperience}>
+        {skillAndExperience}
+      </option>
+    ))}
+  </select>
+</div>
 
           {/* Career Level Filter */}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Qualification</label>
-            <input
-              type="text"
-              name="qualification"
-              placeholder="Enter Career Type"
-              id="careerLevel"
-              value={filters.qualification}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Gender</label>
+            <select
+  name="gender"  // Added name attribute
+  value={filters.gender}
+  onChange={handleFilterChange}
+  className="border rounded px-3 py-2"
+>
+  <option value="">All Genders</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Any">Others</option>
+</select>
+
           </div>
 
-          {/* Salary Range Filter */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="salaryRange">Salary Range</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                name="minSalary"
-                id="minSalary"
-                placeholder="Min"
-                value={filters.minSalary}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-              <input
-                type="number"
-                name="maxSalary"
-                id="maxSalary"
-                placeholder="Max"
-                value={filters.maxSalary}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-          </div>
+  
 
           {/* Apply Filters Button */}
           <button

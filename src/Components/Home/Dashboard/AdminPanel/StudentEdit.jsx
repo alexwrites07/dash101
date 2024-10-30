@@ -6,13 +6,14 @@ const StudentEdit = () => {
   const { studentId } = useParams();
   const [studentData, setStudentData] = useState({
     fullName: '',
-    email: '',
+    
     class: '',
     location: {
       address: '',
       city: '',
       state: '',
-      pinCode: ''
+      pinCode: '',
+      coordinates: []
     },
     profileViews: {
       count: 0,
@@ -21,7 +22,17 @@ const StudentEdit = () => {
     profileImageURL: '',
     isActive: false,
     isLocked: false,
-    username: ''
+    username: '',
+    parentPhone: '',
+    dob: '',
+    parentName: '',
+    schoolName: '',
+    phone: '',
+    socialMediaLinks: [],
+    unlockedContacts: [],
+    contactNumberVerified: false,
+    boardOfEducation: '',
+    hasUnreadNotifications: false
   });
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
@@ -32,7 +43,7 @@ const StudentEdit = () => {
       try {
         const response = await axios.get(`https://backend.akshayy.tech/getStudent/${studentId}`, {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -40,14 +51,24 @@ const StudentEdit = () => {
         if (response.data) {
           setStudentData({
             fullName: response.data.fullName || '',
-            email: response.data.email || '',
+            
             class: response.data.class || '',
-            location: response.data.location || { address: '', city: '', state: '', pinCode: '' },
+            location: response.data.location || { address: '', city: '', state: '', pinCode: '', coordinates: [] },
             profileViews: response.data.profileViews || { count: 0, viewers: [] },
             profileImageURL: response.data.profileImageURL || '',
             isActive: response.data.isActive || false,
             isLocked: response.data.isLocked || false,
-            username: response.data.username || ''
+            username: response.data.username || '',
+            parentPhone: response.data.parentPhone || '',
+            dob: response.data.dob || '',
+            parentName: response.data.parentName || '',
+            schoolName: response.data.schoolName || '',
+            phone: response.data.phone || '',
+            socialMediaLinks: response.data.socialMediaLinks || [],
+            unlockedContacts: response.data.unlockedContacts || [],
+            contactNumberVerified: response.data.contactNumberVerified || false,
+            boardOfEducation: response.data.boardOfEducation || '',
+            hasUnreadNotifications: response.data.hasUnreadNotifications || false
           });
         } else {
           console.error('User data not found in response', response.data);
@@ -55,7 +76,7 @@ const StudentEdit = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching student data', error);
-        setLoading(false); // Ensure loading is false even on error
+        setLoading(false);
       }
     };
 
@@ -77,30 +98,36 @@ const StudentEdit = () => {
       },
     }));
   };
-
+  const handleCoordinatesChange = (e) => {
+    const { name, value } = e.target;
+    const index = name === 'latitude' ? 0 : 1; // Determine index for latitude or longitude
+    const updatedCoordinates = [...studentData.location.coordinates];
+    updatedCoordinates[index] = parseFloat(value) || 0; // Parse float or default to 0
+    setStudentData((prevData) => ({
+      ...prevData,
+      location: {
+        ...prevData.location,
+        coordinates: updatedCoordinates,
+      },
+    }));
+  };
   const handleSave = async () => {
     try {
-      // Destructure studentData and remove fullName, email, and _id from payload
-      const { fullName, email, _id, ...payload } = studentData;
-  
-      // Send PUT request to update the student profile, passing the filtered payload
       await axios.put(
         `https://backend.akshayy.tech/editUserProfile/${studentId}/Student`,
-        payload,
+        studentData,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Ensure 'Bearer ' is prefixed
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         }
       );
-  
       alert('Profile updated successfully');
     } catch (error) {
       console.error('Error saving changes', error);
     }
   };
-  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -144,6 +171,23 @@ const StudentEdit = () => {
           placeholder="Class"
           className="w-full px-4 py-2 border border-gray-300 rounded-md"
         />
+        
+        <input
+          type="date"
+          name="dob"
+          value={studentData.dob}
+          onChange={handleInputChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+     
+        <input
+          type="text"
+          name="schoolName"
+          value={studentData.schoolName}
+          onChange={handleInputChange}
+          placeholder="School Name"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
         <div className="space-y-2">
           <h3 className="font-bold">Location</h3>
           <input
@@ -179,34 +223,67 @@ const StudentEdit = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
           />
         </div>
-        <div>
-          <h3 className="font-bold">Profile Views</h3>
-          <p>Count: {studentData.profileViews.count}</p>
-          <p>Viewers: {studentData.profileViews.viewers.join(', ')}</p>
-        </div>
-        <div>
-          <img src={studentData.profileImageURL} alt="Profile" className="w-24 h-24 rounded-full" />
-        </div>
-        <div className="flex space-x-4">
-          <label className="flex items-center space-x-2">
+        <input
+          type="text"
+          name="parentName"
+          value={studentData.parentName}
+          onChange={handleInputChange}
+          placeholder="Parent's Name"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="text"
+          name="parentPhone"
+          value={studentData.parentPhone}
+          onChange={handleInputChange}
+          placeholder="Parent's Phone"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="text"
+          name="boardOfEducation"
+          value={studentData.boardOfEducation}
+          onChange={handleInputChange}
+          placeholder="Board of Education"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="date"
+          name="dob"
+          value={studentData.dob?.split('T')[0]}
+          onChange={handleInputChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="text"
+          name="schoolName"
+          value={studentData.schoolName}
+          onChange={handleInputChange}
+          placeholder="School Name"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        {/* Additional fields can be added similarly */}
+       
+        <div className="space-y-2">
+            <h4 className="font-bold">Coordinates</h4>
             <input
-              type="checkbox"
-              name="isActive"
-              checked={studentData.isActive}
-              onChange={(e) => setStudentData({ ...studentData, isActive: e.target.checked })}
+              type="number"
+              name="latitude"
+              value={studentData.location.coordinates[0]} // Access latitude
+              onChange={handleCoordinatesChange}
+              placeholder="Latitude"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
             />
-            <span>Active</span>
-          </label>
-          <label className="flex items-center space-x-2">
             <input
-              type="checkbox"
-              name="isLocked"
-              checked={studentData.isLocked}
-              onChange={(e) => setStudentData({ ...studentData, isLocked: e.target.checked })}
+              type="number"
+              name="longitude"
+              value={studentData.location.coordinates[1]} // Access longitude
+              onChange={handleCoordinatesChange}
+              placeholder="Longitude"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
             />
-            <span>Locked</span>
-          </label>
-        </div>
+          </div>
+        
         <button
           onClick={handleSave}
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"

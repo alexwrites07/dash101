@@ -45,9 +45,12 @@ const TutorProfileView = () => {
     setSelectedTutors(selectedTutors.filter(selected => selected._id !== tutor._id));
   };
 
-  const filteredTutors = tutors.filter(tutor =>
-    tutor.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTutors = tutors.filter(tutor => 
+    tutor.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tutor.contactNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tutor.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
 
   const sortedTutors = filteredTutors.sort((a, b) => {
     if (sortOrder === 'asc') {

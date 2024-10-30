@@ -3,16 +3,15 @@ import Header from '../Header';
 import Sidebar from './AdminSidebar';
 
 const Reviewsq = () => {
-  const [reviews, setReviews] = useState([]); // Store reviews from the API
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [searchQuery, setSearchQuery] = useState(''); // Search filter
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch reviews from the API on component mount
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const token = localStorage.getItem('token'); // Get token from local storage
+        const token = localStorage.getItem('token');
         const response = await fetch('https://backend.akshayy.tech/reviews/admin', {
           method: 'GET',
           headers: {
@@ -27,7 +26,6 @@ const Reviewsq = () => {
         const data = await response.json();
         const reviewsWithReceiverNames = await Promise.all(
           data.map(async (review) => {
-            // Fetch the receiver's name based on reviewedModel
             let receiverName = '';
             try {
               if (review.reviewedModel === 'Tutor') {
@@ -66,22 +64,21 @@ const Reviewsq = () => {
           })
         );
 
-        setReviews(reviewsWithReceiverNames); // Set fetched reviews with receiver names
-        setLoading(false); // Set loading to false
+        setReviews(reviewsWithReceiverNames);
+        setLoading(false);
       } catch (error) {
-        setError(error.message); // Set error state
-        setLoading(false); // Stop loading
+        setError(error.message);
+        setLoading(false);
       }
     };
 
     fetchReviews();
   }, []);
 
-  // Delete review function
   const deleteReview = async (id) => {
     try {
-      const token = localStorage.getItem('token'); // Get token from local storage
-      const response = await fetch(`https://backend.akshayy.tech/reviews/admin/${id}`, {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`https://backend.akshayy.tech/reviews/admin/`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -94,10 +91,7 @@ const Reviewsq = () => {
         throw new Error(data.message || 'Failed to delete review');
       }
 
-      // Remove the deleted review from the state
       setReviews(reviews.filter((review) => review._id !== id));
-
-      // Show success alert
       alert(data.message);
     } catch (error) {
       console.error('Error deleting review:', error);
@@ -105,17 +99,14 @@ const Reviewsq = () => {
     }
   };
 
-  // Filter reviews by search query (if needed)
   const filteredReviews = reviews.filter((review) =>
     review.reviewerName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Group reviews by reviewedModel
   const tutorReviews = filteredReviews.filter((review) => review.reviewedModel === 'Tutor');
   const studentReviews = filteredReviews.filter((review) => review.reviewedModel === 'Student');
   const orgReviews = filteredReviews.filter((review) => review.reviewedModel === 'Organization');
 
-  // Loading and error states
   if (loading) {
     return <p>Loading reviews...</p>;
   }
@@ -139,9 +130,8 @@ const Reviewsq = () => {
           />
         </div>
 
-        {/* Display Reviews - Grouped by Reviewed Model */}
         <div className="flex flex-col space-y-6 w-3/5">
-
+        
           {/* Tutor Reviews Section */}
           {tutorReviews.length > 0 && (
             <div>
@@ -151,6 +141,8 @@ const Reviewsq = () => {
                   <h3 className="text-lg font-semibold">Rating: {review.rating}</h3>
                   <p className="text-gray-700">Description: {review.description}</p>
                   <p className="text-gray-500">Reviewer Name: {review.reviewerName}</p>
+                  <p className="text-gray-500">Reviewer Username: {review.reviewerUsername}</p>
+                  <p className="text-gray-500">Reviewed Username: {review.reviewedUsername}</p>
                   <p className="text-gray-500">Receiver Name: {review.receiverName}</p>
                   <p className="text-gray-500">Reviewed Model: {review.reviewedModel}</p>
                   <p className="text-gray-400">Created Date: {new Date(review.createdDate).toLocaleDateString()}</p>
@@ -174,6 +166,8 @@ const Reviewsq = () => {
                   <h3 className="text-lg font-semibold">Rating: {review.rating}</h3>
                   <p className="text-gray-700">Description: {review.description}</p>
                   <p className="text-gray-500">Reviewer Name: {review.reviewerName}</p>
+                  <p className="text-gray-500">Reviewer Username: {review.reviewerUsername}</p>
+                  <p className="text-gray-500">Username: {review.username}</p>
                   <p className="text-gray-500">Receiver Name: {review.receiverName}</p>
                   <p className="text-gray-500">Reviewed Model: {review.reviewedModel}</p>
                   <p className="text-gray-400">Created Date: {new Date(review.createdDate).toLocaleDateString()}</p>
@@ -197,6 +191,8 @@ const Reviewsq = () => {
                   <h3 className="text-lg font-semibold">Rating: {review.rating}</h3>
                   <p className="text-gray-700">Description: {review.description}</p>
                   <p className="text-gray-500">Reviewer Name: {review.reviewerName}</p>
+                  <p className="text-gray-500">Reviewer Username: {review.reviewerUsername}</p>
+                  <p className="text-gray-500">Username: {review.username}</p>
                   <p className="text-gray-500">Receiver Name: {review.receiverName}</p>
                   <p className="text-gray-500">Reviewed Model: {review.reviewedModel}</p>
                   <p className="text-gray-400">Created Date: {new Date(review.createdDate).toLocaleDateString()}</p>
@@ -210,7 +206,6 @@ const Reviewsq = () => {
               ))}
             </div>
           )}
-
         </div>
       </div>
     </div>
