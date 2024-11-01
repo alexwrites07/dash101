@@ -1,64 +1,107 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Map from './Map'; // Import the Map component
+import Map from './Map';
 import '../Home.css';
-import { Link } from 'react-router-dom';
 
 const JobDescription = () => {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
         const response = await axios.get(`https://backend.akshayy.tech/getjobs/${jobId}`);
-        setJob(response.data.job); // Access the job object
+        setJob(response.data.job);
       } catch (error) {
         console.error('Error fetching job details:', error);
       }
     };
-
     fetchJobDetails();
   }, [jobId]);
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const buyContact = async () => {
+    if (!job?.employer) {
+      console.error('Employer ID not available');
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'https://backend.akshayy.tech/purchaseContact',
+        {
+          contactId: job.employer,
+          contactType: 'Organization'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Contact purchase successful:', response.data);
+      alert ("Contact Bought");
+    } catch (error) {
+      console.error('Error purchasing contact:', error);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const applyForJob = async () => {
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('type');
+    if (userType !== 'tutor') {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const tutorResponse = await axios.get('https://backend.akshayy.tech/dashboard/Tutor', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const tutorId = tutorResponse.data._id;
+
+      const applyResponse = await axios.post(
+        'https://backend.akshayy.tech/tutor/apply-job',
+        {
+          tutorId,
+          jobId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Application successful:', applyResponse.data);
+      alert("Job Applied");
+    } catch (error) {
+      console.error('Error applying for job:', error);
+    }
   };
 
-  if (!job) {
-    return <p>Loading...</p>;
-  }
-
-  const statusTag = job.tags?.find(tag => tag.name === "urgent");
-  const isActive = statusTag?.active;
+  if (!job) return <p>Loading...</p>;
 
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
         <div className="md:w-1/4 mb-4 md:mb-0">
           {job.images.length > 0 ? (
-            <img src={job.images[0]} alt={job.title} className="w-full h-56 object-cover rounded-md" />
+            <img src={job.images[0]} alt={job.title} className="w-36 h-56 rounded-md" />
           ) : (
-            <p>No image available</p> // Fallback message or placeholder image
+            <p>No image available</p>
           )}
         </div>
-        <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
+        <div className="md:w-3/4 mb-4 md:mb-0 ml-8">
           <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p>
-              <strong>Location:</strong> 
-              {job.location ? (
-                `${job.location.city}, ${job.location.state} (${job.location.pinCode})`
-              ) : (
-                'Location information not available'
-              )}
-            </p>
+            <p><strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}</p>
             <p><strong>Salary:</strong> {job.salary.min} - {job.salary.max} ({job.salary.period})</p>
             <p><strong>Experience:</strong> {job.experience} years</p>
             <p><strong>Qualification:</strong> {job.qualification}</p>
@@ -72,26 +115,21 @@ const JobDescription = () => {
               </p>
             ) : (
               <>
-                <Link to="/login">
-              <button
-                // onClick={openModal}
-                className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
-              >
-                Apply
-              </button>
-              </Link>
-               <button
-               // onClick={openModal}
-               className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
-             >
-               Buy Contacts (100 coins)
-             </button>
-             </>
+                <button
+                  onClick={applyForJob}
+                  className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+                >
+                  Apply
+                </button>
+                <button
+                  onClick={buyContact}
+                  className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
+                >
+                  Buy Contacts (100 coins)
+                </button>
+              </>
             )}
           </div>
-        </div>
-        <div className="md:w-1/4 flex flex-col items-end">
-          {/* Additional content if needed */}
         </div>
       </div>
 
@@ -118,7 +156,7 @@ const JobDescription = () => {
             {job.location?.coordinates ? (
               <Map coordinates={job.location.coordinates} />
             ) : (
-              <p>Map location not available</p> // Fallback message
+              <p>Map location not available</p>
             )}
           </div>
         </div>

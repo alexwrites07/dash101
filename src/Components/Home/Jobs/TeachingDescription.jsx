@@ -3,13 +3,14 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Map';
 import StarRating from './StarRating';
-import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
+import { HiBookmark, HiOutlineBookmark} from 'react-icons/hi';
 import '../Home.css';
 import { Link } from 'react-router-dom';
 
 const TeachingDescription = () => {
   const { Id } = useParams();
   const [job, setJob] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -47,7 +48,7 @@ const TeachingDescription = () => {
   const openModal = () => {
     setIsModalOpen(true);
   };
-
+ 
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -60,7 +61,37 @@ const TeachingDescription = () => {
     setSubmittedComment(comment);
     setComment('');
   };
-
+  const token = localStorage.getItem('token');
+  const handleBookmarkToggle = async () => {
+    // Ensure token is retrieved (e.g., from localStorage or context)
+    const token = localStorage.getItem('token'); // Adjust if your token is stored differently
+    
+    if (!token) {
+      alert("Authentication token not found. Please log in again.");
+      return;
+    }
+  
+    try {
+      // Send a POST request to bookmark the tutor
+      const response = await axios.post(
+        'https://backend.akshayy.tech/bookmark',
+        { employeeId: Id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      
+      setIsBookmarked((prev) => !prev); // Toggle the bookmark state on success
+      alert('Tutor bookmarked successfully!');
+    } catch (error) {
+      console.error('Error bookmarking tutor:', error);
+      alert('Failed to bookmark the tutor. Please try again later.');
+    }
+  };
+  
   const handleRating = (rate) => {
     setRating(rate);
   };
@@ -93,22 +124,19 @@ const TeachingDescription = () => {
             <p><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
             <p><strong>Experience:</strong> {job.totalExperience} years</p>
             <p><strong>Qualification:</strong> {job.highestQualification}</p>
+            <button onClick={handleBookmarkToggle}
+               className="text-blue-500 ml-6 hover:text-blue-600 focus:outline-none mr-8">
+             {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
+
+            </button>
             {!isActive ? (
-              <Link to="/login">
-                <button
-                  className="bg-[#041F96] md:w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300 mt-2"
-                >
-                  Invite
-                </button>
-              </Link>
+             <div></div>
             ) : (
               <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
                 Closed
               </p>
             )}
-            <button className="text-blue-500 ml-6 hover:text-blue-600 focus:outline-none mr-8">
-              {job.bookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
-            </button>
+            
           </div>
         </div>
         <div className="md:w-1/4 flex flex-col items-end">
