@@ -1,4 +1,4 @@
-// Example: pages/Dashboard.js
+
 import React, { useState, useEffect } from 'react';
 import clock from './assets/Upskill/ClockOutline.svg';
 import chart from './assets/Upskill/ChartBarOutline.svg';
@@ -149,9 +149,9 @@ const Upskill = () => {
           }}
           style={{
             backgroundColor: activeTab === 'mentor' ? '#FFFFFF' : '',
-            padding: '6px 8px', // Smaller padding
+            padding: '6px 8px', 
             borderRadius: '8px',
-            width: '140px', // Smaller width
+            width: '140px',
             textAlign: 'center',
             cursor: 'pointer',
             border: activeTab === 'mentor' ? '1px solid #000' : 'none',
@@ -166,9 +166,9 @@ const Upskill = () => {
           }}
           style={{
             backgroundColor: activeTab === 'learning' ? '#FFFFFF' : '#F0F0F0',
-            padding: '6px 8px', // Smaller padding
+            padding: '6px 8px', 
             borderRadius: '8px',
-            width: '140px', // Smaller width
+            width: '140px',
             textAlign: 'center',
             cursor: 'pointer',
             border: activeTab === 'learning' ? '1px solid #000' : 'none',
@@ -177,7 +177,7 @@ const Upskill = () => {
           <h3 style={{ fontSize: '12px', margin: 0 }}><img src={cas} alt="Number Icon" style={{ width: '16px', height: '16px', marginBottom:'-3px' }} /><spacer></spacer>&nbsp;Learning Material</h3> {/* Smaller font size */}
         </div>
       </div>
-      {/* Remaining code for chapters and parts */}
+
       <div style={{ marginTop: '30px', padding: '20px', border: '1px solid #D0D0D0', borderRadius: '8px' }}>
         {activeTab === 'mentor' ? (
           <div>
@@ -209,7 +209,7 @@ const Upskill = () => {
                   {selectedChapter === chapter && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                       <img
-                        src={clock} // Replace with your clock image URL
+                        src={clock} 
                         alt="Clock"
                         style={{ width: '16px', height: '16px' }}
                       />
