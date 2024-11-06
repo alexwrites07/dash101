@@ -93,7 +93,7 @@ const Upskill = () => {
 {expandedPart === partNumber && (
   <div>
     {resources.map((resource, idx) => (
-      <div key={idx} style={{ display: 'flex', alignItems: 'center', marginTop: '15px',marginBottom: '15px', borderTop: '1px solid',
+      <div key={idx} style={{ display: 'flex', alignItems: 'center', marginTop: '15px',marginBottom: '15px', borderBottom: '1px solid',
         borderImageSource: 'linear-gradient(90deg, rgba(23, 43, 77, 0) 0%, #172B4D 49.54%, rgba(5, 68, 94, 0) 100%)', borderImageSlice: 2, paddingTop: '10px' }}>
         <img src={resource.icon} alt={resource.type} style={{ width: '16px', marginRight: '10px' }} />
         <span style={{ ...typographyStyles, flex: 1 }}><strong>{`${resource.type} ${idx + 1}`}</strong></span>
@@ -198,7 +198,8 @@ const Upskill = () => {
                     backgroundColor: selectedChapter === chapter ? '#EFF5FF' : '#FFFFFF',
                      borderRadius: '4px',
                     marginBottom: '8px',
-                    
+                    borderBottom: '1px solid',
+        borderImageSource: 'linear-gradient(90deg, rgba(23, 43, 77, 0) 0%, #172B4D 49.54%, rgba(5, 68, 94, 0) 100%)', borderImageSlice: 2, 
                     display: 'flex',
                     alignItems: 'center',
                     fontFamily: 'DM Sans',
