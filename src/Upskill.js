@@ -11,6 +11,7 @@ import video1 from './assets/Upskill/PlayOutline.svg';
 import ques from './assets/Upskill/qm.svg';
 import code from './assets/Upskill/CodeOutline.svg';
 import doc1 from './assets/Upskill/doc1.svg';
+import info from './assets/Upskill/InformationCircleOutline.svg';
 const typographyStyles = {
     fontFamily: 'DM Sans',
     fontSize: '16px',
@@ -46,7 +47,7 @@ const Upskill = () => {
     <p>PART {partNumber}</p>
        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop:'-20px' }}>
        
-        <p style={{ ...typographyStyles1, flex: 1 }}><strong>Lorem ipsum</strong></p>
+        <p style={{ ...typographyStyles1, flex: 1 }}><strong>Lorem ipsum dolor sit amet</strong></p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           <img src={clock} alt="Clock" style={{ width: '16px', height: '16px' }} />
           <span>02:00:00</span><spacer></spacer>
@@ -101,7 +102,21 @@ const Upskill = () => {
 
   return (
     <div style={{ backgroundColor: '#FFFFFF',  height: '100%', position: 'relative', fontFamily: 'DM Sans, sans-serif' }}>
-    
+     <div style={{
+        position: 'absolute',
+        top: '20px',
+        right: '20px',
+        backgroundColor: '#FFFFFF',
+        padding: '10px 15px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+        display: 'flex',
+        alignItems: 'center',
+        fontFamily: 'DM Sans',
+        fontSize: '16px',
+      }}>
+        <img src={info} alt="How it works icon" style={{ width: '20px', marginRight: '10px' }} />
+        <span>How it works</span></div>
       <div style={{
         background: 'linear-gradient(180deg, #EFF5FF 0%, rgba(239, 245, 255, 0) 100%)',
         padding: '10px',
@@ -156,7 +171,7 @@ const Upskill = () => {
           </div>
         ) : (
           <div style={{ display: 'flex', gap: '20px' }}>
-            <div style={{ flex: '1', border: '1px solid #D0D0D0', borderRadius: '8px', padding: '10px' }}>
+            <div style={{ flex: '1',  borderRadius: '8px', padding: '10px' }}>
               <h3>Chapters</h3>
               {chapters.map((chapter, index) => (
                 <div
@@ -165,9 +180,10 @@ const Upskill = () => {
                   style={{
                     cursor: 'pointer',
                     padding: '10px',
-                    backgroundColor: selectedChapter === chapter ? '#E0E0E0' : '#F9F9F9',
-                    borderRadius: '4px',
+                    backgroundColor: selectedChapter === chapter ? '#EFF5FF' : '#FFFFFF',
+                     borderRadius: '4px',
                     marginBottom: '8px',
+                    
                     display: 'flex',
                     alignItems: 'center',
                     fontFamily: 'DM Sans',
@@ -182,7 +198,7 @@ const Upskill = () => {
                         alt="Clock"
                         style={{ width: '16px', height: '16px' }}
                       />
-                      <span>02:00:00</span>
+                      <span>05:00:00</span>
                     </div>
                   )}
                 </div>
