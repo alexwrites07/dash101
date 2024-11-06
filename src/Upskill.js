@@ -1,8 +1,9 @@
 // Example: pages/Dashboard.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clock from './assets/Upskill/ClockOutline.svg';
 import chart from './assets/Upskill/ChartBarOutline.svg';
 import doc from './assets/Upskill/doc.svg';
+import './App.css';
 import ab from './assets/Upskill/Vector.svg';
 import cd from './assets/Upskill/Vector (1).svg';
 import cal from './assets/Upskill/CalendarOutline.svg';
@@ -12,6 +13,7 @@ import ques from './assets/Upskill/qm.svg';
 import code from './assets/Upskill/CodeOutline.svg';
 import doc1 from './assets/Upskill/doc1.svg';
 import info from './assets/Upskill/InformationCircleOutline.svg';
+
 const typographyStyles = {
     fontFamily: 'DM Sans',
     fontSize: '16px',
@@ -36,10 +38,19 @@ const resources = [
     { type: 'Combined Resource', icon: doc1},
   ];
 const Upskill = () => {
+    const [isWideScreen, setIsWideScreen] = useState(window.innerWidth > 768);
   const [activeTab, setActiveTab] = useState('mentor');
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [expandedPart, setExpandedPart] = useState(1); // Track which part is expanded
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsWideScreen(window.innerWidth > 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const chapters = ['Chapter 1', 'Chapter 2', 'Chapter 3', 'Chapter 4', 'Chapter 5'];
 
   const renderPartContent = (partNumber, completedPercentage, lastIconText) => (
@@ -74,7 +85,7 @@ const Upskill = () => {
           {completedPercentage}% completed
         </div>
       </div>
-      <div style={{ backgroundColor: '#F0F0F0', padding: '5px', borderRadius: '8px', marginBottom: '15px' }}>
+      <div style={{ backgroundColor: '#F0F0F0', padding: '2px', borderRadius: '8px', marginBottom: '15px' }}>
         <div style={{ backgroundColor: '#000', height: '10px', width: `${completedPercentage}%`, borderRadius: '8px' }}></div>
       </div>
  
@@ -102,7 +113,7 @@ const Upskill = () => {
 
   return (
     <div style={{ backgroundColor: '#FFFFFF',  height: '100%', position: 'relative', fontFamily: 'DM Sans, sans-serif' }}>
-     <div style={{
+    {isWideScreen ? ( <div className="abc" style={{
         position: 'absolute',
         top: '20px',
         right: '20px',
@@ -115,8 +126,12 @@ const Upskill = () => {
         fontFamily: 'DM Sans',
         fontSize: '16px',
       }}>
-        <img src={info} alt="How it works icon" style={{ width: '20px', marginRight: '10px' }} />
-        <span>How it works</span></div>
+         
+        <img src={info} alt="How it works icon" style={{ width: '20px', marginRight: '10px' }} /><span>How it works</span></div>
+      ) : (
+        <div style={{ width: '20px', height: '20px', marginRight: '10px' }}></div>
+      )}
+      
       <div style={{
         background: 'linear-gradient(180deg, #EFF5FF 0%, rgba(239, 245, 255, 0) 100%)',
         padding: '10px',
@@ -212,7 +227,7 @@ const Upskill = () => {
                   {renderPartContent(3, 0, 0)}
                 </>
               ) : (
-                <p>Select a chapter to view details.</p>
+                <p>Select Chapter 1 chapter to view details.</p>
               )}
             </div>
           </div>
