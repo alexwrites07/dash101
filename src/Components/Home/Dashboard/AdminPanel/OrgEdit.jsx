@@ -21,30 +21,31 @@ const EditEmployerProfile = () => {
   const [formData, setFormData] = useState({ categories: [] });
 
   const handleCategoryInputChange = (e) => {
-      const input = e.target.value;
-      setInputText1(input); // Update the input text for categories
-      
-      // Filter categories based on input text
-      const filteredSuggestions = categoriesList.filter((category) =>
-          category.toLowerCase().includes(input.toLowerCase()) && !formData.categories.includes(category)
-      );
-      setSuggestions1(filteredSuggestions);
+    const input = e.target.value;
+    setInputText1(input);
+
+    const filteredSuggestions = categoriesList.filter(
+      (category) =>
+        category.toLowerCase().includes(input.toLowerCase()) &&
+        !employerData.categories.includes(category)
+    );
+    setSuggestions(filteredSuggestions);
   };
 
   const handleCategorySelect = (category) => {
-      setFormData((prevFormData) => ({
-          ...prevFormData,
-          categories: [...prevFormData.categories, category],
-      }));
-      setInputText1(''); // Clear input text after selecting a category
-      setSuggestions1([]); // Clear suggestions after selecting a category
+    setEmployerData((prevData) => ({
+      ...prevData,
+      categories: [...prevData.categories, category],
+    }));
+    setInputText1(''); // Clear input text after selecting a category
+    setSuggestions([]); // Clear suggestions
   };
 
   const handleCategoryRemove = (categoryToRemove) => {
-      setFormData((prevFormData) => ({
-          ...prevFormData,
-          categories: prevFormData.categories.filter(category => category !== categoryToRemove),
-      }));
+    setEmployerData((prevData) => ({
+      ...prevData,
+      categories: prevData.categories.filter((category) => category !== categoryToRemove),
+    }));
   };
 
   useEffect(() => {
@@ -154,48 +155,48 @@ const EditEmployerProfile = () => {
           />
         </label>
 
-        <label htmlFor="categories" className="block">Categories:</label>
-                <input
-                    type="text"
-                    id="categories"
-                    name="categories"
-                    value={inputText1}
-                    onChange={handleCategoryInputChange}
-                    className="border p-2 w-full"
-                    placeholder="Type to search and add categories"
-                />
-                {/* Suggestions Dropdown for Categories */}
-                {suggestions1.length > 0 && (
-                    <div className="border border-gray-300 rounded-md mt-1 bg-white shadow-lg max-h-40 overflow-y-auto">
-                        {suggestions1.map((category, index) => (
-                            <div
-                                key={index}
-                                onClick={() => handleCategorySelect(category)}
-                                className="p-2 hover:bg-blue-100 cursor-pointer"
-                            >
-                                {category}
-                            </div>
-                        ))}
-                    </div>
-                )}
-                {/* Selected Categories Display */}
-                <div className="flex flex-wrap mt-2">
-                    {formData.categories.map((category, index) => (
-                        <span
-                            key={index}
-                            className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
-                        >
-                            {category}
-                            <button
-                                type="button"
-                                onClick={() => handleCategoryRemove(category)}
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                                &times;
-                            </button>
-                        </span>
-                    ))}
-                </div>
+        <label htmlFor="categories" className="block">
+          Categories:
+        </label>
+        <input
+          type="text"
+          id="categories"
+          name="categories"
+          value={inputText1}
+          onChange={handleCategoryInputChange}
+          className="border p-2 w-full"
+          placeholder="Type to search and add categories"
+        />
+        {suggestions.length > 0 && (
+          <div className="border border-gray-300 rounded-md mt-1 bg-white shadow-lg max-h-40 overflow-y-auto">
+            {suggestions.map((category, index) => (
+              <div
+                key={index}
+                onClick={() => handleCategorySelect(category)}
+                className="p-2 hover:bg-blue-100 cursor-pointer"
+              >
+                {category}
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex flex-wrap mt-2">
+          {employerData.categories.map((category, index) => (
+            <span
+              key={index}
+              className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+            >
+              {category}
+              <button
+                type="button"
+                onClick={() => handleCategoryRemove(category)}
+                className="ml-2 text-blue-500 hover:text-blue-700"
+              >
+                &times;
+              </button>
+            </span>
+          ))}
+        </div>
 
         <label className="block">
           Rating:
