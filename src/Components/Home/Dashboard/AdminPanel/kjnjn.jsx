@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import categoriesList from './categories.json'
-import Map from '../../MapDemo';
 const EditTutor = () => {
     const {id}=useParams();
     const [formData, setFormData] = useState({
@@ -14,7 +12,7 @@ const EditTutor = () => {
         rating: '',
         location: {
             type: '',
-            coordinates: ["set location", "set location"],
+            coordinates: ['', ''],
             address: '',
             city: '',
             state: '',
@@ -33,65 +31,7 @@ const EditTutor = () => {
         categories: [],
         profileViews: [],
     });
-    const [coordinates, setCoordinates] = useState([0, 0]);
-    const [inputText, setInputText] = useState('');
-    const [inputText1, setInputText1] = useState(''); // Separate state for input text
-    const allTags = ['At my place', 'At tutors place', 'Urgent', 'Full time', 'Part Time', 'Online'];
-    const [suggestions, setSuggestions] = useState([]);
-    const [suggestions1, setSuggestions1] = useState([]);
-    const [formData1, setFormData1] = useState({ categories: [] });
-    const handleCategoryInputChange = (e) => {
-        const input = e.target.value;
-        setInputText1(input); // Update the input text for categories
-        
-        // Filter categories based on input text
-        const filteredSuggestions = categoriesList.filter((category) =>
-            category.toLowerCase().includes(input.toLowerCase()) && !formData.categories.includes(category)
-        );
-        setSuggestions1(filteredSuggestions);
-    };
 
-    const handleCategorySelect = (category) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            categories: [...prevFormData.categories, category],
-        }));
-        setInputText1(''); // Clear input text after selecting a category
-        setSuggestions1([]); // Clear suggestions after selecting a category
-    };
-
-    const handleCategoryRemove = (categoryToRemove) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            categories: prevFormData.categories.filter(category => category !== categoryToRemove),
-        }));
-    };
-  
-    const handleTagInputChange = (e) => {
-      const input = e.target.value;
-      setInputText(input); // Update input text
-      // Filter tags based on input
-      const filteredSuggestions = allTags.filter(tag => 
-        tag.toLowerCase().includes(input.toLowerCase()) && !formData.tags.includes(tag)
-      );
-      setSuggestions(filteredSuggestions);
-    };
-  
-    const handleTagSelect = (tag) => {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        tags: [...prevFormData.tags, tag],
-      }));
-      setInputText(''); // Clear input text after selecting a tag
-      setSuggestions([]); // Clear suggestions after selecting a tag
-    };
-    const handleTagRemove = (tagToRemove) => {
-        setFormData(prevFormData => ({
-          ...prevFormData,
-          tags: prevFormData.tags.filter(tag => tag !== tagToRemove),
-        }));
-      };
-      console.log(coordinates);
     useEffect(() => {
         const fetchTutorData = async () => {
             const token = localStorage.getItem('token');
@@ -111,11 +51,7 @@ const EditTutor = () => {
                 }
 
                 const data = await response.json();
-                setFormData(data); 
-                const fetchedCoordinates = data.location.coordinates;
-                if (fetchedCoordinates && fetchedCoordinates.length === 2) {
-                    setCoordinates([parseFloat(fetchedCoordinates[0]), parseFloat(fetchedCoordinates[1])]);
-                }
+                setFormData(data); // Assuming the API returns the data in the expected format
             } catch (error) {
                 console.error('Error fetching tutor data:', error);
             }
@@ -156,48 +92,7 @@ const EditTutor = () => {
             }));
         }
     };
-    const handleLocationChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, location: { ...formData.location, [name]: value } });
-    };
-    const handleMapChange = (updatedCoordinates) => {
-        setCoordinates(updatedCoordinates);  
-        setFormData((prev) => ({
-          ...prev,
-          location: {
-            ...prev.location,
-            coordinates: updatedCoordinates,
-          },
-        }));
-      };
-    const handleCoordinatesChange = (index, value) => {
-        const newCoordinates = [...formData.location.coordinates];
-        newCoordinates[index] = value;
-        setFormData({ ...formData, location: { ...formData.location, coordinates: newCoordinates } });
-        setCoordinates(updatedCoordinates); 
-    };
 
-    const handleExperienceChange = (index, e) => {
-        const { name, value } = e.target;
-        const newExperiences = [...formData.pastExperiences];
-        newExperiences[index] = { ...newExperiences[index], [name]: value };
-        setFormData({ ...formData, pastExperiences: newExperiences });
-    };
-
-    const handleAwardChange = (index, e) => {
-        const { name, value } = e.target;
-        const newAwards = [...formData.awards];
-        newAwards[index] = { ...newAwards[index], [name]: value };
-        setFormData({ ...formData, awards: newAwards });
-    };
-
-    const addExperience = () => {
-        setFormData({ ...formData, pastExperiences: [...formData.pastExperiences, { title: '', start_date: '', end_date: '', company: '', description: '' }] });
-    };
-
-    const addAward = () => {
-        setFormData({ ...formData, awards: [...formData.awards, { title: '', year: '', description: '' }] });
-    };
     const handleCheckboxChange = (name) => {
         setFormData((prevData) => ({
             ...prevData,
@@ -232,7 +127,6 @@ const EditTutor = () => {
 
             const result = await response.json();
             console.log('Profile updated successfully:', result);
-            alert("Profile Changed");
             // Handle success (e.g., redirect or show a success message)
         } catch (error) {
             console.error('Error updating profile:', error);
@@ -278,7 +172,17 @@ const EditTutor = () => {
                 />
             </div>
 
-          
+            <div className="mb-4">
+                <label htmlFor="dob" className="block">Date of Birth:</label>
+                <input
+                    type="date"
+                    id="dob"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    className="border p-2 w-full"
+                />
+            </div>
 
             <div className="mb-4">
                 <label htmlFor="username" className="block">Username:</label>
@@ -330,10 +234,10 @@ const EditTutor = () => {
                 />
             </div>
             <div className="mb-4">
-                <label htmlFor="location.coordinates" className="block">Coordinates:</label>
+                <label htmlFor="location.coordinates" className="block">Coordinates (lat, long):</label>
                 <input
                     type="text"
-                    
+                    placeholder="Latitude"
                     value={formData.location.coordinates[0]}
                     onChange={(e) => {
                         const newCoordinates = [...formData.location.coordinates];
@@ -350,7 +254,7 @@ const EditTutor = () => {
                 />
                 <input
                     type="text"
-                   
+                    placeholder="Longitude"
                     value={formData.location.coordinates[1]}
                     onChange={(e) => {
                         const newCoordinates = [...formData.location.coordinates];
@@ -365,7 +269,6 @@ const EditTutor = () => {
                     }}
                     className="border p-2 w-1/2 inline-block"
                 />
-                 <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
             </div>
             <div className="mb-4">
                 <label htmlFor="location.address" className="block">Address:</label>
@@ -416,8 +319,59 @@ const EditTutor = () => {
             <h2 className="text-lg font-bold">Job Alerts</h2>
          
 
-          
+            <div className="mb-4">
+                <label className="block">Private Tutor Alert:</label>
+                {/* <input
+                    type="checkbox"
+                    checked={formData.jobAlerts.privateTutor.flag}
+                    onChange={() => handleCheckboxChange('privateTutor')}
+                /> */}
+                {/* <input
+                    type="text"
+                    placeholder="Distance"
+                    value={formData.jobAlerts.privateTutor.distance}
+                    onChange={(e) => {
+                        setFormData((prevData) => ({
+                            ...prevData,
+                            jobAlerts: {
+                                ...prevData.jobAlerts,
+                                privateTutor: {
+                                    ...prevData.jobAlerts.privateTutor,
+                                    distance: e.target.value,
+                                },
+                            },
+                        }));
+                    }}
+                    className="border p-2 ml-2"
+                /> */}
+            </div>
 
+            <div className="mb-4">
+                <label className="block">Organization Educator Alert:</label>
+                {/* <input
+                    type="checkbox"
+                    checked={formData.jobAlerts.organizationEducator.flag}
+                    onChange={() => handleCheckboxChange('organizationEducator')}
+                /> */}
+                {/* <input
+                    type="text"
+                    placeholder="Distance"
+                    value={formData.jobAlerts.organizationEducator.distance}
+                    onChange={(e) => {
+                        setFormData((prevData) => ({
+                            ...prevData,
+                            jobAlerts: {
+                                ...prevData.jobAlerts,
+                                organizationEducator: {
+                                    ...prevData.jobAlerts.organizationEducator,
+                                    distance: e.target.value,
+                                },
+                            },
+                        }));
+                    }}
+                    className="border p-2 ml-2"
+                /> */}
+            </div>
 
             <div className="mb-4">
                 <label htmlFor="jobAlerts.minExpectedSalary" className="block">Min Expected Salary:</label>
@@ -429,7 +383,22 @@ const EditTutor = () => {
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
-                
+                {/* <input
+                    type="checkbox"
+                    checked={formData.jobAlerts.minExpectedSalary.flag}
+                    onChange={() => {
+                        setFormData((prevData) => ({
+                            ...prevData,
+                            jobAlerts: {
+                                ...prevData.jobAlerts,
+                                minExpectedSalary: {
+                                    ...prevData.jobAlerts.minExpectedSalary,
+                                    flag: !prevData.jobAlerts.minExpectedSalary.flag,
+                                },
+                            },
+                        }));
+                    }}
+                /> */}
             </div>
 
             <div className="mb-4">
@@ -442,7 +411,22 @@ const EditTutor = () => {
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
-                
+                {/* <input
+                    type="checkbox"
+                    checked={formData.jobAlerts.maxExpectedSalary.flag}
+                    onChange={() => {
+                        setFormData((prevData) => ({
+                            ...prevData,
+                            jobAlerts: {
+                                ...prevData.jobAlerts,
+                                maxExpectedSalary: {
+                                    ...prevData.jobAlerts.maxExpectedSalary,
+                                    flag: !prevData.jobAlerts.maxExpectedSalary.flag,
+                                },
+                            },
+                        }));
+                    }}
+                /> */}
             </div>
 
             {/* Past Experiences */}
@@ -466,7 +450,7 @@ const EditTutor = () => {
                             type="date"
                             id={`experience-startDate-${index}`}
                             name="start_date"
-                            value={exp.start_date?.split('T')[0]}
+                            value={exp.start_date}
                             onChange={(e) => handleExperienceChange(index, e)}
                             className="border p-2 w-full"
                         />
@@ -477,7 +461,7 @@ const EditTutor = () => {
                             type="date"
                             id={`experience-endDate-${index}`}
                             name="end_date"
-                            value={exp.end_date?.split('T')[0]}
+                            value={exp.end_date}
                             onChange={(e) => handleExperienceChange(index, e)}
                             className="border p-2 w-full"
                         />
@@ -527,10 +511,10 @@ const EditTutor = () => {
                     <div className="mb-2">
                         <label htmlFor={`award-year-${index}`} className="block">Year:</label>
                         <input
-                            type="date"
+                            type="number"
                             id={`award-year-${index}`}
                             name="year"
-                            value={award.year?.split('T')[0]}
+                            value={award.year}
                             onChange={(e) => handleAwardChange(index, e)}
                             className="border p-2 w-full"
                         />
@@ -551,105 +535,45 @@ const EditTutor = () => {
                 Add Award
             </button>
 
-            <label htmlFor="tags" className="block">Tags:</label>
-      <input
-        type="text"
-        id="tags"
-        name="tags"
-        value={inputText} // Bind input value to inputText state
-        onChange={handleTagInputChange}
-        className="border p-2 w-full"
-        placeholder="Type to search and add tags"
-      />
-
-      {/* Suggestions Dropdown */}
-      {suggestions.length > 0 && (
-        <div className="border border-gray-300 rounded-md mt-1 bg-white shadow-lg max-h-40 overflow-y-auto">
-          {suggestions.map((tag, index) => (
-            <div
-              key={index}
-              onClick={() => handleTagSelect(tag)}
-              className="p-2 hover:bg-blue-100 cursor-pointer"
-            >
-              {tag}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Selected Tags Display */}
-      <div className="flex flex-wrap mt-2">
-        {formData.tags.map((tag, index) => (
-          <span
-            key={index}
-            className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
-          >
-            {tag}
-            <button
-              type="button"
-              onClick={() => handleTagRemove(tag)}
-              className="ml-2 text-blue-500 hover:text-blue-700"
-            >
-              &times;
-            </button>
-          </span>
-        ))}
-      </div>
-      <div className="mb-4">
-                <label htmlFor="dob" className="block">Date of Birth:</label>
+            {/* Tags and Categories Fields */}
+            <div className="mb-4">
+                <label htmlFor="tags" className="block">Tags:</label>
                 <input
-                    type="date"
-                    id="dob"
-                    name="dob"
-                    value={formData.dob?.split('T')[0]}
+                    type="text"
+                    id="tags"
+                    name="tags"
+                    value={formData.tags.join(', ')}
                     onChange={handleChange}
                     className="border p-2 w-full"
+                    placeholder="Comma-separated tags"
                 />
             </div>
+
             <div className="mb-4">
-            <label htmlFor="categories" className="block">Categories:</label>
+                <label htmlFor="categories" className="block">Categories:</label>
                 <input
                     type="text"
                     id="categories"
                     name="categories"
-                    value={inputText1}
-                    onChange={handleCategoryInputChange}
+                    value={formData.categories.join(', ')}
+                    onChange={handleChange}
                     className="border p-2 w-full"
-                    placeholder="Type to search and add categories"
+                    placeholder="Comma-separated categories"
                 />
-                {/* Suggestions Dropdown for Categories */}
-                {suggestions1.length > 0 && (
-                    <div className="border border-gray-300 rounded-md mt-1 bg-white shadow-lg max-h-40 overflow-y-auto">
-                        {suggestions1.map((category, index) => (
-                            <div
-                                key={index}
-                                onClick={() => handleCategorySelect(category)}
-                                className="p-2 hover:bg-blue-100 cursor-pointer"
-                            >
-                                {category}
-                            </div>
-                        ))}
-                    </div>
-                )}
-                {/* Selected Categories Display */}
-                <div className="flex flex-wrap mt-2">
-                    {formData.categories.map((category, index) => (
-                        <span
-                            key={index}
-                            className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
-                        >
-                            {category}
-                            <button
-                                type="button"
-                                onClick={() => handleCategoryRemove(category)}
-                                className="ml-2 text-blue-500 hover:text-blue-700"
-                            >
-                                &times;
-                            </button>
-                        </span>
-                    ))}
-                </div>
             </div>
+
+            {/* Profile Views */}
+            {/* <div className="mb-4">
+                <label htmlFor="profileViews" className="block">Profile Views:</label>
+                <input
+                    type="text"
+                    id="profileViews"
+                    name="profileViews"
+                    value={formData.profileViews.join(', ')}
+                    onChange={handleChange}
+                    className="border p-2 w-full"
+                />
+            </div> */}
 
             <button type="submit" className="bg-blue-500 text-white p-2">Save Changes</button>
         </form>

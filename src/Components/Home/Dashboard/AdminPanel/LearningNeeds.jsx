@@ -20,7 +20,8 @@ const LearningNeedsView = () => {
       landmark: '',
       city: '',
       pinCode: '',
-      state: ''
+      state: '',
+      coordinates: ['', ''],
     },
     available: '',
     salary: {
@@ -35,6 +36,38 @@ const LearningNeedsView = () => {
 
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const handleDelete = async (id) => {
+    try {
+      // Retrieve the bearer token from local storage
+      const token = localStorage.getItem('token'); 
+
+      if (!token) {
+        console.error('No token found in local storage');
+        return;
+      }
+
+      // Sending DELETE request to the backend
+      const response = await fetch(`https://backend.akshayy.tech/learning-need/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Checking if the response is successful
+      if (response.ok) {
+        console.log('Learning need deleted successfully');
+        alert ("Learning Need deleted successfully");
+        // Optionally, you can trigger a state update here to remove the deleted item from the UI
+      } else {
+        console.error('Failed to delete the learning need');
+        alert  ("Learning Need failed to be deleted");
+      }
+    } catch (error) {
+      console.error('Error deleting learning need:', error);
+    }
+  };
 
   const handleEditClick = (studentId) => {
     navigate(`/edit-learning-need/${studentId}`);
@@ -58,6 +91,7 @@ const LearningNeedsView = () => {
           genderPreference: need.genderPreference,
           available: need.available,
           isApproved: need.isApproved,
+          typeOfClass:need.typeOfClass,
         }));
 
         setApprovedLearningNeeds(fetchedNeeds.filter((ln) => ln.isApproved));
@@ -77,6 +111,40 @@ const LearningNeedsView = () => {
     const { name, value } = e.target;
     setNewNeed((prev) => ({ ...prev, [name]: value }));
   };
+  const handleCoordinatesChange = (e) => {
+    const { name, value } = e.target;
+    setNewNeed((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        coordinates: name === 'latitude' 
+          ? [value, prev.location.coordinates[1]] 
+          : [prev.location.coordinates[0], value],
+      },
+    }));
+  };
+  const handleTypeOfClassChange = (e) => {
+    const value = e.target.value;
+    const checked = e.target.checked;
+  
+    if (checked) {
+      // Add the new class type if checked
+      setNewNeed({
+        ...newNeed,
+        typeOfClass: newNeed.typeOfClass ? `${newNeed.typeOfClass},${value}` : value,
+      });
+    } else {
+      // Remove the class type if unchecked
+      setNewNeed({
+        ...newNeed,
+        typeOfClass: newNeed.typeOfClass
+          .split(',')
+          .filter((item) => item !== value)
+          .join(','),
+      });
+    }
+  };
+  
 
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
@@ -115,7 +183,8 @@ const LearningNeedsView = () => {
           landmark: '',
           city: '',
           pinCode: '',
-          state: ''
+          state: '',
+          coordinates: ['', ''], 
         },
         available: '',
         salary: {
@@ -174,15 +243,150 @@ const LearningNeedsView = () => {
           <input type="text" name="pinCode" value={newNeed.location.pinCode} onChange={handleLocationChange} placeholder="Pin Code" required className="border p-2 rounded" />
           <input type="text" name="state" value={newNeed.location.state} onChange={handleLocationChange} placeholder="State" required className="border p-2 rounded" />
           <input type="number" name="max" value={newNeed.salary.max} onChange={handleSalaryChange} placeholder="Max Salary" required className="border p-2 rounded" />
-          <input type="text" name="period" value={newNeed.salary.period} onChange={handleSalaryChange} placeholder="Salary Period" required className="border p-2 rounded" />
+
+          <div className="mb-2">
+  <label className="block font-medium text-gray-700">Salary period</label>
+  <select
+    name="period"
+    value={newNeed.salary.period}
+    onChange={handleSalaryChange}
+    className="border p-2 rounded-md w-full"
+  >
+    <option value="">Select Salary period</option>
+    <option value="hourly">Hourly</option>
+    <option value="daily">Daily</option>
+    <option value="monthly">Monthly</option>
+    <option value="annually">Annually</option>
+  </select>
+</div>
           <input type="text" name="board" value={newNeed.board} onChange={handleInputChange} placeholder="Board" className="border p-2 rounded" />
-          <input type="text" name="genderPreference" value={newNeed.genderPreference} onChange={handleInputChange} placeholder="Gender Preference" className="border p-2 rounded" />
-          <input type="text" name="start" value={newNeed.start} onChange={handleInputChange} placeholder="Start Date" className="border p-2 rounded" />
-          <input type="text" name="available" value={newNeed.available} onChange={handleInputChange} placeholder="Available" className="border p-2 rounded" />
+          <div className="mb-2">
+  <label className="block font-medium text-gray-700">Gender Preference</label>
+  <select
+    name="genderPreference"
+    value={newNeed.genderPreference}
+    onChange={handleInputChange}
+    className="border p-2 rounded-md w-full"
+  >
+    <option value="">Select Gender Preference</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="No Preference">No Preference</option>
+  </select>
+</div>
+          <div className="mb-2">
+  <label className="block font-medium text-gray-700">Start Date</label>
+  <select
+    name="start"
+    value={newNeed.start}
+    onChange={handleInputChange}
+    className="border p-2 rounded-md w-full"
+  >
+    <option value="">Select Start Date</option>
+    <option value="Immediately">Immediately</option>
+    <option value="Within a month">Within a month</option>
+    <option value="Just looking at options">Just looking at options</option>
+  </select>
+</div>
+          <div className="mb-2">
+  <label className="block font-medium text-gray-700">Availability</label>
+  <div className="flex space-x-4">
+    <div>
+      <input
+        type="checkbox"
+        id="weekends"
+        name="available"
+        value="Weekends"
+        checked={newNeed.available.includes("Weekends")}
+        onChange={handleInputChange}
+        className="mr-2"
+      />
+      <label htmlFor="weekends">Weekends</label>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        id="weekdays"
+        name="available"
+        value="Weekdays"
+        checked={newNeed.available.includes("Weekdays")}
+        onChange={handleInputChange}
+        className="mr-2"
+      />
+      <label htmlFor="weekdays">Weekdays</label>
+    </div>
+    <div>
+      <input
+        type="checkbox"
+        id="any"
+        name="available"
+        value="Any"
+        checked={newNeed.available.includes("Any")}
+        onChange={handleInputChange}
+        className="mr-2"
+      />
+      <label htmlFor="any">Any</label>
+    </div>
+  </div>
+</div>
+          <div className="flex space-x-4">
+            <input type="text" name="latitude" value={newNeed.location.coordinates[0]} onChange={handleCoordinatesChange} placeholder="Latitude" className="border p-2 rounded" />
+            <input type="text" name="longitude" value={newNeed.location.coordinates[1]} onChange={handleCoordinatesChange} placeholder="Longitude" className="border p-2 rounded" />
+          </div>
+
+          {/* Type of Class */}
+          <label className="block font-medium">Type of Class</label>
+<div className="space-y-2">
+  <div>
+    <input
+      type="checkbox"
+      id="Online (Recommended)"
+      name="typeOfClass"
+      value="Online (Recommended)"
+      checked={newNeed.typeOfClass.includes('Online (Recommended)')}
+      onChange={handleTypeOfClassChange}
+    />
+    <label htmlFor="Online (Recommended)" className="ml-2">Online (Recommended)</label>
+  </div>
+  <div>
+    <input
+      type="checkbox"
+      id="Offline At tutor Place"
+      name="typeOfClass"
+      value="Offline: At tutor's place"
+      checked={newNeed.typeOfClass.includes('Offline: At tutor\'s place')}
+      onChange={handleTypeOfClassChange}
+    />
+    <label htmlFor="Offline At tutor Place" className="ml-2">Offline At tutor Place</label>
+  </div>
+  <div>
+    <input
+      type="checkbox"
+      id="Offline At student Place"
+      name="typeOfClass"
+      value="Offline: At student's place"
+      checked={newNeed.typeOfClass.includes('Offline: At student\'s place')}
+      onChange={handleTypeOfClassChange}
+    />
+    <label htmlFor="Offline At student Place" className="ml-2">Offline At student Place</label>
+  </div>
+  <div>
+    <input
+      type="checkbox"
+      id="Offline: Nearby classes"
+      name="typeOfClass"
+      value="Offline: Nearby classes"
+      checked={newNeed.typeOfClass.includes('Offline: Nearby classes')}
+      onChange={handleTypeOfClassChange}
+    />
+    <label htmlFor="Offline: Nearby classes" className="ml-2">Offline: Nearby classes</label>
+  </div>
+</div>
+
           <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Learning Need</button>
         </form>
 
-        <div className="flex flex-col space-y-6 w-3/5">
+        <div className="flex flex-col space-y-6 w-4/5 ml-64">
           <div className="space-y-4">
          
             {filteredApprovedLearningNeeds.map((learningNeed) => (
@@ -194,7 +398,8 @@ const LearningNeedsView = () => {
                   <span>{learningNeed.location}</span>
                  
                 </div>
-                <button onClick={() => handleEditClick(learningNeed.id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Edit</button>
+                <button onClick={() => handleEditClick(learningNeed.id)} className="bg-green-500 text-white px-4 py-2 mx-4 rounded-md hover:bg-green-600">Edit</button>
+                <button onClick={() => handleDelete(learningNeed.id)} className="bg-red-500 text-white px-4 py-2 mx-4 rounded-md hover:bg-green-600">Delete</button>
               </div>
             ))}
           </div>
@@ -210,7 +415,8 @@ const LearningNeedsView = () => {
                   <span>{learningNeed.location}</span>
                
                 </div>
-                <button onClick={() => handleEditClick(learningNeed.id)} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Edit</button>
+                <button onClick={() => handleEditClick(learningNeed.id)} className="bg-green-500 text-white px-4 py-2 mx-4 rounded-md hover:bg-green-600">Edit</button>
+                <button onClick={() => handleDelete(learningNeed.id)} className="bg-red-500 text-white px-4 py-2 mx-4 rounded-md hover:bg-green-600">Delete</button>
               </div>
             ))}
           </div>

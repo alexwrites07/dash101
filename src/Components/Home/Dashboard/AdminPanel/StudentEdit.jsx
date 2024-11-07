@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Map from '../../MapDemo';
 
 const StudentEdit = () => {
   const { studentId } = useParams();
+
   const [studentData, setStudentData] = useState({
     fullName: '',
-    
     class: '',
     location: {
       address: '',
       city: '',
       state: '',
       pinCode: '',
-      coordinates: []
+      coordinates: ["set location", "set location"],
     },
     profileViews: {
       count: 0,
@@ -23,6 +24,7 @@ const StudentEdit = () => {
     isActive: false,
     isLocked: false,
     username: '',
+    email:'',
     parentPhone: '',
     dob: '',
     parentName: '',
@@ -32,11 +34,19 @@ const StudentEdit = () => {
     unlockedContacts: [],
     contactNumberVerified: false,
     boardOfEducation: '',
-    hasUnreadNotifications: false
+    
+    contactCost: 0,
+    hasUnreadNotifications: false,
+    learningNeeds: []
   });
+
   const [loading, setLoading] = useState(true);
+  const [coordinates, setCoordinates] = useState([
+    parseFloat(studentData.location.coordinates[0]) || 0,
+    parseFloat(studentData.location.coordinates[1]) || 0
+  ]);
+  console.log(coordinates);
   const token = localStorage.getItem('token');
-  console.log(token);
 
   useEffect(() => {
     const fetchStudentData = async () => {
@@ -50,26 +60,15 @@ const StudentEdit = () => {
 
         if (response.data) {
           setStudentData({
-            fullName: response.data.fullName || '',
-            
-            class: response.data.class || '',
+            ...response.data,
             location: response.data.location || { address: '', city: '', state: '', pinCode: '', coordinates: [] },
             profileViews: response.data.profileViews || { count: 0, viewers: [] },
-            profileImageURL: response.data.profileImageURL || '',
-            isActive: response.data.isActive || false,
-            isLocked: response.data.isLocked || false,
-            username: response.data.username || '',
-            parentPhone: response.data.parentPhone || '',
-            dob: response.data.dob || '',
-            parentName: response.data.parentName || '',
-            schoolName: response.data.schoolName || '',
-            phone: response.data.phone || '',
-            socialMediaLinks: response.data.socialMediaLinks || [],
-            unlockedContacts: response.data.unlockedContacts || [],
-            contactNumberVerified: response.data.contactNumberVerified || false,
-            boardOfEducation: response.data.boardOfEducation || '',
-            hasUnreadNotifications: response.data.hasUnreadNotifications || false
+            learningNeeds: response.data.learningNeeds || []
           });
+          setCoordinates([
+            parseFloat(response.data.location.coordinates[0]) || 0,
+            parseFloat(response.data.location.coordinates[1]) || 0
+          ]);
         } else {
           console.error('User data not found in response', response.data);
         }
@@ -98,11 +97,23 @@ const StudentEdit = () => {
       },
     }));
   };
+
+  const handleMapChange = (updatedCoordinates) => {
+    setCoordinates(updatedCoordinates);  
+    setStudentData((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        coordinates: updatedCoordinates,
+      },
+    }));
+  };
+
   const handleCoordinatesChange = (e) => {
     const { name, value } = e.target;
-    const index = name === 'latitude' ? 0 : 1; // Determine index for latitude or longitude
+    const index = name === 'latitude' ? 0 : 1; 
     const updatedCoordinates = [...studentData.location.coordinates];
-    updatedCoordinates[index] = parseFloat(value) || 0; // Parse float or default to 0
+    updatedCoordinates[index] = parseFloat(value) || 0; 
     setStudentData((prevData) => ({
       ...prevData,
       location: {
@@ -110,7 +121,9 @@ const StudentEdit = () => {
         coordinates: updatedCoordinates,
       },
     }));
+    setCoordinates(updatedCoordinates);  
   };
+
   const handleSave = async () => {
     try {
       await axios.put(
@@ -173,14 +186,6 @@ const StudentEdit = () => {
         />
         
         <input
-          type="date"
-          name="dob"
-          value={studentData.dob}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
-        />
-     
-        <input
           type="text"
           name="schoolName"
           value={studentData.schoolName}
@@ -188,6 +193,38 @@ const StudentEdit = () => {
           placeholder="School Name"
           className="w-full px-4 py-2 border border-gray-300 rounded-md"
         />
+        <input
+          type="text"
+          name="boardOfEducation"
+          value={studentData.boardOfEducation}
+          onChange={handleInputChange}
+          placeholder="Board of Education"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="text"
+          name="parentPhone"
+          value={studentData.parentPhone}
+          onChange={handleInputChange}
+          placeholder="Parent Phone"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="date"
+          name="dob"
+          value={studentData.dob?.split('T')[0]}
+          onChange={handleInputChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="number"
+          name="contactCost"
+          value={studentData.contactCost}
+          onChange={handleInputChange}
+          placeholder="Contact Cost"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
+        
         <div className="space-y-2">
           <h3 className="font-bold">Location</h3>
           <input
@@ -223,66 +260,29 @@ const StudentEdit = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
           />
         </div>
-        <input
-          type="text"
-          name="parentName"
-          value={studentData.parentName}
-          onChange={handleInputChange}
-          placeholder="Parent's Name"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
-        />
-        <input
-          type="text"
-          name="parentPhone"
-          value={studentData.parentPhone}
-          onChange={handleInputChange}
-          placeholder="Parent's Phone"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
-        />
-        <input
-          type="text"
-          name="boardOfEducation"
-          value={studentData.boardOfEducation}
-          onChange={handleInputChange}
-          placeholder="Board of Education"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
-        />
-        <input
-          type="date"
-          name="dob"
-          value={studentData.dob?.split('T')[0]}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
-        />
-        <input
-          type="text"
-          name="schoolName"
-          value={studentData.schoolName}
-          onChange={handleInputChange}
-          placeholder="School Name"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
-        />
-        {/* Additional fields can be added similarly */}
-       
+        
         <div className="space-y-2">
-            <h4 className="font-bold">Coordinates</h4>
-            <input
-              type="number"
-              name="latitude"
-              value={studentData.location.coordinates[0]} // Access latitude
-              onChange={handleCoordinatesChange}
-              placeholder="Latitude"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
-            />
-            <input
-              type="number"
-              name="longitude"
-              value={studentData.location.coordinates[1]} // Access longitude
-              onChange={handleCoordinatesChange}
-              placeholder="Longitude"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
+          <h4 className="font-bold">Coordinates</h4>
+          <input
+            type="number"
+            name="latitude"
+            value={studentData.location.coordinates[0]} 
+            onChange={handleCoordinatesChange}
+            placeholder="Latitude"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+          />
+          <input
+            type="number"
+            name="longitude"
+            value={studentData.location.coordinates[1]} 
+            onChange={handleCoordinatesChange}
+            placeholder="Longitude"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+          />
+        </div>
+        
+        {/* Map Integration */}
+        <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
         
         <button
           onClick={handleSave}

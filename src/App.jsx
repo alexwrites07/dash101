@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import './App.css';
+import AdminProfile from './Components/Home/Dashboard/AdminPanel/AdminProfile.jsx';
 import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
 import TestimonialPage from './Components/Home/Dashboard/AdminPanel/FeaturedTestinomials.jsx';
 import Login from './Components/Auth/Login';
@@ -65,6 +66,7 @@ import EditJobs from './Components/Home/DashboardEmployer/EditJobs.jsx';
 import CategoryEdit from './Components/Home/Dashboard/AdminPanel/CategoryEdit.jsx';
 import Wallet from './Components/Home/DashboardEmployer/Wallet.jsx';
 import AboutUs from './Components/Home/AboutUs';
+
 import BlogPage from './Components/Home/Dashboard/AdminPanel/FeaturedBlogs.jsx';
 import Blog from './Components/Home/Dashboard/Blogs.jsx';
 import EditTags from './Components/Home/Dashboard/AdminPanel/EditTags.jsx';
@@ -173,6 +175,7 @@ function AppContent() {
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/admin-profile" element={<AdminProfile />} />
         <Route path="/widgets/hero-section" element={<HeroSectionManager/>}/>
         {/* <Route path="/add-category" element ={<WidgetCatagory/>}/> */}
         <Route path="/your-profile" element={<YourProfile />} />
