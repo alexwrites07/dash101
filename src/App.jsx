@@ -82,6 +82,8 @@ import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/Feature
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
 import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
+import DpEditDelete from './Components/Home/Dashboard/AdminPanel/DP.jsx';
+import Doc from './Components/Home/Dashboard/AdminPanel/DocVerify.jsx';
 
 function AdminRoute({ element: Component, ...rest }) {
   const userType = localStorage.getItem('type'); // Get userType from localStorage
@@ -170,6 +172,8 @@ function AppContent() {
         <Route path="/googlemap" element={<GoogleMap2 />} />
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/upload-resume" element={<UploadResume />} />
+        <Route path="/dpchange" element={<DpEditDelete />} />
+        <Route path="/docchange" element={<Doc />} />
         <Route path="/Catagories" element={<Catagories />} />
         <Route path="/jobs/edit/:id" element={<EditJob />} />
         <Route path="/jobpost" element={<JobPost />} />

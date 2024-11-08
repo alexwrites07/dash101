@@ -117,7 +117,8 @@ const StudentProfileView = () => {
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{student.fullName}</h3>
                     <p className="text-gray-600">{student.email}</p>
-                    <p className="text-gray-600">{student.parentphone}</p>
+                    <p className="text-gray-600">{student._id}</p><br></br>
+                    <p className="text-gray-600">{student.parentPhone}</p>
                   </div>
                   <div className="flex space-x-4">
                     <button

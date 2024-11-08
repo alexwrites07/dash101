@@ -122,7 +122,7 @@ const TutorProfileView = () => {
           />
         </div>
 
-        <div className="flex flex-col space-y-6 w-3/5">
+        <div className="flex flex-col space-y-6 w-4/5 ml-64">
           <div className="space-y-4">
             {/* <h2 className="text-2xl font-semibold">Selected Tutors</h2> */}
             {selectedTutors.length > 0 ? (
@@ -131,6 +131,8 @@ const TutorProfileView = () => {
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{tutor.fullName}</h3>
                     <p className="text-gray-700 truncate">{tutor.email}</p>
+                    <p className="text-gray-700 truncate">{tutor._id}</p>
+                    <p className="text-gray-700 truncate">{tutor.contactNumber}</p>
                   </div>
                   <button
                     onClick={() => removeFromSelected(tutor)}
@@ -153,6 +155,8 @@ const TutorProfileView = () => {
                   <div className="flex justify-between items-center">
                     <h3 className="text-lg font-medium">{tutor.fullName}</h3>
                     <h3 className="text-lg font-medium">{tutor.email}</h3>
+                    <p className="text-gray-700 truncate">{tutor._id}</p>
+                    <p className="text-gray-700 truncate">{tutor.contactNumber}</p>
                     <div>
                     <button
                       onClick={() => addToSelected(tutor)} // Navigate to edit on click

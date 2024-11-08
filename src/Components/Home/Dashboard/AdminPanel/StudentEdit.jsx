@@ -157,7 +157,7 @@ const StudentEdit = () => {
           onChange={handleInputChange}
           placeholder="Full Name"
           className="w-full px-4 py-2 border border-gray-300 rounded-md"
-          disabled
+          
         />
         <input
           type="text"
@@ -174,7 +174,7 @@ const StudentEdit = () => {
           onChange={handleInputChange}
           placeholder="Email"
           className="w-full px-4 py-2 border border-gray-300 rounded-md"
-          disabled
+         
         />
         <input
           type="text"

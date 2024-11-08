@@ -132,7 +132,7 @@ const EmployerProfileView = () => {
           />
         </div>
 
-        <div className="flex flex-col space-y-6 w-3/5">
+        <div className="flex flex-col space-y-6 w-4/5 ml-64">
           <div className="space-y-4">
             <h2 className="text-2xl font-semibold">Selected Employers</h2>
             {selectedEmployers.length > 0 ? (
@@ -144,6 +144,8 @@ const EmployerProfileView = () => {
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{employer.name}</h3>
                     <p className="text-gray-700 truncate">{employer.email}</p>
+                    <p className="text-gray-700 truncate">{employer._id}</p>
+                    <p className="text-gray-700 truncate">{employer.contactNumber}</p>
                   </div>
                   <button
                     onClick={() => removeFromSelected(employer)}
@@ -158,7 +160,7 @@ const EmployerProfileView = () => {
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             {/* <h2 className="text-2xl font-semibold">Unselected Employers</h2> */}
             {sortedOrganizations.length > 0 ? (
               sortedOrganizations.map((org) => (
@@ -169,6 +171,8 @@ const EmployerProfileView = () => {
                   <div className="flex w-full justify-between space-x-4">
                     <h3 className="text-lg font-medium">{org.name}</h3>
                     <p className="text-gray-700 truncate">{org.email}</p>
+                    <p className="text-gray-700 truncate">{org._id}</p>
+                    <p className="text-gray-700 truncate">{org.contactNumber}</p>
                   </div>
 
                   <button

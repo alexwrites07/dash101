@@ -154,6 +154,27 @@ const EditEmployerProfile = () => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />
         </label>
+        
+        <label className="block">
+          contactNumber:
+          <input
+            type="text"
+            name="contactNumber"
+            value={employerData.contactNumber || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </label>
+        <label className="block">
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={employerData.email || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </label>
 
         <label htmlFor="categories" className="block">
           Categories:
