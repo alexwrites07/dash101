@@ -41,6 +41,7 @@ import Tag from './Components/Home/Dashboard/AdminPanel/Tags.jsx';
 import Meetings from './Components/Home/Dashboard/Meetings';
 // import JobDetail from './Components/Home/Jobs/JobDetail.jsx';
 import JobDescription from './Components/Home/Jobs/JobDescription';
+import OrgDescription from './Components/Home/OrgDetails.jsx';
 import UploadResume from './Components/Home/Dashboard/UploadResume.jsx';
 import FollowingEmployer from './Components/Home/Dashboard/FollowingEmployer';
 // import StudentProfile from './Components/Home/Dashboard/StudentProfile.jsx';
@@ -66,7 +67,7 @@ import EditJobs from './Components/Home/DashboardEmployer/EditJobs.jsx';
 import CategoryEdit from './Components/Home/Dashboard/AdminPanel/CategoryEdit.jsx';
 import Wallet from './Components/Home/DashboardEmployer/Wallet.jsx';
 import AboutUs from './Components/Home/AboutUs';
-
+import OrganizationFinder from './Components/Home/FindOrganization.jsx';
 import BlogPage from './Components/Home/Dashboard/AdminPanel/FeaturedBlogs.jsx';
 import Blog from './Components/Home/Dashboard/Blogs.jsx';
 import EditTags from './Components/Home/Dashboard/AdminPanel/EditTags.jsx';
@@ -74,6 +75,7 @@ import BlogContent from './Components/Home/BlogContent.jsx';
 import Catagories from './Components/Home/Catagories';
 import EditBlogPage from './Components/Home/Dashboard/AdminPanel/EditBlogs.jsx';
 import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx';
+import NeedsFinder from './Components/Home/FindNeeds.jsx';
 // import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
 import StudentProfileView from './Components/Home/Dashboard/AdminPanel/StudentProfile.jsx';
 import Category from './Components/Home/Dashboard/AdminPanel/Category.jsx';
@@ -81,6 +83,7 @@ import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedH
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
+import NeedDescription from './Components/Home/NeedDetails.jsx';
 import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
 import DpEditDelete from './Components/Home/Dashboard/AdminPanel/DP.jsx';
 import Doc from './Components/Home/Dashboard/AdminPanel/DocVerify.jsx';
@@ -167,6 +170,7 @@ function AppContent() {
         <Route path="/reviews" element={<Reviews/>} />
         <Route path='/resume' element={<ResumeBuilder/>}/>
         <Route path="/demo-form" element={<DemoForm />} />
+        <Route path="/organizationpost" element={<OrganizationFinder />} />
         <Route path="/findtutor" element={<TutorFinder />} />
         <Route path="/getTutor/:Id" element={<TeachingDescription />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
@@ -178,8 +182,11 @@ function AppContent() {
         <Route path="/jobs/edit/:id" element={<EditJob />} />
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
+        <Route path="/getOrg/:iid" element={<OrgDescription/>} />
+        <Route path="/getNeed/:IId" element={<NeedDescription/>} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/admin-profile" element={<AdminProfile />} />
+        <Route path="/needpost" element={<NeedsFinder />} />
         <Route path="/widgets/hero-section" element={<HeroSectionManager/>}/>
         {/* <Route path="/add-category" element ={<WidgetCatagory/>}/> */}
         <Route path="/your-profile" element={<YourProfile />} />

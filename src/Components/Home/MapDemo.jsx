@@ -1,42 +1,42 @@
 import React, { useEffect, useState } from 'react';
 
 const Map = ({ coordinates, onCoordinatesChange }) => {
-  const [currentPosition, setCurrentPosition] = useState(coordinates);
+  // Store longitude first in the array as per your format: [longitude, latitude]
+  const [currentPosition, setCurrentPosition] = useState([coordinates[0], coordinates[1]]);
   
   useEffect(() => {
     if (!coordinates) return;
 
-    // Ensure map and marker are re-initialized if coordinates change
     const mapElement = document.getElementById('map');
     if (!mapElement) return;
 
+    // Reverse to standard lat/lng when initializing map
     const map = new window.google.maps.Map(mapElement, {
-      center: { lat: coordinates[1], lng: coordinates[0] },
+      center: { lat: coordinates[1], lng: coordinates[0] }, // reverse for Maps
       zoom: 12,
     });
 
     const marker = new window.google.maps.Marker({
       position: { lat: coordinates[1], lng: coordinates[0] },
       map: map,
-      draggable: true, // Allow the marker to be dragged
+      draggable: true,
     });
 
     // Handle marker drag end event
     marker.addListener('dragend', (event) => {
-      const newCoordinates = [event.latLng.lng(), event.latLng.lat()];
+      const newCoordinates = [event.latLng.lng(), event.latLng.lat()]; // reversed for state
       setCurrentPosition(newCoordinates);
-      onCoordinatesChange(newCoordinates);
+      onCoordinatesChange(newCoordinates); // send reversed array to parent
     });
 
     // Handle map click event
     map.addListener('click', (event) => {
-      const newCoordinates = [event.latLng.lng(), event.latLng.lat()];
+      const newCoordinates = [event.latLng.lng(), event.latLng.lat()]; // reversed for state
       setCurrentPosition(newCoordinates);
-      onCoordinatesChange(newCoordinates);
-      marker.setPosition(event.latLng); // Move the marker to the clicked location
+      onCoordinatesChange(newCoordinates); // send reversed array to parent
+      marker.setPosition(event.latLng); // set standard lat/lng on marker position
     });
 
-    // Cleanup on component unmount
     return () => {
       marker.setMap(null);
     };
@@ -54,4 +54,3 @@ const Map = ({ coordinates, onCoordinatesChange }) => {
 };
 
 export default Map;
-

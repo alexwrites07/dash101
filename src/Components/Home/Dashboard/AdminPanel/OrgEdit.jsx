@@ -65,11 +65,11 @@ const EditEmployerProfile = () => {
             setCoordinates([parseFloat(fetchedCoordinates[0]), parseFloat(fetchedCoordinates[1])]);
           }
         } else {
-          setError('No employer data found.');
+          setError('No organization data found.');
         }
       } catch (error) {
-        console.error('Error fetching employer data:', error);
-        setError('Error fetching employer data');
+        console.error('Error fetching organization data:', error);
+        setError('Error fetching organization data');
       } finally {
         setLoading(false);
       }
@@ -127,12 +127,12 @@ const EditEmployerProfile = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('Updated employer profile:', response.data);
-      window.alert('Employer profile updated successfully!');
+      console.log('Updated organization profile:', response.data);
+      window.alert('organization profile updated successfully!');
     } catch (error) {
-      console.error('Error saving employer data:', error);
-      window.alert('Error saving employer data. Please try again.');
-      setError('Error saving employer data');
+      console.error('Error saving organization data:', error);
+      window.alert('Error saving organization data. Please try again.');
+      setError('Error saving organization data');
     }
   };
 
@@ -141,7 +141,7 @@ const EditEmployerProfile = () => {
 
   return (
     <div className="mt-6 p-4 mx-auto max-w-3xl">
-      <h1 className="text-2xl font-semibold mb-6">Edit Employer Profile</h1>
+      <h1 className="text-2xl font-semibold mb-6">Edit Organization Profile</h1>
 
       <div className="space-y-4">
         <label className="block">
@@ -219,15 +219,22 @@ const EditEmployerProfile = () => {
           ))}
         </div>
 
-        <label className="block">
-          Rating:
-          <input
-            type="text"
-            name="rating"
-            value={employerData.rating || 0}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
+        <label className="block">Website:
+          <input type="text" name="website" value={employerData.website || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </label>
+
+       
+
+        <label className="block">Description:
+          <textarea name="description" value={employerData.description || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md"></textarea>
+        </label>
+
+        <label className="block">Priority:
+          <input type="number" name="priority" value={employerData.priority || 0} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </label>
+
+        <label className="block">Rating:
+          <input type="number" name="rating" value={employerData.rating || 0} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
         </label>
 
       
@@ -264,26 +271,40 @@ const EditEmployerProfile = () => {
           />
         </label>
 
-        <label className="block">
-          Subjects Required (comma-separated):
-          <input
-            type="text"
-            name="subjectsRequired"
-            value={employerData.subjectsRequired?.join(', ') || ''}
-            onChange={(e) => handleChange({ target: { name: 'subjectsRequired', value: e.target.value.split(', ') } })}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
+       
+        <label className="block">Organization Type:</label>
+<select
+  name="organizationType"
+  value={employerData.organizationType || 'School'} // Default to 'School' if no value is present
+  onChange={handleChange}
+  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+>
+  <option value="School">School</option>
+  <option value="Coaching Institute">Coaching Institute</option>
+  <option value="Tuition classes">Tuition classes</option>
+  <option value="Other">Other</option>
+</select>
+
+
+        
+        <label className="block">Address:
+          <input type="text" name="location.address" value={employerData.location?.address || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
         </label>
 
-        <label className="block">
-          Job Postings (comma-separated IDs):
-          <input
-            type="text"
-            name="jobPostings"
-            value={employerData.jobPostings?.join(', ') || ''}
-            onChange={(e) => handleChange({ target: { name: 'jobPostings', value: e.target.value.split(', ') } })}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
+        <label className="block">City:
+          <input type="text" name="location.city" value={employerData.location?.city || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </label>
+
+        <label className="block">State:
+          <input type="text" name="location.state" value={employerData.location?.state || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </label>
+
+        <label className="block">Country:
+          <input type="text" name="location.country" value={employerData.location?.country || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
+        </label>
+
+        <label className="block">Pin Code:
+          <input type="text" name="location.pinCode" value={employerData.location?.pinCode || ''} onChange={handleChange} className="mt-1 block w-full p-2 border border-gray-300 rounded-md" />
         </label>
 
         <label className="block">

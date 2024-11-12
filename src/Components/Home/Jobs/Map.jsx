@@ -5,12 +5,12 @@ const Map = ({ coordinates }) => {
     if (!coordinates) return;
 
     const map = new window.google.maps.Map(document.getElementById('map'), {
-      center: { lat: coordinates[1], lng: coordinates[0] },
+      center: { lat: coordinates[0], lng: coordinates[1] },
       zoom: 12,
     });
 
     new window.google.maps.Marker({
-      position: { lat: coordinates[1], lng: coordinates[0] },
+      position: { lat: coordinates[0], lng: coordinates[1] },
       map: map,
     });
   }, [coordinates]);

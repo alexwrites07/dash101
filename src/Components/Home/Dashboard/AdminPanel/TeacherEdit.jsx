@@ -12,6 +12,10 @@ const EditTutor = () => {
         username: '',
         contactCost: '',
         rating: '',
+        teachingLevels:'',
+        video:'',
+        highestQualification:'',
+        gender:'',
         location: {
             type: '',
             coordinates: ["set location", "set location"],
@@ -24,13 +28,14 @@ const EditTutor = () => {
             alertDistance: '',
             privateTutor: { distance: '' },
             organizationEducator: { distance: '' },
-            minExpectedSalary: { value: '' },
-            maxExpectedSalary: { value: '' },
+            minExpectedSalary: { value: '' , period: ''},
+            maxExpectedSalary: { value: '', period: '' },
         },
         pastExperiences: [],
         awards: [],
         tags: [],
         categories: [],
+        education:[],
         profileViews: [],
     });
     const [coordinates, setCoordinates] = useState([0, 0]);
@@ -126,8 +131,7 @@ const EditTutor = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // Handle nested fields
+    
         if (name.startsWith('location.')) {
             const fieldName = name.split('.')[1];
             setFormData((prevData) => ({
@@ -138,24 +142,26 @@ const EditTutor = () => {
                 },
             }));
         } else if (name.startsWith('jobAlerts.')) {
-            const fieldName = name.split('.')[1];
+            const [_, mainField, subField] = name.split('.'); // Splits `jobAlerts.minExpectedSalary.period` into `jobAlerts`, `minExpectedSalary`, `period`
+            
             setFormData((prevData) => ({
                 ...prevData,
                 jobAlerts: {
                     ...prevData.jobAlerts,
-                    [fieldName]: {
-                        ...prevData.jobAlerts[fieldName],
-                        value: value,
+                    [mainField]: {
+                        ...prevData.jobAlerts[mainField],
+                        [subField]: value, // Dynamically sets the nested field
                     },
                 },
             }));
         } else {
             setFormData((prevData) => ({
                 ...prevData,
-                [name]: name === 'tags' || name === 'categories' ? value.split(',').map(tag => tag.trim()) : value
+                [name]: name === 'tags' || name === 'categories'|| name==='teachingLevelss' ? value.split(',').map(tag => tag.trim()) : value,
             }));
         }
     };
+    
     const handleLocationChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, location: { ...formData.location, [name]: value } });
@@ -177,13 +183,53 @@ const EditTutor = () => {
         setCoordinates(updatedCoordinates); 
     };
 
+   
+
+    const handleEducationChange = (index, e) => {
+        const { name, value } = e.target;
+        const newEducation = [...formData.education];
+        newEducation[index] = { ...newEducation[index], [name]: value };
+        setFormData({ ...formData, education: newEducation });
+    };
+
+    const addEducation = () => {
+        setFormData({ ...formData, education: [...formData.education, { title: '', year: '', academy: '', description: '' }] });
+    };
+
     const handleExperienceChange = (index, e) => {
         const { name, value } = e.target;
         const newExperiences = [...formData.pastExperiences];
         newExperiences[index] = { ...newExperiences[index], [name]: value };
         setFormData({ ...formData, pastExperiences: newExperiences });
     };
-
+    const handleQualificationChange = (index, e) => {
+        const updatedQualifications = formData.qualifications.map((award, i) =>
+          i === index ? e.target.value : award
+        );
+        setFormData({
+          ...formData,
+          qualifications: updatedQualifications
+        });
+      };
+    
+      // Add a new qualification
+      const addQualification = () => {
+        setFormData({
+          ...formData,
+          qualifications: [...formData.qualifications, '']
+        });
+      };
+    
+      // Remove a qualification
+      const removeQualification = (index) => {
+        const updatedQualifications = formData.qualifications.filter(
+          (award, i) => i !== index
+        );
+        setFormData({
+          ...formData,
+          qualifications: updatedQualifications
+        });
+      };
     const handleAwardChange = (index, e) => {
         const { name, value } = e.target;
         const newAwards = [...formData.awards];
@@ -305,6 +351,29 @@ const EditTutor = () => {
             </div>
 
             <div className="mb-4">
+                <label htmlFor="fullName" className="block">Introductory Video</label>
+                <input
+                    type="text"
+                    id="video"
+                    name="video"
+                    value={formData.video}
+                    onChange={handleChange}
+                    className="border p-2 w-full"
+                />
+            </div><div className="mb-4">
+                <label htmlFor="fullName" className="block">Highest Qualification</label>
+                <input
+                    type="text"
+                    id="highestQualification"
+                    name="highestQualification"
+                    value={formData.highestQualification}
+                    onChange={handleChange}
+                    className="border p-2 w-full"
+                />
+            </div>
+          
+
+            <div className="mb-4">
                 <label htmlFor="rating" className="block">Rating:</label>
                 <input
                     type="text"
@@ -413,38 +482,81 @@ const EditTutor = () => {
             </div>
 
             {/* Job Alerts */}
-            <h2 className="text-lg font-bold">Job Alerts</h2>
-         
 
-          
+
+            
+        
+            <div className="mb-2">
+  <label className="block font-medium text-gray-700">Gender Preference</label>
+  <select
+    name="gender"  
+    value={formData.gender}  
+    onChange={handleChange}  
+    className="border p-2 rounded-md w-full"
+  >
+    <option value="">Select Gender Preference</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="No Preference">No Preference</option>
+  </select>
+</div>
 
 
             <div className="mb-4">
-                <label htmlFor="jobAlerts.minExpectedSalary" className="block">Min Expected Salary:</label>
+    <h3 className="text-lg font-medium">Min Expected Salary:</h3>
+    <input
+        type="number"
+        id="jobAlerts.minExpectedSalary.value"
+        name="jobAlerts.minExpectedSalary.value"
+        value={formData.jobAlerts.minExpectedSalary.value}
+        onChange={handleChange}
+        className="border p-2 w-full"
+        placeholder="Enter min salary"
+    />
+    <select
+        name="jobAlerts.minExpectedSalary.period"
+        value={formData.jobAlerts.minExpectedSalary.period}
+        onChange={handleChange}
+        className="border p-2 w-full mt-2"
+    >
+        <option value="monthly">Monthly</option>
+        <option value="hourly">Hourly</option>
+    </select>
+</div>
+
+{/* Max Salary */}
+<div className="mb-4">
+    <h3 className="text-lg font-medium">Max Expected Salary:</h3>
+    <input
+        type="number"
+        id="jobAlerts.maxExpectedSalary.value"
+        name="jobAlerts.maxExpectedSalary.value"
+        value={formData.jobAlerts.maxExpectedSalary.value}
+        onChange={handleChange}
+        className="border p-2 w-full"
+        placeholder="Enter max salary"
+    />
+    <select
+        name="jobAlerts.maxExpectedSalary.period"
+        value={formData.jobAlerts.maxExpectedSalary.period}
+        onChange={handleChange}
+        className="border p-2 w-full mt-2"
+    >
+        <option value="monthly">Monthly</option>
+        <option value="hourly">Hourly</option>
+    </select>
+</div>
+<div className="mb-4">
+                <label htmlFor="fullName" className="block">Teaching Level</label>
                 <input
                     type="text"
-                    id="jobAlerts.minExpectedSalary"
-                    name="jobAlerts.minExpectedSalary.value"
-                    value={formData.jobAlerts.minExpectedSalary.value}
+                    id="teachingLevels"
+                    name="teachingLevels"
+                    value={formData.teachingLevels}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
-                
             </div>
-
-            <div className="mb-4">
-                <label htmlFor="jobAlerts.maxExpectedSalary" className="block">Max Expected Salary:</label>
-                <input
-                    type="text"
-                    id="jobAlerts.maxExpectedSalary"
-                    name="jobAlerts.maxExpectedSalary.value"
-                    value={formData.jobAlerts.maxExpectedSalary.value}
-                    onChange={handleChange}
-                    className="border p-2 w-full"
-                />
-                
-            </div>
-
             {/* Past Experiences */}
             <h2 className="text-lg font-bold">Past Experiences</h2>
             {formData.pastExperiences.map((exp, index) => (
@@ -549,6 +661,103 @@ const EditTutor = () => {
             ))}
             <button type="button" onClick={addAward} className="mb-4 bg-blue-500 text-white p-2">
                 Add Award
+            </button>
+
+
+            <div className="p-4">
+      <h2 className="text-lg font-bold">Qualifications</h2>
+
+      {/* Map through qualifications and render input fields */}
+      {(formData.qualifications && Array.isArray(formData.qualifications) && formData.qualifications.length > 0) ? (
+        formData.qualifications.map((award, index) => (
+          <div key={index} className="mb-4 border p-4">
+            <div className="mb-2">
+              <input
+                type="text"
+                id={`award-title-${index}`}
+                name="title"
+                value={award}
+                onChange={(e) => handleQualificationChange(index, e)}
+                className="border p-2 w-full"
+                placeholder="Enter qualification"
+              />
+            </div>
+
+            {/* Remove qualification button */}
+            <button
+              type="button"
+              onClick={() => removeQualification(index)}
+              className="text-red-500"
+            >
+              Remove Qualification
+            </button>
+          </div>
+        ))
+      ) : (
+        <p>No qualifications added yet.</p>
+      )}
+
+      {/* Add qualification button */}
+      <button
+        type="button"
+        onClick={addQualification}
+        className="mb-4 bg-blue-500 text-white p-2"
+      >
+        Add Qualification
+      </button>
+    </div>
+
+
+              {/* Dynamic inputs for awards */}
+              <h2 className="text-lg font-bold">Education</h2>
+            {formData.education.map((award, index) => (
+                <div key={index} className="mb-4 border p-4">
+                    <div className="mb-2">
+                        <label htmlFor={`award-title-${index}`} className="block">Title:</label>
+                        <input
+                            type="text"
+                            id={`award-title-${index}`}
+                            name="title"
+                            value={award.title}
+                            onChange={(e) => handleEducationChange(index, e)}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                    <div className="mb-2">
+                        <label htmlFor={`award-year-${index}`} className="block">Year:</label>
+                        <input
+                            type="date"
+                            id={`award-year-${index}`}
+                            name="year"
+                            value={award.year?.split('T')[0]}
+                            onChange={(e) => handleEducationChange(index, e)}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                    <div className="mb-2">
+                        <label htmlFor={`award-academy-${index}`} className="block">academy:</label>
+                        <textarea
+                            id={`award-academy-${index}`}
+                            name="academy"
+                            value={award.academy}
+                            onChange={(e) => handleEducationChange(index, e)}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                    <div className="mb-2">
+                        <label htmlFor={`award-description-${index}`} className="block">Description:</label>
+                        <textarea
+                            id={`award-description-${index}`}
+                            name="description"
+                            value={award.description}
+                            onChange={(e) => handleEducationChange(index, e)}
+                            className="border p-2 w-full"
+                        />
+                    </div>
+                </div>
+            ))}
+            <button type="button" onClick={addEducation} className="mb-4 bg-blue-500 text-white p-2">
+                Add Education
             </button>
 
             <label htmlFor="tags" className="block">Tags:</label>

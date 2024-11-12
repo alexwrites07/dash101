@@ -209,6 +209,14 @@ const StudentEdit = () => {
           placeholder="Parent Phone"
           className="w-full px-4 py-2 border border-gray-300 rounded-md"
         />
+         <input
+          type="text"
+          name="StudentPhone"
+          value={studentData.phone}
+          onChange={handleInputChange}
+          placeholder="Student Phone"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
         <input
           type="date"
           name="dob"

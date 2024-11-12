@@ -134,7 +134,7 @@ const EmployerProfileView = () => {
 
         <div className="flex flex-col space-y-6 w-4/5 ml-64">
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold">Selected Employers</h2>
+            <h2 className="text-2xl font-semibold">Selected Organizations</h2>
             {selectedEmployers.length > 0 ? (
               selectedEmployers.map((employer) => (
                 <div
@@ -173,6 +173,7 @@ const EmployerProfileView = () => {
                     <p className="text-gray-700 truncate">{org.email}</p>
                     <p className="text-gray-700 truncate">{org._id}</p>
                     <p className="text-gray-700 truncate">{org.contactNumber}</p>
+                    <p className="text-gray-700 truncate">{org.website}</p>
                   </div>
 
                   <button
@@ -190,7 +191,7 @@ const EmployerProfileView = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">No employers.</p>
+              <p className="text-gray-500">No Organizations.</p>
             )}
              {isOtpModalVisible && (
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
