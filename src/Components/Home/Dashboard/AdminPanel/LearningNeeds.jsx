@@ -9,6 +9,7 @@ const LearningNeedsView = () => {
   const [unapprovedLearningNeeds, setUnapprovedLearningNeeds] = useState([]);
   const [approvedLearningNeeds, setApprovedLearningNeeds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showForm, setShowForm] = useState(false);
   const [sortOrder, setSortOrder] = useState('asc');
   const [newNeed, setNewNeed] = useState({
     email: '',
@@ -213,7 +214,7 @@ const LearningNeedsView = () => {
     <div className="md:ml-24">
       <div className="flex flex-col items-center p-6 space-y-6 mt-24">
         <Sidebar />
-        <div className="flex justify-between w-3/5 space-x-4 mb-6">
+        <div className="flex justify-between w-3/5 space-x-4 -mb-12">
           <Header />
           <button
             onClick={handleSortChange}
@@ -229,8 +230,15 @@ const LearningNeedsView = () => {
             placeholder="Search by email..."
             className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+            <button
+            onClick={() => setShowForm((prev) => !prev)} // Toggle form visibility
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          >
+            {showForm ? 'Hide Form' : 'Create Learning Need'}
+          </button>
         </div>
 
+        {showForm && (
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-3/5 p-4 border border-gray-300 rounded-md">
           <h2 className="text-xl font-semibold">Create Learning Need</h2>
           <input type="text" name="email" value={newNeed.email} onChange={handleInputChange} placeholder="Email" required className="border p-2 rounded" />
@@ -385,7 +393,7 @@ const LearningNeedsView = () => {
 
           <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Create Learning Need</button>
         </form>
-
+  )}
         <div className="flex flex-col space-y-6 w-4/5 ml-64">
           <div className="space-y-4">
          
@@ -394,7 +402,7 @@ const LearningNeedsView = () => {
                 <div className="flex w-full justify-between space-x-4">
                   <span>{learningNeed.name}</span>
                   <span>{learningNeed.need}</span>
-                  <span>{learningNeed.datePosted}</span>
+                  <span>{learningNeed.datePosted?.split('T')[0]}</span>
                   <span>{learningNeed.location}</span>
                  
                 </div>

@@ -51,7 +51,7 @@ const Categories = () => {
             <div
               key={tutor._id}
               className="bg-white rounded-lg shadow-lg p-6 mx-4 mb-4" // Added margin-bottom to create space
-              style={{ flex: '0 0 auto', minWidth: '350px', maxWidth: '400px', scrollSnapAlign: 'center' }}
+              style={{ flex: '0 0 auto', minWidth: '200px', maxWidth: '200px', scrollSnapAlign: 'center' }}
             >
               <Link to={`/getTutor/${tutor._id}`} >
               <img

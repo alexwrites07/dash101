@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from './MapDemo'; // Import your Map component
+import categories from '../Home/Dashboard/AdminPanel/categories.json';
+
 
 const questions = [
   {
     id: 'requirement',
-    question: 'What do you want to learn? *',
-    type: 'text',
+    question: 'What is your Learning Need Category? *',
+    type: 'autocomplete',
     placeholder: 'Enter your choice',
   },
   {
@@ -80,9 +82,22 @@ const DemoForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [otp, setOtp] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
-
+  const [isTyping, setIsTyping] = useState(false);
   const [coordinates, setCoordinates] = useState(["set loaction","set loaction"]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
+  useEffect(() => {
+    // Filter suggestions based on the user input for the "requirement" field
+    if (responses.requirement) {
+      const filteredSuggestions = categories.filter(option =>
+        option.toLowerCase().includes(responses.requirement.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]); // Clear suggestions if the input is empty
+    }
+  }, [responses.requirement]);
   const handleNext = async (event) => {
     event.preventDefault();
 
@@ -161,7 +176,15 @@ const DemoForm = () => {
     }
   };
 
+  
+  const handleCategorySelect = (category) => {
+    setResponses((prev) => ({ ...prev, requirement: category }));
+    setSuggestions([]); // Clear suggestions after selecting a category
+    setCategoryOptions([]);
+    
+  };
   const handleChange = (event, key) => {
+    
     const { value } = event.target;
     setResponses((prev) => ({
       ...prev,
@@ -221,16 +244,16 @@ const DemoForm = () => {
         body: JSON.stringify(payload),
         
       }
-    );alert("Form submitted");
+    );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
       const data = await response.json();
-      console.log('OTP verification response:', data);
+      alert('OTP verification response:', data);
     } catch (error) {
-      console.error('Error verifying OTP:', error);
+      alert('Error verifying OTP:', error);
     }
   };
 
@@ -260,6 +283,31 @@ const DemoForm = () => {
             />
           </div>
         );
+        case 'autocomplete':
+          return (
+            <div>
+              <input
+                type="text"
+                value={responses[question.id]}
+                onChange={(e) => handleChange(e, question.id)}
+                className="border rounded w-full py-2 px-3"
+                placeholder="Start typing..."
+              />
+              { suggestions.length > 0 && (
+                <ul className="list-none mt-2 border border-gray-300 rounded-lg max-h-48 overflow-y-auto">
+                  {suggestions.map((suggestion, index) => (
+                    <li
+                      key={index}
+                      className="cursor-pointer py-2 px-4 hover:bg-gray-200"
+                      onClick={() => handleCategorySelect(suggestion)}
+                    >
+                      {suggestion}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
       case 'text':
         return (
           <input
@@ -279,21 +327,24 @@ const DemoForm = () => {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         );
-      case 'select':
-        return (
-          <select
-            value={responses[question.id]}
-            onChange={(e) => handleChange(e, question.id)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select an option</option>
-            {question.options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        );
+        case 'select':
+          // Use categoryOptions if question id is 'requirementId', otherwise use question.options
+          const options = question.id === 'requirementId' ? categoryOptions : question.options;
+          
+          return (
+            <select
+              value={responses[question.id] || ''}
+              onChange={(e) => handleChange(e, question.id)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select an option</option>
+              {options.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          );
       case 'checkbox':
         return (
           <div className="flex flex-col">
@@ -376,21 +427,25 @@ const DemoForm = () => {
         return (
           <div>
             <input
-              type="email"
-              name="email"
-              placeholder="Email ID"
-              value={responses.email}
-              onChange={(e) => handleChange(e, 'email')}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
-            />
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone Number"
-              value={responses.phone}
-              onChange={(e) => handleChange(e, 'phone')}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+  type="email"
+  name="email"
+  placeholder="Email ID"
+  value={responses.email}
+  onChange={(e) => handleChange(e, 'email')}
+  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+  required
+/>
+
+<input
+  type="text"
+  name="phone"
+  placeholder="Phone Number"
+  value={responses.phone}
+  onChange={(e) => handleChange(e, 'phone')}
+  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+  required
+/>
+
           </div>
         );
       default:
@@ -401,51 +456,74 @@ const DemoForm = () => {
   return (
     <form onSubmit={handleNext} className="max-w-2xl my-6 mx-auto mt-8">
       {isSubmitted ? (
-        <div className="text-center">
-          <h2 className="text-xl font-semibold">Thank you!</h2>
-          <p className="mt-8">An OTP has been sent to your contact details. Please verify it below.</p>
-          {isOtpSent && (
-            <form  className="mt-8">
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter OTP"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-              onClick={handleOtpSubmit}
-                type="submit"
-                className="mt-8 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-              >
-                Verify OTP
-              </button>
-            </form>
-          )}
-        </div>
-      ) : (
-        <div>
-          <h2 className="text-lg font-bold">{questions[currentQuestionIndex].question}</h2>
-          {renderInputField(questions[currentQuestionIndex])}
-
-          <div className="flex justify-between mt-6">
-            {currentQuestionIndex > 0 && (
-              <button
-                type="button"
-                onClick={handlePrevious}
-                className="bg-gray-300 text-black font-semibold py-2 px-4 rounded"
-              >
-                Previous
-              </button>
-            )}
-            <button
-              type="submit"
-              className="bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-            >
-              {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
-            </button>
+       <div className="text-center">
+       {/* <h2 className="text-xl font-semibold">Thank you!</h2> */}
+       <p className="mt-8">An OTP has been sent to your contact details. Please verify it below.</p>
+       {isOtpSent && (
+         <form className="mt-8 border p-4 rounded-lg shadow-md">
+           <input
+             type="text"
+             value={otp}
+             onChange={(e) => setOtp(e.target.value)}
+             placeholder="Enter OTP"
+             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+           />
+           <button
+             onClick={handleOtpSubmit}
+             type="submit"
+             className="mt-8 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+           >
+             Verify OTP
+           </button>
+         </form>
+       )}
+     </div>
+      ):(
+        <div className="border shadow-md p-6">
+        {/* Progress Bar */}
+        <div className="relative mb-4">
+        <h2 className="text-lg font-bold mb-4">
+          Step {currentQuestionIndex + 1}/{questions.length}
+        </h2>
+          <div className="w-full h-2 bg-gray-300 rounded-full">
+         
+            <div
+              className="h-2 bg-blue-500 rounded-full"
+              style={{
+                width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+              }}
+            ></div>
           </div>
         </div>
+      
+        {/* Step Indicator */}
+        
+        <h1>{questions[currentQuestionIndex].question}</h1>
+      
+        <div className="py-4 -px-4 rounded-lg">
+          {renderInputField(questions[currentQuestionIndex])}
+        </div>
+      
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-6">
+          {currentQuestionIndex > 0 && (
+            <button
+              type="button"
+              onClick={handlePrevious}
+              className="bg-gray-300 text-black font-semibold py-2 px-4 rounded"
+            >
+              Previous
+            </button>
+          )}
+          <button
+            type="submit"
+            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+          >
+            {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
+          </button>
+        </div>
+      </div>
+      
       )}
     </form>
   );

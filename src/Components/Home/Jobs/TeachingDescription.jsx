@@ -153,7 +153,7 @@ const TeachingDescription = () => {
             {/* Display Education */}
             <h2 className="text-xl font-semibold mb-2">Education</h2>
             {job.education?.map((edu, index) => (
-              <div key={index}>
+              <div key={index}  className='mt-6'>
                 <p><strong>Degree:</strong> {edu.title}</p>
                 <p><strong>Academy:</strong> {edu.academy}</p>
                 <p><strong>Year:</strong> {new Date(edu.year).getFullYear()}</p>
@@ -162,9 +162,9 @@ const TeachingDescription = () => {
             ))}
 
             {/* Display Past Experiences */}
-            <h2 className="text-xl font-semibold mb-2 mt-6">Experience/Achievements</h2>
+            <h2 className="text-xl font-semibold mb-2 mt-12">Experience/Achievements</h2>
             {job.pastExperiences?.map((experience, index) => (
-              <div key={index}>
+              <div key={index} className='mt-6'>
                 <p><strong>Role:</strong> {experience.title}</p>
                 <p><strong>Company:</strong> {experience.company}</p>
                 <p>
@@ -175,9 +175,9 @@ const TeachingDescription = () => {
             ))}
 
             {/* Display Awards */}
-            <h2 className="text-xl font-semibold mb-2 mt-6">Awards</h2>
+            <h2 className="text-xl font-semibold mb-2 mt-12">Awards</h2>
             {job.awards?.map((award, index) => (
-              <div key={index}>
+              <div key={index}  className='mt-6'>
                 <p><strong>Award:</strong> {award.title}</p>
                 <p><strong>Year:</strong> {new Date(award.year).getFullYear()}</p>
                 <p><strong>Description:</strong> {award.description}</p>
@@ -185,7 +185,7 @@ const TeachingDescription = () => {
             ))}
 
             {/* Video Player */}
-            <div className="flex justify-center mt-8">
+            <div className=" mt-8">
               <video controls className="w-full max-w-lg rounded-md">
                 <source src={job.video} type="video/mp4" />
                 Your browser does not support the video tag.

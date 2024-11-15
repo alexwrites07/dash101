@@ -36,11 +36,7 @@ const Sidebar = ({ activeTab }) => {
     { to: '/reviews-rating', icon: <HiHeart className="w-6 h-6" />, label: 'Reviews & Rating' },
     { to: '/blogs-admin', icon: <HiChat className="w-6 h-6" />, label: 'Blogs' },
     
-    { to: '/add-learning-need', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Learning Need' },
-    { to: '/add-category', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Category' },
-    { to: '/add-tags', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Add Tags' },
-    { to: '/add-coins', icon: <HiUser className="w-6 h-6" />, label: 'Add Tags' },
-    { to: '/add-coins', icon: <HiUser className="w-6 h-6" />, label: 'Add Tags' },
+
     { to: '/edit-job-post', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Edit-Job' },
     {
       to: '#', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Widgets', dropdown: true, onClick: toggleWidgets,

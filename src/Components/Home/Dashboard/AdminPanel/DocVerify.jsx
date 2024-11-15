@@ -208,7 +208,7 @@ const Doc = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-semibold text-center mb-6">DP Edit and Delete Page</h2>
+      <h2 className="text-2xl font-semibold text-center mb-6">ID Edit and Delete Page</h2>
       
       <div className="mb-4">
         <label className="block text-gray-700 font-medium mb-2">User Type:</label>

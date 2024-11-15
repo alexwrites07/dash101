@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Map';
+import StarRating from './StarRating';
 import '../Home.css';
 
 const JobDescription = () => {
@@ -9,6 +10,7 @@ const JobDescription = () => {
   const [job, setJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -48,6 +50,14 @@ const JobDescription = () => {
       alert ("Contact Bought");
     } catch (error) {
       console.error('Error purchasing contact:', error);
+    }
+  };
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${jobId}`);
+      setReviews(response.data.reviews);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
     }
   };
 
@@ -91,13 +101,7 @@ const JobDescription = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
-        <div className="md:w-1/4 mb-4 md:mb-0">
-          {job.images.length > 0 ? (
-            <img src={job.images[0]} alt={job.title} className="w-36 h-56 rounded-md" />
-          ) : (
-            <p>No image available</p>
-          )}
-        </div>
+    
         <div className="md:w-3/4 mb-4 md:mb-0 ml-8">
           <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -150,6 +154,19 @@ const JobDescription = () => {
                 <li key={index}>{skill}</li>
               ))}
             </ul>
+            <h2 className="text-xl font-semibold mb-2 mt-6">Reviews</h2>
+            {reviews.length > 0 ? (
+              reviews.map(review => (
+                <div key={review._id} className="border-b mb-4 pb-2">
+                  <p><strong>{review.reviewerName}</strong></p>
+                  <StarRating rating={review.rating} />
+                  <p>{review.description}</p>
+                  <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
+                </div>
+              ))
+            ) : (
+              <p>No reviews available.</p>
+            )}
           </div>
           <div className="md:w-2/5">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Job Location</h2>

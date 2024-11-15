@@ -380,16 +380,10 @@ const JobPost = () => {
     <Link to={`/getjobs/${job._id}`} className="block">
   <div className="flex flex-col md:flex-row w-full items-center ml-2 space-y-2 md:space-y-0">
     {/* Company Info Section */}
-    <div className="flex flex-col items-center justify-center w-full md:w-1/4 max-w-[200px] md:ml-4 ml-2">
-      <img 
-        src={job.images[1]} 
-        alt="Company Logo" 
-        className="w-16 h-16 mb-2 object-contain" 
-      />
-    </div>
+    
 
     {/* Job Info Section */}
-    <div className="flex flex-col md:flex-row justify-center w-full md:w-3/4 ml-2 max-w-[350px] md:ml-4">
+    <div className="flex flex-col md:flex-row justify-center w-full md:w-3/4 -ml-2 max-w-[350px] md:-ml-4">
   <h3 className="font-medium text-gray-800 text-center md:text-left md:mr-2 md:ml-8">{job.companyName}</h3>
   <p className="text-xl text-[#041F96] text-center md:text-left md:mr-2 md:ml-8">{job.title}</p>
   <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city}</p>

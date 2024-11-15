@@ -106,23 +106,22 @@ const StudentProfileView = () => {
           />
         </div>
 
-        <div className="flex flex-col space-y-6 w-3/5">
+        <div className="space-y-6 w-5/5">
           <div className="space-y-4">
             {filteredStudents.length > 0 ? (
               filteredStudents.map((student) => (
                 <div
                   key={student._id}
-                  className="flex justify-between items-center p-4 border border-gray-200 rounded-md"
+                  className="flex flex-col space-y-2 p-4 border border-gray-200 rounded-md"
                 >
-                  <div className="flex w-full justify-between space-x-4">
-                    <h3 className="text-lg font-medium">{student.fullName}</h3>
-                    <p className="text-gray-600">{student.email}</p>
-                    <p className="text-gray-600">{student._id}</p><br></br>
-                    <p className="text-gray-600">Parent - {student.parentPhone}</p>
+                  <div className="ml-64 flex justify-between items-center">
+                    <h3 className="text-lg font-medium mr-4">{student.fullName}</h3>
+                    <p className="text-gray-600 mr-4">{student.email}</p>
+                    <p className="text-gray-600 mr-4">{student._id}</p><br></br>
+                    <p className="text-gray-600 mr-4">Parent - {student.parentPhone}</p>
                     <p className="text-gray-600">Student - {student.phone}</p>
 
-                  </div>
-                  <div className="flex space-x-4">
+                  
                     <button
                       onClick={() => handleEditClick(student._id)}
                       className="ml-4 text-white bg-green-500 hover:bg-green-600 px-3 py-2 rounded-md"
@@ -131,7 +130,7 @@ const StudentProfileView = () => {
                     </button>
                     <button
                       onClick={() => handleDeleteClick(student._id)}
-                      className="ml-4 text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md"
+                      className="ml-1 text-white bg-red-500 hover:bg-green-600 px-3 py-2 rounded-md"
                     >
                       Delete
                     </button>

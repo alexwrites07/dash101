@@ -110,13 +110,7 @@ const NeedDescription = () => {
   return (
     <div className="container mx-auto p-4">
   <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
-    <div className="md:w-1/4 mb-4 md:mb-0">
-      {job.image && job.image.length > 0 ? (
-        <img src={job.image} alt="Tutor Image" className="w-full h-56 object-cover rounded-md" />
-      ) : (
-        <p>No image available</p>
-      )}
-    </div>
+    
     <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
       <h1 className="text-3xl font-bold mb-4">{job.fullName}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -157,12 +151,7 @@ const NeedDescription = () => {
         <p><strong>Requirements:</strong> {job.requirement}</p>
 
         {/* Video Player */}
-        <div className="flex justify-center mt-8">
-          <video controls className="w-full max-w-lg rounded-md">
-            <source src={job.video} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
+        
 
         {/* Reviews Section */}
         <h2 className="text-xl font-semibold mb-4 mt-8">Reviews</h2>

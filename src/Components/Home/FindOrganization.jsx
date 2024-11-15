@@ -75,6 +75,17 @@ const OrganizationFinder = () => {
     }
   };
 
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${IId}`);
+      // Filter reviews based on reviewedId matching tutor's ID
+      const filteredReviews = response.data.reviews.filter(review => review.reviewedId === Id);
+      setReviews(filteredReviews);
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      
+    }
+  };
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters({
@@ -186,6 +197,13 @@ const OrganizationFinder = () => {
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
                 <Link to={`/getOrg/${tutor._id}`} className="block w-full">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
+                  <div className="md:w-1/4 mb-4 md:mb-0">
+          {tutor.logo ? (
+            <img src={tutor.logo} alt={tutor.name} className="w-full h-12 w-8 object-cover rounded-md" />
+          ) : (
+            <p>No logo available</p>
+          )}
+        </div>
                     <div>
                       <h2 className="text-lg font-semibold">{tutor.location.city}, {tutor.location.address}</h2>
                       <h2 className="text-lg">Requirements: {tutor.subjectsRequired.join(", ")}</h2>
