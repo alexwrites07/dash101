@@ -78,7 +78,7 @@ const Reviewsq = () => {
   const deleteReview = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://backend.akshayy.tech/reviews/admin/`, {
+      const response = await fetch(`https://backend.akshayy.tech/reviews/admin/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

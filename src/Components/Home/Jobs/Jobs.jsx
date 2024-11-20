@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const FeaturedJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -32,6 +33,7 @@ const FeaturedJobs = () => {
       {/* Job Listings */}
       {jobs.slice(0, visibleJobs).map((job, index) => (
         <div key={index} className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <Link to={`/getjobs/${job._id}`} className="block">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="md:flex-1">
               <h3 className="text-xl font-semibold text-[#041F96] mb-2">{job.title}</h3>
@@ -44,6 +46,7 @@ const FeaturedJobs = () => {
               <p className="text-sm text-gray-600">Apply by: {new Date(job.lastDateToApply).toLocaleDateString()}</p>
             </div>
           </div>
+          </Link>
         </div>
       ))}
 

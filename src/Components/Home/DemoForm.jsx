@@ -35,7 +35,7 @@ const questions = [
   },
   {
     id: 'salary',
-    question: 'What is the maximum salary you are willing to pay? *',
+    question: 'What is your budget? *',
     type: 'salary',
   },
   {
@@ -267,7 +267,8 @@ const DemoForm = () => {
               value={responses.salary.period}
               onChange={handlesalaryChange}
               className="shadow appearance-none border rounded mr-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+              required
+               >
               <option value="monthly">Monthly</option>
               <option value="hourly">Hourly</option>
               <option value="daily">Daily</option>
@@ -280,7 +281,8 @@ const DemoForm = () => {
               value={responses.salary.max}
               onChange={handlesalaryChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              required
+              />
           </div>
         );
         case 'autocomplete':
@@ -292,6 +294,7 @@ const DemoForm = () => {
                 onChange={(e) => handleChange(e, question.id)}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Start typing..."
+                required
               />
               { suggestions.length > 0 && (
                 <ul className="list-none mt-2 border border-gray-300 rounded-lg max-h-48 overflow-y-auto">
@@ -316,7 +319,8 @@ const DemoForm = () => {
             onChange={(e) => handleChange(e, question.id)}
             placeholder={question.placeholder}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            required
+            />
         );
       case 'textarea':
         return (
@@ -325,7 +329,8 @@ const DemoForm = () => {
             onChange={(e) => handleChange(e, question.id)}
             placeholder={question.placeholder}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            required 
+            />
         );
         case 'select':
           // Use categoryOptions if question id is 'requirementId', otherwise use question.options
@@ -336,7 +341,8 @@ const DemoForm = () => {
               value={responses[question.id] || ''}
               onChange={(e) => handleChange(e, question.id)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+              required
+              >
               <option value="">Select an option</option>
               {options.map((option, index) => (
                 <option key={index} value={option}>
@@ -356,7 +362,8 @@ const DemoForm = () => {
                   checked={responses[question.id].includes(option)}
                   onChange={(e) => handleCheckboxChange(e, question.id)}
                   className="mr-2"
-                />
+                  required
+                  />
                 {option}
               </label>
             ))}
@@ -373,6 +380,7 @@ const DemoForm = () => {
                   checked={responses[question.id] === option}
                   onChange={(e) => handleChange(e, question.id)}
                   className="mr-2"
+                  required
                 />
                 {option}
               </label>
@@ -389,6 +397,7 @@ const DemoForm = () => {
               value={responses.location.landmark}
               onChange={(e) => handleLocationChange(e, 'landmark')}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+              required
             />
             <input
               type="text"
@@ -396,6 +405,7 @@ const DemoForm = () => {
               value={responses.location.city}
               onChange={(e) => handleLocationChange(e, 'city')}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+              required
             />
              <input
               type="text"
@@ -403,14 +413,16 @@ const DemoForm = () => {
               value={responses.location.state}
               onChange={(e) => handleLocationChange(e, 'state')}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
-            />
+              required
+           />
             <input
               type="text"
               placeholder="Pin Code"
               value={responses.location.pinCode}
               onChange={(e) => handleLocationChange(e, 'pinCode')}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
-            />
+              required
+           />
 
             <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
             <button

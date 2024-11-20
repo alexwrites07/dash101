@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-import teach from '../../../assets/home/team-analysts-working-brand-reputation-social-media.png';
+import teach from '../../../assets/home/teacherab.png';
 
 const TeachingSection = () => {
   return (

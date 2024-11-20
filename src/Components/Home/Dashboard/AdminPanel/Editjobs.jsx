@@ -13,6 +13,7 @@ const EditJob = () => {
       city: '',
       state: '',
       pinCode: '',
+      address:'',
       coordinates: ['0', '0'],
       type: 'Point',
     },
@@ -33,6 +34,7 @@ const EditJob = () => {
     description: '',
     keyResponsibilities: '',
     skillAndExperience: '',
+    
     lastDateToApply: '',
     maxApplicants: 0, // New field for max applicants
     isClosed: false,
@@ -86,16 +88,7 @@ const EditJob = () => {
     }));
   };
   
-  const handleMapChange = (updatedCoordinates) => {
-    setCoordinates(updatedCoordinates);  
-    setJobData((prev) => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        coordinates: updatedCoordinates,
-      },
-    }));
-  };
+ 
   const handleNestedChange = (e, field, subfield) => {
     const { value } = e.target;
     setJobData((prevData) => ({
@@ -106,7 +99,16 @@ const EditJob = () => {
       },
     }));
   };
-
+  const handleMapChange = (updatedCoordinates) => {
+    setCoordinates(updatedCoordinates);  
+    setStudentData((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        coordinates: updatedCoordinates,
+      },
+    }));
+  };
   const handleCoordinatesChange = (index, value) => {
     const updatedCoordinates = [...jobData.location.coordinates];
     updatedCoordinates[index] = value;
@@ -123,6 +125,7 @@ const EditJob = () => {
         "location.city": jobData.location.city,
         "location.state": jobData.location.state,
         "location.pinCode": jobData.location.pinCode,
+        "location.address": jobData.location.address,
         "location.coordinates": jobData.location.coordinates,
         "location.type": jobData.location.type,
         "salary.min": jobData.salary.min,
@@ -160,7 +163,7 @@ const EditJob = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 mt-24 space-y-6 max-w-3xl mx-auto">
+    <div className="flex flex-col  p-6 mt-24 space-y-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold">Edit Job</h2>
       <label className="block font-medium text-gray-700">Title</label>
       <input
@@ -200,6 +203,15 @@ const EditJob = () => {
         onChange={(e) => handleNestedChange(e, 'location', 'pinCode')}
         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
+      <label className="block font-medium text-gray-700">Address</label>
+      <input
+        type="text"
+        name="address"
+        placeholder="Address"
+        value={jobData.location.address || ''}
+        onChange={(e) => handleNestedChange(e, 'location', 'address')}
+        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
       <label className="block">
           Coordinates :
           <input
@@ -223,6 +235,7 @@ const EditJob = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </label>
+        <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
       
       {/* <Map
   coordinates={coordinates}
@@ -232,6 +245,14 @@ const EditJob = () => {
 /> */}
 
       {/* Salary Fields */}
+      <label className="block font-medium text-gray-700">Last Date to Apply</label>
+      <input
+          type="date"
+          name="lastDateToApply"
+          value={jobData.lastDateToApply?.split('T')[0]}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+        />
       <label className="block font-medium text-gray-700">Min Salary</label>
       <input
         type="number"

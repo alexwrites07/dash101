@@ -439,7 +439,7 @@ const JobsView = () => {
                     <div>
                       <h3 className="text-lg font-medium">{job.name}</h3>
                       <p className="text-sm text-gray-600">{job.company}</p>
-                      <p className="text-sm text-gray-600">{job.datePosted}</p>
+                      <p className="text-sm text-gray-600">{job.datePosted?.split('T')[0]}</p>
                     </div>
                     <div className="flex space-x-4">
                       {/* <button onClick={() => toggleJobStatus(job.id)} className="bg-yellow-500 text-white px-2 py-1 rounded-md hover:bg-yellow-600">

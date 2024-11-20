@@ -73,7 +73,7 @@ function HomePage() {
       <HiringSection />
       <TestimonialSection />
       <TeachingSection />
-      <Newssection />
+   
 
     </div>
   );

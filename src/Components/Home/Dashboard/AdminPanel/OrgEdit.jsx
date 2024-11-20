@@ -271,6 +271,16 @@ const EditEmployerProfile = () => {
           />
         </label>
 
+        <label className="block">
+          contactCost:
+          <textarea
+            name="contactCost"
+            value={employerData.contactCost || ''}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </label>
+
        
         <label className="block">Organization Type:</label>
 <select
