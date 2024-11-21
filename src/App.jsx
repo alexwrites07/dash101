@@ -84,6 +84,7 @@ import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/Feature
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
 import NeedDescription from './Components/Home/NeedDetails.jsx';
+import WalletManager from './Components/Home/Dashboard/AdminPanel/Wallet.jsx';
 import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
 import DpEditDelete from './Components/Home/Dashboard/AdminPanel/DP.jsx';
 import Doc from './Components/Home/Dashboard/AdminPanel/DocVerify.jsx';
@@ -187,6 +188,7 @@ function AppContent() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/admin-profile" element={<AdminProfile />} />
         <Route path="/needpost" element={<NeedsFinder />} />
+        <Route path="/wallet-admin" element={<WalletManager />} />
         <Route path="/widgets/hero-section" element={<HeroSectionManager/>}/>
         {/* <Route path="/add-category" element ={<WidgetCatagory/>}/> */}
         <Route path="/your-profile" element={<YourProfile />} />

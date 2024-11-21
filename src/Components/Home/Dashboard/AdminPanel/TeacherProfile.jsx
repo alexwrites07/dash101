@@ -156,6 +156,7 @@ const TutorProfileView = () => {
                     <h3 className="text-lg font-medium">{tutor.fullName}</h3>
                     <h3 className="text-lg font-medium">{tutor.email}</h3>
                     <p className="text-gray-700 truncate">{tutor._id}</p>
+                    <p className="text-gray-700 truncate">{tutor.balance}</p>
                     <p className="text-gray-700 truncate">{tutor.contactNumber}</p>
                     <div>
                     <button

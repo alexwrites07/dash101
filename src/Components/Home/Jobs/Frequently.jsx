@@ -13,6 +13,7 @@ const FrequentlyHiringCompanies = () => {
       .then((response) => {
         const fetchedCompanies = response.data.map((company) => ({
           name: company.name,
+          _id: company._id,
           location: `${company.location.city}, ${company.location.state}`,
           industry: company.category || 'Unknown Industry',
           logo: company.logo || 'https://via.placeholder.com/150', // Fallback logo in case of missing logo
