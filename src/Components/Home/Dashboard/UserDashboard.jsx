@@ -26,7 +26,7 @@ const UserDashboard = () => {
     const endpoint = localStorage.getItem('type');
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('https://backend.akshayy.tech/notifications', {
+        const response = await fetch('https://server.avyudha.com/notifications', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

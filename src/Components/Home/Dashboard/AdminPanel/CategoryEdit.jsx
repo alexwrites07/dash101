@@ -12,7 +12,7 @@ const TutorEditPage = () => {
   useEffect(() => {
     const fetchTutor = async () => {
       try {
-        const response = await fetch(`https://backend.akshayy.tech/getTutor/${id}`, {
+        const response = await fetch(`https://server.avyudha.com/getTutor/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -44,7 +44,7 @@ const TutorEditPage = () => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`https://backend.akshayy.tech/editUserProfile/${id}/Tutor`, {
+      const response = await fetch(`https://server.avyudha.com/editUserProfile/${id}/Tutor`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

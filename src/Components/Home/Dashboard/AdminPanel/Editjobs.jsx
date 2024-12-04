@@ -48,7 +48,7 @@ const EditJob = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/getjobs/${id}`, {
+        const response = await axios.get(`https://server.avyudha.com/getjobs/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const applicants = response.data.job.applicants?.map((applicant) => applicant._id || 'Unknown');
@@ -148,7 +148,7 @@ const EditJob = () => {
       };
 
       await axios.put(
-        `https://backend.akshayy.tech/job/${id}`,
+        `https://server.avyudha.com/job/${id}`,
         payload,
         {
           headers: { Authorization: `Bearer ${token}` },

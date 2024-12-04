@@ -18,7 +18,7 @@ const EditBlogPage = () => {
     const fetchBlog = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/blogs/${id}`, {
+        const response = await axios.get(`https://server.avyudha.com/blogs/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -54,7 +54,7 @@ const EditBlogPage = () => {
     selectedFiles.forEach((file) => formData.append('images', file));
 
     try {
-      await axios.put(`https://backend.akshayy.tech/blogs/${id}`, formData, {
+      await axios.put(`https://server.avyudha.com/blogs/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

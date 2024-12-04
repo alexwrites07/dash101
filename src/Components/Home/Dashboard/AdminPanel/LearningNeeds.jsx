@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { HiSortAscending } from 'react-icons/hi';
 import Header from '../Header';
+import Map from '../../MapDemo';
 import Sidebar from './AdminSidebar';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LearningNeedsView = () => {
   const [unapprovedLearningNeeds, setUnapprovedLearningNeeds] = useState([]);
+  const [coordinates, setCoordinates] = useState([0,0]);
   const [approvedLearningNeeds, setApprovedLearningNeeds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -48,7 +50,7 @@ const LearningNeedsView = () => {
       }
 
       // Sending DELETE request to the backend
-      const response = await fetch(`https://backend.akshayy.tech/learning-need/${id}`, {
+      const response = await fetch(`https://server.avyudha.com/learning-need/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -69,7 +71,16 @@ const LearningNeedsView = () => {
       console.error('Error deleting learning need:', error);
     }
   };
-
+  const handleMapChange = (newCoordinates) => {
+    setCoordinates(newCoordinates);
+    setNewNeed((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        coordinates: newCoordinates,
+      },
+    }));
+  };
   const handleEditClick = (studentId) => {
     navigate(`/edit-learning-need/${studentId}`);
   };
@@ -77,7 +88,7 @@ const LearningNeedsView = () => {
   useEffect(() => {
     const fetchLearningNeeds = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/admin/learning-needs', {
+        const response = await axios.get('https://server.avyudha.com/admin/learning-needs', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const fetchedNeeds = response.data.map((need) => ({
@@ -154,7 +165,25 @@ const LearningNeedsView = () => {
       location: { ...prev.location, [name]: value },
     }));
   };
-
+  const fetchCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude,longitude } = position.coords;
+        setCoordinates([latitude,longitude]);
+        setNewJobData((prev) => ({
+          ...prev,
+          location: {
+            ...prev.location,
+            coordinates: [latitude, longitude],
+          },
+        }));
+      }, (error) => {
+        console.error("Error fetching location:", error);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
   const handleSalaryChange = (e) => {
     const { name, value } = e.target;
     setNewNeed((prev) => ({
@@ -167,7 +196,7 @@ const LearningNeedsView = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        'https://backend.akshayy.tech/create-need-admin',
+        'https://server.avyudha.com/create-need-admin',
         newNeed,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -251,7 +280,16 @@ const LearningNeedsView = () => {
           <input type="text" name="pinCode" value={newNeed.location.pinCode} onChange={handleLocationChange} placeholder="Pin Code" required className="border p-2 rounded" />
           <input type="text" name="state" value={newNeed.location.state} onChange={handleLocationChange} placeholder="State" required className="border p-2 rounded" />
           <input type="number" name="max" value={newNeed.salary.max} onChange={handleSalaryChange} placeholder="Max Salary" required className="border p-2 rounded" />
+          <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
+          <button
+              type="button"
+              onClick={fetchCurrentLocation}
 
+
+              className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+            >
+              Get Current Location
+            </button>
           <div className="mb-2">
   <label className="block font-medium text-gray-700">Salary period</label>
   <select
@@ -343,7 +381,7 @@ const LearningNeedsView = () => {
           </div>
 
           {/* Type of Class */}
-          <label className="block font-medium">Type of Class</label>
+          <label className="block font-medium">Type of Class (If it doesnot work try unclicking and clicking again)</label>
 <div className="space-y-2">
   <div>
     <input

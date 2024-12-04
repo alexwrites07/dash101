@@ -24,7 +24,7 @@ const StudentProfileView = () => {
           const headers = {
             Authorization: `Bearer ${token}`,
           };
-          const studentsRes = await axios.get('https://backend.akshayy.tech/admin/getStudents', { headers });
+          const studentsRes = await axios.get('https://server.avyudha.com/admin/getStudents', { headers });
           setAllStudents(studentsRes.data.students);
         } catch (error) {
           console.error('Error fetching data', error);
@@ -49,7 +49,7 @@ const StudentProfileView = () => {
         entityId: studentId,
       };
 
-      await axios.post('https://backend.akshayy.tech/admin/hardDeleteEntity', payload, { headers });
+      await axios.post('https://server.avyudha.com/admin/hardDeleteEntity', payload, { headers });
       alert('OTP has been sent to your email.');
       setIsOtpModalVisible(true);
     } catch (error) {
@@ -68,7 +68,7 @@ const StudentProfileView = () => {
         otp,
       };
 
-      await axios.post('https://backend.akshayy.tech/admin/verifyAndHardDeleteEntity', payload, { headers });
+      await axios.post('https://server.avyudha.com/admin/verifyAndHardDeleteEntity', payload, { headers });
       alert('Student profile deleted successfully');
       setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId));
       setIsOtpModalVisible(false);

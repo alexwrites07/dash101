@@ -22,7 +22,7 @@ const JobPost = () => {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const jobsPerPage = 5;
+  const jobsPerPage = 15;
   const [userCoords, setUserCoords] = useState(null);
   const [distanceFilter, setDistanceFilter] = useState('');
 
@@ -32,7 +32,7 @@ const JobPost = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('https://backend.akshayy.tech/jobs');
+      const response = await axios.get('https://server.avyudha.com/jobs');
       console.log('API response:', response.data);
       if (response.data && Array.isArray(response.data.jobs)) {
         const jobsWithBookmarks = response.data.jobs.map(job => ({
@@ -219,7 +219,7 @@ const JobPost = () => {
     }
   };
 
-  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
+  const [margin, setMargin] = useState({ margin: '2% 1% 0.5% 4%' });
 
   useEffect(() => {
     const handleResize = () => {
@@ -238,7 +238,7 @@ const JobPost = () => {
 
   return (
     <div className="flex flex-col md:flex-row " style={margin}>
-          <div className="max-w-full mx-auto flex flex-col md:flex-row" style={{ margin: '4% 4% 0 4%' }}>
+          <div className="max-w-full mx-auto flex flex-col md:flex-row" >
       {/* Sidebar for Filters (Hidden on Small Screens) */}
       <div className="md:hidden w-full flex justify-end mb-6">
   <button
@@ -353,41 +353,29 @@ const JobPost = () => {
       <div className="w-full ">
         {/* Jobs header */}
         <div className="flex items-center justify-between mb-4">
-         
+        
           <div className="w-full">
-        <div className="flex justify-between mb-4">
-          <h1 className="text-3xl font-bold text-[#041F96] mb-6">Available Jobs</h1>
-          <div className="flex items-center">
-            <label className="mr-2 font-bold text-gray-700">Sort by:</label>
-            <select
-              value={sortBy}
-              onChange={(e) => sortJobs(e.target.value)}
-              className="px-3 py-2 border rounded-lg"
-            >
-              <option value="date">Date</option>
-              <option value="title">title</option>
-              <option value="salary">salary</option>
-            </select>
-          </div>
-        </div>
+       
         
         
         {visibleJobs.length > 0 ? (
-  <div className="space-y-4">
+  <div className="">
+    <h1 className="text-3xl font-bold text-[#041F96] mb-6">Available Jobs</h1>
     {visibleJobs.map((job, index) => (
   <div className="shadow rounded  items-start md:ml-8 border-b border-gray-200 py-4 mb-4" key={index}>
     
     <Link to={`/getjobs/${job._id}`} className="block">
-  <div className="flex flex-col md:flex-row w-full items-center ml-2 space-y-2 md:space-y-0">
+    <div className="flex  md:justify-between w-full ml-2">
     {/* Company Info Section */}
     
 
     {/* Job Info Section */}
-    <div className="flex flex-col md:flex-row justify-center w-full md:w-3/4 -ml-2 max-w-[350px] md:-ml-4">
-  <h3 className="font-medium text-gray-800 text-center md:text-left md:mr-2 md:ml-8">{job.companyName}</h3>
-  <p className="text-xl text-[#041F96] text-center md:text-left md:mr-2 md:ml-8">{job.title}</p>
+    <div className="w-[450px] md:-ml-4">
+  <h3 className="text-gray-700 text-center md:text-left font-semibold md:mr-2 md:ml-8">{job.companyName}</h3>
+  <p className="text-gray-700 text-center md:text-left text-bold font-semibold md:mr-2 text-xl md:ml-8">{job.title}</p>
   <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-4">{job.careerLevel}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">{job.gender}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">{job.totalExperience}</p>
 </div>
 
 
@@ -402,16 +390,7 @@ const JobPost = () => {
 
     {/* Status and Actions Section */}
     <div className="flex items-center justify-center w-full md:w-1/4 mt-2 md:mt-0 space-x-4 mr-12">
-      <span className="text-sm bg-green-100 text-green-800 rounded-full px-3 py-1">
-        Open
-      </span>
-      <button onClick={(e) => { e.stopPropagation(); toggleBookmark(index); }} className="focus:outline-none">
-        {job.isBookmarked ? (
-          <HiBookmark className="w-6 h-6 text-blue-500" />
-        ) : (
-          <HiOutlineBookmark className="w-6 h-6" />
-        )}
-      </button>
+      
       <button
         className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none"
       >

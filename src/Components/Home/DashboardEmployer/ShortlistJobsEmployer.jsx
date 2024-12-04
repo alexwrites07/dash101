@@ -17,7 +17,7 @@ const ShortlistJobs = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/bookmarks', {
+        const response = await axios.get('https://server.avyudha.com/bookmarks', {
           headers: {
             Authorization: `Bearer ${token}`  // Pass the token for authorization
           }
@@ -68,7 +68,7 @@ const ShortlistJobs = () => {
 
   const handleRemoveCandidate = async (id) => {
     try {
-      const response = await axios.delete(`https://backend.akshayy.tech/bookmark`, {
+      const response = await axios.delete(`https://server.avyudha.com/bookmark`, {
         data: { employeeId: id },  // Send employerId in the body of the request
         headers: {
           Authorization: `Bearer ${token}`  // Pass the token for authorization

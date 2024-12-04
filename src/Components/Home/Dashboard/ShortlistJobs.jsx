@@ -16,7 +16,7 @@ const ShortlistJobs = () => {
 
   // Fetch data from the backend when the component mounts
   useEffect(() => {
-    fetch('https://backend.akshayy.tech/tutor/shortlists', {
+    fetch('https://server.avyudha.com/tutor/shortlists', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ const OrgDescription = () => {
   const { iid } = useParams();
   const [job, setJob] = useState(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -20,7 +21,7 @@ const OrgDescription = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/getOrg/${iid}`);
+        const response = await axios.get(`https://server.avyudha.com/getOrg/${iid}`);
         setJob(response.data);
       } catch (error) {
         console.error('Error fetching job details:', error);
@@ -30,7 +31,7 @@ const OrgDescription = () => {
 
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${iid}`);
+        const response = await axios.get(`https://server.avyudha.com/reviews/profile/${iid}`);
         setReviews(response.data.reviews);
       } catch (error) {
         console.error('Error fetching reviews:', error);
@@ -42,15 +43,19 @@ const OrgDescription = () => {
   }, [iid]);
 
   const handleBookmarkToggle = async () => {
-    const token = localStorage.getItem('token');
+    // Ensure token is retrieved (e.g., from localStorage or context)
+    const token = localStorage.getItem('token'); // Adjust if your token is stored differently
+    
     if (!token) {
       alert("Authentication token not found. Please log in again.");
       return;
     }
+  
     try {
+      // Send a POST request to bookmark the tutor
       const response = await axios.post(
-        'https://backend.akshayy.tech/bookmark',
-        { employeeId: iid },
+        'https://server.avyudha.com/tutor/follow',
+        { organizationId: iid },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -58,11 +63,38 @@ const OrgDescription = () => {
           },
         }
       );
-      setIsBookmarked((prev) => !prev);
-      alert('Tutor bookmarked successfully!');
+      
+      setIsBookmarked((prev) => !prev); // Toggle the bookmark state on success
+      alert('Organization bookmarked successfully!');
     } catch (error) {
       console.error('Error bookmarking tutor:', error);
-      alert('Failed to bookmark the tutor. Please try again later.');
+      alert('Only Tutors can bookmark.');
+    }
+  };
+  const buyContact = async () => {
+    if (!iid) {
+      console.error(' ID not available');
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'https://server.avyudha.com/purchaseContact',
+        {
+          contactId: iid,
+          contactType: 'Organization'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Contact purchase successful:', response.data);
+      alert ("Contact Bought");
+    } catch (error) {
+      console.error('Error purchasing contact:', error);
+      alert ("Only Tutor to be able to view contact/You have already bought the contact")
     }
   };
 
@@ -81,21 +113,36 @@ const OrgDescription = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
-        <div className="md:w-1/4 mb-4 md:mb-0">
+        {/* <div className="md:w-1/4 mb-4 md:mb-0">
           {job.logo ? (
             <img src={job.logo} alt={job.name} className="w-full h-56 object-cover rounded-md" />
           ) : (
             <p>No logo available</p>
           )}
-        </div>
-        <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
-          <h1 className="text-3xl font-bold mb-4">{job.name}</h1>
+        </div> */}
+        <div className="md:w-full mb-4 md:mb-0 ml-8">
+          <h1 className="text-3xl font-bold mb-4">{job.name}
+          <button
+             onClick={handleBookmarkToggle}
+             className='text-blue-500 hover:text-blue-600 focus:outline-none ml-4'>
+         {isBookmarked ? (
+      <HiBookmark className="w-6 h-6" />
+    ) : (
+      <HiOutlineBookmark className="w-6 h-6" />
+    )}
+  </button>&nbsp; &nbsp;&nbsp;&nbsp;</h1>
           <p><strong>Category:</strong> {job.category}</p>
           <p><strong>Company Size:</strong> {job.companySize}</p>
           <p><strong>Profile Views:</strong> {job.profileViews.count}</p><br></br>
           {/* <button onClick={handleBookmarkToggle} className="text-blue-500  hover:text-blue-600 focus:outline-none ">
             {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
           </button> */}
+      
+  <button
+    onClick={buyContact}
+    className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+    Buy Contacts (100 coins)
+  </button>
         </div>
       </div>
 

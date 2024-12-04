@@ -38,9 +38,9 @@ export default function SignUp() {
         setSuccessMessage(""); // Clear any previous success message
 
         const apiRoutes = {
-            Teacher: "https://backend.akshayy.tech/register/tutor",
-            Institution: "https://backend.akshayy.tech/register/organization",
-            Students: "https://backend.akshayy.tech/register/student",
+            Teacher: "https://server.avyudha.com/register/tutor",
+            Institution: "https://server.avyudha.com/register/organization",
+            Students: "https://server.avyudha.com/register/student",
         };
 
         if (currentRole === "Admin") {
@@ -84,9 +84,9 @@ export default function SignUp() {
     
         // Define verification API routes for different roles
         const verificationApiRoutes = {
-            Teacher: "https://backend.akshayy.tech/register/tutor/verify",
-            Institution: "https://backend.akshayy.tech/register/organization/verify",
-            Students: "https://backend.akshayy.tech/register/student/verify",
+            Teacher: "https://server.avyudha.com/register/tutor/verify",
+            Institution: "https://server.avyudha.com/register/organization/verify",
+            Students: "https://server.avyudha.com/register/student/verify",
         };
     
         try {

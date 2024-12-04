@@ -103,7 +103,7 @@ const DemoForm = () => {
 
     if (currentQuestionIndex === questions.length - 1) {
       try {
-        const response = await fetch('https://backend.akshayy.tech/submit-learning-need', {
+        const response = await fetch('https://server.avyudha.com/submit-learning-need', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -159,13 +159,13 @@ const DemoForm = () => {
   const fetchCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const { longitude, latitude } = position.coords;
-        setCoordinates([longitude, latitude]);
+        const { latitude,longitude } = position.coords;
+        setCoordinates([latitude,longitude]);
         setResponses((prev) => ({
           ...prev,
           location: {
             ...prev.location,
-            coordinates: [longitude, latitude],
+            coordinates: [latitude, longitude],
           },
         }));
       }, (error) => {
@@ -179,8 +179,9 @@ const DemoForm = () => {
   
   const handleCategorySelect = (category) => {
     setResponses((prev) => ({ ...prev, requirement: category }));
-    setSuggestions([]); // Clear suggestions after selecting a category
     setCategoryOptions([]);
+    setSuggestions([]); // Clear suggestions after selecting a category
+    
     
   };
   const handleChange = (event, key) => {
@@ -219,6 +220,7 @@ const DemoForm = () => {
   };
 
   const handleMapChange = (newCoordinates) => {
+    setCoordinates(newCoordinates);
     setResponses((prev) => ({
       ...prev,
       location: {
@@ -231,12 +233,12 @@ const DemoForm = () => {
   const handleOtpSubmit = async (event) => {
     event.preventDefault();
     const payload = {
-      phone: responses.phone,
+      email: responses.email,
       otp: otp,
     };
 
     try {
-      const response = await fetch('https://backend.akshayy.tech/verify-learning-need-otp', {
+      const response = await fetch('https://server.avyudha.com/verify-learning-need-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -296,7 +298,7 @@ const DemoForm = () => {
                 placeholder="Start typing..."
                 required
               />
-              { suggestions.length > 0 && (
+              { suggestions.length > 1 && (
                 <ul className="list-none mt-2 border border-gray-300 rounded-lg max-h-48 overflow-y-auto">
                   {suggestions.map((suggestion, index) => (
                     <li
@@ -362,7 +364,7 @@ const DemoForm = () => {
                   checked={responses[question.id].includes(option)}
                   onChange={(e) => handleCheckboxChange(e, question.id)}
                   className="mr-2"
-                  required
+                 
                   />
                 {option}
               </label>
@@ -428,6 +430,8 @@ const DemoForm = () => {
             <button
               type="button"
               onClick={fetchCurrentLocation}
+
+
               className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
             >
               Get Current Location
@@ -449,14 +453,18 @@ const DemoForm = () => {
 />
 
 <input
-  type="text"
+  type="tel"
   name="phone"
-  placeholder="Phone Number"
+  placeholder="+91XXXXXXXXXX"
   value={responses.phone}
   onChange={(e) => handleChange(e, 'phone')}
   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
   required
+  pattern="^\+91[0-9]{10}$"
+  title="Enter a valid phone number in the format +91XXXXXXXXXX"
 />
+
+
 
           </div>
         );

@@ -51,7 +51,7 @@ const EditEmployerProfile = () => {
   useEffect(() => {
     const fetchEmployerData = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/getOrg/${id}`, {
+        const response = await axios.get(`https://server.avyudha.com/getOrg/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -108,7 +108,7 @@ const EditEmployerProfile = () => {
     }));
   };
   const handleSave = async () => {
-    const url = `https://backend.akshayy.tech/editUserProfile/${id}/Organization`;
+    const url = `https://server.avyudha.com/editUserProfile/${id}/Organization`;
 
     const updatedData = {
       ...employerData,

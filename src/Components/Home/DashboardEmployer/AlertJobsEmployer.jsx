@@ -12,7 +12,7 @@ const AlertsJobs = () => {
   useEffect(() => {
     const fetchCandidateAlerts = async () => {
       try {
-        const response = await fetch('https://backend.akshayy.tech/getFilters', {
+        const response = await fetch('https://server.avyudha.com/getFilters', {
           headers: {
             Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNDUwODMzNH0.Sgq8sctSRhXY3IX4JwDg5Y0JOyE7xa3YNjJtATRhwOA' // Replace with the actual token
           }
@@ -55,7 +55,7 @@ const AlertsJobs = () => {
     console.log("Deleting alert with ID:", alertId); // Log the alertId for debugging
 
     try {
-      const response = await fetch('https://backend.akshayy.tech/deleteFilter', {
+      const response = await fetch('https://server.avyudha.com/deleteFilter', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

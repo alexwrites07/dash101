@@ -14,7 +14,7 @@ const AlertsJobs = () => {
   useEffect(() => {
     // Fetch job alerts from the backend
     axios
-      .get('https://backend.akshayy.tech/tutor/jobAlerts', {
+      .get('https://server.avyudha.com/tutor/jobAlerts', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -15,7 +15,7 @@ const Tag = () => {
     // Fetch tutors from backend API
     const fetchTutors = async () => {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://backend.akshayy.tech/admin/getTutors', {
+      const response = await fetch('https://server.avyudha.com/admin/getTutors', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

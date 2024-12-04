@@ -11,6 +11,9 @@ const TutorFinder = () => {
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [rating, setRating] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const jobsPerPage = 15;
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     subjectsTaught: '',
@@ -41,10 +44,12 @@ const TutorFinder = () => {
     "Summer Camp",
     "ui",
     "Choreography",
+    "IIT JEE Coaching",
   ];
+ 
   const fetchTutors = async () => {
     try {
-      const response = await axios.get('https://backend.akshayy.tech/getTutors');
+      const response = await axios.get('https://server.avyudha.com/getTutors');
       if (response.data && response.data.tutors && Array.isArray(response.data.tutors)) {
         setTutors(response.data.tutors);
         setFilteredTutors(response.data.tutors); // Set the initial filtered tutors
@@ -91,6 +96,26 @@ const TutorFinder = () => {
 
     return distance <= distanceFilter;
   };
+  
+  const totalPages = Math.ceil(filteredTutors.length / jobsPerPage);
+
+  const paginatedTutors = filteredTutors.slice(
+    (currentPage - 1) * jobsPerPage,
+    currentPage * jobsPerPage
+  );
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   const fetchUserCoordinates = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -301,35 +326,41 @@ const TutorFinder = () => {
             </button>
           </form>
         </div>
-        <div className="flex flex-col items-start justify-start w-full">
-          <div className='text-bold text-xl ml-4'>Tutors</div>
-          {filteredTutors.length > 0 ? (
-            filteredTutors.map((tutor, index) => (
+        <div className="flex flex-col items-start justify-start w-full ml-8">
+          <div className='text-3xl font-bold text-[#041F96] mb-6'>Tutors</div>
+          {paginatedTutors.length > 0 ? (
+          paginatedTutors.map((tutor, index) => (
               <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
-                  <img src={tutor.image} alt="Tutor Logo" className="w-full h-full object-contain" />
+                <img
+  src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
+  alt=""
+  className="w-24 h-[70px] object-contain"
+/>
+
                 </div>
                 <Link to={`/getTutor/${tutor._id}`} className="block w-full">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
+                  <div className="flex  md:justify-between w-full ml-2">
                     <div>
-                      <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
-                      <span className="text-gray-600">{tutor.jobTitle}</span>
+                      <div className="text-lg font-semibold">{tutor.fullName}</div>
+                      <div className="text-gray-600">{tutor.title}</div>
                       {/* <span className="text-gray-600 mr-4">Rating - {tutor.rating}</span> */}
-                      <span className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</span>
+                      <div className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</div>
+                      <div className="text-gray-600 mr-6">{tutor.totalExperience} years</div>
+                      <div className="text-gray-600 mr-6">{tutor.highestQualification}</div>
                     </div>
                     <div>
-                      <span className="text-gray-600 mr-6">{tutor.totalExperience} years</span>
-                      <span className="text-gray-600 mr-6">{tutor.highestQualification}</span>
-                      <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
+                    
+                      <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2 my-auto">
           {userCoords && tutor.location?.coordinates && (
             <p className="text-gray-700 mr-4">Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km</p>
           )}
         </div>
                     </div>
                     <div className="mt-2 md:mt-0 flex items-center mr-4">
-                      <button className="ml-2 mr-6">
+                      {/* <button className="ml-2 mr-6">
                         {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark />}
-                      </button>
+                      </button> */}
                       <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
                         View
                       </button>
@@ -341,7 +372,28 @@ const TutorFinder = () => {
           ) : (
             <div>No tutors match your criteria.</div>
           )}
+          <div className="mt-4 flex justify-between w-full">
+          <button
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
+        </div>
+        
+        
       </div>
     </div>
   );

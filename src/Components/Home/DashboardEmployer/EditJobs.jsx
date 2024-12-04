@@ -46,7 +46,7 @@ useEffect(() => {
       console.log("Fetching job details for job ID:", jobid); // Add debug logs
       
       const response = await fetch(
-        `https://backend.akshayy.tech/getJobs/${jobid}`, // Correct GET endpoint
+        `https://server.avyudha.com/getJobs/${jobid}`, // Correct GET endpoint
         {
           headers: {
             Authorization: `Bearer ${token}`, // Use your actual token
@@ -164,7 +164,7 @@ useEffect(() => {
   
     try {
       const response = await fetch(
-        `https://backend.akshayy.tech/editJob/${jobid}`, // Endpoint to edit job
+        `https://server.avyudha.com/editJob/${jobid}`, // Endpoint to edit job
         {
           method: 'PUT',
           headers: {

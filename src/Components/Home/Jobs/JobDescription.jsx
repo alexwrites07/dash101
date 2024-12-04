@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Map';
+import { HiBookmark, HiOutlineBookmark} from 'react-icons/hi';
 import StarRating from './StarRating';
 import '../Home.css';
 
 const JobDescription = () => {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
@@ -15,7 +17,7 @@ const JobDescription = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/getjobs/${jobId}`);
+        const response = await axios.get(`https://server.avyudha.com/getjobs/${jobId}`);
         setJob(response.data.job);
       } catch (error) {
         console.error('Error fetching job details:', error);
@@ -26,40 +28,103 @@ const JobDescription = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
   const buyContact = async () => {
     if (!job?.employer) {
-      console.error('Employer ID not available');
+      console.error("Employer ID not available");
       return;
     }
+  
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        'https://backend.akshayy.tech/purchaseContact',
+      const token = localStorage.getItem("token");
+  
+      // Fetch purchased jobs
+      const checkResponse = await axios.get(
+        "https://server.avyudha.com/tutor/purchased-jobs",
         {
-          contactId: job.employer,
-          contactType: 'Organization'
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Ensure the response is an array
+      const purchasedJobs = Array.isArray(checkResponse.data) ? checkResponse.data : [];
+  
+      // Check if the job is already purchased
+      const isJobPurchased = purchasedJobs.some(
+        (purchasedJob) => purchasedJob.job._id === jobId
+      );
+  
+      if (isJobPurchased) {
+        alert("This job is already purchased by you. You cannot buy it again.");
+      } else {
+        // Proceed with purchasing the contact
+        const purchaseResponse = await axios.post(
+          "https://server.avyudha.com/purchaseContact",
+          {
+            contactId: job.employer,
+            contactType: "Organization",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        console.log("Contact purchase successful:", purchaseResponse.data);
+        alert("Contact Bought");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  
+  const handleBookmarkToggle = async () => {
+    const token = localStorage.getItem('token');
+  
+    if (!token) {
+      alert("Authentication token not found. Please log in again.");
+      return;
+    }
+  
+    try {
+      // Fetch tutor ID from dashboard endpoint
+      const dashboardResponse = await axios.get(
+        'https://server.avyudha.com/dashboard/Tutor',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      const tutorId = dashboardResponse.data._id;
+  
+      // Send POST request to bookmark the tutor
+      await axios.post(
+        'https://server.avyudha.com/tutor/shortlist-job',
+        {
+          tutorId,
+          jobId,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
-      console.log('Contact purchase successful:', response.data);
-      alert ("Contact Bought");
+  
+      setIsBookmarked((prev) => !prev); // Toggle bookmark state
+      alert('Job bookmarked successfully!');
     } catch (error) {
-      console.error('Error purchasing contact:', error);
+    
+  
+      alert('Only Tutors can bookmark.');
     }
   };
-  const fetchReviews = async () => {
-    try {
-      const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${jobId}`);
-      setReviews(response.data.reviews);
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
-    }
-  };
+  
 
   const applyForJob = async () => {
     const token = localStorage.getItem('token');
@@ -70,7 +135,7 @@ const JobDescription = () => {
     }
 
     try {
-      const tutorResponse = await axios.get('https://backend.akshayy.tech/dashboard/Tutor', {
+      const tutorResponse = await axios.get('https://server.avyudha.com/dashboard/Tutor', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -78,7 +143,7 @@ const JobDescription = () => {
       const tutorId = tutorResponse.data._id;
 
       const applyResponse = await axios.post(
-        'https://backend.akshayy.tech/tutor/apply-job',
+        'https://server.avyudha.com/tutor/apply-job',
         {
           tutorId,
           jobId
@@ -92,6 +157,7 @@ const JobDescription = () => {
       console.log('Application successful:', applyResponse.data);
       alert("Job Applied");
     } catch (error) {
+      alert ("ALready applied for this job");
       console.error('Error applying for job:', error);
     }
   };
@@ -103,7 +169,17 @@ const JobDescription = () => {
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
     
         <div className="md:w-3/4 mb-4 md:mb-0 ml-8">
-          <h1 className="text-3xl font-bold mb-4">{job.title}</h1>
+          <h1 className="text-3xl font-bold mb-4">{job.title}<spacer><spacer></spacer></spacer>&nbsp;
+          <button
+    onClick={handleBookmarkToggle}
+    className="text-blue-500 hover:text-blue-600 focus:outline-none "
+  >
+    {isBookmarked ? (
+      <HiBookmark className="w-6 h-6" />
+    ) : (
+      <HiOutlineBookmark className="w-6 h-6" />
+    )}
+  </button></h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <p><strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}</p>
             <p><strong>Salary:</strong> {job.salary.min} - {job.salary.max} ({job.salary.period})</p>
@@ -113,6 +189,7 @@ const JobDescription = () => {
             <p><strong>Commitment:</strong> {job.workDetails.commitment}</p>
             <p><strong>Mode:</strong> {job.workDetails.mode}</p>
             <p><strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}</p>
+            
             {job.isClosed ? (
               <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
                 Closed
@@ -131,6 +208,8 @@ const JobDescription = () => {
                 >
                   Buy Contacts (100 coins)
                 </button>
+           
+  
               </>
             )}
           </div>

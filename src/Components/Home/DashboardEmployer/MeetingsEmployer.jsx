@@ -83,8 +83,8 @@ const Meetings = () => {
 
     try {
       const url = editingMeeting !== null 
-        ? `https://backend.akshayy.tech/meetings/${meetings[editingMeeting]._id}`
-        : 'https://backend.akshayy.tech/meetings';
+        ? `https://server.avyudha.com/meetings/${meetings[editingMeeting]._id}`
+        : 'https://server.avyudha.com/meetings';
       
       const method = editingMeeting !== null ? 'PUT' : 'POST';
 
@@ -147,7 +147,7 @@ const Meetings = () => {
 
   const handleDeleteMeeting = async (index) => {
     const meetingId = meetings[index]._id; // Get the ID of the meeting to be deleted
-    const url = `https://backend.akshayy.tech/meetings/${meetingId}`; // API endpoint for deleting the meeting
+    const url = `https://server.avyudha.com/meetings/${meetingId}`; // API endpoint for deleting the meeting
   
     try {
       const response = await fetch(url, {
@@ -242,7 +242,7 @@ const Meetings = () => {
   useEffect(() => {
     const fetchMeetings = async () => {
       try {
-        const response = await fetch('https://backend.akshayy.tech/meetings', {
+        const response = await fetch('https://server.avyudha.com/meetings', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

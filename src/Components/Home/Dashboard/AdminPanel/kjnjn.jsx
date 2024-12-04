@@ -35,7 +35,7 @@ const EditTutor = () => {
     useEffect(() => {
         const fetchTutorData = async () => {
             const token = localStorage.getItem('token');
-            const url = `https://backend.akshayy.tech/getTutor/${id}`;
+            const url = `https://server.avyudha.com/getTutor/${id}`;
 
             try {
                 const response = await fetch(url, {
@@ -109,7 +109,7 @@ const EditTutor = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        const url = `https://backend.akshayy.tech/editUserProfile/${id}/Tutor`;
+        const url = `https://server.avyudha.com/editUserProfile/${id}/Tutor`;
 
         try {
             const response = await fetch(url, {

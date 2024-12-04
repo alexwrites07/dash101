@@ -11,7 +11,7 @@ const FeaturedJobs = () => {
     // Fetch jobs from the backend API
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/featured-jobs');
+        const response = await axios.get('https://server.avyudha.com/featured-jobs');
         setJobs(response.data);
       } catch (error) {
         console.error('Error fetching jobs:', error);

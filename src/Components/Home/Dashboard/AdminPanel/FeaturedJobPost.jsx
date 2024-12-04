@@ -23,7 +23,7 @@ const JobPostPage = () => {
     // Fetch the job posts from the API
     const fetchJobPosts = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/featured-jobs', {
+        const response = await axios.get('https://server.avyudha.com/featured-jobs', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

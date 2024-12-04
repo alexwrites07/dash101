@@ -16,7 +16,7 @@ const AppliedCompany = () => {
   // Fetch data from the backend when the component mounts
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('https://backend.akshayy.tech/tutor/applications', {
+    fetch('https://server.avyudha.com/tutor/applications', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

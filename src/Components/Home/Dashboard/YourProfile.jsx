@@ -58,7 +58,7 @@ const [dob, setDOB] = useState('');
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://backend.akshayy.tech/dashboard/${type}`, {
+        const response = await fetch(`https://server.avyudha.com/dashboard/${type}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -346,7 +346,7 @@ const handleLongitudeChange = (e) => {
   const savePersonalInfo2 = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
+      const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -422,7 +422,7 @@ const handleLongitudeChange = (e) => {
         // body.image = image;
     
         // Send the request
-        const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
+        const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -461,7 +461,7 @@ const handleLongitudeChange = (e) => {
   
       console.log('Request Body:', JSON.stringify(body, null, 2));
   
-      const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
+      const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -511,7 +511,7 @@ const handleLongitudeChange = (e) => {
 
       console.log('Request Body:', JSON.stringify(body, null, 2));
 
-      const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
+      const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

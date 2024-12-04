@@ -17,7 +17,7 @@ const UpdatePassword = () => {
   const [isRetypePasswordVisible, setRetypePasswordVisible] = useState(false);
 
   // API endpoint
-  const apiUrl = 'https://backend.akshayy.tech/update_password';
+  const apiUrl = 'https://server.avyudha.com/update_password';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDMyYjliZTk5ZWFlMTM2ODkzNDg5NyIsImlhdCI6MTcyNTExNTI5M30.TLmHeB5M1M9fbnp50agdf4HEMP_AGu4JNJSWwyzI6t4';
   const tutorId = '669e250f010b0852a754e9bf';
 

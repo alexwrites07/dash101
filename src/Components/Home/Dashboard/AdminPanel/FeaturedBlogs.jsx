@@ -22,7 +22,7 @@ const BlogPage = () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('https://backend.akshayy.tech/blogs', {
+          const response = await axios.get('https://server.avyudha.com/blogs', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -84,7 +84,7 @@ const BlogPage = () => {
     }
 
     try {
-      await axios.post('https://backend.akshayy.tech/blogs', formData, {
+      await axios.post('https://server.avyudha.com/blogs', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -200,7 +200,7 @@ const BlogPage = () => {
               filteredBlogs.map(blog => (
                 <div key={blog._id} className="border border-gray-200 rounded-md shadow-lg overflow-hidden">
                   <img
-                    src={`https://backend.akshayy.tech/blogs/${blog._id}/download/image/${getImageId(blog.images[blog.images.length - 1])}`}
+                    src={`https://server.avyudha.com/blogs/${blog._id}/download/image/${getImageId(blog.images[blog.images.length - 1])}`}
                     alt={blog.title}
                     className="w-full h-48 object-cover"
                   />

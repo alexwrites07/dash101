@@ -16,7 +16,7 @@ const WalletManager = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`https://backend.akshayy.tech/coin-balance/${email}`, {
+      const response = await axios.get(`https://server.avyudha.com/coin-balance/${email}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,7 +44,7 @@ const WalletManager = () => {
         email,
         coins: newBalance,
       };
-      await axios.post("https://backend.akshayy.tech/wallet/add-coins", payload, {
+      await axios.post("https://server.avyudha.com/wallet/add-coins", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

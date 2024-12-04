@@ -19,7 +19,7 @@ const TutorProfileView = () => {
     const fetchTutors = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://backend.akshayy.tech/admin/getTutors', {
+        const response = await fetch('https://server.avyudha.com/admin/getTutors', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -70,7 +70,7 @@ const TutorProfileView = () => {
         entityId: studentId,
       };
 
-      await axios.post('https://backend.akshayy.tech/admin/hardDeleteEntity', payload, { headers });
+      await axios.post('https://server.avyudha.com/admin/hardDeleteEntity', payload, { headers });
       alert('OTP has been sent to your email.'); // Notify the admin
       console.log (payload);
       setIsOtpModalVisible(true); // Show OTP input modal
@@ -91,7 +91,7 @@ const TutorProfileView = () => {
         otp,
       };
      
-      await axios.post('https://backend.akshayy.tech/admin/verifyAndHardDeleteEntity', payload, { headers });
+      await axios.post('https://server.avyudha.com/admin/verifyAndHardDeleteEntity', payload, { headers });
       alert('Tutor profile deleted successfully');
       setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId)); // Update UI
       setIsOtpModalVisible(false); // Hide OTP input modal

@@ -18,7 +18,7 @@ const EmployersPage = () => {
   // Fetch data from the backend
   useEffect(() => {
     axios
-      .get('https://backend.akshayy.tech/tutor/following', {
+      .get('https://server.avyudha.com/tutor/following', {
         headers: {
           Authorization: `Bearer ${token}` // Set the Authorization header
         }

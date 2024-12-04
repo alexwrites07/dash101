@@ -21,7 +21,7 @@ const NeedDescription = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/learning-need/${IId}`);
+        const response = await axios.get(`https://server.avyudha.com/learning-need/${IId}`);
         setJob(response.data);
       } catch (error) {
         console.error('Error fetching job details:', error);
@@ -31,7 +31,7 @@ const NeedDescription = () => {
 
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${IId}`);
+        const response = await axios.get(`https://server.avyudha.com/reviews/profile/${IId}`);
         // Filter reviews based on reviewedId matching tutor's ID
         const filteredReviews = response.data.reviews.filter(review => review.reviewedId === Id);
         setReviews(filteredReviews);
@@ -74,8 +74,8 @@ const NeedDescription = () => {
     try {
       // Send a POST request to bookmark the tutor
       const response = await axios.post(
-        'https://backend.akshayy.tech/bookmark',
-        { employeeId: Id },
+        'https://server.avyudha.com/bookmark-need',
+        { learningNeedId:IId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,10 +85,48 @@ const NeedDescription = () => {
       );
       
       setIsBookmarked((prev) => !prev); // Toggle the bookmark state on success
-      alert('Tutor bookmarked successfully!');
+      alert('Learning Need bookmarked successfully!');
     } catch (error) {
       console.error('Error bookmarking tutor:', error);
       alert('Failed to bookmark the tutor. Please try again later.');
+    }
+  };
+  const buyContact = async () => {
+    if (!IId) {
+      console.error('Learning Need ID not available.');
+      return;
+    }
+  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Authentication token not found. Please log in again.');
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        'https://server.avyudha.com/purchaseNeed',
+        {
+          learningNeedId: IId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      console.log('Contact purchase successful:', response.data);
+      alert('Contact bought successfully!');
+    } catch (error) {
+      if (error.response) {
+        console.error('Error purchasing contact:', error.response.data);
+        alert(error.response.data.message || 'Error purchasing contact.');
+      } else {
+        console.error('Error:', error.message);
+        alert('An unexpected error occurred.');
+      }
     }
   };
   
@@ -112,7 +150,7 @@ const NeedDescription = () => {
   <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
     
     <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
-      <h1 className="text-3xl font-bold mb-4">{job.fullName}</h1>
+      <h1 className="text-3xl font-bold mb-4">{job.requirement}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <p><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
         <p><strong>Salary:</strong> Up to {job.salary?.max} {job.salary?.period}</p>
@@ -121,10 +159,21 @@ const NeedDescription = () => {
         <p><strong>Start Date:</strong> {job.start}</p>
         <p><strong>Class Type:</strong> {job.typeOfClass?.join(", ")}</p>
         <p><strong>Gender Preference:</strong> {job.genderPreference}</p>
-        <button onClick={handleBookmarkToggle}
-          className="text-blue-500 ml-6 hover:text-blue-600 focus:outline-none mr-8">
-          {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
-        </button>
+        <button
+        onClick={handleBookmarkToggle}
+        className='text-blue-500 hover:text-blue-600 focus:outline-none ml-4'>
+         {isBookmarked ? (
+      <HiBookmark className="w-6 h-6" />
+    ) : (
+      <HiOutlineBookmark className="w-6 h-6" />
+    )}
+  </button>
+  <button
+    onClick={buyContact}
+    className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+    Buy Contacts (100 coins)
+  </button>
+        
         {!job.fulfilled ? (
           <div></div>
         ) : (

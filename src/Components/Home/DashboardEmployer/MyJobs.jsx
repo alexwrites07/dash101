@@ -17,7 +17,7 @@ const ManageJobs = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/postedJobs', {
+        const response = await axios.get('https://server.avyudha.com/postedJobs', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ const ManageJobs = () => {
   const handleLockJob = async (jobId) => {
     try {
       const response = await axios.patch(
-        `https://backend.akshayy.tech/jobs/${jobId}/toggle-close`,
+        `https://server.avyudha.com/jobs/${jobId}/toggle-close`,
         {},
         {
           headers: {
@@ -69,7 +69,7 @@ const ManageJobs = () => {
   // Handle removing a job
   const handleRemoveJob = async (jobId) => {
     try {
-      const response = await axios.delete(`https://backend.akshayy.tech/deleteJob/${jobId}`, {
+      const response = await axios.delete(`https://server.avyudha.com/deleteJob/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

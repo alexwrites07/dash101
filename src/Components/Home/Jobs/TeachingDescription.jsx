@@ -21,7 +21,7 @@ const TeachingDescription = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/getTutor/${Id}`);
+        const response = await axios.get(`https://server.avyudha.com/getTutor/${Id}`);
         setJob(response.data);
       } catch (error) {
         console.error('Error fetching job details:', error);
@@ -31,7 +31,7 @@ const TeachingDescription = () => {
 
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${Id}`);
+        const response = await axios.get(`https://server.avyudha.com/reviews/profile/${Id}`);
         // Filter reviews based on reviewedId matching tutor's ID
         const filteredReviews = response.data.reviews.filter(review => review.reviewedId === Id);
         setReviews(filteredReviews);
@@ -74,7 +74,7 @@ const TeachingDescription = () => {
     try {
       // Send a POST request to bookmark the tutor
       const response = await axios.post(
-        'https://backend.akshayy.tech/bookmark',
+        'https://server.avyudha.com/bookmark',
         { employeeId: Id },
         {
           headers: {
@@ -88,12 +88,59 @@ const TeachingDescription = () => {
       alert('Tutor bookmarked successfully!');
     } catch (error) {
       console.error('Error bookmarking tutor:', error);
-      alert('Failed to bookmark the tutor. Please try again later.');
+      alert('Only Organizations can bookmark.');
+    }
+  };
+  const buyContact = async () => {
+    if (!Id) {
+      console.error(' ID not available');
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'https://server.avyudha.com/purchaseContact',
+        {
+          contactId: Id,
+          contactType: 'Tutor'
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Contact purchase successful:', response.data);
+      alert ("Contact Bought");
+    } catch (error) {
+      console.error('Error purchasing contact:', error);
+      alert ("Only organizer to be able to view contact/You have already bought the contact")
     }
   };
   
-  const handleRating = (rate) => {
-    setRating(rate);
+  const handleRating = (rate) => setRating(rate);
+
+  const handleSubmitReview = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("Authentication token not found. Please log in again.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `https://server.avyudha.com/reviews/profile/${Id}`,
+        { rating, description: comment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setReviews([...reviews, response.data]); // Add the new review
+      setRating(0); // Reset rating
+      setComment(''); // Reset comment
+      alert('Review submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      alert('Failed to submit review. Please try again later.');
+    }
   };
 
   if (error) {
@@ -111,11 +158,9 @@ const TeachingDescription = () => {
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
         <div className="md:w-1/4 mb-4 md:mb-0">
-          {job.image && job.image.length > 0 ? (
-            <img src={job.image} alt={job.title} className="w-full h-56 object-cover rounded-md" />
-          ) : (
-            <p>No image available</p>
-          )}
+          
+            <img src={`https://server.avyudha.com/tutors/download/image/${Id}`} alt={job.title} className="w-full h-56 object-cover rounded-md" />
+          
         </div>
         <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
           <h1 className="text-3xl font-bold mb-4">{job.fullName}</h1>
@@ -124,11 +169,26 @@ const TeachingDescription = () => {
             <p><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
             <p><strong>Experience:</strong> {job.totalExperience} years</p>
             <p><strong>Qualification:</strong> {job.highestQualification}</p>
-            <button onClick={handleBookmarkToggle}
-               className="text-blue-500 ml-6 hover:text-blue-600 focus:outline-none mr-8">
-             {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
+        
+            <span className="flex space-x-4">
+  <button
+    onClick={handleBookmarkToggle}
+    className="text-blue-500 hover:text-blue-600 focus:outline-none"
+  >
+    {isBookmarked ? (
+      <HiBookmark className="w-6 h-6" />
+    ) : (
+      <HiOutlineBookmark className="w-6 h-6" />
+    )}
+  </button>
+  <button
+    onClick={buyContact}
+    className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300"
+  >
+    Buy Contacts (100 coins)
+  </button>
+</span>
 
-            </button>
             {!isActive ? (
              <div></div>
             ) : (
@@ -148,57 +208,114 @@ const TeachingDescription = () => {
         <div className="bg-white p-6 rounded-lg md:w-3/5">
           <div className="text-gray-600">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Details</h2>
+            <table className="table-auto w-full border-collapse border border-gray-200 mb-8">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="border border-gray-200 px-4 py-2 text-left">Categories</th>
+    </tr>
+  </thead>
+  <tbody >
+    {job.categories?.map((skill, index) => (
+      <span key={index} className="hover:bg-gray-50 ">
+        <spacer></spacer>
+        <span className="mr-2 py-2 ">{skill},</span>
+      </span>
+    ))}
+  </tbody>
+</table>
             <p className="text-black mb-4">{job.description}</p>
 
             {/* Display Education */}
-            <h2 className="text-xl font-semibold mb-2">Education</h2>
-            {job.education?.map((edu, index) => (
-              <div key={index}  className='mt-6'>
-                <p><strong>Degree:</strong> {edu.title}</p>
-                <p><strong>Academy:</strong> {edu.academy}</p>
-                <p><strong>Year:</strong> {new Date(edu.year).getFullYear()}</p>
-                <p><strong>Description:</strong> {edu.description}</p>
-              </div>
-            ))}
+         {/* Display Education */}
+<h2 className="text-xl font-semibold mb-4">Education</h2>
+<table className="table-auto w-full border-collapse border border-gray-200 mb-8">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="border border-gray-200 px-4 py-2 text-left">Degree</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Academy</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Year</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {job.education?.map((edu, index) => (
+      <tr key={index} className="hover:bg-gray-50">
+        <td className="border border-gray-200 px-4 py-2">{edu.title}</td>
+        <td className="border border-gray-200 px-4 py-2">{edu.academy}</td>
+        <td className="border border-gray-200 px-4 py-2">{new Date(edu.year).getFullYear()}</td>
+        <td className="border border-gray-200 px-4 py-2">{edu.description}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-            {/* Display Past Experiences */}
-            <h2 className="text-xl font-semibold mb-2 mt-12">Experience/Achievements</h2>
-            {job.pastExperiences?.map((experience, index) => (
-              <div key={index} className='mt-6'>
-                <p><strong>Role:</strong> {experience.title}</p>
-                <p><strong>Company:</strong> {experience.company}</p>
-                <p>
-                  <strong>Duration:</strong> {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}
-                </p>
-                <p><strong>Description:</strong> {experience.description}</p>
-              </div>
-            ))}
+{/* Display Past Experiences */}
+<h2 className="text-xl font-semibold mb-4">Experience/Achievements</h2>
+<table className="table-auto w-full border-collapse border border-gray-200 mb-8">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="border border-gray-200 px-4 py-2 text-left">Role</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Company</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Duration</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {job.pastExperiences?.map((experience, index) => (
+      <tr key={index} className="hover:bg-gray-50">
+        <td className="border border-gray-200 px-4 py-2">{experience.title}</td>
+        <td className="border border-gray-200 px-4 py-2">{experience.company}</td>
+        <td className="border border-gray-200 px-4 py-2">
+          {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}
+        </td>
+        <td className="border border-gray-200 px-4 py-2">{experience.description}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
-            {/* Display Awards */}
-            <h2 className="text-xl font-semibold mb-2 mt-12">Awards</h2>
-            {job.awards?.map((award, index) => (
-              <div key={index}  className='mt-6'>
-                <p><strong>Award:</strong> {award.title}</p>
-                <p><strong>Year:</strong> {new Date(award.year).getFullYear()}</p>
-                <p><strong>Description:</strong> {award.description}</p>
-              </div>
-            ))}
+{/* Display Awards */}
+<h2 className="text-xl font-semibold mb-4">Awards</h2>
+<table className="table-auto w-full border-collapse border border-gray-200">
+  <thead>
+    <tr className="bg-gray-100">
+      <th className="border border-gray-200 px-4 py-2 text-left">Award</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Year</th>
+      <th className="border border-gray-200 px-4 py-2 text-left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {job.awards?.map((award, index) => (
+      <tr key={index} className="hover:bg-gray-50">
+        <td className="border border-gray-200 px-4 py-2">{award.title}</td>
+        <td className="border border-gray-200 px-4 py-2">{new Date(award.year).getFullYear()}</td>
+        <td className="border border-gray-200 px-4 py-2">{award.description}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+
 
             {/* Video Player */}
-            <div className=" mt-8">
-              <video controls className="w-full max-w-lg rounded-md">
-                <source src={job.video} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+          
 
             {/* Reviews Section */}
+            <div className="mt-8 flex flex-col ">
+              <h2 className="text-xl font-semibold text-gray-800 mt-4">Rate this Tutor</h2>
+              <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-2">Submit Your Review</h3>
+          <StarRating rating={rating} reviewedId={Id} onRatingChange={handleRating} />
+         
+        </div>
             <h2 className="text-xl font-semibold mb-4 mt-8">Reviews</h2>
             {reviews.length > 0 ? (
               reviews.map(review => (
                 <div key={review._id} className="border-b mb-4 pb-2">
                   <p><strong>{review.reviewerName}</strong></p>
-                  <StarRating rating={review.rating} /> {/* You can pass the rating value here to your StarRating component */}
+                  <p>Rating - <strong>{review.rating}/5</strong></p>
+
+                  {/* You can pass the rating value here to your StarRating component */}
                   <p>{review.description}</p>
                   <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
                 </div>
@@ -207,26 +324,10 @@ const TeachingDescription = () => {
               <p>No reviews available.</p>
             )}
 
-            <div className="mt-8 flex flex-col items-center">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Rate this Tutor</h2>
-              <StarRating />
+           
 
               {/* Comment Section */}
-              <div className="mt-4">
-                <textarea
-                  value={comment}
-                  onChange={handleCommentChange}
-                  placeholder="Write your comments here..."
-                  className="w-full p-2 border rounded-lg"
-                />
-                <button
-                  onClick={handleSubmit}
-                  className="mt-2 bg-blue-500 text-white font-bold py-2 px-4 rounded"
-                >
-                  Submit
-                </button>
-                {submittedComment && <p className="mt-2 text-green-500">{submittedComment}</p>}
-              </div>
+            
             </div>
           </div>
         </div>
@@ -238,6 +339,12 @@ const TeachingDescription = () => {
             ) : (
               <p>Map location not available</p> // Fallback message
             )}
+              <div className=" mt-8">
+              <video controls className="w-full max-w-lg rounded-md">
+                <source src={job.video} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
         </div>
       </div>
     </div>

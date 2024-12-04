@@ -11,7 +11,7 @@ const AdminProfile = () => {
       const token = localStorage.getItem("token");  // Get token from localStorage
       try {
         const response = await axios.get(
-          'https://backend.akshayy.tech/dashboard/Admin',
+          'https://server.avyudha.com/dashboard/Admin',
           {
             headers: {
               Authorization: `Bearer ${token}`,

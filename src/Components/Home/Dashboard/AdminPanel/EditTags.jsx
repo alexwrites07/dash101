@@ -37,7 +37,7 @@ const EditTags = () => {
   useEffect(() => {
     const fetchTutorDetails = async () => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://backend.akshayy.tech/getTutor/${id}`, {
+      const response = await fetch(`https://server.avyudha.com/getTutor/${id}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -60,7 +60,7 @@ const EditTags = () => {
     const token = localStorage.getItem('token');
     
     try {
-      const response = await fetch(`https://backend.akshayy.tech/editUserProfile/${id}/Tutor`, {
+      const response = await fetch(`https://server.avyudha.com/editUserProfile/${id}/Tutor`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

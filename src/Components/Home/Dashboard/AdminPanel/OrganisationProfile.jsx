@@ -23,7 +23,7 @@ const EmployerProfileView = () => {
   useEffect(() => {
     const fetchOrganizations = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/admin/getOrgs', {
+        const response = await axios.get('https://server.avyudha.com/admin/getOrgs', {
           headers: {
             Authorization: `Bearer ${token}`, // Pass the bearer token in headers
           },
@@ -80,7 +80,7 @@ const EmployerProfileView = () => {
         entityId: studentId,
       };
 
-      await axios.post('https://backend.akshayy.tech/admin/hardDeleteEntity', payload, { headers });
+      await axios.post('https://server.avyudha.com/admin/hardDeleteEntity', payload, { headers });
       alert('OTP has been sent to your email.'); // Notify the admin
       console.log (payload);
       setIsOtpModalVisible(true); // Show OTP input modal
@@ -101,7 +101,7 @@ const EmployerProfileView = () => {
         otp,
       };
      
-      await axios.post('https://backend.akshayy.tech/admin/verifyAndHardDeleteEntity', payload, { headers });
+      await axios.post('https://server.avyudha.com/admin/verifyAndHardDeleteEntity', payload, { headers });
       alert('Tutor profile deleted successfully');
       setAllStudents((prevStudents) => prevStudents.filter((student) => student._id !== selectedStudentId)); // Update UI
       setIsOtpModalVisible(false); // Hide OTP input modal

@@ -24,7 +24,7 @@ export default function Login() {
         setCurrentRole(roles[currentIndex]);
     }, [currentIndex]);
 
-    const homeImgSrc = imgUrl[currentIndex];
+    const homeImgSrc = imgUrl[0];
 
     function roleChangeInLogin(index) {
         setIsFading(true);
@@ -44,7 +44,7 @@ export default function Login() {
         };
        console.log (loginData);
         try {
-            const response = await fetch('https://backend.akshayy.tech/login', {
+            const response = await fetch('https://server.avyudha.com/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -51,7 +51,7 @@ const StudentEdit = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/getStudent/${studentId}`, {
+        const response = await axios.get(`https://server.avyudha.com/getStudent/${studentId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const StudentEdit = () => {
   const handleSave = async () => {
     try {
       await axios.put(
-        `https://backend.akshayy.tech/editUserProfile/${studentId}/Student`,
+        `https://server.avyudha.com/editUserProfile/${studentId}/Student`,
         studentData,
         {
           headers: {

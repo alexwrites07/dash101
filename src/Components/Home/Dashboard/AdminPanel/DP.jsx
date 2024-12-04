@@ -21,13 +21,13 @@ const DpEditDelete = () => {
     let url = '';
     switch (userType) {
       case 'student':
-        url = `https://backend.akshayy.tech/student/dp/${id}`;
+        url = `https://server.avyudha.com/student/dp/${id}`;
         break;
       case 'tutor':
-        url = `https://backend.akshayy.tech/tutors/download/image/${id}`;
+        url = `https://server.avyudha.com/tutors/download/image/${id}`;
         break;
       case 'organization':
-        url = `https://backend.akshayy.tech/org/download/logo/${id}`;
+        url = `https://server.avyudha.com/org/download/logo/${id}`;
         break;
       default:
         return;
@@ -67,15 +67,15 @@ const DpEditDelete = () => {
 
     switch (userType) {
       case 'student':
-        url = `https://backend.akshayy.tech/admin/edit-file/student/${id}/profileImageURL`;
+        url = `https://server.avyudha.com/admin/edit-file/student/${id}/profileImageURL`;
         formData.append('profileImageURL', image);
         break;
       case 'tutor':
-        url = `https://backend.akshayy.tech/admin/edit-file/tutor/${id}/image`;
+        url = `https://server.avyudha.com/admin/edit-file/tutor/${id}/image`;
         formData.append('image', image);
         break;
       case 'organization':
-        url = `https://backend.akshayy.tech/admin/edit-file/organization/${id}/logo`;
+        url = `https://server.avyudha.com/admin/edit-file/organization/${id}/logo`;
         formData.append('logo', image);
         break;
       default:
@@ -109,13 +109,13 @@ const DpEditDelete = () => {
     let url = '';
     switch (userType) {
       case 'student':
-        url = `https://backend.akshayy.tech/admin/edit-file/student/${id}/profileImageURL`;
+        url = `https://server.avyudha.com/admin/edit-file/student/${id}/profileImageURL`;
         break;
       case 'tutor':
-        url = `https://backend.akshayy.tech/admin/edit-file/tutor/${id}/image`;
+        url = `https://server.avyudha.com/admin/edit-file/tutor/${id}/image`;
         break;
       case 'organization':
-        url = `https://backend.akshayy.tech/admin/edit-file/organization/${id}/logo`;
+        url = `https://server.avyudha.com/admin/edit-file/organization/${id}/logo`;
         break;
       default:
         return;

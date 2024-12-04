@@ -24,7 +24,7 @@ const Doc = () => {
     switch (userType) {
       
       case 'tutor':
-        url = `https://backend.akshayy.tech/tutors/${id}/download-resume`;
+        url = `https://server.avyudha.com/tutors/${id}/download-resume`;
         break;
      
       default:
@@ -59,7 +59,7 @@ const Doc = () => {
     switch (userType) {
       
       case 'tutor':
-        url = `https://backend.akshayy.tech/tutors/download/identityProof/${id}`;
+        url = `https://server.avyudha.com/tutors/download/identityProof/${id}`;
         break;
      
       default:
@@ -103,7 +103,7 @@ const Doc = () => {
     switch (userType) {
      
       case 'tutor':
-        url = `https://backend.akshayy.tech/admin/edit-file/tutor/${id}/identityProof`;
+        url = `https://server.avyudha.com/admin/edit-file/tutor/${id}/identityProof`;
         formData.append('identityProof', identityProof);
         break;
      
@@ -148,7 +148,7 @@ const Doc = () => {
         switch (userType) {
          
           case 'tutor':
-            url = `https://backend.akshayy.tech/admin/edit-file/tutor/${id}/resume`;
+            url = `https://server.avyudha.com/admin/edit-file/tutor/${id}/resume`;
             formData.append('resume', resume);
             break;
          
@@ -184,7 +184,7 @@ const Doc = () => {
     switch (userType) {
       
       case 'tutor':
-        url = `https://backend.akshayy.tech/admin/edit-file/tutor/${id}/resume`;
+        url = `https://server.avyudha.com/admin/edit-file/tutor/${id}/resume`;
         break;
   
       default:

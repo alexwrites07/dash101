@@ -4,6 +4,7 @@ import Header from '../Header';
 import { useNavigate } from 'react-router-dom'; 
 import Sidebar from './AdminSidebar';
 import axios from 'axios';
+import Map from '../../MapDemo';
 
 
 const JobsView = () => {
@@ -13,6 +14,7 @@ const JobsView = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc');
   const [isEditing, setIsEditing] = useState(false);
+  const [coordinates, setCoordinates] = useState([0,0]);
   const [jobToEdit, setJobToEdit] = useState(null);
   const [editData, setEditData] = useState({ name: '', location: '', datePosted: '' });
   const [isCreating, setIsCreating] = useState(false);
@@ -28,9 +30,9 @@ const JobsView = () => {
       country:'',
       address:'',
       landmark:'',
-     
+      coordinates: [0, 0]
     },
-    coordinates: [0, 0],
+    
      // Initialize coordinates
     salary: {
       min: '',
@@ -60,7 +62,7 @@ const JobsView = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/admin/jobs', {
+        const response = await axios.get('https://server.avyudha.com/admin/jobs', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const fetchedJobs = response.data.map((job) => ({
@@ -80,11 +82,29 @@ const JobsView = () => {
     };
     fetchJobs();
   }, [token]);
-
+  const fetchCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude,longitude } = position.coords;
+        setCoordinates([latitude,longitude]);
+        setNewJobData((prev) => ({
+          ...prev,
+          location: {
+            ...prev.location,
+            coordinates: [latitude, longitude],
+          },
+        }));
+      }, (error) => {
+        console.error("Error fetching location:", error);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
   const toggleJobStatus = async (jobId) => {
     try {
       const response = await axios.patch(
-        `https://backend.akshayy.tech/jobs/${jobId}/toggle-close`,
+        `https://server.avyudha.com/jobs/${jobId}/toggle-close`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -104,11 +124,20 @@ const JobsView = () => {
   const handleEdit = (jobId) => {
     navigate(`/jobs/edit/${jobId}`);
   };
-  
+  const handleMapChange = (newCoordinates) => {
+    setCoordinates(newCoordinates);
+    setNewJobData((prev) => ({
+      ...prev,
+      location: {
+        ...prev.location,
+        coordinates: newCoordinates,
+      },
+    }));
+  };
   const handleEditSubmit = async () => {
     try {
       const response = await axios.put(
-        `https://backend.akshayy.tech/jobs/${jobToEdit.id}`,
+        `https://server.avyudha.com/jobs/${jobToEdit.id}`,
         { title: editData.name, location: { city: editData.location }, lastDateToApply: editData.datePosted },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -125,13 +154,18 @@ const JobsView = () => {
 
   const handleCreateSubmit = async () => {
     try {
+      const formattedCoordinates = [
+        parseFloat(newJobData.location.coordinates[0]),
+        parseFloat(newJobData.location.coordinates[1]),
+      ];
       const response = await axios.post(
-        'https://backend.akshayy.tech/create-job-admin',
+        'https://server.avyudha.com/create-job-admin',
         {
+        
           title: newJobData.name,
           location: {
             type: 'Point',
-            coordinates: newJobData.coordinates,
+            coordinates: formattedCoordinates,
             city: newJobData.location.city,
             state: newJobData.location.state,
             pinCode: newJobData.location.pinCode,
@@ -173,8 +207,9 @@ const JobsView = () => {
         location: { city: '', state: '', pinCode: '',country:'',
           address:'',
           landmark:'' ,
+          coordinates: [0, 0],
         }, // Reset coordinates to initial state
-        coordinates: [0, 0],
+        
         salary: { min: '', max: '', period: '' },
         workDetails: { commitment: '', mode: '' },
         experience: '',
@@ -202,7 +237,7 @@ const JobsView = () => {
 
   const handleDelete = async (jobId) => {
     try {
-      await axios.delete(`https://backend.akshayy.tech/deleteJob/${jobId}`, {
+      await axios.delete(`https://server.avyudha.com/deleteJob/${jobId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllJobs(allJobs.filter(job => job.id !== jobId));
@@ -322,7 +357,7 @@ const JobsView = () => {
 
           {/* Coordinates */}
           <div className="flex space-x-4 mb-4">
-            <input
+            {/* <input
               type="text"
               placeholder="Latitude"
               value={newJobData.coordinates[0]}
@@ -335,9 +370,20 @@ const JobsView = () => {
               value={newJobData.coordinates[1]}
               onChange={(e) => setNewJobData({ ...newJobData, coordinates: [newJobData.coordinates[0], e.target.value] })}
               className="block w-full border border-gray-300 rounded-md px-4 py-2"
-            />
+            /> */}
+           
           </div>
           
+          <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
+          <button
+              type="button"
+              onClick={fetchCurrentLocation}
+
+
+              className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+            >
+              Get Current Location
+            </button>
           {/* Salary */}
           <div className="grid grid-cols-3 gap-4 mb-4">
             <input

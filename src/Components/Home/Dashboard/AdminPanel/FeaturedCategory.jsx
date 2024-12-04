@@ -696,7 +696,7 @@ const FeaturedCategoryPage = () => {
       const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
       try {
-        const response = await fetch('https://backend.akshayy.tech/getTutors', {
+        const response = await fetch('https://server.avyudha.com/getTutors', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -772,7 +772,7 @@ const FeaturedCategoryPage = () => {
   const handleSearchSubmit = async () => {
     if (filterCategory) {
       const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-      const url = `https://backend.akshayy.tech/getTutors?categories=${encodeURIComponent(filterCategory)}`;
+      const url = `https://server.avyudha.com/getTutors?categories=${encodeURIComponent(filterCategory)}`;
 
       try {
         const response = await fetch(url, {

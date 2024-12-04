@@ -9,7 +9,7 @@ const Categories = () => {
   // Function to fetch data from the API
   const fetchTutors = async () => {
     try {
-      const response = await axios.get('https://backend.akshayy.tech/featured-tutors');
+      const response = await axios.get('https://server.avyudha.com/featured-tutors');
       setTutors(response.data); // Assuming the response is an array of tutor objects
     } catch (error) {
       console.error('Error fetching tutors:', error);

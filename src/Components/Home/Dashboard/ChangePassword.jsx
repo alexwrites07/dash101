@@ -39,7 +39,7 @@ const UpdatePassword = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const apiUrl = 'https://backend.akshayy.tech/update_password';
+      const apiUrl = 'https://server.avyudha.com/update_password';
 
       const response = await axios.post(
         apiUrl,

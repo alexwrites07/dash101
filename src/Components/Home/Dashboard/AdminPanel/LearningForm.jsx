@@ -90,7 +90,7 @@ const DemoForm = () => {
     
         // Make the POST request
         try {
-          const response = await fetch('https://backend.akshayy.tech/submit-learning-need', {
+          const response = await fetch('https://server.avyudha.com/submit-learning-need', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

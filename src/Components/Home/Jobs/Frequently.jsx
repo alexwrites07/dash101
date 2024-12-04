@@ -9,7 +9,7 @@ const FrequentlyHiringCompanies = () => {
   useEffect(() => {
     // Fetch companies from the backend API
     axios
-      .get('https://backend.akshayy.tech/featured-organizations')
+      .get('https://server.avyudha.com/featured-organizations')
       .then((response) => {
         const fetchedCompanies = response.data.map((company) => ({
           name: company.name,

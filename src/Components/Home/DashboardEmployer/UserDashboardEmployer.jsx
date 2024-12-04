@@ -24,7 +24,7 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('https://backend.akshayy.tech/notifications', {
+        const response = await fetch('https://server.avyudha.com/notifications', {
           headers: {
             Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM',
           },

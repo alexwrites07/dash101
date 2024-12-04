@@ -30,7 +30,7 @@ const EditLearningNeed = () => {
   useEffect(() => {
     const fetchLearningNeed = async () => {
       try {
-        const response = await axios.get(`https://backend.akshayy.tech/learning-need/${id}`, {
+        const response = await axios.get(`https://server.avyudha.com/learning-need/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLearningNeed(response.data);
@@ -103,7 +103,7 @@ const createPayload = () => {
     try {
       const payload = createPayload();
       await axios.put(
-        `https://backend.akshayy.tech/learning-need/${id}`,
+        `https://server.avyudha.com/learning-need/${id}`,
         payload,
         {
           headers: { Authorization: `Bearer ${token}` },

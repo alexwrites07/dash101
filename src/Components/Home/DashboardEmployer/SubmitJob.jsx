@@ -109,7 +109,7 @@ const SubmitJobPost = () => {
     console.log(payload); // Log the payload for debugging
   
     try {
-      const response = await fetch('https://backend.akshayy.tech/createJob', {
+      const response = await fetch('https://server.avyudha.com/createJob', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -84,7 +84,7 @@ const handleLongitudeChange = (e) => {
 
   const savePersonalInfo = async () => {
     try {
-      const response = await fetch('https://backend.akshayy.tech/dashboard/Organization', {
+      const response = await fetch('https://server.avyudha.com/dashboard/Organization', {
         method: 'POST',
         headers: {
           Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM',  // Replace with actual token
@@ -149,7 +149,7 @@ const handleLongitudeChange = (e) => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await fetch('https://backend.akshayy.tech/getOrg/66979a00d4e9a63603ba044f', {
+        const response = await fetch('https://server.avyudha.com/getOrg/66979a00d4e9a63603ba044f', {
           method: 'GET',
           headers: {
             Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM',

@@ -11,7 +11,7 @@ const DeleteProfile = () => {
   const [success, setSuccess] = useState(''); // State to show success message
 
   // Constants for the API call
-  const apiUrl = 'https://backend.akshayy.tech/tutor/delete';
+  const apiUrl = 'https://server.avyudha.com/tutor/delete';
   const token = localStorage.getItem('token');
   // const tutorId = '669e250f010b0852a754e9bf';
 

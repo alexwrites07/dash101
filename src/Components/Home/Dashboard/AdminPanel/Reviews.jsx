@@ -12,7 +12,7 @@ const Reviewsq = () => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('https://backend.akshayy.tech/reviews/admin', {
+        const response = await fetch('https://server.avyudha.com/reviews/admin', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -29,7 +29,7 @@ const Reviewsq = () => {
             let receiverName = '';
             try {
               if (review.reviewedModel === 'Tutor') {
-                const res = await fetch(`https://backend.akshayy.tech/getTutor/${review.reviewedId}`, {
+                const res = await fetch(`https://server.avyudha.com/getTutor/${review.reviewedId}`, {
                   method: 'GET',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ const Reviewsq = () => {
                 const tutorData = await res.json();
                 receiverName = tutorData.fullName;
               } else if (review.reviewedModel === 'Student') {
-                const res = await fetch(`https://backend.akshayy.tech/getStudent/${review.reviewedId}`, {
+                const res = await fetch(`https://server.avyudha.com/getStudent/${review.reviewedId}`, {
                   method: 'GET',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ const Reviewsq = () => {
                 const studentData = await res.json();
                 receiverName = studentData.fullName;
               } else if (review.reviewedModel === 'Organization') {
-                const res = await fetch(`https://backend.akshayy.tech/getOrg/${review.reviewedId}`, {
+                const res = await fetch(`https://server.avyudha.com/getOrg/${review.reviewedId}`, {
                   method: 'GET',
                   headers: {
                     Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ const Reviewsq = () => {
   const deleteReview = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`https://backend.akshayy.tech/reviews/admin/${id}`, {
+      const response = await fetch(`https://server.avyudha.com/reviews/admin/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

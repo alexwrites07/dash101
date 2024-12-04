@@ -46,7 +46,7 @@ const YourProfile = () => {
     const fetchData = async () => {
       try {
       //  endpoint === 'student' ? 'student' : 'tutor';
-        const response = await fetch(`https://backend.akshayy.tech/dashboard/${endpoint}`, {
+        const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

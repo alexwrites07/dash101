@@ -28,7 +28,7 @@ const NeedsFinder = () => {
         return;
       }
   
-      const response = await axios.get('https://backend.akshayy.tech/learning-needs', {
+      const response = await axios.get('https://server.avyudha.com/learning-needs', {
         headers: {
           Authorization: `Bearer ${token}`, // Add the token in the Authorization header
           'Content-Type': 'application/json'
@@ -233,16 +233,17 @@ const NeedsFinder = () => {
           </form>
         </div>
         <div className="flex flex-col items-start justify-start w-full">
-          <div className='text-bold text-xl ml-4'>Organizations</div>
+          <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Learning Needs</div>
           {filteredTutors.length > 0 ? (
             filteredTutors.map((tutor, index) => (
-              <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
+              <div className="shadow rounded flex flex-col md:flex-row items-start ml-8 border-b border-gray-200 py-4 mb-4 w-full" key={index}>
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
                 <Link to={`/getNeed/${tutor._id}`} className="block w-full">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
                     <div>
-                      <h2 className="text-lg font-semibold">{tutor.location.city}, {tutor.location.address}</h2>
-                      <h2 className="text-lg">Requirements: {tutor.requirement}</h2>
+                    <h2 className="text-lg  font-semibold">Requirements: {tutor.requirement}</h2>
+                      <h2 className="text-lg">{tutor.location.city}, {tutor.location.address}</h2>
+                      
                       <h2 className="text-lg">ClassType: {tutor.typeOfClass}</h2>
                     </div>
                     <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
@@ -251,9 +252,7 @@ const NeedsFinder = () => {
                       )}
                     </div>
                     <div className="mt-2 md:mt-0 flex items-center mr-4">
-                      <button className="ml-2 mr-6">
-                        {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark />}
-                      </button>
+                     
                       <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
                         View
                       </button>

@@ -17,7 +17,7 @@ const InstituteProfileView = () => {
   useEffect(() => {
     const fetchInstitutes = async () => {
       try {
-        const response = await axios.get('https://backend.akshayy.tech/featured-organizations');
+        const response = await axios.get('https://server.avyudha.com/featured-organizations');
         const institutes = response.data.map((institute, index) => ({
           id: index + 1, // Assign an id based on index
           name: institute.name,

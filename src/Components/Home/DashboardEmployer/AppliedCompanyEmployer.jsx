@@ -26,7 +26,7 @@ const AppliedCompany = () => {
     const fetchJobs = async () => {
       try {
         const response = await axios.get(
-          "https://backend.akshayy.tech/jobs/66979a00d4e9a63603ba044f", // Replace this with your backend API
+          "https://server.avyudha.com/jobs/66979a00d4e9a63603ba044f", // Replace this with your backend API
           {
             headers: {
               Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM`, // Add the token here
@@ -49,7 +49,7 @@ const AppliedCompany = () => {
   const updateApplicantStatus = async (jobId, applicantId, newStatus) => {
     try {
       const response = await axios.patch(
-        `https://backend.akshayy.tech/jobs/${jobId}/applicants/${applicantId}`,
+        `https://server.avyudha.com/jobs/${jobId}/applicants/${applicantId}`,
         { newStatus: newStatus },
         {
           headers: {
@@ -320,8 +320,8 @@ const AppliedCompany = () => {
     
       try {
         const url = editingMeeting !== null
-          ? `https://backend.akshayy.tech/meetings/${meetings[editingMeeting]._id}`
-          : 'https://backend.akshayy.tech/meetings';
+          ? `https://server.avyudha.com/meetings/${meetings[editingMeeting]._id}`
+          : 'https://server.avyudha.com/meetings';
     
         const method = editingMeeting !== null ? 'PUT' : 'POST';
     

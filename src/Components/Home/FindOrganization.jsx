@@ -22,7 +22,7 @@ const OrganizationFinder = () => {
 
   const fetchTutors = async () => {
     try {
-      const response = await axios.get('https://backend.akshayy.tech/getOrgs');
+      const response = await axios.get('https://server.avyudha.com/getOrgs');
       if (response.data && response.data.organizations && Array.isArray(response.data.organizations)) {
         setTutors(response.data.organizations);
         setFilteredTutors(response.data.organizations);
@@ -77,7 +77,7 @@ const OrganizationFinder = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get(`https://backend.akshayy.tech/reviews/profile/${IId}`);
+      const response = await axios.get(`https://server.avyudha.com/reviews/profile/${IId}`);
       // Filter reviews based on reviewedId matching tutor's ID
       const filteredReviews = response.data.reviews.filter(review => review.reviewedId === Id);
       setReviews(filteredReviews);
@@ -190,23 +190,18 @@ const OrganizationFinder = () => {
           </form>
         </div>
         <div className="flex flex-col items-start justify-start w-full">
-          <div className='text-bold text-xl ml-4'>Organizations</div>
+          <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Organizations</div>
           {filteredTutors.length > 0 ? (
             filteredTutors.map((tutor, index) => (
-              <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
+              <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full ml-8" key={index}>
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
                 <Link to={`/getOrg/${tutor._id}`} className="block w-full">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
-                  <div className="md:w-1/4 mb-4 md:mb-0">
-          {tutor.logo ? (
-            <img src={tutor.logo} alt={tutor.name} className="w-full h-12 w-8 object-cover rounded-md" />
-          ) : (
-            <p>No logo available</p>
-          )}
-        </div>
+                  
                     <div>
-                      <h2 className="text-lg font-semibold">{tutor.location.city}, {tutor.location.address}</h2>
-                      <h2 className="text-lg">Requirements: {tutor.subjectsRequired.join(", ")}</h2>
+                    <h2 className="text-lg  font-semibold">Requirements: {tutor.subjectsRequired.join(", ")}</h2>
+                      <h2 className="text-lg">{tutor.location.city}, {tutor.location.address}</h2>
+                     
                       <h2 className="text-lg">Organization Type: {tutor.organizationType}</h2>
                     </div>
                     <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
@@ -215,9 +210,7 @@ const OrganizationFinder = () => {
                       )}
                     </div>
                     <div className="mt-2 md:mt-0 flex items-center mr-4">
-                      <button className="ml-2 mr-6">
-                        {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark />}
-                      </button>
+                     
                       <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
                         View
                       </button>

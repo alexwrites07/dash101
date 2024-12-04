@@ -18,7 +18,7 @@ const Messages = () => {
 useEffect(() => {
   const fetchContacts = async () => {
     try {
-      const response = await axios.get('https://backend.akshayy.tech/purchasedContacts', {
+      const response = await axios.get('https://server.avyudha.com/purchasedContacts', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ const openChat = async (contact) => {
   }
 
   try {
-    const response = await axios.get(`https://backend.akshayy.tech/conversations/${conversationId}/messages`, {
+    const response = await axios.get(`https://server.avyudha.com/conversations/${conversationId}/messages`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -98,7 +98,7 @@ const handleSendMessage = async (e) => {
 
   try {
     // Send the message to the backend using the endpoint
-    const response = await axios.post('https://backend.akshayy.tech/send-message', {
+    const response = await axios.post('https://server.avyudha.com/send-message', {
       recipientId: activeChat.id, // Assuming `id` is the recipient's ID
       message: messageInput,
     }, {
