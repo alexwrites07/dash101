@@ -4,6 +4,7 @@ import { HiFilter } from 'react-icons/hi';
 import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import './Jobpost.css';
+import categoriesList from './Dashboard/AdminPanel/categories.json'
 
 const TutorFinder = () => {
   const [tutors, setTutors] = useState([]);
@@ -11,7 +12,12 @@ const TutorFinder = () => {
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [rating, setRating] = useState("");
+
   const [currentPage, setCurrentPage] = useState(1);
+  const [inputText, setInputText] = useState('');
+  const [inputText1, setInputText1] = useState(''); // Separate state for input text
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions1, setSuggestions1] = useState([]);
 
   const jobsPerPage = 15;
   const [showFilters, setShowFilters] = useState(false);
@@ -46,7 +52,31 @@ const TutorFinder = () => {
     "Choreography",
     "IIT JEE Coaching",
   ];
- 
+  const handleCategoryInputChange = (e) => {
+    const input = e.target.value;
+    setInputText1(input);
+    const filteredSuggestions = categoriesList.filter(
+      (category) => category.toLowerCase().includes(input.toLowerCase()) && !filters.categories.includes(category)
+    );
+    setSuggestions1(filteredSuggestions);
+  };
+
+  const handleCategorySelect = (category) => {
+    setFilters((prev) => ({
+      ...prev,
+      categories: [...prev.categories, category],
+    }));
+    setInputText1('');
+    setSuggestions1([]);
+  };
+  
+
+  const handleCategoryRemove = (categoryToRemove) => {
+    setfilters((prev) => ({
+      ...prev,
+      categories: prev.categories.filter((category) => category !== categoryToRemove),
+    }));
+  };
   const fetchTutors = async () => {
     try {
       const response = await axios.get('https://server.avyudha.com/getTutors');
@@ -136,7 +166,6 @@ const TutorFinder = () => {
       [name]: value,
     });
   };
-
   const applyFilters = () => {
     const filtered = tutors.filter((tutor) => {
       const {
@@ -149,60 +178,32 @@ const TutorFinder = () => {
         tags,
         categories,
       } = tutor;
+  
       const city = location?.city || '';
-      const minSalary = jobAlerts?.minExpectedSalary?.value ?? 0;
-      const maxSalary = jobAlerts?.maxExpectedSalary?.value ?? Infinity;
+      const minSalary = jobAlerts?.minExpectedSalary?.value || 0;
+      const maxSalary = jobAlerts?.maxExpectedSalary?.value || Infinity;
   
-      const subjectMatch = filters.subjectsTaught
-        ? subjectsTaught.includes(filters.subjectsTaught)
-        : true;
-      const cityMatch = filters.city
-        ? city.toLowerCase().includes(filters.city.toLowerCase())
-        : true;
-      const experienceMatch = filters.totalExperience
-        ? totalExperience >= parseInt(filters.totalExperience)
-        : true;
-      const qualMatch = filters.highestQualification
-        ? highestQualification
-            ?.toLowerCase()
-            .includes(filters.highestQualification.toLowerCase())
-        : true;
-      const minSalaryMatch = filters.minExpectedSalary
-        ? minSalary >= parseInt(filters.minExpectedSalary)
-        : true;
-      const maxSalaryMatch = filters.maxExpectedSalary
-        ? maxSalary <= parseInt(filters.maxExpectedSalary)
-        : true;
-      const genderMatch = filters.gender
-        ? gender.toLowerCase() === filters.gender.toLowerCase()
-        : true;
+      const matches = {
+        subjectMatch: !filters.subjectsTaught || subjectsTaught.includes(filters.subjectsTaught),
+        cityMatch: !filters.city || city.toLowerCase().includes(filters.city.toLowerCase()),
+        experienceMatch: !filters.totalExperience || totalExperience >= +filters.totalExperience,
+        qualMatch: !filters.highestQualification || highestQualification?.toLowerCase().includes(filters.highestQualification.toLowerCase()),
+        genderMatch: !filters.gender || gender.toLowerCase() === filters.gender.toLowerCase(),
+        minSalaryMatch: !filters.minExpectedSalary || minSalary >= +filters.minExpectedSalary,
+        maxSalaryMatch: !filters.maxExpectedSalary || maxSalary <= +filters.maxExpectedSalary,
+        categoryMatch: filters.categories.length === 0 || filters.categories.some(cat => categories.includes(cat))
+      };
   
-      // New category match check
-      const categoryMatch = filters.categories
-        ? categories.includes(filters.categories) // Check if the category exists in the tags array
-        : true;
+      const isMatch = Object.values(matches).every(Boolean);
   
-      let isMatch =
-        subjectMatch &&
-        cityMatch &&
-        experienceMatch &&
-        qualMatch &&
-        minSalaryMatch &&
-        maxSalaryMatch &&
-        genderMatch &&
-        categoryMatch; // Include category match in the overall match criteria
-  
-      // Handle distance filter after other filters
-      if (distanceFilter && !filterByDistance(tutor)) isMatch = false;
-  
+      if (distanceFilter && !filterByDistance(tutor)) return false;
+      
       return isMatch;
     });
   
-  
-  
-  
     setFilteredTutors(filtered);
   };
+  
   
   
   
@@ -263,22 +264,54 @@ const TutorFinder = () => {
           />
         </div>
        
-<div className="mb-4">
-  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categories">Categories</label>
-  <select
-    name="categories"
-    value={filters.categories}
-    onChange={handleFilterChange}
-    className="w-full px-3 py-2 border rounded-lg"
-  >
-    <option value="">Select Category</option>
-    {categorySuggestions.map((category, index) => (
-      <option key={index} value={category}>
-        {category}
-      </option>
-    ))}
-  </select>
+        <div className="mb-4 relative">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
+    Categories
+  </label>
+  <input
+    type="text"
+    placeholder="Start typing to search categories..."
+    value={inputText1}
+    onChange={handleCategoryInputChange}
+    className="border p-2 w-full rounded-lg"
+  />
+  
+  {/* Suggestions Dropdown */}
+  {suggestions1.length > 0 && (
+    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+      {suggestions1.map((cat, idx) => (
+        <li
+          key={idx}
+          onClick={() => handleCategorySelect(cat)}
+          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+        >
+          {cat}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {/* Selected Categories */}
+  {filters.categories.length > 0 && (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {filters.categories.map((category, idx) => (
+        <span
+          key={idx}
+          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+        >
+          {category}
+          <button
+            onClick={() => handleCategoryRemove(category)}
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          >
+            &times;
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
 </div>
+
 
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="totalExperience">Experience (Years)</label>

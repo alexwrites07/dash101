@@ -9,6 +9,11 @@ const OrganizationFinder = () => {
   const [distanceFilter, setDistanceFilter] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
+  const [inputText, setInputText] = useState('');
+  const [inputText1, setInputText1] = useState(''); // Separate state for input text
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions1, setSuggestions1] = useState([]);
+
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     organizationType: '',

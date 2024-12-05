@@ -73,6 +73,17 @@ const TeachingDescription = () => {
   
     try {
       // Send a POST request to bookmark the tutor
+      if (isBookmarked) {
+        // DELETE request to unbookmark
+        await axios.delete('https://server.avyudha.com/bookmark', {
+          data: { employeeId:Id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        alert('Tutor Unbookmarked successfully!');
+       } else{
       const response = await axios.post(
         'https://server.avyudha.com/bookmark',
         { employeeId: Id },
@@ -83,9 +94,10 @@ const TeachingDescription = () => {
           },
         }
       );
-      
-      setIsBookmarked((prev) => !prev); // Toggle the bookmark state on success
       alert('Tutor bookmarked successfully!');
+    }
+      setIsBookmarked((prev) => !prev); // Toggle the bookmark state on success
+    
     } catch (error) {
       console.error('Error bookmarking tutor:', error);
       alert('Only Organizations can bookmark.');

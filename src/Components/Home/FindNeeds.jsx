@@ -3,39 +3,69 @@ import axios from 'axios';
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import './Jobpost.css';
+import categoriesList from './Dashboard/AdminPanel/categories.json'
 
 const NeedsFinder = () => {
   const [tutors, setTutors] = useState([]);
   const [distanceFilter, setDistanceFilter] = useState('');
+  const [inputText1, setInputText1] = useState('');
+  const [suggestions1, setSuggestions1] = useState([]);
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+
   const [filters, setFilters] = useState({
     genderPreference: '',
     city: '',
-    categories: '',
+    categories: [], // Default as empty array
   });
 
   useEffect(() => {
     fetchTutors();
   }, []);
 
+  const handleCategoryInputChange = (e) => {
+    const input = e.target.value;
+    setInputText1(input);
+
+    const filteredSuggestions = categoriesList.filter(
+      (category) => category.toLowerCase().includes(input.toLowerCase()) && !filters.categories.includes(category)
+    );
+    setSuggestions1(filteredSuggestions);
+  };
+
+  const handleCategorySelect = (category) => {
+    setFilters((prev) => ({
+      ...prev,
+      categories: [...prev.categories, category],
+    }));
+    setInputText1('');
+    setSuggestions1([]);
+  };
+
+  const handleCategoryRemove = (categoryToRemove) => {
+    setFilters((prev) => ({
+      ...prev,
+      categories: prev.categories.filter((category) => category !== categoryToRemove),
+    }));
+  };
+
   const fetchTutors = async () => {
     try {
-      const token = localStorage.getItem('token'); // Retrieve token from local storage
+      const token = localStorage.getItem('token');
       if (!token) {
         console.error('No authentication token found');
         return;
       }
-  
+
       const response = await axios.get('https://server.avyudha.com/learning-needs', {
         headers: {
-          Authorization: `Bearer ${token}`, // Add the token in the Authorization header
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
-  
-      if (response.data && response.data.learningNeeds && Array.isArray(response.data.learningNeeds)) {
+
+      if (response.data?.learningNeeds && Array.isArray(response.data.learningNeeds)) {
         setTutors(response.data.learningNeeds);
         setFilteredTutors(response.data.learningNeeds);
       } else {
@@ -45,22 +75,6 @@ const NeedsFinder = () => {
       console.error('Error fetching tutors:', error);
     }
   };
-  
-  const categorySuggestions = [
-    "Spoken English",
-    "French Language",
-    "Hindi Language",
-    "German Language",
-    "LKG Tuition",
-    "UKG Tuition",
-    "Class 1 Tuition",
-    "Class 3 Tuition",
-    "Dance",
-    "Handwriting",
-    "Summer Camp",
-    "ui",
-    "Choreography",
-  ];
 
   const calculateDistance = (coords1, coords2) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
@@ -111,37 +125,28 @@ const NeedsFinder = () => {
     });
   };
 
+  const applyFilters = () => {
+    const filtered = tutors.filter((tutor) => {
+      const { location, genderPreference, categories } = tutor;
+      const city = location?.city || '';
+
+      const matches = {
+        cityMatch: !filters.city || city.toLowerCase().includes(filters.city.toLowerCase()),
+        genderMatch: !filters.genderPreference || genderPreference.toLowerCase() === filters.genderPreference.toLowerCase(),
+        categoryMatch: filters.categories.length === 0 || filters.categories.some((cat) => categories.includes(cat)),
+      };
+
+      return Object.values(matches).every(Boolean) && (!distanceFilter || filterByDistance(tutor));
+    });
+
+    setFilteredTutors(filtered);
+  };
+
   const filterByDistance = (job) => {
     if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
     const jobCoords = job.location.coordinates;
     const distance = calculateDistance(userCoords, jobCoords);
     return distance <= distanceFilter;
-  };
-
-  const applyFilters = () => {
-    const filtered = tutors.filter((tutor) => {
-      const { genderPreference, categories } = tutor;
-      const city = tutor.location?.city || '';
-      
-      const cityMatch = filters.city
-        ? city.toLowerCase().includes(filters.city.toLowerCase())
-        : true;
-     
-        const genderPreferenceMatch = filters.genderPreference
-        ? genderPreference.toLowerCase() === filters.genderPreference.toLowerCase()
-        : true;
-  
-      // New category match check
-      const categoryMatch = filters.categories
-        ? categories.includes(filters.categories) // Check if the category exists in the tags array
-        : true;
-      let isMatch = genderPreferenceMatch && cityMatch && categoryMatch;
-
-      if (distanceFilter && !filterByDistance(tutor)) isMatch = false;
-
-      return isMatch;
-    });
-    setFilteredTutors(filtered);
   };
 
   return (
@@ -190,21 +195,52 @@ const NeedsFinder = () => {
               />
             </div>
           
-            <div className="mb-4">
-  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="categories">Categories</label>
-  <select
-    name="categories"
-    value={filters.categories}
-    onChange={handleFilterChange}
-    className="w-full px-3 py-2 border rounded-lg"
-  >
-    <option value="">Select Category</option>
-    {categorySuggestions.map((category, index) => (
-      <option key={index} value={category}>
-        {category}
-      </option>
-    ))}
-  </select>
+            <div className="mb-4 relative">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
+    Categories
+  </label>
+  <input
+    type="text"
+    placeholder="Start typing to search categories..."
+    value={inputText1}
+    onChange={handleCategoryInputChange}
+    className="border p-2 w-full rounded-lg"
+  />
+  
+  {/* Suggestions Dropdown */}
+  {suggestions1.length > 0 && (
+    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+      {suggestions1.map((cat, idx) => (
+        <li
+          key={idx}
+          onClick={() => handleCategorySelect(cat)}
+          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+        >
+          {cat}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {/* Selected Categories */}
+  {filters.categories.length > 0 && (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {filters.categories.map((category, idx) => (
+        <span
+          key={idx}
+          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+        >
+          {category}
+          <button
+            onClick={() => handleCategoryRemove(category)}
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          >
+            &times;
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
 </div>
 <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="genderPreference">Gender</label>

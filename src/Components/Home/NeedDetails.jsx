@@ -63,34 +63,48 @@ const NeedDescription = () => {
   };
   const token = localStorage.getItem('token');
   const handleBookmarkToggle = async () => {
-    // Ensure token is retrieved (e.g., from localStorage or context)
-    const token = localStorage.getItem('token'); // Adjust if your token is stored differently
-    
+    const token = localStorage.getItem('token');
+  
     if (!token) {
-      alert("Authentication token not found. Please log in again.");
+      alert('Authentication token not found. Please log in again.');
       return;
     }
   
     try {
-      // Send a POST request to bookmark the tutor
-      const response = await axios.post(
-        'https://server.avyudha.com/bookmark-need',
-        { learningNeedId:IId },
-        {
+      if (isBookmarked) {
+        // Correct DELETE request with token in headers and data in body
+        await axios.delete('https://server.avyudha.com/bookmarked-need', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-        }
-      );
-      
-      setIsBookmarked((prev) => !prev); // Toggle the bookmark state on success
-      alert('Learning Need bookmarked successfully!');
+          data: { learningNeedId: IId }, // Payload goes in 'data' for DELETE requests
+        });
+  
+        alert('Unbookmarked successfully!');
+      } else {
+        // POST request to bookmark
+        await axios.post(
+          'https://server.avyudha.com/bookmark-need',
+          { learningNeedId: IId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+  
+        alert('Learning Need bookmarked successfully!');
+      }
+  
+      setIsBookmarked((prev) => !prev); // Toggle bookmark state on success
     } catch (error) {
-      console.error('Error bookmarking tutor:', error);
-      alert('Failed to bookmark the tutor. Please try again later.');
+      console.error('Error toggling bookmark:', error);
+      alert('Failed to toggle bookmark. Please try again later.');
     }
   };
+  
   const buyContact = async () => {
     if (!IId) {
       console.error('Learning Need ID not available.');

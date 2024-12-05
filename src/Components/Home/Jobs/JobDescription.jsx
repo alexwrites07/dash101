@@ -38,6 +38,7 @@ const JobDescription = () => {
       const token = localStorage.getItem("token");
   
       // Fetch purchased jobs
+
       const checkResponse = await axios.get(
         "https://server.avyudha.com/tutor/purchased-jobs",
         {
@@ -90,6 +91,17 @@ const JobDescription = () => {
   
     try {
       // Fetch tutor ID from dashboard endpoint
+      if (isBookmarked) {
+        // DELETE request to unbookmark
+        await axios.delete('https://server.avyudha.com/tutor/shortlist-job', {
+          data: { jobId:jobId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        alert('Unbookmarked successfully!');
+       } else{
       const dashboardResponse = await axios.get(
         'https://server.avyudha.com/dashboard/Tutor',
         {
@@ -115,7 +127,8 @@ const JobDescription = () => {
           },
         }
       );
-  
+      alert('Bookmarked successfully!');
+    }
       setIsBookmarked((prev) => !prev); // Toggle bookmark state
       alert('Job bookmarked successfully!');
     } catch (error) {

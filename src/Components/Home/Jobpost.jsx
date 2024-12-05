@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import categoriesList from './Dashboard/AdminPanel/categories.json'
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import './Jobpost.css';
 
 const JobPost = () => {
   const [jobs, setJobs] = useState([]);
+  const [inputText, setInputText] = useState('');
+  const [inputText1, setInputText1] = useState(''); // Separate state for input text
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions1, setSuggestions1] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState('date');
   const [filters, setFilters] = useState({
     keyword: '',
     location: '',
-    category: '',
+    skillAndExperience: [],
     jobType: '',
     totalExperience: '',
     gender:'',
     careerLevel: '',
     salary: '',
-    skillAndExperience:'',
+    
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -71,7 +76,7 @@ const JobPost = () => {
     const [amount, unit] = postingTime.split(' ');
     return new Date(now - amount * timeMapping[unit]);
   };
-  const categorySuggestions = [
+  const skillAndExperienceSuggestions = [
     "Spoken English",
     "French Language",
     "Hindi Language",
@@ -127,7 +132,31 @@ const JobPost = () => {
     }));
   };
   
+  const handleskillAndExperienceInputChange = (e) => {
+    const input = e.target.value;
+    setInputText1(input);
+    const filteredSuggestions = categoriesList.filter(
+      (skillAndExperience) => skillAndExperience.toLowerCase().includes(input.toLowerCase()) && !filters.skillAndExperience.includes(skillAndExperience)
+    );
+    setSuggestions1(filteredSuggestions);
+  };
 
+  const handleskillAndExperienceSelect = (skillAndExperience) => {
+    setFilters((prev) => ({
+      ...prev,
+      skillAndExperience: [...prev.skillAndExperience, skillAndExperience],
+    }));
+    setInputText1('');
+    setSuggestions1([]);
+  };
+  
+
+  const handleskillAndExperienceRemove = (skillAndExperienceToRemove) => {
+    setfilters((prev) => ({
+      ...prev,
+      skillAndExperience: prev.skillAndExperience.filter((skillAndExperience) => skillAndExperience !== skillAndExperienceToRemove),
+    }));
+  };
   const calculateDistance = (coords1, coords2) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
     const R = 6371;
@@ -167,13 +196,13 @@ const JobPost = () => {
   const applyFilters = () => {
     // Filter jobs based on current filters and distance filter
     let filteredJobs = jobs.filter((job) => {
-      const { keyword, location, category, jobType, totalExperience, gender, careerLevel, salary,skillAndExperience } = filters;
+      const { keyword, location, jobType, totalExperience, gender, careerLevel, salary,skillAndExperience } = filters;
   
       let isMatch = true;
   
       if (keyword && job.title && !job.title.toLowerCase().includes(keyword.toLowerCase())) isMatch = false;
       if (location && job.location && job.location.city && !job.location.city.toLowerCase().includes(location.toLowerCase())) isMatch = false;
-      if (category && job.category && !job.category.toLowerCase().includes(category.toLowerCase())) isMatch = false;
+      if (skillAndExperience && job.skillAndExperience && !job.skillAndExperience.includes(skillAndExperience)) isMatch = false;
       if (jobType && job.jobType && !job.jobType.toLowerCase().includes(jobType.toLowerCase())) isMatch = false;
       if (totalExperience && job.totalExperience && !job.totalExperience.toLowerCase().includes(totalExperience.toLowerCase())) isMatch = false;
       if (careerLevel && job.careerLevel && !job.careerLevel.toLowerCase().includes(careerLevel.toLowerCase())) isMatch = false;
@@ -302,21 +331,52 @@ const JobPost = () => {
           />
         </div>
 
-        <div className="mb-4">
-  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="skillAndExperience">Categories</label>
-  <select
-    name="skillAndExperience"
-    value={filters.skillAndExperience}
-    onChange={handleFilterChange}
-    className="w-full px-3 py-2 border rounded-lg"
-  >
-    <option value="">Select Category</option>
-    {categorySuggestions.map((skillAndExperience, index) => (
-      <option key={index} value={skillAndExperience}>
-        {skillAndExperience}
-      </option>
-    ))}
-  </select>
+        <div className="mb-4 relative">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="skillAndExperience">
+   Categories
+  </label>
+  <input
+    type="text"
+    placeholder="Start typing to search Categories..."
+    value={inputText1}
+    onChange={handleskillAndExperienceInputChange}
+    className="border p-2 w-full rounded-lg"
+  />
+  
+  {/* Suggestions Dropdown */}
+  {suggestions1.length > 0 && (
+    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+      {suggestions1.map((cat, idx) => (
+        <li
+          key={idx}
+          onClick={() => handleskillAndExperienceSelect(cat)}
+          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+        >
+          {cat}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {/* Selected skillAndExperience */}
+  {filters.skillAndExperience.length > 0 && (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {filters.skillAndExperience.map((skillAndExperience, idx) => (
+        <span
+          key={idx}
+          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+        >
+          {skillAndExperience}
+          <button
+            onClick={() => handleskillAndExperienceRemove(skillAndExperience)}
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          >
+            &times;
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
 </div>
 
           {/* Career Level Filter */}
