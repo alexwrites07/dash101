@@ -40,6 +40,27 @@ const TeachingDescription = () => {
         
       }
     };
+    const fetchBookmarkStatus = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.warn("Authentication token not found.");
+          return;
+        }
+  
+        const response = await axios.get('https://server.avyudha.com/dashboard/Organization', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const bookmarkedEmployees = response.data.bookmarkedEmployees || [];
+        setIsBookmarked(bookmarkedEmployees.includes(Id)); // Check if iid is in the array
+      } catch (error) {
+        console.error('Error fetching bookmark status:', error);
+      }
+    };
+    fetchBookmarkStatus();
 
     fetchJobDetails();
     fetchReviews();

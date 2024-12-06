@@ -23,6 +23,28 @@ const JobDescription = () => {
         console.error('Error fetching job details:', error);
       }
     };
+    const fetchBookmarkStatus = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.warn("Authentication token not found.");
+          return;
+        }
+  
+        const response = await axios.get('https://server.avyudha.com/dashboard/Tutor', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const shortlistedJobs = response.data.shortlistedJobs || [];
+        setIsBookmarked(shortlistedJobs.includes(jobId)); // Check if iid is in the array
+      } catch (error) {
+        console.error('Error fetching bookmark status:', error);
+      }
+    };
+    fetchBookmarkStatus();
+
     fetchJobDetails();
   }, [jobId]);
 
@@ -130,7 +152,7 @@ const JobDescription = () => {
       alert('Bookmarked successfully!');
     }
       setIsBookmarked((prev) => !prev); // Toggle bookmark state
-      alert('Job bookmarked successfully!');
+    
     } catch (error) {
     
   

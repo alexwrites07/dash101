@@ -61,6 +61,7 @@ const JobPost = () => {
       return updatedJobs;
     });
   };
+  
 
   const parsePostingTime = (postingTime) => {
     const now = new Date();
