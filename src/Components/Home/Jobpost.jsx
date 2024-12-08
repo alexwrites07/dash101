@@ -37,7 +37,7 @@ const JobPost = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('https://server.avyudha.com/jobs');
+      const response = await axios.get('https://server.avyudha.com/jobs?limit=1000000');
       console.log('API response:', response.data);
       if (response.data && Array.isArray(response.data.jobs)) {
         const jobsWithBookmarks = response.data.jobs.map(job => ({
@@ -434,9 +434,11 @@ const JobPost = () => {
     <div className="w-[450px] md:-ml-4">
   <h3 className="text-gray-700 text-center md:text-left font-semibold md:mr-2 md:ml-8">{job.companyName}</h3>
   <p className="text-gray-700 text-center md:text-left text-bold font-semibold md:mr-2 text-xl md:ml-8">{job.title}</p>
-  <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">{job.gender}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">{job.totalExperience}</p>
+  <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city},{job.location?.state}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">Created - {job.jobCreated?.split('T')[0]}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">Salary- Rs.{job.salary.min}&nbsp;{job.salary.period}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8"></p>
+
 </div>
 
 

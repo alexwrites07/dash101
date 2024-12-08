@@ -202,12 +202,19 @@ const OrganizationFinder = () => {
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
                 <Link to={`/getOrg/${tutor._id}`} className="block w-full">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
-                  
-                    <div>
-                    <h2 className="text-lg  font-semibold">Requirements: {tutor.subjectsRequired.join(", ")}</h2>
+                  <div className="md:w-1/4 mb-4 md:mb-0">
+          
+            <img src={`https://server.avyudha.com/org/download/logo/${tutor._id}`} alt={tutor.title} className="w-full h-48 mr-4 object-cover rounded-md" />
+          
+        </div>
+                    <div className='ml-4'>
+                    <h2 className="text-lg  font-semibold"> {tutor.name}</h2>
+                    <h2 className="text-lg">Requirements: {tutor.subjectsRequired.join(", ")}</h2>
+                    <h2 className="text-lg">Description: {tutor.description}</h2>
                       <h2 className="text-lg">{tutor.location.city}, {tutor.location.address}</h2>
                      
                       <h2 className="text-lg">Organization Type: {tutor.organizationType}</h2>
+                      <h2 className="text-lg">Rating: {tutor.rating}</h2>
                     </div>
                     <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
                       {userCoords && tutor.location?.coordinates && (

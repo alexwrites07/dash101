@@ -55,7 +55,7 @@ const Categories = () => {
             >
               <Link to={`/getTutor/${tutor._id}`} >
               <img
-                src={tutor.image}
+                src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
                 alt={tutor.fullName}
                 className="rounded-full w-36 h-36 mb-4 mx-auto"
               />

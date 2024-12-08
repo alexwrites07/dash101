@@ -272,7 +272,7 @@ const JobDescription = () => {
             {reviews.length > 0 ? (
               reviews.map(review => (
                 <div key={review._id} className="border-b mb-4 pb-2">
-                  <p><strong>{review.reviewerName}</strong></p>
+                  <p><strong>{review.reviewerUsername}</strong></p>
                   <StarRating rating={review.rating} />
                   <p>{review.description}</p>
                   <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>

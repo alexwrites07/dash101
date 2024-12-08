@@ -100,7 +100,7 @@ const Reviewsq = () => {
   };
 
   const filteredReviews = reviews.filter((review) =>
-    review.reviewerName.toLowerCase().includes(searchQuery.toLowerCase())
+    review.reviewerUsername.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const tutorReviews = filteredReviews.filter((review) => review.reviewedModel === 'Tutor');
@@ -140,7 +140,7 @@ const Reviewsq = () => {
                 <div key={review._id} className="p-4 border border-gray-300 rounded-md">
                   <h3 className="text-lg font-semibold">Rating: {review.rating}</h3>
                   <p className="text-gray-700">Description: {review.description}</p>
-                  <p className="text-gray-500">Reviewer Name: {review.reviewerName}</p>
+                  <p className="text-gray-500">Reviewer Name: {review.reviewerUsername}</p>
                   <p className="text-gray-500">Reviewer Username: {review.reviewerUsername}</p>
                   <p className="text-gray-500">Reviewed Username: {review.reviewedUsername}</p>
                   <p className="text-gray-500">Receiver Name: {review.receiverName}</p>
@@ -165,7 +165,7 @@ const Reviewsq = () => {
                 <div key={review._id} className="p-4 border border-gray-300 rounded-md">
                   <h3 className="text-lg font-semibold">Rating: {review.rating}</h3>
                   <p className="text-gray-700">Description: {review.description}</p>
-                  <p className="text-gray-500">Reviewer Name: {review.reviewerName}</p>
+                  <p className="text-gray-500">Reviewer Name: {review.reviewerUsername}</p>
                   <p className="text-gray-500">Reviewer Username: {review.reviewerUsername}</p>
                   <p className="text-gray-500">Username: {review.username}</p>
                   <p className="text-gray-500">Receiver Name: {review.receiverName}</p>
@@ -190,7 +190,7 @@ const Reviewsq = () => {
                 <div key={review._id} className="p-4 border border-gray-300 rounded-md">
                   <h3 className="text-lg font-semibold">Rating: {review.rating}</h3>
                   <p className="text-gray-700">Description: {review.description}</p>
-                  <p className="text-gray-500">Reviewer Name: {review.reviewerName}</p>
+                  <p className="text-gray-500">Reviewer Name: {review.reviewerUsername}</p>
                   <p className="text-gray-500">Reviewer Username: {review.reviewerUsername}</p>
                   <p className="text-gray-500">Username: {review.username}</p>
                   <p className="text-gray-500">Receiver Name: {review.receiverName}</p>

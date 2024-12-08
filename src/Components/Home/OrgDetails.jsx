@@ -150,13 +150,13 @@ const OrgDescription = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
-        {/* <div className="md:w-1/4 mb-4 md:mb-0">
+        <div className="md:w-1/4 mb-4 md:mb-0">
           {job.logo ? (
-            <img src={job.logo} alt={job.name} className="w-full h-56 object-cover rounded-md" />
+            <img src={`https://server.avyudha.com/org/download/logo/${job._id}`} alt={job.name} className="w-full h-56 object-cover rounded-md" />
           ) : (
             <p>No logo available</p>
           )}
-        </div> */}
+        </div>
         <div className="md:w-full mb-4 md:mb-0 ml-8">
           <h1 className="text-3xl font-bold mb-4">{job.name}
           <button
@@ -168,9 +168,13 @@ const OrgDescription = () => {
       <HiOutlineBookmark className="w-6 h-6" />
     )}
   </button>&nbsp; &nbsp;&nbsp;&nbsp;</h1>
-          <p><strong>Category:</strong> {job.category}</p>
-          <p><strong>Company Size:</strong> {job.companySize}</p>
-          <p><strong>Profile Views:</strong> {job.profileViews.count}</p><br></br>
+          {/* <p><strong>Category:</strong> {job.category}</p> */}
+          <p><strong>Organization Type:</strong> {job.organizationType}</p>
+          <p><strong>Location:</strong> {job.location.city}, {job.location?.state} </p>
+          <p><strong>Website:</strong> {job.website}</p>
+          <p><strong>Rating:</strong> {job.rating}</p>
+          {/* <p><strong>Location:</strong> {job.profileViews.count}</p> */}
+          <br></br>
           {/* <button onClick={handleBookmarkToggle} className="text-blue-500  hover:text-blue-600 focus:outline-none ">
             {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
           </button> */}
@@ -188,12 +192,12 @@ const OrgDescription = () => {
           <div className="text-gray-600">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Organization Details</h2>
             <p className="text-black mb-4">{job.description}</p>
-            <h2 className="text-xl font-semibold mb-2">Subjects Required</h2>
+            {/* <h2 className="text-xl font-semibold mb-2">Subjects Required</h2>
             <ul className="list-disc ml-6">
               {job.subjectsRequired?.map((subject, index) => (
                 <li key={index}>{subject}</li>
               ))}
-            </ul>
+            </ul> */}
 
             {/* <h2 className="text-xl font-semibold mb-2 mt-6">Job Postings</h2>
             <ul className="list-disc ml-6">
@@ -201,13 +205,18 @@ const OrgDescription = () => {
                 <li key={index}>{postId}</li>
               ))}
             </ul> */}
-
+  <h2 className="text-xl font-semibold text-gray-800 mt-4">Rate this Organization</h2>
+              <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-2">Submit Your Review</h3>
+          <StarRating rating={rating} reviewedId={iid} onRatingChange={handleRating} />
+         
+        </div>
             <h2 className="text-xl font-semibold mb-2 mt-6">Reviews</h2>
             {reviews.length > 0 ? (
               reviews.map(review => (
                 <div key={review._id} className="border-b mb-4 pb-2">
-                  <p><strong>{review.reviewerName}</strong></p>
-                  <StarRating rating={review.rating} />
+                  <p><strong>{review.reviewerUsername}</strong></p>
+                  <p>Rating - <strong>{review.rating}/5</strong></p>
                   <p>{review.description}</p>
                   <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
                 </div>

@@ -54,7 +54,7 @@ const FrequentlyHiringCompanies = () => {
             <div key={index} className="flex-shrink-0 bg-white rounded-lg shadow-lg p-6 mb-3" style={{ minWidth: '270px', maxWidth: '400px' }}>
                <Link to={`/getOrg/${company._id}`} className="block w-full">
               
-              <img src={company.logo} alt={`${company.name} Logo`} className="w-36 h-36 object-contain mx-auto mb-4" />
+              <img src={`https:/server.avyudha.com/org/download/logo/${company._id}`} alt={`${company.name} Logo`} className="w-36 h-36 object-contain mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-[#041F96] mb-2">{company.name}</h3>
               <p className="text-sm text-gray-600">{company.location}</p>
               <p className="text-sm text-gray-600">{company.industry}</p>

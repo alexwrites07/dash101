@@ -164,7 +164,23 @@ const NeedDescription = () => {
       }
     }
   };
-  
+  const handleShare = () => {
+    const shareData = {
+      title: job?.requirement || 'Learning Need',
+      text: `Check out this learning need: ${job?.requirement}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      navigator
+        .share(shareData)
+        .then(() => console.log('Shared successfully'))
+        .catch((err) => console.error('Error sharing:', err));
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  };
   const handleRating = (rate) => {
     setRating(rate);
   };
@@ -235,14 +251,19 @@ const NeedDescription = () => {
         <p><strong>Requirements:</strong> {job.requirement}</p>
 
         {/* Video Player */}
-        
+        <h2 className="text-xl font-semibold text-gray-800 mt-4">Rate Need</h2>
+              <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-2">Submit Your Review</h3>
+          <StarRating rating={rating} reviewedId={IId} onRatingChange={handleRating} />
+         
+        </div>
 
         {/* Reviews Section */}
         <h2 className="text-xl font-semibold mb-4 mt-8">Reviews</h2>
         {reviews.length > 0 ? (
           reviews.map(review => (
             <div key={review._id} className="border-b mb-4 pb-2">
-              <p><strong>{review.reviewerName}</strong></p>
+              <p><strong>{review.reviewerUsername}</strong></p>
               <StarRating rating={review.rating} />
               <p>{review.description}</p>
               <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
@@ -275,7 +296,11 @@ const NeedDescription = () => {
         </div>
       </div>
     </div>
-
+    <button
+            onClick={handleShare}
+            className="ml-4 text-gray-500 hover:text-gray-700 focus:outline-none">
+            <HiBookmark className="w-6 h-6" />
+          </button>
     <div className="bg-white p-6 rounded-lg md:w-2/5 md:ml-4 mt-4 md:mt-0">
       <h2 className="text-xl font-semibold mb-4">Map Location</h2>
       {job.location?.coordinates ? (

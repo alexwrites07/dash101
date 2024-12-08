@@ -192,7 +192,7 @@ const TeachingDescription = () => {
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
         <div className="md:w-1/4 mb-4 md:mb-0">
           
-            <img src={`https://server.avyudha.com/tutors/download/image/${Id}`} alt={job.title} className="w-full h-56 object-cover rounded-md" />
+            <img src={`https://server.avyudha.com/tutors/download/image/${Id}`} alt={job.title} className="w-full h-64 object-cover rounded-md" />
           
         </div>
         <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
@@ -200,8 +200,18 @@ const TeachingDescription = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <p><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
             <p><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
+            <p><strong>Salary Period:</strong> {job.jobAlerts?.minExpectedSalary?.period}</p>
             <p><strong>Experience:</strong> {job.totalExperience} years</p>
-            <p><strong>Qualification:</strong> {job.highestQualification}</p>
+            <p><strong>Highest Qualification:</strong> {job.highestQualification}</p>
+            <p><strong>Qualifications:</strong> {job.highestQualification}</p>
+            <p><strong>Spoken Languages</strong> {job.spokenLanguages}</p>
+            <p><strong>Teaching Level</strong> {job.teachingLevels}</p>
+            <p><strong>Rating</strong> {job.rating}</p>
+            <p><strong>Gender</strong> {job.gender}</p>
+
+
+
+
         
             <span className="flex space-x-4">
   <button
@@ -345,7 +355,7 @@ const TeachingDescription = () => {
             {reviews.length > 0 ? (
               reviews.map(review => (
                 <div key={review._id} className="border-b mb-4 pb-2">
-                  <p><strong>{review.reviewerName}</strong></p>
+                  <p><strong>{review.reviewerUsername}</strong></p>
                   <p>Rating - <strong>{review.rating}/5</strong></p>
 
                   {/* You can pass the rating value here to your StarRating component */}
@@ -373,10 +383,22 @@ const TeachingDescription = () => {
               <p>Map location not available</p> // Fallback message
             )}
               <div className=" mt-8">
-              <video controls className="w-full max-w-lg rounded-md">
-                <source src={job.video} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <div className="video-container my-4">
+  {job.video ? (
+    <iframe
+      className="w-full max-w-lg h-48 rounded-md"
+      src={`https://www.youtube.com/embed/${job.video.split('v=')[1]}`}
+      title="YouTube Video"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+    ></iframe>
+  ) : (
+    <p className="text-gray-500">No video available for this job.</p>
+  )}
+</div>
+
+
             </div>
         </div>
       </div>
