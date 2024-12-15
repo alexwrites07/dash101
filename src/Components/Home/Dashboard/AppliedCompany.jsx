@@ -4,95 +4,80 @@ import Header from './Header';
 
 const AppliedCompany = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
+  const [appliedNeeds, setAppliedNeeds] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadingJobs, setLoadingJobs] = useState(true);
+  const [loadingNeeds, setLoadingNeeds] = useState(true);
+  const [errorJobs, setErrorJobs] = useState(null);
+  const [errorNeeds, setErrorNeeds] = useState(null);
 
-  // Your token and tutor ID
-  // const token = 'your-token-here';
-  // const tutorId = 'your-tutor-id-here';
-
-  // Fetch data from the backend when the component mounts
   useEffect(() => {
     const token = localStorage.getItem('token');
+    
+    // Fetch Applied Jobs
     fetch('https://server.avyudha.com/tutor/applications', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Add Authorization header
-        
-      }
+        'Authorization': `Bearer ${token}`,
+      },
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error('Failed to fetch applied jobs');
         }
         return response.json();
       })
       .then((data) => {
-        // Transform the backend data to match the frontend structure
         const transformedJobs = data.map((job, index) => ({
           id: job._id || index,
           jobTitle: job.title || 'N/A',
-          company: 'N/A', // Assuming no company data is provided in the JSON
+          company: 'N/A',
           location: `${job.location.city}, ${job.location.state}`,
           dateApplied: new Date(job.lastDateToApply).toLocaleDateString(),
           status: job.applicants?.[0]?.status || 'N/A',
-          previousStatus: null, // Initialize previousStatus
-          keyResponsibilities: job.keyResponsibilities || [],
-          skillAndExperience: job.skillAndExperience || [],
-          images: job.images || [],
-          applicants: job.applicants || [],
-          isClosed: job.isClosed,
         }));
         setAppliedJobs(transformedJobs);
-        setLoading(false);
+        setLoadingJobs(false);
       })
       .catch((err) => {
-        setError(err.message);
-        setLoading(false);
+        setErrorJobs(err.message);
+        setLoadingJobs(false);
+      });
+
+    // Fetch Applied Learning Needs
+    fetch('https://server.avyudha.com/appliedNeeds', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch applied learning needs');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const transformedNeeds = data.map((need) => ({
+          id: need._id,
+          requirement: need.requirement,
+          location: `${need.location.city}, ${need.location.state}`,
+          salary: `${need.salary.max} (${need.salary.period})`,
+          available: need.available,
+          start: need.start,
+          createdAt: new Date(need.createdAt).toLocaleDateString(),
+        }));
+        setAppliedNeeds(transformedNeeds);
+        setLoadingNeeds(false);
+      })
+      .catch((err) => {
+        setErrorNeeds(err.message);
+        setLoadingNeeds(false);
       });
   }, []);
-
-  const handleCancelApplication = (id) => {
-    setAppliedJobs((prevJobs) => prevJobs.filter((job) => job.id !== id));
-  };
-
-  const handleUpdateStatus = (id, newStatus) => {
-    setAppliedJobs((prevJobs) =>
-      prevJobs.map((job) => {
-        if (job.id === id) {
-          return { ...job, previousStatus: job.status, status: newStatus };
-        }
-        return job;
-      })
-    );
-  };
-
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-  };
-
-  const filteredJobs = appliedJobs.filter(
-    (job) =>
-      job.jobTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const sortedJobs = filteredJobs.sort((a, b) => {
-    if (sortOption === 'newest') {
-      return new Date(b.dateApplied) - new Date(a.dateApplied);
-    } else if (sortOption === 'oldest') {
-      return new Date(a.dateApplied) - new Date(b.dateApplied);
-    }
-    return 0;
-  });
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -104,72 +89,60 @@ const AppliedCompany = () => {
           <p className="text-lg mb-12 text-gray-700">List of companies where you have applied.</p>
 
           <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
-            {loading && <p>Loading jobs...</p>}
-            {error && <p>Error: {error}</p>}
-            {!loading && !error && (
-              <>
-                <div className="flex justify-between mb-4">
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className="p-2 border border-gray-300 rounded-lg w-full lg:w-1/3"
-                  />
-                  <select
-                    value={sortOption}
-                    onChange={handleSortChange}
-                    className="p-2 border border-gray-300 rounded-lg ml-4"
-                  >
-                    <option value="default">Sort by</option>
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                  </select>
-                </div>
-                {sortedJobs.length > 0 ? (
-                  <table className="min-w-full bg-white">
-                    <thead className="bg-grey-100 text-grey">
-                      <tr>
-                        <th className="py-2 px-4 border-b">Job Title</th>
-                        <th className="py-2 px-4 border-b">Date Applied</th>
-                        <th className="py-2 px-4 border-b">Status</th>
-                        <th className="py-2 px-4 border-b">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedJobs.map((job) => (
-                        <tr key={job.id}>
-                          <td className="py-2 px-4 border-b">
-                            <p className="font-semibold">{job.jobTitle}</p>
-                            <p className="text-gray-600">{job.company}</p>
-                            <p className="text-gray-600">{job.location}</p>
-                          </td>
-                          <td className="py-2 px-4 border-b">{job.dateApplied}</td>
-                          <td className="py-2 px-4 border-b">
-                            {job.status}
-                            {job.previousStatus && (
-                              <span className="ml-2 text-gray-500">(Old: {job.previousStatus})</span>
-                            )}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            <button
-                              onClick={() => handleCancelApplication(job.id)}
-                              className="text-red-600 hover:text-red-800 mr-2"
-                            >
-                              &times;
-                            </button>
-                            <button className="text-blue-600 hover:text-blue-800">
-                              &#128065;
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>No applications submitted yet.</p>
-                )}
-              </>
+            {loadingJobs && <p>Loading jobs...</p>}
+            {errorJobs && <p>Error: {errorJobs}</p>}
+            {!loadingJobs && !errorJobs && (
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border-b">Job Title</th>
+                    <th className="py-2 px-4 border-b">Date Applied</th>
+                    <th className="py-2 px-4 border-b">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {appliedJobs.map((job) => (
+                    <tr key={job.id}>
+                      <td className="py-2 px-4 border-b">
+                        <p className="font-semibold">{job.jobTitle}</p>
+                        <p className="text-gray-600">{job.location}</p>
+                      </td>
+                      <td className="py-2 px-4 border-b">{job.dateApplied}</td>
+                      <td className="py-2 px-4 border-b">{job.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">Applied Learning Needs</h1>
+          <p className="text-lg mb-12 text-gray-700">List of learning needs you have applied for.</p>
+
+          <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
+            {loadingNeeds && <p>Loading learning needs...</p>}
+            {errorNeeds && <p>Error: {errorNeeds}</p>}
+            {!loadingNeeds && !errorNeeds && (
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border-b">Requirement</th>
+                    <th className="py-2 px-4 border-b">Location</th>
+                    <th className="py-2 px-4 border-b">Salary</th>
+                    <th className="py-2 px-4 border-b">Availability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {appliedNeeds.map((need) => (
+                    <tr key={need.id}>
+                      <td className="py-2 px-4 border-b">{need.requirement}</td>
+                      <td className="py-2 px-4 border-b">{need.location}</td>
+                      <td className="py-2 px-4 border-b">{need.salary}</td>
+                      <td className="py-2 px-4 border-b">{need.available}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </section>
         </div>

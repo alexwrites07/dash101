@@ -1,43 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 import Sidebar from "./SidebarEmployer";
 import Header from "./HeaderEmployer";
 
 const SubmitJobPost = () => {
-  // State for form fields
-  const [featuredImage, setFeaturedImage] = useState(null);
-  const [jobTitle, setJobTitle] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [jobType, setJobType] = useState('');
-  const [tags, setTags] = useState('');
-  const [gender, setGender] = useState('');
-  const [jobApplyType, setJobApplyType] = useState('');
-  const [externalURL, setExternalURL] = useState('');
-  const [applyEmail, setApplyEmail] = useState('');
-  const [salaryType, setSalaryType] = useState('');
-  const [minSalary, setMinSalary] = useState('');
-  const [maxSalary, setMaxSalary] = useState('');
-  const [experience, setExperience] = useState('');
-  const [careerLevel, setCareerLevel] = useState('');
-  const [qualification, setQualification] = useState('');
-  const [introductionVideo, setIntroductionVideo] = useState('');
-  const [photos, setPhotos] = useState(null);
-  const [applicationDeadline, setApplicationDeadline] = useState('');
-  const [friendlyAddress, setFriendlyAddress] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [mapSrc, setMapSrc] = useState('');
-  const [error, setError] = useState('');
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [tags, setTags] = useState([{ name: "Urgent", active: true }]);
+  const [category, setCategory] = useState("");
+  const [minSalary, setMinSalary] = useState("");
+  const [maxSalary, setMaxSalary] = useState("");
+  const [salaryPeriod, setSalaryPeriod] = useState("monthly");
+  const [careerLevel, setCareerLevel] = useState("");
+  const [gender, setGender] = useState("Any");
+  const [experience, setExperience] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [workCommitment, setWorkCommitment] = useState("Full-time");
+  const [workMode, setWorkMode] = useState("In-person");
+  const [keyResponsibilities, setKeyResponsibilities] = useState([]);
+  const [skillAndExperience, setSkillAndExperience] = useState([]);
+  const [images, setImages] = useState([]);
+  const [jobCategories, setJobCategories] = useState([]);
+  const [maxApplicants, setMaxApplicants] = useState("");
+  const [applicationDeadline, setApplicationDeadline] = useState("");
+  const [friendlyAddress, setFriendlyAddress] = useState("");
+  const [latitude, setLatitude] = useState("");  const [categoryInput, setCategoryInput] = useState(""); // For user input
+  const [longitude, setLongitude] = useState("");
+  const [mapSrc, setMapSrc] = useState("");
 
-  // Handlers for location
+  const updateMapSrc = (lat, lon) => {
+    setMapSrc(`https://www.google.com/maps?q=${lat},${lon}&hl=es;z=14&output=embed`);
+  };
+
   const handleLatitudeChange = (e) => {
-    setLatitude(e.target.value);
-    updateMapSrc(e.target.value, longitude);
+    const newLat = parseFloat(e.target.value) || 0;
+    setLatitude(newLat);
+    updateMapSrc(newLat, longitude);
   };
 
   const handleLongitudeChange = (e) => {
-    setLongitude(e.target.value);
-    updateMapSrc(latitude, e.target.value);
+    const newLon = parseFloat(e.target.value) || 0;
+    setLongitude(newLon);
+    updateMapSrc(latitude, newLon);
   };
 
   const fetchUserCoordinates = () => {
@@ -48,449 +52,268 @@ const SubmitJobPost = () => {
           setLatitude(latitude);
           setLongitude(longitude);
           updateMapSrc(latitude, longitude);
-          setError('');
         },
-        (err) => {
-          setError('Unable to retrieve your location.');
+        () => {
+          alert("Unable to retrieve your location.");
         }
       );
     } else {
-      setError('Geolocation is not supported by your browser.');
+      alert("Geolocation is not supported by your browser.");
     }
-  };
-
-  const updateMapSrc = (lat, lon) => {
-    setMapSrc(
-      `https://www.google.com/maps?q=${lat},${lon}&hl=es;z=14&output=embed`
-    );
-  };
-
-  const handleImageUpload = (e) => {
-    setFeaturedImage(e.target.files[0]);
-  };
-
-  const handlePhotoUpload = (e) => {
-    setPhotos(e.target.files);
   };
 
   const saveJobPost = async () => {
-    const payload = {
+    const jobData = {
       title: jobTitle,
+      tags,
       location: {
         type: "Point",
-        coordinates: [parseFloat(longitude), parseFloat(latitude)],
-        city: friendlyAddress,
-        state: "CA", // Adjust as needed
-        pinCode: "Approximate PinCode", // Adjust as needed
+        coordinates: [longitude, latitude],
+        landmark: "Nearby Landmark",
+        address: friendlyAddress,
       },
       salary: {
-        max: parseInt(maxSalary, 10),
         min: parseInt(minSalary, 10),
-        period: salaryType,
+        max: parseInt(maxSalary, 10),
+        period: salaryPeriod,
       },
       workDetails: {
-        commitment: jobType,
-        mode: "In-person", // Adjust as needed
+        commitment: workCommitment,
+        mode: workMode,
       },
-      experience: experience,
-      gender: gender,
-      qualification: qualification,
-      careerLevel: careerLevel,
+      experience,
+      gender,
+      qualification,
+      careerLevel,
       description: jobDescription,
-      keyResponsibilities: ["Prepare lesson plans", "Conduct tutoring sessions"], // Adjust as needed
-      skillAndExperience: ["Calculus", "Algebra"], // Adjust as needed
-      images: [], // Adjust with image URLs if applicable
-      maxApplicants: 50, // Adjust as needed
+      keyResponsibilities,
+      skillAndExperience,
+      images,
+      jobCategories,
+      maxApplicants,
       lastDateToApply: applicationDeadline,
-      tags: tags.split(',').map(tag => ({ name: tag.trim(), active: true })),
-      employerId: "66979a00d4e9a63603ba044e" // Replace with the actual employer ID
     };
-  
-    console.log(payload); // Log the payload for debugging
-  
+
+    const token = localStorage.getItem("token");
     try {
-      const response = await fetch('https://server.avyudha.com/createJob', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM',
-        },
-        body: JSON.stringify(payload),
-      });
-  
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(`Failed to create job: ${errorMessage}`);
-      }
-  
-      const data = await response.json();
-      console.log('Job Created:', data);
-  
-      // Optionally, you can show a success message or redirect the user
+      const response = await axios.post(
+        "https://server.avyudha.com/createJob",
+        jobData,  // This is the data you're sending
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Ensure `token` is defined
+          },
+        }
+      );
+      alert("Job post submitted successfully!");
+      console.log("Response:", response.data);
     } catch (error) {
-      console.error('Error creating job:', error);
-      // Optionally, you can show an error message to the user
+      console.error("Error:", error);
+      alert("Failed to submit job post.");
+    }
+  }    
+  const addCategory = () => {
+    if (categoryInput.trim() && !jobCategories.includes(categoryInput)) {
+      setJobCategories([...jobCategories, categoryInput.trim()]);
+      setCategoryInput(""); // Clear the input field
     }
   };
-  
-  
+
+  const removeCategory = (category) => {
+    setJobCategories(jobCategories.filter((cat) => cat !== category));
+  };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col lg:flex-row max-w-5xl">
+    <Sidebar />
+    <div className="flex-1 mr-12">
       <Header />
-      <div className="flex-1 bg-gray-100">
-        <Sidebar />
-        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 ">
-          <h1 className="text-3xl font-bold mb-8 text-gray-900">Post a New Job</h1>
-          <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900">Job Details</h2>
-
-            {/* Featured Image */}
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Featured Image</label>
-              <input
-                type="file"
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                onChange={handleImageUpload}
-              />
-            </div>
-
-            {/* Job Title */}
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Job Title *</label>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-              />
-            </div>
-
-            {/* Job Description */}
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Job Description *</label>
-              <textarea
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                value={jobDescription}
-                onChange={(e) => setJobDescription(e.target.value)}
-              ></textarea>
-            </div>
-
-            {/* Two Columns Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-              {/* Left Column */}
-              <div>
-                {/* Category */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Category</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="">Select Category</option>
-                    <option value="school-job">School Job</option>
-                    <option value="coaching">Coaching</option>
-                  </select>
-                </div>
-
-                {/* Tags */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Tags</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                  />
-                </div>
-
-                {/* Job Apply Type */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Job Apply Type</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={jobApplyType}
-                    onChange={(e) => setJobApplyType(e.target.value)}
-                  >
-                    <option value="">Select Apply Type</option>
-                    <option value="internal">Internal</option>
-                    <option value="external">External</option>
-                    <option value="email">By Email</option>
-                    <option value="call">Call to Apply</option>
-                  </select>
-                </div>
-
-                {/* Job Apply Email */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Job Apply Email</label>
-                  <input
-                    type="email"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={applyEmail}
-                    onChange={(e) => setApplyEmail(e.target.value)}
-                  />
-                </div>
-
-                {/* Min Salary */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Min. Salary</label>
-                  <input
-                    type="number"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={minSalary}
-                    onChange={(e) => setMinSalary(e.target.value)}
-                  />
-                </div>
-
-                {/* Experience */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Experience</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={experience}
-                    onChange={(e) => setExperience(e.target.value)}
-                  >
-                    <option value="">Select Experience</option>
-                    <option value="fresher">Fresher</option>
-                    <option value="1">1 Year</option>
-                    <option value="2">2 Years</option>
-                    <option value="3">3 Years</option>
-                    <option value="4">4 Years</option>
-                  </select>
-                </div>
-
-                {/* Qualification */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={qualification}
-                    onChange={(e) => setQualification(e.target.value)}
-                  >
-                    <option value="">Select Qualification</option>
-                    <option value="certificate">Certificate</option>
-                    <option value="associate">Associate</option>
-                    <option value="bachelor">Bachelor</option>
-                    <option value="master">Master</option>
-                    <option value="doctorate">Doctorate</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Right Column */}
-              <div>
-                {/* Job Type */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Type</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={jobType}
-                    onChange={(e) => setJobType(e.target.value)}
-                  >
-                    <option value="">Select Type</option>
-                    <option value="full-time">Full Time</option>
-                    <option value="part-time">Part Time</option>
-                    <option value="freelance">Freelance</option>
-                    <option value="temporary">Temporary</option>
-                    <option value="internship">Internship</option>
-                  </select>
-                </div>
-
-                {/* Gender */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="any">Any</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                </div>
-
-                {/* External URL */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">External URL</label>
-                  <input
-                    type="url"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={externalURL}
-                    onChange={(e) => setExternalURL(e.target.value)}
-                  />
-                </div>
-
-                {/* Salary Type */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={salaryType}
-                    onChange={(e) => setSalaryType(e.target.value)}
-                  >
-                    <option value="">Select Salary Type</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                    <option value="hourly">Hourly</option>
-                  </select>
-                </div>
-
-                {/* Max Salary */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Max. Salary</label>
-                  <input
-                    type="number"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={maxSalary}
-                    onChange={(e) => setMaxSalary(e.target.value)}
-                  />
-                </div>
-
-                {/* Career Level */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Career Level</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={careerLevel}
-                    onChange={(e) => setCareerLevel(e.target.value)}
-                  >
-                    <option value="">Select Career Level</option>
-                    <option value="entry">Entry</option>
-                    <option value="mid">Mid</option>
-                    <option value="senior">Senior</option>
-                    <option value="executive">Executive</option>
-                  </select>
-                </div>
-
-                {/* Application Deadline */}
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Application Deadline</label>
-                  <input
-                    type="date"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={applicationDeadline}
-                    onChange={(e) => setApplicationDeadline(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Introduction Video */}
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
-              <input
-                type="link"
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                onChange={(e) => setIntroductionVideo(e.target.files[0])}
-              />
-            </div>
-
-            {/* Photos */}
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Photos</label>
-              <input
-                type="file"
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                multiple
-                onChange={handlePhotoUpload}
-              />
-            </div>
-
-            {/* Friendly Address */}
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2">Friendly Address</label>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                value={friendlyAddress}
-                onChange={(e) => setFriendlyAddress(e.target.value)}
-              />
-            </div>
-
-            <div className="relative mb-4">
-                  <div className="relative w-full h-80 border border-gray-300 rounded-lg mb-4">
-                    <iframe
-                      src={mapSrc}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    ></iframe>
-                    {/* Static marker image, positioned based on latitude and longitude */}
-                    <div
-                      className="absolute"
-                      style={{
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -100%)',
-                        pointerEvents: 'none',
-                      }}
-                    >
-                      <img
-                        src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                        alt="Red Marker"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <label htmlFor="latitude" className="block mb-2">
-                      Latitude:
-                    </label>
-                    <input
-                      type="text"
-                      id="latitude"
-                      name="latitude"
-                      value={latitude}
-                      onChange={handleLatitudeChange}
-                      className="w-full border border-gray-300 rounded px-2 py-1"
-                    />
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label htmlFor="longitude" className="block mb-2">
-                      Longitude:
-                    </label>
-                    <input
-                      type="text"
-                      id="longitude"
-                      name="longitude"
-                      value={longitude}
-                      onChange={handleLongitudeChange}
-                      className="w-full border border-gray-300 rounded px-2 py-1"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    {/* Button to use user's location */}
-                    <button
-                      onClick={fetchUserCoordinates}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      Use My Location
-                    </button>
-                  </div>
-
-                  {/* Display error message if geolocation fails */}
-                  {error && <div className="text-red-500 mt-2">{error}</div>}
-                </div>
-
-                <button
-                  className="bg-green-500 text-white p-2 rounded-lg mt-4"
-                  onClick={saveJobPost}
-                >
-                  Save Job Post
-                </button>
-          </div>
+      <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col  w-full mr-12">
+    {/* <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md"> */}
+      <h1 className="text-2xl font-bold mb-6">Submit Job Post</h1>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Job Title</label>
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={jobTitle}
+          onChange={(e) => setJobTitle(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Job Description</label>
+        <textarea
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={jobDescription}
+          onChange={(e) => setJobDescription(e.target.value)}
+        />
+      </div>
+   {/* Job Categories */}
+   <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Job Categories</label>
+        <div className="flex items-center mb-4">
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            value={categoryInput}
+            onChange={(e) => setCategoryInput(e.target.value)}
+            placeholder="Enter a category"
+          />
+          <button
+            onClick={addCategory}
+            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg"
+          >
+            Add
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {jobCategories.map((category, index) => (
+            <span
+              key={index}
+              className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full flex items-center"
+            >
+              {category}
+              <button
+                onClick={() => removeCategory(category)}
+                className="ml-2 text-red-500"
+              >
+                ×
+              </button>
+            </span>
+          ))}
         </div>
       </div>
+
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Minimum Salary</label>
+        <input
+          type="number"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={minSalary}
+          onChange={(e) => setMinSalary(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Maximum Salary</label>
+        <input
+          type="number"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={maxSalary}
+          onChange={(e) => setMaxSalary(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Salary Period</label>
+        <select
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={salaryPeriod}
+          onChange={(e) => setSalaryPeriod(e.target.value)}
+        >
+          <option value="monthly">Monthly</option>
+          <option value="hourly">Hourly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Career Level</label>
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={careerLevel}
+          onChange={(e) => setCareerLevel(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
+        <select
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+        >
+          <option value="Any">Any</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Experience</label>
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={experience}
+          onChange={(e) => setExperience(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Qualification</label>
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={qualification}
+          onChange={(e) => setQualification(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Work Commitment</label>
+        <select
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={workCommitment}
+          onChange={(e) => setWorkCommitment(e.target.value)}
+        >
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Freelance">Freelance</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Work Mode</label>
+        <select
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={workMode}
+          onChange={(e) => setWorkMode(e.target.value)}
+        >
+          <option value="In-person">In-person</option>
+          <option value="Remote">Remote</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Latitude</label>
+        <input
+          type="number"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={latitude}
+          onChange={handleLatitudeChange}
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Longitude</label>
+        <input
+          type="number"
+          className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+          value={longitude}
+          onChange={handleLongitudeChange}
+        />
+      </div>
+      <div className="mb-6">
+        <iframe
+          title="Google Map"
+          src={mapSrc}
+          width="100%"
+          height="300"
+          style={{ border: 0 }}
+          loading="lazy"
+        ></iframe>
+      </div>
+      <button
+        onClick={saveJobPost}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Submit Job
+      </button>
     </div>
+    </div></div>
   );
 };
 

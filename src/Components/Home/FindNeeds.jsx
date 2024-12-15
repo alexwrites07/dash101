@@ -277,10 +277,10 @@ const NeedsFinder = () => {
                 <Link to={`/getNeed/${tutor._id}`} className="block w-full">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
                     <div>
-                    <h2 className="text-lg  font-semibold">Requirements: {tutor.requirement}</h2>
+                    <h2 className="text-lg  font-semibold">{tutor.requirement}</h2>
                       <h2 className="text-lg">{tutor.location.city}, {tutor.location.address}</h2>
                       
-                      <h2 className="text-lg">ClassType: {tutor.typeOfClass}</h2>
+                      <h2 className="text-lg">{tutor.typeOfClass}</h2>
                     </div>
                     <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
                       {userCoords && tutor.location?.coordinates && (

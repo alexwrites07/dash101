@@ -435,8 +435,8 @@ const JobPost = () => {
   <h3 className="text-gray-700 text-center md:text-left font-semibold md:mr-2 md:ml-8">{job.companyName}</h3>
   <p className="text-gray-700 text-center md:text-left text-bold font-semibold md:mr-2 text-xl md:ml-8">{job.title}</p>
   <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city},{job.location?.state}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">Created - {job.jobCreated?.split('T')[0]}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">Salary- Rs.{job.salary.min}&nbsp;{job.salary.period}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8"> {job.jobCreated?.split('T')[0]}</p>
+  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">Rs.{job.salary.min}&nbsp;{job.salary.period}</p>
   <p className="text-sm text-gray-600 text-center md:text-left md:ml-8"></p>
 
 </div>

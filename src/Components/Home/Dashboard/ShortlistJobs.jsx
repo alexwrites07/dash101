@@ -1,203 +1,181 @@
-import React, { useState, useEffect } from 'react';
-import Sidebar from './Sidebar';
-import Header from './Header';
+import React, { useState, useEffect } from "react";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import { Link } from 'react-router-dom';
 
 const ShortlistJobs = () => {
-  const [shortlistedJobs, setShortlistedJobs] = useState([]); // Initialize with an empty array
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortOption, setSortOption] = useState('default');
+  const [shortlistedJobs, setShortlistedJobs] = useState([]);
+  const [learningNeeds, setLearningNeeds] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("default");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Update the token to the new one
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2OWUyNTBmMDEwYjA4NTJhNzU0ZTliZiIsImlhdCI6MTcyMTkwMjE4Mn0.pvPZFwt9VjiRwnNBAWGBjfgd2EK_9B0oQMENsJU0JcM';
-  const tutorId = '669e250f010b0852a754e9bf';
+  const token = localStorage.getItem("token");
 
-  // Fetch data from the backend when the component mounts
   useEffect(() => {
-    fetch('https://server.avyudha.com/tutor/shortlists', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Add Authorization header
-        'tutor-id': tutorId // Add custom tutor-id header if required by your API
+    const fetchShortlistedJobs = fetch(
+      "https://server.avyudha.com/tutor/shortlists",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
+    )
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
+        if (!response.ok) throw new Error("Failed to fetch shortlisted jobs");
         return response.json();
       })
-      .then((data) => {
-        // Transform the backend data to match the frontend structure
-        const transformedJobs = data.map((job, index) => ({
-          id: job._id || index,
-          title: job.title || 'N/A',
-          company: 'N/A', // Assuming no company data is provided in the JSON
-          location: `${job.location.city}, ${job.location.state}`,
-          salary: `$${job.salary.min.toLocaleString()} - $${job.salary.max.toLocaleString()} ${job.salary.period}`,
-          postedDate: new Date(job.lastDateToApply).toLocaleDateString(),
-          experience: job.experience || 'N/A',
-          description: job.description || 'No description available',
-          keyResponsibilities: job.keyResponsibilities || [],
-          skillAndExperience: job.skillAndExperience || [],
-          images: job.images || [],
-          applicants: job.applicants || [],
-          isClosed: job.isClosed,
-        }));
-        setShortlistedJobs(transformedJobs);
-        setLoading(false);
+      .then((data) => setShortlistedJobs(data))
+      .catch((err) => setError(err.message));
+
+    const fetchLearningNeeds = fetch(
+      "https://server.avyudha.com/bookmarked-needs",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to fetch learning needs");
+        return response.json();
       })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+      .then((data) => setLearningNeeds(data))
+      .catch((err) => setError(err.message));
 
-  const handleRemoveJob = (id) => {
-    setShortlistedJobs((prevJobs) => prevJobs.filter((job) => job.id !== id));
-  };
+    Promise.all([fetchShortlistedJobs, fetchLearningNeeds])
+      .then(() => setLoading(false))
+      .catch((err) => setError(err.message));
+  }, [token]);
 
-  const sortJobs = (sortBy) => {
-    let sortedJobs = [...shortlistedJobs];
-    switch (sortBy) {
-      case 'title':
-        sortedJobs.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case 'company':
-        sortedJobs.sort((a, b) => a.company.localeCompare(b.company));
-        break;
-      case 'salary':
-        sortedJobs.sort(
-          (a, b) =>
-            parseFloat(a.salary.slice(1).replace(',', '')) -
-            parseFloat(b.salary.slice(1).replace(',', ''))
-        );
-        break;
-      default:
-        break;
-    }
-    setShortlistedJobs(sortedJobs);
-  };
+  const handleSearch = (e) => setSearchQuery(e.target.value);
 
-  const handleViewJobProfile = (id) => {
-    // Placeholder function for viewing job profile, you can implement the actual behavior
-    console.log(`Viewing job profile for job with ID: ${id}`);
-  };
-
-  const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-  };
-
-  const filteredJobs = shortlistedJobs.filter(
-    (job) =>
-      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredJobs = shortlistedJobs.filter((job) =>
+    job.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const sortedJobs = filteredJobs.sort((a, b) => {
-    if (sortOption === 'newest') {
-      return new Date(b.postedDate) - new Date(a.postedDate);
-    } else if (sortOption === 'oldest') {
-      return new Date(a.postedDate) - new Date(b.postedDate);
-    }
-    return 0;
-  });
+  const filteredNeeds = learningNeeds.filter((need) =>
+    need.requirement.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 ml-96">
       <Sidebar />
-      <div className="flex-1 bg-gray-100">
+      <div className="flex-1">
         <Header />
-        <div className="mt-24 lg:ml-64 lg:mt-24 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
-          <h1 className="text-3xl font-bold mb-6 text-gray-900">Shortlisted Jobs</h1>
+        <main className="mt-24 lg:mt-28 p-6 lg:p-10">
+          <div className="max-w-3xl mx-auto">
+            <h1 className="text-2xl font-bold text-gray-900 mb-8">
+              Shortlisted Jobs & Learning Needs
+            </h1>
 
-          <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
-            {loading && <p>Loading jobs...</p>}
-            {error && <p>Error: {error}</p>}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 space-y-4 lg:space-y-0">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearch}
+                className="p-3 border border-gray-300 rounded-lg w-full lg:w-1/3"
+              />
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="p-3 border border-gray-300 rounded-lg w-full lg:w-1/4"
+              >
+                <option value="default">Sort by</option>
+                <option value="title">Title</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+              </select>
+            </div>
+
+            {loading && (
+              <p className="text-center text-gray-500">Loading data...</p>
+            )}
+            {error && (
+              <p className="text-center text-red-500">Error: {error}</p>
+            )}
+
             {!loading && !error && (
               <>
-                <div className="flex justify-between mb-4">
-                  <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className="p-2 border border-gray-300 rounded-lg w-full lg:w-1/3"
-                  />
-                  <select
-                    value={sortOption}
-                    onChange={handleSortChange}
-                    className="p-2 border border-gray-300 rounded-lg ml-4"
-                  >
-                    <option value="default">Sort by</option>
-                    <option value="title">Title</option>
-                    <option value="company">Company</option>
-                    <option value="salary">Salary</option>
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                  </select>
-                </div>
-                {sortedJobs.length > 0 ? (
-                  <table className="min-w-full bg-white">
-                    <thead className="bg-grey">
-                      <tr>
-                        <th className="py-2 px-4 border-b">Job Title</th>
-                        <th className="py-2 px-4 border-b">Posted Date</th>
-                        <th className="py-2 px-4 border-b">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedJobs.map((job) => (
-                        <tr key={job.id}>
-                          <td className="py-2 px-4 border-b flex items-center">
-                            <img
-                              src={
-                                job.images[0] ||
-                                `https://static.wixstatic.com/media/5a2bf8_4efbddfdec0c49ed94d0dbf3168d6863~mv2.png/v1/fill/w_460,h_460,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/PROFILE%20LOGO%20white%20letter.png`
-                              }
-                              alt="Profile"
-                              className="w-12 h-12 rounded-full mr-4"
-                            />
-                            <div>
-                              <p className="font-semibold">{job.title}</p>
-                              <p className="text-gray-600">{job.company}</p>
-                              <p className="text-gray-600">{job.location}</p>
-                            </div>
-                          </td>
-                          <td className="py-2 px-4 border-b">{job.postedDate}</td>
-                          <td className="py-2 px-4 border-b">
-                            <button
-                              onClick={() => handleRemoveJob(job.id)}
-                              className="text-red-600 hover:text-red-800 mr-2"
-                            >
-                              &times;
-                            </button>
-                            <button
-                              onClick={() => handleViewJobProfile(job.id)}
-                              className="text-blue-600 hover:text-blue-800"
-                            >
-                              &#128065;
-                            </button>
-                          </td>
-                        </tr>
+                {/* Shortlisted Jobs Section */}
+                <section className="mb-10">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-6">
+                    Shortlisted Jobs
+                  </h2>
+                  {filteredJobs.length > 0 ? (
+                    <ul className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                      {filteredJobs.map((job) => (
+                          <Link to={`/getjobs/${job._id}`} className="block">
+                        <li
+                          key={job.id}
+                          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+                        >
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            {job.title}
+                          </h3>
+                          <p className="text-gray-600">
+                            Location: {job.location.address}
+                          </p>
+                          {/* <p className="text-gray-600">
+                            Salary: {job.salary.value}
+                          </p> */}
+                          <p className="text-sm text-gray-500 mt-2">
+                            {job.description}
+                          </p>
+                        </li>
+                        </Link>
                       ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p>No shortlisted jobs yet.</p>
-                )}
+                     
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500">No shortlisted jobs found.</p>
+                  )}
+                </section>
+
+                {/* Learning Needs Section */}
+                <section>
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                    Learning Needs
+                  </h2>
+                  {filteredNeeds.length > 0 ? (
+                    <ul className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {filteredNeeds.map((need) => (
+                        <Link to={`/getNeed/${need._id}`} className="block w-full">
+                        <li
+                          key={need.id}
+                          className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow"
+                        >
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            {need.requirement}
+                          </h3>
+                          {/* <p className="text-gray-600">
+                            Location: {need.location}
+                          </p> */}
+                          <p className="text-gray-600">
+                            Address: {need.location.address}
+                          </p>
+                          {/* <p className="text-gray-600">
+                            Landmark: {need.landmark}
+                          </p> */}
+                        </li>
+                        </Link>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500">No learning needs found.</p>
+                  )}
+                </section>
               </>
             )}
-          </section>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
   );

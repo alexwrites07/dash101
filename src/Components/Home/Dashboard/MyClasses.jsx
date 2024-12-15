@@ -1,39 +1,60 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
-
 const MyClasses = () => {
-  const [demoClasses] = useState([
-    { title: 'Demo Class 1', date: '2024-08-20' },
-    { title: 'Demo Class 2', date: '2024-08-22' },
-  ]);
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <FreeDemoCard />
+    </div>
+  );
+};
+
+const FreeDemoCard = () => {
+  const navigate = useNavigate();
+
+  const handleBookDemo = () => {
+    navigate('/demo-form'); // Replace '/demo-form' with the route for booking a demo
+  };
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
+      {/* Icon */}
       <Sidebar />
-      <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28 flex-1">
-        <Header />
-        <h3 className="text-2xl font-bold mb-6 text-gray-900">My Classes</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {demoClasses.map((demo, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-lg flex items-center justify-between"
-            >
-              <div>
-                <h4 className="text-xl font-semibold text-gray-800">
-                  {demo.title}
-                </h4>
-                <p className="text-gray-600">Scheduled for {demo.date}</p>
-              </div>
-              <div className="text-green-600 font-semibold">
-                <span className="bg-green-100 py-2 px-4 rounded-full">
-                  Upcoming
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+       <Header />
+       <div className="">
+      <div className="text-blue-600 mb-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-16 w-16 mx-auto"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 16h8M8 12h8m-9 4a1 1 0 011-1h10a1 1 0 011 1v1a1 1 0 01-1 1H9a1 1 0 01-1-1v-1zm0-6a1 1 0 011-1h10a1 1 0 011 1v1a1 1 0 01-1 1H9a1 1 0 01-1-1V9z"
+          />
+        </svg>
+      </div>
+
+      {/* Text */}
+      <p className="text-gray-800 text-lg font-semibold">
+        You have not enrolled for any classes.
+      </p>
+      <p className="text-gray-600 text-sm mt-2">
+        Get started by booking a Free Demo Class.
+      </p>
+
+      {/* Button */}
+      <button
+        onClick={handleBookDemo}
+        className="mt-6 py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300"
+      >
+        Book a Demo
+      </button>
       </div>
     </div>
   );

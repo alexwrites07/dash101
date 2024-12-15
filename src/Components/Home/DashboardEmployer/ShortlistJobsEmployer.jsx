@@ -4,6 +4,7 @@ import { FaEye, FaEnvelope, FaTrash, FaMoneyBillAlt } from "react-icons/fa"; // 
 import { HiLocationMarker, HiCash, HiTrash } from "react-icons/hi"; // Importing location and cash icons
 import Sidebar from "./SidebarEmployer";
 import Header from "./HeaderEmployer";
+import { Link } from "react-router-dom";
 
 const ShortlistJobs = () => {
   // Mocked shortlisted candidates data
@@ -12,8 +13,7 @@ const ShortlistJobs = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("default");
 
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyMzgyMDM4NH0.oqjrMP1XvsPhYn2dKpDX4AE8rxC9ZlVWlqzBP7URnHM";  // Replace with your actual token
-
+  const token = localStorage.getItem('token');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -157,16 +157,17 @@ const ShortlistJobs = () => {
 
             <div className="space-y-4">
               {sortedCandidates.map((candidate) => (
+                <Link to={`/getTutor/${candidate.id}`} className="block w-full">
                 <div
                   key={candidate.id}
                   className="bg-gray-100 p-4 rounded-lg flex items-start"
                 >
                   {/* Profile Picture */}
-                  <img
+                  {/* <img
                     src="https://static.wixstatic.com/media/5a2bf8_4efbddfdec0c49ed94d0dbf3168d6863~mv2.png/v1/fill/w_460,h_460,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/PROFILE%20LOGO%20white%20letter.png"
                     alt="Profile"
                     className="w-12 h-12 rounded-full mr-4"
-                  />
+                  /> */}
 
                   <div className="flex-1">
                     {/* Candidate Name and Title */}
@@ -189,7 +190,7 @@ const ShortlistJobs = () => {
 
                   {/* Action Icons */}
                   <div className="ml-auto flex space-x-2">
-                    <button
+                    {/* <button
                       onClick={() => handleViewProfile(candidate.id)}
                       className="text-blue-400 hover:text-blue-800"
                     >
@@ -200,7 +201,7 @@ const ShortlistJobs = () => {
                       className="text-blue-400 hover:text-green-800"
                     >
                       <FaEnvelope className="w-6 h-6" />
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => handleRemoveCandidate(candidate.id)}
                       className="text-blue-400 hover:text-red-800"
@@ -209,6 +210,7 @@ const ShortlistJobs = () => {
                     </button>
                   </div>
                 </div>
+                </Link>
               ))}
             </div>
           </section>

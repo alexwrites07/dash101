@@ -175,9 +175,9 @@ const ManageJobs = () => {
                         >
                           {job.job.isClosed ? <FaUnlock /> : <FaLock />}
                         </button>
-                        <button onClick={() => handleEditJob(job)} className="mr-2 text-blue-500">
+                        {/* <button onClick={() => handleEditJob(job)} className="mr-2 text-blue-500">
                           <FaPencilAlt />
-                        </button>
+                        </button> */}
                         <button onClick={() => handleRemoveJob(job.job._id)} className="text-blue-500">
                           <FaTimes />
                         </button>

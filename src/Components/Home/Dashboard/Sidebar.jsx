@@ -20,10 +20,13 @@ const Sidebar = ({ activeTab }) => {
   };
 
   let sidebarLinks = [
+    { to: '/wallet', icon: <HiUser className="w-6 h-6" />, label: 'Wallets' },
+    { to: '/transactions', icon: <HiUser className="w-6 h-6" />, label: 'Transactions' },
     { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
     { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
     { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
     { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
+    
     { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
   ];
 
@@ -31,12 +34,15 @@ const Sidebar = ({ activeTab }) => {
     sidebarLinks = [
       { to: '/user-dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
-      { to: '/upload-resume', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'My Resume' },
+      { to: '/upload-resume', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Uploads' },
       { to: '/applied-company', icon: <HiShoppingBag className="w-6 h-6" />, label: 'My Applied' },
       { to: '/shortlist-jobs', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Jobs' },
       { to: '/alerts-jobs', icon: <HiBell className="w-6 h-6" />, label: 'Alerts Jobs' },
-      { to: '/following-employer', icon: <HiUserGroup className="w-6 h-6" />, label: 'Following Employer' },
+      { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
       { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+
+      { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
+
       ...sidebarLinks,
     ];
   } else if (userType === 'student') {
@@ -45,8 +51,13 @@ const Sidebar = ({ activeTab }) => {
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
       { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
       { to: '/learningneeds', icon: <HiUser className="w-6 h-6" />, label: 'Learning Needs' },
+     
+
       { to: '/myclasses', icon: <HiHeart className="w-6 h-6" />, label: 'My Classes' },
-      { to: '/reviews', icon: <HiChat className="w-6 h-6" />, label: 'Reviews' },
+      { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
+  
+      { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
+      { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
       ...sidebarLinks,
     ];
   } else if (userType === 'organization') {
@@ -54,13 +65,16 @@ const Sidebar = ({ activeTab }) => {
       { to: '/user-dashboard-employer', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
       { to: '/my-jobs-employer', icon: <HiUser className="w-6 h-6" />, label: 'My Jobs' },
+
       { to: '/upload-resume-employer', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Submit Job' },
-      { to: '/applied-company-employer', icon: <HiShoppingBag className="w-6 h-6" />, label: 'Applicants Jobs' },
+      { to: '/my-jobs-employer', icon: <HiShoppingBag className="w-6 h-6" />, label: 'Applicants Jobs' },
       { to: '/shortlist-jobs-employer', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Candidates' },
       { to: '/alerts-jobs-employer', icon: <HiBell className="w-6 h-6" />, label: 'Candidate Alert' },
       { to: '/messages-employer', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
       { to: '/meetings-employer', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
+      { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
       { to: '/pricing-employer', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+      { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
       ...sidebarLinks,
     ];
   }

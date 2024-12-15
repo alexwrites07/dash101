@@ -1,0 +1,66 @@
+
+  
+  /* Create new meeting section */
+  .create-meeting {
+    margin-bottom: 20px;
+  }
+  
+  .create-meeting input, .create-meeting textarea {
+    padding: 8px;
+    margin: 5px 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .create-meeting button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-meeting button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Purchased contacts section */
+  .purchased-contacts ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .purchased-contacts li {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  /* Meetings section */
+  .meetings ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .meetings li {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    border-radius: 4px;
+  }
+  
+  .meetings button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .meetings button:hover {
+    background-color: #e53935;
+  }
+  

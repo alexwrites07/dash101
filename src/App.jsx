@@ -29,6 +29,7 @@ import TutorProfileView from './Components/Home/Dashboard/AdminPanel/TeacherProf
 // import Dashboard from './Components/Home/Dashboard/Dashboard.jsx';
 import Reviews from './Components/Home/Dashboard/Reviews.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
+import PurchasedContacts from './Components/Home/Dashboard/PurchasedContacts.jsx';
 import AdminFooterPanel from './Components/Home/Dashboard/AdminPanel/FeaturedFooter.jsx';
 import ResumeBuilder from './Components/Home/resume/builder.jsx';
 import YourProfile from './Components/Home/Dashboard/YourProfile.jsx';
@@ -53,7 +54,7 @@ import Pricing from './Components/Home/Dashboard/Pricing';
 import AppliedCompanyEmployer from './Components/Home/DashboardEmployer/AppliedCompanyEmployer.jsx';
 import LocationsEmployer from './Components/Home/DashboardEmployer/LocationsEmployer.jsx';
 import ShortlistJobsEmployer from './Components/Home/DashboardEmployer/ShortlistJobsEmployer';
-import AlertsJobsEmployer from './Components/Home/DashboardEmployer/AlertJobsEmployer';
+import SaveFilterForm from './Components/Home/DashboardEmployer/AlertJobsEmployer.jsx';
 import LearningNeeds from './Components/Home/Dashboard/LearnNeeds.jsx';
 import MessagesEmployer from './Components/Home/DashboardEmployer/MessagesEmployer';
 import MeetingsEmployer from './Components/Home/DashboardEmployer/MeetingsEmployer';
@@ -65,11 +66,13 @@ import PricingEmployer from './Components/Home/DashboardEmployer/PricingEmployer
 import MyJobs from './Components/Home/DashboardEmployer/MyJobs.jsx';
 import EditJobs from './Components/Home/DashboardEmployer/EditJobs.jsx';
 import CategoryEdit from './Components/Home/Dashboard/AdminPanel/CategoryEdit.jsx';
-import Wallet from './Components/Home/DashboardEmployer/Wallet.jsx';
+import Wallet from './Components/Home/Dashboard/Wallet.jsx';
+import Logout from './Components/Home/Dashboard/LogOut.jsx';
 import AboutUs from './Components/Home/AboutUs';
 import OrganizationFinder from './Components/Home/FindOrganization.jsx';
 import BlogPage from './Components/Home/Dashboard/AdminPanel/FeaturedBlogs.jsx';
 import Blog from './Components/Home/Dashboard/Blogs.jsx';
+import TransactionHistory from './Components/Home/Dashboard/Transactions.jsx';
 import EditTags from './Components/Home/Dashboard/AdminPanel/EditTags.jsx';
 import BlogContent from './Components/Home/BlogContent.jsx';
 import Catagories from './Components/Home/Catagories';
@@ -176,16 +179,19 @@ function AppContent() {
         <Route path="/getTutor/:Id" element={<TeachingDescription />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
         <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/transactions" element={<TransactionHistory />} />
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/dpchange" element={<DpEditDelete />} />
         <Route path="/docchange" element={<Doc />} />
         <Route path="/Catagories" element={<Catagories />} />
         <Route path="/jobs/edit/:id" element={<EditJob />} />
+        <Route path="/logout" element={<Logout />} />
         <Route path="/jobpost" element={<JobPost />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/getOrg/:iid" element={<OrgDescription/>} />
         <Route path="/getNeed/:IId" element={<NeedDescription/>} />
         <Route path="/about" element={<AboutUs />} />
+        <Route path="/purchasedcontacts" element={<PurchasedContacts />} />
         <Route path="/admin-profile" element={<AdminProfile />} />
         <Route path="/needpost" element={<NeedsFinder />} />
         <Route path="/wallet-admin" element={<WalletManager />} />
@@ -225,7 +231,7 @@ function AppContent() {
         <Route path="*" element={<Navigate to="/error" />} />  
         <Route path="/locations-employer" element={<LocationsEmployer />} />
         <Route path="/shortlist-jobs-employer" element={<ShortlistJobsEmployer />} />
-        <Route path="/alerts-jobs-employer" element={<AlertsJobsEmployer />} />
+        <Route path="/alerts-jobs-employer" element={<SaveFilterForm />} />
         <Route path="/messages-employer" element={<MessagesEmployer />} />
         <Route path="/meetings-employer" element={<MeetingsEmployer />} />
         <Route path="/update-password-employer" element={<ChangePasswordEmployer/>} />
