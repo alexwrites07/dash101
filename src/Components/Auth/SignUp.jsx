@@ -6,8 +6,10 @@ import axios from "axios";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpSent, setIsOtpSent] = useState(false);
@@ -53,17 +55,19 @@ export default function SignUp() {
             let payload;
             if (currentRole === "Institution") {
                 payload = {
-                    name: "Institution Name",
-                    username: name || "demo-name",
-                    email,
-                    password,
+                    name: name,
+                    username: username,
+                    email:email,
+                    password:password,
+                    phone:phone
                 };
             } else {
                 payload = {
-                    fullName: "User Full Name",
-                    username: name || "demo-name",
-                    email,
-                    password,
+                    fullName: name,
+                    username: username,
+                    email:email,
+                    password:password,
+                    phone:phone
                 };
             }
 
@@ -157,6 +161,19 @@ export default function SignUp() {
                                                             />
                                                         </div>
                                                         <div>
+                                                            <label htmlFor="username" className="block mb-1 text-sm font-medium text-blue-500">Your Username</label>
+                                                            <input
+                                                                type="text"
+                                                                name="username"
+                                                                id="username"
+                                                                className="bg-gray-50 border border-gray-300 text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
+                                                                placeholder="Mr/Mrs"
+                                                                required=""
+                                                                onChange={(e) => setUsername(e.target.value)}
+                                                            />
+                                                        </div>
+                                                       
+                                                        <div>
                                                             <label htmlFor="email" className="block mb-1 text-sm font-medium text-blue-500">Your email</label>
                                                             <input
                                                                 type="email"
@@ -180,6 +197,20 @@ export default function SignUp() {
                                                                 onChange={(e) => setPassword(e.target.value)}
                                                             />
                                                         </div>
+                                                        <div>
+                                                        <label htmlFor="phone" className="block mb-1 text-sm font-medium text-blue-500">
+                                                            Phone Number
+                                                        </label>
+                                                        <input
+                                                            type="tel"
+                                                            name="phone"
+                                                            id="phone"
+                                                            placeholder="+91XXXXXXXX"
+                                                            required
+                                                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
+                                                            onChange={(e) => setPhone(e.target.value)}
+                                                        />
+                                                    </div>
                                                         <button
                                                             type="submit"
                                                             className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"

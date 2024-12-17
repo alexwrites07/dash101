@@ -11,7 +11,7 @@ const SidebarStudent = ({ activeTab }) => {
     };
 
     const sidebarLinks = [
-        { to: '/user-dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
+        { to: '/dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
         { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
         { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
         { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },

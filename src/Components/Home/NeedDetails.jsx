@@ -32,12 +32,9 @@ const NeedDescription = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(`https://server.avyudha.com/reviews/profile/${IId}`);
-        // Filter reviews based on reviewedId matching tutor's ID
-        const filteredReviews = response.data.reviews.filter(review => review.reviewedId === Id);
-        setReviews(filteredReviews);
+        setReviews(response.data.reviews);
       } catch (error) {
         console.error('Error fetching reviews:', error);
-        
       }
     };
     const fetchBookmarkStatus = async () => {
@@ -259,41 +256,21 @@ const NeedDescription = () => {
         </div>
 
         {/* Reviews Section */}
-        <h2 className="text-xl font-semibold mb-4 mt-8">Reviews</h2>
-        {reviews.length > 0 ? (
-          reviews.map(review => (
-            <div key={review._id} className="border-b mb-4 pb-2">
-              <p><strong>{review.reviewerUsername}</strong></p>
-              <StarRating rating={review.rating} />
-              <p>{review.description}</p>
-              <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
-            </div>
-          ))
-        ) : (
-          <p>No reviews available.</p>
-        )}
+        <h2 className="text-xl font-semibold mb-2 mt-6">Reviews</h2>
+            {reviews.length > 0 ? (
+              reviews.map(review => (
+                <div key={review._id} className="border-b mb-4 pb-2">
+                  <p><strong>{review.reviewerUsername}</strong></p>
+                  <p>Rating - <strong>{review.rating}/5</strong></p>
+                  <p>{review.description}</p>
+                  <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
+                </div>
+              ))
+            ) : (
+              <p>No reviews available.</p>
+            )}
 
-        <div className="mt-8 flex flex-col items-center">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Rate this Tutor</h2>
-          <StarRating />
-
-          {/* Comment Section */}
-          <div className="mt-4">
-            <textarea
-              value={comment}
-              onChange={handleCommentChange}
-              placeholder="Write your comments here..."
-              className="w-full p-2 border rounded-lg"
-            />
-            <button
-              onClick={handleSubmit}
-              className="mt-2 bg-blue-500 text-white font-bold py-2 px-4 rounded"
-            >
-              Submit
-            </button>
-            {submittedComment && <p className="mt-2 text-green-500">{submittedComment}</p>}
-          </div>
-        </div>
+        
       </div>
     </div>
     <button

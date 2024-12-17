@@ -299,7 +299,7 @@ const NeedsFinder = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
+            <p className="text-gray-700 ml-4">No Learning Needs found matching your criteria.</p>
           )}
         </div>
       </div>

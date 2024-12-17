@@ -195,19 +195,12 @@ const DemoForm = () => {
 
   const handleCheckboxChange = (event, key) => {
     const value = event.target.value;
-    const checked = event.target.checked;
-
-    setResponses((prev) => {
-      const updatedArray = checked
-        ? [...prev[key], value]
-        : prev[key].filter((item) => item !== value);
-      return {
-        ...prev,
-        [key]: updatedArray,
-      };
-    });
+    setResponses((prev) => ({
+      ...prev,
+      [key]: [value], // Reset the array to contain only the current selected value
+    }));
   };
-
+  
   const handleContactChange = (event, key) => {
     const { name, value } = event.target;
     setResponses((prev) => ({
@@ -353,24 +346,24 @@ const DemoForm = () => {
               ))}
             </select>
           );
-      case 'checkbox':
-        return (
-          <div className="flex flex-col">
-            {question.options.map((option, index) => (
-              <label key={index} className="flex items-center">
-                <input
-                  type="checkbox"
-                  value={option}
-                  checked={responses[question.id].includes(option)}
-                  onChange={(e) => handleCheckboxChange(e, question.id)}
-                  className="mr-2"
-                 
-                  />
-                {option}
-              </label>
-            ))}
-          </div>
-        );
+          case 'checkbox':
+            return (
+              <div className="flex flex-col">
+                {question.options.map((option, index) => (
+                  <label key={index} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      value={option}
+                      checked={responses[question.id].includes(option)} // Reflect single selection
+                      onChange={(e) => handleCheckboxChange(e, question.id)}
+                      className="mr-2"
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+            );
+          
       case 'radio':
         return (
           <div className="flex flex-col">

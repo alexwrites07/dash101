@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
 import teach from '../../../assets/home/teacherab.png';
-
+const ab="https://res.cloudinary.com/dr9iwqqv7/image/upload/v1719392884/vector-male-teacher-with-pointer-on-lesson-at-blackboard-in-classroom-removebg-preview_zhf9xe.png";
 const TeachingSection = () => {
   return (
     <div className="max-w-full mx-auto my-16 px-4 md:px-8 lg:px-16">
@@ -20,7 +20,7 @@ const TeachingSection = () => {
         </div>
         <div className="flex-1 md:ml-24">
           <img
-            src={teach}
+            src={ab}
             alt="Teaching Image"
             className="rounded-lg mx-auto md:mx-0"
             width={350}

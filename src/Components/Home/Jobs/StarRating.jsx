@@ -46,7 +46,7 @@ const StarRating = ({ count, rating, onRating,  reviewedId}) => {
       setSelectedRating(0); // Reset the rating
     } catch (error) {
       console.error('Error submitting review:', error);
-      alert('Failed to submit review. Please login and try again.');
+      alert('Failed to submit review. Please login and try again./You have already reviewed the user.');
     } finally {
       setIsSubmitting(false);
     }

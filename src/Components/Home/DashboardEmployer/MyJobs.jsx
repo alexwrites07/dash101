@@ -11,8 +11,7 @@ const ManageJobs = () => {
   const [sortOption, setSortOption] = useState('default');
   const navigate = useNavigate();
 
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YWQwZTc4YjI3ODk0NzIzMzUzZTZiNyIsImlhdCI6MTcyNTAwODI0NH0.6L0lN2fHK-iccGsEAbSQAr2GY1Bca9tWqkDQdAtIan8'; // Replace with actual token
-
+  const token = localStorage.getItem('token');
   // Fetch posted jobs from API
   useEffect(() => {
     const fetchJobs = async () => {

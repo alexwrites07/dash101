@@ -144,6 +144,8 @@ function AppContent() {
     ||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job'
     || location.pathname === "/add-tags"
     || location.pathname === "/add-category"
+    ||location.pathname==="/transactions"
+    ||location.pathname==="/logout"
     || location.pathname === "/blogs-admin"
     || location.pathname === "/student-profiles"
     || location.pathname === "/tutor-profiles"

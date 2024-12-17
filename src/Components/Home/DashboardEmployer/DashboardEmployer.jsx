@@ -22,7 +22,7 @@ import './DashboardEmployer.css';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('/dashboard-employer'); // Initial active tab (dashboard)
+    const [activeTab, setActiveTab] = useState('/dashboard'); // Initial active tab (dashboard)
     const [openModal, setOpenModal] = useState(false);
     const [openModalReset, setOpenModalReset] = useState(false);
 
@@ -67,7 +67,7 @@ const Dashboard = () => {
                     <Route path="/meetings-employer" element={<MeetingsEmployer />} />
                     <Route path="/update-password-employer" element={<ChangePasswordEmployer/>} />
                     <Route path="/delete-profile-employer" element={<DeleteProfileEmployer />} />
-                    <Route path="/user-dashboard-employer" element={<UserDashboardEmployer />} />
+                    
                     <Route path="/pricing-employer" element={<PricingEmployer />} />
                     <Route path="/my-jobs-employer" element={<Myjobs />} />
                     <Route path="/edit-job/:jobid" element={<EditJobs />} />

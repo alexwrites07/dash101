@@ -11,7 +11,7 @@ const Sidebar = ({ activeTab }) => {
     };
 
     const sidebarLinks = [
-        { to: '/user-dashboard-employer', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
+        { to: '/dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
         { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
         { to: '/my-jobs-employer', icon: <HiBookmark className="w-6 h-6" />, label: 'My Jobs' },
         { to: '/upload-resume-employer', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Submit Job' },
@@ -19,7 +19,7 @@ const Sidebar = ({ activeTab }) => {
         { to: '/shortlist-jobs-employer', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Candidates' },
         { to: '/alerts-jobs-employer', icon: <HiBell className="w-6 h-6" />, label: 'Candidate Alert' },
         { to: '/messages-employer', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
-        { to: '/meetings-employer', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
+        { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
         { to: '/wallet', icon: <HiCash className="w-6 h-6" />, label: 'Wallet' },
         { to: '/transactions', icon: <HiUser className="w-6 h-6" />, label: 'Transactions' },
         { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },

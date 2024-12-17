@@ -363,12 +363,12 @@ const TutorFinder = () => {
           <div className='text-3xl font-bold text-[#041F96] mb-6'>Tutors</div>
           {paginatedTutors.length > 0 ? (
           paginatedTutors.map((tutor, index) => (
-              <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full" key={index}>
+              <div className="shadow rounded flex flex-col md:flex-row items-start py-4 mb-4 w-full" key={index}>
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
                 <img
   src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
   alt=""
-  className="w-24 h-[70px] object-contain"
+  className="w-24 h-16 rounded-md mx-2 "
 />
 
                 </div>

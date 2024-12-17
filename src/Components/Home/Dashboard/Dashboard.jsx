@@ -55,7 +55,7 @@ const Dashboard = () => {
                     {/* Route content based on activeTab */}
                     <Routes>
                         <Route path="/dashboard" element={<UserDashboard />} />
-                        <Route path="/user-dashboard" element={<UserDashboard />} />
+                       
                         <Route path="/upload-resume" element={<UploadResume />} />
                         <Route path="/your-profile" element={<YourProfile />} />
                         <Route path="/applied-company" element={<AppliedCompany />} />

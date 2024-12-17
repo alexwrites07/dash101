@@ -32,7 +32,7 @@ const Sidebar = ({ activeTab }) => {
 
   if (userType === 'tutor') {
     sidebarLinks = [
-      { to: '/user-dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
+      { to: '/dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
       { to: '/upload-resume', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Uploads' },
       { to: '/applied-company', icon: <HiShoppingBag className="w-6 h-6" />, label: 'My Applied' },
@@ -62,7 +62,7 @@ const Sidebar = ({ activeTab }) => {
     ];
   } else if (userType === 'organization') {
     sidebarLinks = [
-      { to: '/user-dashboard-employer', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
+      { to: '/dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'Notifications' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
       { to: '/my-jobs-employer', icon: <HiUser className="w-6 h-6" />, label: 'My Jobs' },
 

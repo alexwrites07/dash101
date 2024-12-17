@@ -197,46 +197,64 @@ const OrganizationFinder = () => {
         <div className="flex flex-col items-start justify-start w-full">
           <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Organizations</div>
           {filteredTutors.length > 0 ? (
+            
             filteredTutors.map((tutor, index) => (
-              <div className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full ml-8" key={index}>
-                <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
-                <Link to={`/getOrg/${tutor._id}`} className="block w-full">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
-                  <div className="md:w-1/4 mb-4 md:mb-0">
-          
-            <img src={`https://server.avyudha.com/org/download/logo/${tutor._id}`} alt={tutor.title} className="w-full h-48 mr-4 object-cover rounded-md" />
-          
-        </div>
-                    <div className='ml-4'>
-                    <h2 className="text-lg  font-semibold"> {tutor.name}</h2>
-                    <h2 className="text-lg">Requirements: {tutor.subjectsRequired.join(", ")}</h2>
-                    <h2 className="text-lg">Description: {tutor.description}</h2>
-                      <h2 className="text-lg">{tutor.location.city}, {tutor.location.address}</h2>
-                     
-                      <h2 className="text-lg">Organization Type: {tutor.organizationType}</h2>
-                      <h2 className="text-lg">Rating: {tutor.rating}</h2>
-                    </div>
-                    <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
-                      {userCoords && tutor.location?.coordinates && (
-                        <p className="text-gray-700 mr-4">Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km</p>
-                      )}
-                    </div>
-                    <div className="mt-2 md:mt-0 flex items-center mr-4">
-                     
-                      <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
-                        View
-                      </button>
-                    </div>
-                    
-                  </div>
-                </Link>
-              </div>
+              <div
+  className="shadow rounded flex flex-col md:flex-row items-center border-b border-gray-200 py-4 mb-4 w-full ml-8"
+  key={index}
+>
+  <Link to={`/getOrg/${tutor._id}`} className="flex w-full">
+    
+    {/* Section 1: Image */}
+    <div className="flex-shrink-0 w-1/6 flex items-center justify-center">
+      <img
+        src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
+        alt={tutor.title}
+        className="w-32 h-32 object-cover rounded-md mx-2"
+      />
+    </div>
+
+    {/* Section 2: Details */}
+    <div className="flex-grow w-4/6 px-4">
+      <h2 className="text-lg font-semibold">{tutor.name}</h2>
+      <h2 className="text-sm text-gray-700">
+        Requirements: {tutor.subjectsRequired.join(", ")}
+      </h2>
+      <h2 className="text-sm text-gray-700">
+        Description: {tutor.description}
+      </h2>
+      <h2 className="text-sm text-gray-700">
+        Location: {tutor.location.city}, {tutor.location.address}
+      </h2>
+      <h2 className="text-sm text-gray-700">
+        Organization Type: {tutor.organizationType}
+      </h2>
+      <h2 className="text-sm text-gray-700">Rating: {tutor.rating}</h2>
+      {userCoords && tutor.location?.coordinates && (
+        <p className="text-gray-700 mt-2">
+          Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+        </p>
+      )}
+    </div>
+
+    {/* Section 3: View Button */}
+    <div className="flex-shrink-0 w-1/6 flex items-center justify-center">
+      <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
+        View
+      </button>
+    </div>
+
+  </Link>
+</div>
+
+
             ))
           ) : (
             <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
           )}
         </div>
       </div>
+      
     </div>
   );
 };
