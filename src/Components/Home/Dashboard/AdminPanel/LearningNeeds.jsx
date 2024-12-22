@@ -41,14 +41,21 @@ const LearningNeedsView = () => {
   const token = localStorage.getItem('token');
   const handleDelete = async (id) => {
     try {
+      // Ask for user confirmation
+      const isConfirmed = window.confirm("Are you sure you want to delete this learning need?");
+      if (!isConfirmed) {
+        console.log("Deletion cancelled by user.");
+        return;
+      }
+  
       // Retrieve the bearer token from local storage
-      const token = localStorage.getItem('token'); 
-
+      const token = localStorage.getItem('token');
+  
       if (!token) {
         console.error('No token found in local storage');
         return;
       }
-
+  
       // Sending DELETE request to the backend
       const response = await fetch(`https://server.avyudha.com/learning-need/${id}`, {
         method: 'DELETE',
@@ -57,20 +64,21 @@ const LearningNeedsView = () => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       // Checking if the response is successful
       if (response.ok) {
         console.log('Learning need deleted successfully');
-        alert ("Learning Need deleted successfully");
-        // Optionally, you can trigger a state update here to remove the deleted item from the UI
+        alert("Learning Need deleted successfully");
+        // Optionally, trigger a state update here to remove the deleted item from the UI
       } else {
         console.error('Failed to delete the learning need');
-        alert  ("Learning Need failed to be deleted");
+        alert("Learning Need failed to be deleted");
       }
     } catch (error) {
       console.error('Error deleting learning need:', error);
     }
   };
+  
   const handleMapChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
     setNewNeed((prev) => ({

@@ -6,7 +6,7 @@ const PurchasedContacts = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const token = localStorage.getItem("token");
   useEffect(() => {
     const fetchPurchasedContacts = async () => {
       try {
@@ -17,14 +17,17 @@ const PurchasedContacts = () => {
           return;
         }
 
-        const response = await axios.get(
-          "https:/server.avyudha.com/purchasedContacts",
+        const response = fetch(
+          "https://server.avyudha.com/purchasedContacts",
           {
+            method: "GET",
             headers: {
-              Authorization: `Bearer ${token}`, // Attach token in headers
+              "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
             },
           }
         );
+      
         setData(response.data);
       } catch (err) {
         setError(err.message || "Failed to fetch data");

@@ -31,7 +31,7 @@ const questions = [
     id: 'start',
     question: 'When do you plan to start your tuition? *',
     type: 'select',
-    options: ['Not sure, just want to see options', 'Immediately', 'Within a month'],
+    options: [ 'Just looking at options','Immediately', 'Within a month'],
   },
   {
     id: 'salary',
@@ -72,7 +72,7 @@ const DemoForm = () => {
       state: '',
     },
     available:'Nil',
-    salary: { period: 'monthly', max: '' },
+    salary: { period: 'monthly', max: 0 },
     start: '',
     typeOfClass: [],
     genderPreference: '',
@@ -231,7 +231,7 @@ const DemoForm = () => {
     };
 
     try {
-      const response = await fetch('https://server.avyudha.com/verify-learning-need-otp', {
+      const response = await fetch('https:/server.avyudha.com/verify-learning-need-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -268,6 +268,7 @@ const DemoForm = () => {
               <option value="hourly">Hourly</option>
               <option value="daily">Daily</option>
               <option value="yearly">Yearly</option>
+              <option value="Not sure, will discuss with tutor and decide">Not sure, just want to see options</option>
             </select>
             <input
               type="text"

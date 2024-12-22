@@ -9,25 +9,25 @@ const Map = ({ coordinates, onCoordinatesChange }) => {
     if (!mapVisible || !coordinates) return;
 
     const map = new window.google.maps.Map(document.getElementById('map'), {
-      center: { lat: coordinates[1], lng: coordinates[0] },
+      center: { lat: coordinates[0], lng: coordinates[1] },
       zoom: 12,
     });
 
     const marker = new window.google.maps.Marker({
-      position: { lat: coordinates[1], lng: coordinates[0] },
+      position: { lat: coordinates[0], lng: coordinates[1] },
       map: map,
       draggable: true,
     });
 
     map.addListener('click', (event) => {
-      const newCoordinates = [event.latLng.lng(), event.latLng.lat()];
+      const newCoordinates = [event.latLng.lat(),event.latLng.lng()];
       setCurrentPosition(newCoordinates);
       onCoordinatesChange(newCoordinates);
       marker.setPosition(event.latLng);
     });
 
     if (userCoordinates) {
-      const [lng, lat] = userCoordinates;
+      const [lat,lng] = userCoordinates;
       const newPosition = { lat, lng };
       marker.setPosition(newPosition);
       map.setCenter(newPosition);
@@ -45,7 +45,7 @@ const Map = ({ coordinates, onCoordinatesChange }) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const newCoordinates = [longitude, latitude];
+          const newCoordinates = [latitude,longitude];
           setUserCoordinates(newCoordinates);
           setCurrentPosition(newCoordinates);
           onCoordinatesChange(newCoordinates);
@@ -87,8 +87,8 @@ const Map = ({ coordinates, onCoordinatesChange }) => {
         <>
           <div id="map" style={{ width: '100%', height: '400px' }}></div>
           <div className="coordinates-display">
-            <p>Latitude: {currentPosition[1]}</p>
-            <p>Longitude: {currentPosition[0]}</p>
+            <p>Latitude: {currentPosition[0]}</p>
+            <p>Longitude: {currentPosition[1]}</p>
           </div>
         </>
       )}
