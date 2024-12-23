@@ -182,68 +182,85 @@ const EditTutor = () => {
         setFormData({ ...formData, location: { ...formData.location, coordinates: newCoordinates } });
         setCoordinates(updatedCoordinates); 
     };
+// Education State Management
+const [education, setEducation] = useState([]);
 
-   
+const handleEducationChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedEducation = education.map((edu, i) =>
+        i === index ? { ...edu, [name]: value } : edu
+    );
+    setEducation(updatedEducation);
+};
 
-    const handleEducationChange = (index, e) => {
-        const { name, value } = e.target;
-        const newEducation = [...formData.education];
-        newEducation[index] = { ...newEducation[index], [name]: value };
-        setFormData({ ...formData, education: newEducation });
-    };
+const addEducation = () => {
+    setEducation([...education, { title: '', year: '', academy: '', description: '' }]);
+};
 
-    const addEducation = () => {
-        setFormData({ ...formData, education: [...formData.education, { title: '', year: '', academy: '', description: '' }] });
-    };
+const removeEducation = (index) => {
+    const updatedEducation = education.filter((_, i) => i !== index);
+    setEducation(updatedEducation);
+};
 
-    const handleExperienceChange = (index, e) => {
-        const { name, value } = e.target;
-        const newExperiences = [...formData.pastExperiences];
-        newExperiences[index] = { ...newExperiences[index], [name]: value };
-        setFormData({ ...formData, pastExperiences: newExperiences });
-    };
-    const handleQualificationChange = (index, e) => {
-        const updatedQualifications = formData.qualifications.map((award, i) =>
-          i === index ? e.target.value : award
-        );
-        setFormData({
-          ...formData,
-          qualifications: updatedQualifications
-        });
-      };
-    
-      // Add a new qualification
-      const addQualification = () => {
-        setFormData({
-          ...formData,
-          qualifications: [...formData.qualifications, '']
-        });
-      };
-    
-      // Remove a qualification
-      const removeQualification = (index) => {
-        const updatedQualifications = formData.qualifications.filter(
-          (award, i) => i !== index
-        );
-        setFormData({
-          ...formData,
-          qualifications: updatedQualifications
-        });
-      };
-    const handleAwardChange = (index, e) => {
-        const { name, value } = e.target;
-        const newAwards = [...formData.awards];
-        newAwards[index] = { ...newAwards[index], [name]: value };
-        setFormData({ ...formData, awards: newAwards });
-    };
+// Past Experiences State Management
+const [pastExperiences, setPastExperiences] = useState([]);
 
-    const addExperience = () => {
-        setFormData({ ...formData, pastExperiences: [...formData.pastExperiences, { title: '', start_date: '', end_date: '', company: '', description: '' }] });
-    };
+const handleExperienceChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedExperiences = pastExperiences.map((exp, i) =>
+        i === index ? { ...exp, [name]: value } : exp
+    );
+    setPastExperiences(updatedExperiences);
+};
 
-    const addAward = () => {
-        setFormData({ ...formData, awards: [...formData.awards, { title: '', year: '', description: '' }] });
-    };
+const addExperience = () => {
+    setPastExperiences([...pastExperiences, { title: '', start_date: '', end_date: '', company: '', description: '' }]);
+};
+
+const removeExperience = (index) => {
+    const updatedExperiences = pastExperiences.filter((_, i) => i !== index);
+    setPastExperiences(updatedExperiences);
+};
+
+// Qualifications State Management
+const [qualifications, setQualifications] = useState([]);
+
+const handleQualificationChange = (index, e) => {
+    const updatedQualifications = qualifications.map((qualification, i) =>
+        i === index ? e.target.value : qualification
+    );
+    setQualifications(updatedQualifications);
+};
+
+const addQualification = () => {
+    setQualifications([...qualifications, '']);
+};
+
+const removeQualification = (index) => {
+    const updatedQualifications = qualifications.filter((_, i) => i !== index);
+    setQualifications(updatedQualifications);
+};
+
+// Awards State Management
+const [awards, setAwards] = useState([]);
+
+const handleAwardChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedAwards = awards.map((award, i) =>
+        i === index ? { ...award, [name]: value } : award
+    );
+    setAwards(updatedAwards);
+};
+
+const addAward = () => {
+    setAwards([...awards, { title: '', year: '', description: '' }]);
+};
+
+const removeAward = (index) => {
+    const updatedAwards = awards.filter((_, i) => i !== index);
+    setAwards(updatedAwards);
+};
+
     const handleCheckboxChange = (name) => {
         setFormData((prevData) => ({
             ...prevData,
