@@ -13,7 +13,7 @@ const TransactionHistory = () => {
   const fetchTransactions = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https:/server.avyudha.com/transaction-history', {
+      const response = await axios.get('https://server.avyudha.com/transaction-history', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
