@@ -59,7 +59,7 @@ const Categories = () => {
                 alt={tutor.fullName}
                 className="rounded-full w-36 h-36 mb-4 mx-auto"
               />
-              <h2 className="text-xl font-semibold text-[#041F96] mb-2 text-center">{tutor.fullName}</h2>
+              <h2 className="text-xl font-semibold text-[#041F96] mt-1 mb-2 text-center">{tutor.fullName}</h2>
               <p className="text-sm text-gray-600 mb-2 text-center">{tutor.highestQualification}</p>
               <p className="text-sm text-gray-600 text-center mb-4">{tutor.location.city}, {tutor.location.state}</p>
               </Link></div>

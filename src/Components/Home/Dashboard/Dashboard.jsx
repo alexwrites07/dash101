@@ -63,11 +63,11 @@ const Dashboard = () => {
                         <Route path="/shortlist-jobs" element={<ShortlistJobs />} />
                         <Route path="/following-employer" element={<FollowingEmployer />} />
                         <Route path="/alerts-jobs" element={<AlertsJobs />} />
-                        <Route path="/messages" element={<Messages />} />
-                        <Route path="/meetings" element={<Meetings />} />
+                        {/* <Route path="/messages" element={<Messages />} />
+                        <Route path="/meetings" element={<Meetings />} /> */}
                         <Route path="/update-password" element={<ChangePassword/>} />
                         <Route path="/delete-profile" element={<DeleteProfile />} />
-                        <Route path="/pricing" element={<Pricing />} />
+                   
                     </Routes>
                 </div>
             </div>

@@ -25,9 +25,9 @@ const Sidebar = ({ activeTab }) => {
     { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
     { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
     { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
-    { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
+    // { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
     
-    { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+    // { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
   ];
 
   if (userType === 'tutor') {
@@ -39,7 +39,7 @@ const Sidebar = ({ activeTab }) => {
       { to: '/shortlist-jobs', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Jobs' },
       { to: '/alerts-jobs', icon: <HiBell className="w-6 h-6" />, label: 'Alerts Jobs' },
       { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
-      { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+
 
       { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
 
@@ -49,7 +49,7 @@ const Sidebar = ({ activeTab }) => {
     sidebarLinks = [
     
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
-      { to: '/pricing', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+     
       { to: '/learningneeds', icon: <HiUser className="w-6 h-6" />, label: 'Learning Needs' },
      
 
@@ -73,7 +73,7 @@ const Sidebar = ({ activeTab }) => {
       { to: '/messages-employer', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
       { to: '/meetings-employer', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
       { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
-      { to: '/pricing-employer', icon: <HiCash className="w-6 h-6" />, label: 'Pricing' },
+ 
       { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
       ...sidebarLinks,
     ];

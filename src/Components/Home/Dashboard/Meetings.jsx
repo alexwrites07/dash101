@@ -64,7 +64,7 @@ const Meetings = () => {
       }); // Reset state after creation
       fetchMeetings();  // Refresh meetings list after creating a new meeting
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 

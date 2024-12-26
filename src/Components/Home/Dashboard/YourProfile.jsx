@@ -1105,7 +1105,7 @@ const removeAward = (index) => {
                     
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Class Type</label>
                   <input
                     type="text"
@@ -1113,7 +1113,7 @@ const removeAward = (index) => {
                     value={tags}
                     
                   />
-                </div>
+                </div> */}
 
 
                 <div className="relative">
@@ -1248,21 +1248,22 @@ const removeAward = (index) => {
                   </select>
                 </div> */}
                 <div className="mb-4">
-  <label className="block text-gray-700 text-sm font-bold mb-2">Max Salary</label>
-  <input
-    type="number"
-    className="w-full p-2 border border-gray-300 rounded-lg"
-    value={salaryType}
-    onChange={(e) => setSalaryType(e.target.value)}
-  />
-</div>
-<div className="mb-4">
 <label className="block text-gray-700 text-sm font-bold mb-2">Min Salary</label>
   <input
     type="number"
     className="w-full p-2 border border-gray-300 rounded-lg"
     value={salary1}
     onChange={(e) => setSalary1(e.target.value)}
+  />
+</div>
+
+                <div className="mb-4">
+  <label className="block text-gray-700 text-sm font-bold mb-2">Max Salary</label>
+  <input
+    type="number"
+    className="w-full p-2 border border-gray-300 rounded-lg"
+    value={salaryType}
+    onChange={(e) => setSalaryType(e.target.value)}
   />
 </div>
 

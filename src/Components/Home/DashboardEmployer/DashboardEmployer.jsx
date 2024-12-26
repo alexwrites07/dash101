@@ -68,7 +68,7 @@ const Dashboard = () => {
                     <Route path="/update-password-employer" element={<ChangePasswordEmployer/>} />
                     <Route path="/delete-profile-employer" element={<DeleteProfileEmployer />} />
                     
-                    <Route path="/pricing-employer" element={<PricingEmployer />} />
+                   
                     <Route path="/my-jobs-employer" element={<Myjobs />} />
                     <Route path="/edit-job/:jobid" element={<EditJobs />} />
                     <Route path="/wallet" element={<Wallet />} />

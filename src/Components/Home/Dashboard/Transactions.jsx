@@ -53,7 +53,7 @@ const TransactionHistory = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-4xl mt-24 mx-auto p-6 bg-white rounded-lg">
        <Sidebar />
        <Header />
        <div className="lg:ml-64 lg:mt-18 p-4">
