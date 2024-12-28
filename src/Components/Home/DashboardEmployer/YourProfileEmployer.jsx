@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Sidebar from './SidebarEmployer';
+import Sidebar from "../Dashboard/Sidebar";
 import Header from './HeaderEmployer';
 import Map from './Movable';
 

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  HiArrowSmRight, HiUser, HiViewBoards, HiShoppingBag, HiHeart, HiBell,
-  HiChat, HiCalendar, HiLogout, HiMenu, HiLockClosed, HiTrash, HiUserGroup, HiCash
-} from 'react-icons/hi';
 import { NavLink } from 'react-router-dom';
+import { HiCreditCard, HiOutlineSwitchHorizontal, HiMail, HiCalendar, HiLogout, HiX, HiKey, HiViewGrid, HiUpload, HiBriefcase, HiBookmark, HiBell, HiUsers } from 'react-icons/hi';
 import './SideBar.css';
+import { HiMenu, HiUser } from 'react-icons/hi'; 
 
 const Sidebar = ({ activeTab }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,73 +18,64 @@ const Sidebar = ({ activeTab }) => {
   };
 
   let sidebarLinks = [
-    { to: '/wallet', icon: <HiUser className="w-6 h-6" />, label: 'Wallets' },
-    { to: '/transactions', icon: <HiUser className="w-6 h-6" />, label: 'Transactions' },
-    { to: '/messages', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
+    { to: '/wallet', icon: <HiCreditCard className="w-6 h-6" />, label: 'Wallets' },
+    { to: '/transactions', icon: <HiOutlineSwitchHorizontal className="w-6 h-6" />, label: 'Transactions' },
+    { to: '/messages', icon: <HiMail className="w-6 h-6" />, label: 'Messages' },
     { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
-    { to: '/update-password', icon: <HiLockClosed className="w-6 h-6" />, label: 'Update Password' },
-    // { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
-    
-    // { to: '/', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+    { to: '/logout', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+    { to: '/delete-profile', icon: <HiX className="w-6 h-6" />, label: 'Delete Profile' },
+    { to: '/update-password', icon: <HiKey className="w-6 h-6" />, label: 'Update Password' },
   ];
 
   if (userType === 'tutor') {
     sidebarLinks = [
-      { to: '/dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'User Dashboard' },
+      { to: '/dashboard', icon: <HiViewGrid className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
-      { to: '/upload-resume', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Uploads' },
-      { to: '/applied-company', icon: <HiShoppingBag className="w-6 h-6" />, label: 'My Applied' },
-      { to: '/shortlist-jobs', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Jobs' },
+      { to: '/upload-resume', icon: <HiUpload className="w-6 h-6" />, label: 'Uploads' },
+      { to: '/applied-company', icon: <HiBriefcase className="w-6 h-6" />, label: 'My Applied' },
+      { to: '/shortlist-jobs', icon: <HiBookmark className="w-6 h-6" />, label: 'Shortlist Jobs' },
       { to: '/alerts-jobs', icon: <HiBell className="w-6 h-6" />, label: 'Alerts Jobs' },
-      { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
-
-
-      { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
-
+      { to: '/purchasedcontacts', icon: <HiUsers className="w-6 h-6" />, label: 'Purhcased Contacts' },
       ...sidebarLinks,
     ];
   } else if (userType === 'student') {
     sidebarLinks = [
-    
+      { to: '/dashboard', icon: <HiViewGrid className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
-     
-      { to: '/learningneeds', icon: <HiUser className="w-6 h-6" />, label: 'Learning Needs' },
-     
-
-      { to: '/myclasses', icon: <HiHeart className="w-6 h-6" />, label: 'My Classes' },
-      { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
-  
-      { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
-      { to: '/delete-profile', icon: <HiTrash className="w-6 h-6" />, label: 'Delete Profile' },
+      { to: '/learningneeds', icon: <HiBriefcase className="w-6 h-6" />, label: 'Learning Needs' },
+      { to: '/myclasses', icon: <HiCalendar className="w-6 h-6" />, label: 'My Classes' },
+      { to: '/purchasedcontacts', icon: <HiUsers className="w-6 h-6" />, label: 'Purhcased Contacts' },
       ...sidebarLinks,
     ];
   } else if (userType === 'organization') {
     sidebarLinks = [
-      { to: '/dashboard', icon: <HiViewBoards className="w-6 h-6" />, label: 'Notifications' },
+      { to: '/dashboard', icon: <HiBell className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
-      { to: '/my-jobs-employer', icon: <HiUser className="w-6 h-6" />, label: 'My Jobs' },
+      { to: '/my-jobs-employer', icon: <HiBriefcase className="w-6 h-6" />, label: 'My Jobs' },
+      { to: '/upload-resume-employer', icon: <HiUpload className="w-6 h-6" />, label: 'Submit Job' },
 
-      { to: '/upload-resume-employer', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Submit Job' },
-      { to: '/my-jobs-employer', icon: <HiShoppingBag className="w-6 h-6" />, label: 'Applicants Jobs' },
-      { to: '/shortlist-jobs-employer', icon: <HiHeart className="w-6 h-6" />, label: 'Shortlist Candidates' },
+      { to: '/shortlist-jobs-employer', icon: <HiBookmark className="w-6 h-6" />, label: 'Shortlist Candidates' },
       { to: '/alerts-jobs-employer', icon: <HiBell className="w-6 h-6" />, label: 'Candidate Alert' },
-      { to: '/messages-employer', icon: <HiChat className="w-6 h-6" />, label: 'Messages' },
-      { to: '/meetings-employer', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
-      { to: '/purchasedcontacts', icon: <HiUser className="w-6 h-6" />, label: 'Purhcased Contacts' },
- 
-      { to: '/logout', icon: <HiCash className="w-6 h-6" />, label: 'Logout' },
-      ...sidebarLinks,
+      { to: '/messages', icon: <HiMail className="w-6 h-6" />, label: 'Messages' },
+      { to: '/meetings', icon: <HiCalendar className="w-6 h-6" />, label: 'Meetings' },
+      { to: '/purchasedcontacts', icon: <HiUsers className="w-6 h-6" />, label: 'Purhcased Contacts' },
+      { to: '/wallet', icon: <HiCreditCard className="w-6 h-6" />, label: 'Wallets' },
+      { to: '/transactions', icon: <HiOutlineSwitchHorizontal className="w-6 h-6" />, label: 'Transactions' },
+      { to: '/logout', icon: <HiLogout className="w-6 h-6" />, label: 'Logout' },
+    
+      { to: '/delete-profile', icon: <HiX className="w-6 h-6" />, label: 'Delete Profile' },
+      { to: '/update-password', icon: <HiKey className="w-6 h-6" />, label: 'Update Password' },
     ];
   }
 
   return (
-    <>
+    <div className="fixed">
       {/* Sidebar for large screens */}
-      <aside
-        className={`fixed left-0 top-24 z-20 w-80 h-full pt-10 bg-white shadow-lg border-r-2 border-gray-200 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 lg:translate-x-0`}
+      <div
+        className={`min-h-[400px] fixed top-24 left-0 w-80 h-screen pt-10 bg-white shadow-lg border-r-2 border-gray-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 lg:translate-x-0 overflow-y-auto`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 pb-4 overflow-y-auto bg-white">
+        <div className="h-[800px] px-3 pb-4 bg-white mb-12">
           <ul className="space-y-2 font-medium">
             <li className="text-black mb-2">
               <p>Welcome User</p> {/* Replace with user email */}
@@ -104,7 +93,7 @@ const Sidebar = ({ activeTab }) => {
             ))}
           </ul>
         </div>
-      </aside>
+      </div>
 
       {/* Button for mobile screens */}
       <div className="lg:hidden fixed top-24 left-0 z-50 w-full text-black flex items-center justify-between p-4 ">
@@ -120,7 +109,7 @@ const Sidebar = ({ activeTab }) => {
           className="fixed inset-0 bg-black opacity-50 z-10 lg:hidden"
         ></div>
       )}
-    </>
+    </div>
   );
 };
 

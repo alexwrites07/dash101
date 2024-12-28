@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Sidebar from './SidebarEmployer';
+import Sidebar from "../Dashboard/Sidebar";
 import Header from './HeaderEmployer';
 
 const Pricing = () => {

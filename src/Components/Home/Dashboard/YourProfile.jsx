@@ -1,19 +1,59 @@
 import React, { useEffect, useState, Link, useRef} from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import Map from './Movable';
+import Map from '../MapDemo';
 import categoriesList from '../Dashboard/AdminPanel/categories.json'
+const Modal = ({ isOpen, onClose, onSave, type, data, handleChange }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed mt-24 inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h3 className="text-xl font-semibold mb-4">{`Add ${type}`}</h3>
+        {Object.keys(data).map((key) => (
+          <div key={key} className="mb-4">
+            <label className="block">{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+            <input
+              type={key === 'year' || key.includes('date') ? 'date' : 'text'}
+              className="border p-2 w-full"
+              value={data[key]}
+              onChange={(e) => handleChange(e, key)}
+            />
+          </div>
+        ))}
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-gray-500 text-white p-2 rounded-md"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            onClick={() => onSave(data)}
+            className="bg-blue-500 text-white p-2 rounded-md"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const YourProfile = () => {
+  
 // State variables
 const [inputText1, setInputText1] = useState('');
 const [educationNote, setEducationNote] = useState('');
 const [experienceNote, setExperienceNote] = useState('');
+const [isSaving, setIsSaving] = useState(false);
 const [pastExperiences, setPastExperiences] = useState([]);
 const [social, setSocial] = useState([]);
 const [awards, setAwards] = useState([]);
 const [education, setEducation] = useState([]);
-
+const [showMap, setShowMap] = useState(false);
 
 const [skillsNote, setSkillsNote] = useState('');
  const suggestionsRef = useRef(null);
@@ -37,6 +77,11 @@ const [rating, setRating] = useState('X');
 const [formData, setFormData] = useState({ categories: [] });
 const [gender, setGender] = useState('');
 const [video, setVideo] = useState('');
+const [country, setCountry] = useState('');
+const [pin, setPin] = useState('');
+const [landmark, setLandmark] = useState('');
+const [state, setState] = useState('');
+
 const [highestQualification, setHighestQualification] = useState('');
 const [age, setAge] = useState('');
 const [email, setEmail] = useState('');
@@ -54,6 +99,8 @@ const [parentPhone, setparentPhone ] = useState('');
 const [phone, setPhone ] = useState('');
 const [contactNumber, setContactNumber ] = useState('');
 const [suggestions1, setSuggestions1] = useState([]);
+
+const [id, setId] = useState('');
 const [description, setDescription] = useState('');
 const [socialNetworks, setSocialNetworks] = useState([{ network: '', facebook: '', url: '' }]);
 const networkOptions = ['Facebook', 'Twitter', 'Instagram', 'LinkedIn', 'Other'];
@@ -125,12 +172,17 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
           setHighestQualification(data.highestQualification || '');
           setExperienceTime(data.totalExperience || '');
           setLanguages(data.spokenLanguages || []);
+          setId(data._id||'');
           setSalaryType(data.jobAlerts?.maxExpectedSalary.value || '');
           setSalaryPeriod(data.jobAlerts?.maxExpectedSalary.period || '');
           setSalary1(data.jobAlerts?.minExpectedSalary.value || '');
           setDescription(data.description || '');
           setparentPhone (data.parentPhone || '');
           setPhone (data.phone || '');
+          setCountry (data.location.country || '');
+          setLandmark (data.location.landMark || '');
+          setState (data.location.state || '');
+          setPin (data.location.pinCode || '');
           setSchoolName(data.schoolName||'');
           setParentName(data.parentName||'');
           setTeachlvl(data.teachingLevels || '');
@@ -190,6 +242,36 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
     };
   }, []); // Re-run the effect when the type changes
   const mapSrc = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14601.43043416873!2d${longitude}!3d${latitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1720685384704!5m2!1sen!2sin`;
+  const handleMapChange = (newCoordinates) => {
+    setCoordinates(newCoordinates);
+   
+    setLatitude(newCoordinates[0]);
+    setLongitude(newCoordinates[1]);
+  };
+  const fetchCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude,longitude } = position.coords;
+        setCoordinates([latitude,longitude]);
+        setResponses((prev) => ({
+          ...prev,
+          location: {
+            ...prev.location,
+            coordinates: [latitude, longitude],
+          },
+        }));
+      }, (error) => {
+        console.error("Error fetching location:", error);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const handleShowMap = () => {
+    setShowMap(true);
+  };
+
 
   const addNote = (note, setNotes, setNote) => {
     if (note.trim() !== '') {
@@ -221,31 +303,31 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
       prevCategories.filter((category) => category !== categoryToRemove)
     ); // Remove the category
   };
-  const handleEducationChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedEducation = education.map((edu, i) =>
-        i === index ? { ...edu, [name]: value } : edu
-    );
-    setEducation(updatedEducation);
-};
+//   const handleEducationChange = (index, e) => {
+//     const { name, value } = e.target;
+//     const updatedEducation = education.map((edu, i) =>
+//         i === index ? { ...edu, [name]: value } : edu
+//     );
+//     setEducation(updatedEducation);
+// };
 
-const addEducation = () => {
-  setEducation([
-    ...education,
-    { title: '', year: '', academy: '', description: '', new: true },
-  ]);
-};
-const saveEducation = (index) => {
-  const updatedEducation = [...education];
-  updatedEducation[index].new = false; // Mark as saved
-  setEducation(updatedEducation);
-};
+// const addEducation = () => {
+//   setEducation([
+//     ...education,
+//     { title: '', year: '', academy: '', description: '', new: true },
+//   ]);
+// };
+// const saveEducation = (index) => {
+//   const updatedEducation = [...education];
+//   updatedEducation[index].new = false; // Mark as saved
+//   setEducation(updatedEducation);
+// };
 
 
-const removeEducation = (index) => {
-    const updatedEducation = education.filter((_, i) => i !== index);
-    setEducation(updatedEducation);
-};
+// const removeEducation = (index) => {
+//     const updatedEducation = education.filter((_, i) => i !== index);
+//     setEducation(updatedEducation);
+// };
 
   const handleTagInputChange = (e) => {
     const input = e.target.value;
@@ -268,50 +350,50 @@ const removeEducation = (index) => {
   const handleTagRemove = (tagToRemove) => {
     setTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove)); // Remove tag
   };
-  const handleExperienceChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedExperiences = pastExperiences.map((exp, i) =>
-        i === index ? { ...exp, [name]: value } : exp
-    );
-    setPastExperiences(updatedExperiences);
-};
+//   const handleExperienceChange = (index, e) => {
+//     const { name, value } = e.target;
+//     const updatedExperiences = pastExperiences.map((exp, i) =>
+//         i === index ? { ...exp, [name]: value } : exp
+//     );
+//     setPastExperiences(updatedExperiences);
+// };
 
-const addExperience = () => {
-  setPastExperiences([
-    ...pastExperiences,
-    { title: '', start_date: '', end_date: '', company: '', description: '', new: true },
-  ]);
-};
-const handleSocialChange = (index, e) => {
-  const { name, value } = e.target;
-  const updatedSocial = social.map((exp, i) =>
-      i === index ? { ...exp, [name]: value } : exp
-  );
-  setPastExperiences(updatedSocial);
-};
+// const addExperience = () => {
+//   setPastExperiences([
+//     ...pastExperiences,
+//     { title: '', start_date: '', end_date: '', company: '', description: '', new: true },
+//   ]);
+// };
+// const handleSocialChange = (index, e) => {
+//   const { name, value } = e.target;
+//   const updatedSocial = social.map((exp, i) =>
+//       i === index ? { ...exp, [name]: value } : exp
+//   );
+//   setPastExperiences(updatedSocial);
+// };
 
-const addSocial = () => {
-setSocial([
-  ...pastExperiences,
-  { platform: '', link: '', new: true },
-]);
-};
-const removeSocial = (index) => {
-  const updatedSocial = pastSocial.filter((_, i) => i !== index);
-  setPastExperiences(updatedSocial);
-};
+// const addSocial = () => {
+// setSocial([
+//   ...pastExperiences,
+//   { platform: '', link: '', new: true },
+// ]);
+// };
+// const removeSocial = (index) => {
+//   const updatedSocial = pastSocial.filter((_, i) => i !== index);
+//   setPastExperiences(updatedSocial);
+// };
 
-const saveExperience = (index) => {
-  const updatedExperiences = [...pastExperiences];
-  updatedExperiences[index].new = false; // Mark as saved
-  setPastExperiences(updatedExperiences);
-};
+// const saveExperience = (index) => {
+//   const updatedExperiences = [...pastExperiences];
+//   updatedExperiences[index].new = false; // Mark as saved
+//   setPastExperiences(updatedExperiences);
+// };
 
 
-const removeExperience = (index) => {
-    const updatedExperiences = pastExperiences.filter((_, i) => i !== index);
-    setPastExperiences(updatedExperiences);
-};
+// const removeExperience = (index) => {
+//     const updatedExperiences = pastExperiences.filter((_, i) => i !== index);
+//     setPastExperiences(updatedExperiences);
+// };
 
 
  // Handler to update latitude state based on user input
@@ -527,38 +609,185 @@ const handleLongitudeChange = (e) => {
 };
 
 
-  const editimage = () => {
-    alert('image edited!');
-  };
+const [showExperienceModal, setShowExperienceModal] = useState(false);
+const [showAwardModal, setShowAwardModal] = useState(false);
+const [showEducationModal, setShowEducationModal] = useState(false);
+
+const [experienceData, setExperienceData] = useState({
+  title: '',
+  start_date: '',
+  end_date: '',
+  company: '',
+  description: '',
+});
+const [awardData, setAwardData] = useState({
+  title: '',
+  year: '',
+  description: '',
+});
+const [educationData, setEducationData] = useState({
+  title: '',
+  year: '',
+  academy: '',
+  description: '',
+});
+
+const handleExperienceChange = (e, field) => {
+  setExperienceData({ ...experienceData, [field]: e.target.value });
+};
+
+const handleAwardChange = (e, field) => {
+  setAwardData({ ...awardData, [field]: e.target.value });
+};
+
+const handleEducationChange = (e, field) => {
+  setEducationData({ ...educationData, [field]: e.target.value });
+};
+
+const addExperience = () => {
+  setShowExperienceModal(true);
+};
+
+const addAward = () => {
+  setShowAwardModal(true);
+};
+
+const addEducation = () => {
+  setShowEducationModal(true);
+};
+
+const saveExperience = (data) => {
+  setPastExperiences([...pastExperiences, data]);
+  setExperienceData({
+    title: '',
+    start_date: '',
+    end_date: '',
+    company: '',
+    description: '',
+  });
+  setShowExperienceModal(false);
+};
+
+const saveAward = (data) => {
+  setAwards([...awards, data]);
+  setAwardData({
+    title: '',
+    year: '',
+    description: '',
+  });
+  setShowAwardModal(false);
+};
+
+const saveEducation = (data) => {
+  setEducation([...education, data]);
+  setEducationData({
+    title: '',
+    year: '',
+    academy: '',
+    description: '',
+  });
+  setShowEducationModal(false);
+};
+const [selectedImage, setSelectedImage] = useState(null);
+
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    setSelectedImage(file);
+  }
+};
+
+const editimage = async () => {
+  const type = localStorage.getItem('type'); // Get the user type from local storage
+  const token = localStorage.getItem('token'); // Get the token from local storage
+
+  if (!type || !token) {
+    alert('Missing user type or token in local storage.');
+    return;
+  }
+
+  if (!selectedImage) {
+    alert('Please select an image first.');
+    return;
+  }
+
+  let url = '';
+  const formData = new FormData();
+
+  // Determine the API endpoint and form field based on the user type
+  switch (type) {
+    case 'student':
+      url = `https://server.avyudha.com/student/upload-dp`;
+      formData.append('file', selectedImage);
+      break;
+    case 'tutor':
+      url = `https://server.avyudha.com/tutors/upload/image`;
+      formData.append('image', selectedImage);
+      break;
+    case 'organization':
+      url = `https://server.avyudha.com/org/upload/logo`;
+      formData.append('logo', selectedImage);
+      break;
+    default:
+      alert('Invalid user type.');
+      return;
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token
+      },
+      body: formData, // Send the form data
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update the image.');
+    }
+
+    const result = await response.json();
+    alert('Image edited successfully!');
+    console.log('Server response:', result);
+
+    // Reload the image to reflect the updated profile picture
+    setSelectedImage(null);
+    window.location.reload();
+  } catch (error) {
+    console.error('Error editing image:', error.message);
+    alert('An error occurred while editing the image.');
+  }
+};
+
   const handleCoordinatesChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
     setLatitude(newCoordinates[0]);
     setLongitude(newCoordinates[1]);
     // Optionally, save the new coordinates here or in your database
   };
-  const handleAwardChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedAwards = awards.map((award, i) =>
-        i === index ? { ...award, [name]: value } : award
-    );
-    setAwards(updatedAwards);
-};
-const addAward = () => {
-  setAwards([
-    ...awards,
-    { title: '', year: '', description: '', new: true },
-  ]);
-};
-const saveAward = (index) => {
-  const updatedAwards = [...awards];
-  updatedAwards[index].new = false; // Mark as saved
-  setAwards(updatedAwards);
-};
+//   const handleAwardChange = (index, e) => {
+//     const { name, value } = e.target;
+//     const updatedAwards = awards.map((award, i) =>
+//         i === index ? { ...award, [name]: value } : award
+//     );
+//     setAwards(updatedAwards);
+// };
+// const addAward = () => {
+//   setAwards([
+//     ...awards,
+//     { title: '', year: '', description: '', new: true },
+//   ]);
+// };
+// const saveAward = (index) => {
+//   const updatedAwards = [...awards];
+//   updatedAwards[index].new = false; // Mark as saved
+//   setAwards(updatedAwards);
+// };
 
-const removeAward = (index) => {
-    const updatedAwards = awards.filter((_, i) => i !== index);
-    setAwards(updatedAwards);
-};
+// const removeAward = (index) => {
+//     const updatedAwards = awards.filter((_, i) => i !== index);
+//     setAwards(updatedAwards);
+// };
 
   const handleNetworkChange = (index, event) => {
     const newSocialNetworks = [...socialNetworks];
@@ -595,6 +824,7 @@ const removeAward = (index) => {
   };
   const savePersonalInfo22 = async () => {
     try {
+      setIsSaving(true);
       const token = localStorage.getItem('token');
       const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
@@ -664,6 +894,7 @@ const removeAward = (index) => {
       console.log (response);
       console.log(coordinates);
       console.log(token);
+      setIsSaving(false);
       if (response.ok) {
         alert('Profile information saved successfully!');
       } else {
@@ -673,10 +904,12 @@ const removeAward = (index) => {
     } catch (error) {
       console.error('Error saving profile information:', error);
       alert('An error occurred while saving your profile information.');
+      setIsSaving(false);
     }
   };
   const savePersonalInfo2 = async () => {
     try {
+      setIsSaving(true);
       const token = localStorage.getItem('token');
       const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
@@ -721,8 +954,10 @@ const removeAward = (index) => {
             
             address: contactAddress,
             city: location,
+            pinCode:pin,
+            state:state,
             coordinates:
-            [latitude,longitude]
+            [latitude,longitude],
           },
           
           
@@ -732,7 +967,7 @@ const removeAward = (index) => {
       });
       console.log (response);
       console.log(coordinates);
-      console.log(token);
+      console.log(token); setIsSaving(false);
       if (response.ok) {
         alert('Profile information saved successfully!');
       } else {
@@ -741,11 +976,12 @@ const removeAward = (index) => {
       }
     } catch (error) {
       console.error('Error saving profile information:', error);
-      alert('An error occurred while saving your profile information.');
+      alert('An error occurred while saving your profile information.'); setIsSaving(false);
     }
   };
   const savePersonalOrg = async () => {
     try {
+      setIsSaving(true);
       const token = localStorage.getItem('token');
       const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
@@ -762,7 +998,7 @@ const removeAward = (index) => {
           description,
           facebook,
           linkedin,
-          
+          video
          
          
           // gender,
@@ -808,7 +1044,7 @@ const removeAward = (index) => {
       });
       console.log (response);
       console.log(coordinates);
-      console.log(token);
+      console.log(token); setIsSaving(false);
       if (response.ok) {
         alert('Profile information saved successfully!');
       } else {
@@ -817,11 +1053,11 @@ const removeAward = (index) => {
       }
     } catch (error) {
       console.error('Error saving profile information:', error);
-      alert('An error occurred while saving your profile information.');
+      alert('An error occurred while saving your profile information.'); setIsSaving(false);
     }
   };
   const savePersonalInfoLoc = async () => {
-    
+    setIsSaving(true);
       try {
         const token = localStorage.getItem('token');
     
@@ -833,6 +1069,10 @@ const removeAward = (index) => {
         body.location = {};
         body.location.address = contactAddress;
         body.location.city = location;
+        body.location.country = country;
+        body.location.state = state;
+        body.location.pinCode = pin;
+        body.location.landMark = landmark;
         body.location.coordinates = [latitude, longitude];
     
         // body.image = image;
@@ -850,7 +1090,7 @@ const removeAward = (index) => {
         console.log(response);
         console.log(description);
         console.log(token);
-    
+        setIsSaving(false);
         if (response.ok) {
           alert('Profile information saved successfully!');
         } else {
@@ -860,6 +1100,7 @@ const removeAward = (index) => {
       } catch (error) {
         console.error('Error saving profile information:', error);
         alert('An error occurred while saving your profile information.');
+        setIsSaving(false);
       }
   };
   const savePersonalInfo12 = async () => {
@@ -971,7 +1212,7 @@ const removeAward = (index) => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       <Header />
-      <div className="flex-1 bg-gray-100">
+      <div className="flex-1 bg-gray-100 ">
         <Sidebar />
         <div className="mt-24 lg:ml-64 lg:mt-12 p-4 lg:p-28">
           <h1 className="text-3xl font-bold mb-8 text-gray-900 mt-12">Your Profile</h1>
@@ -982,19 +1223,29 @@ const removeAward = (index) => {
             <div className="">
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
              <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
-              {/* <div className="flex mb-8">
-                <img
-                  src={image}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full"
-                />
-              </div> */}
-              <button
-                onClick={editimage}
-                className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
-              >
-                Edit
-              </button>
+             <div className="flex mb-8">
+        <img
+          src={`https://server.avyudha.com/tutors/download/image/${id}?token=${localStorage.getItem('token')}`}
+          alt="Profile"
+          className="w-32 h-32 rounded-full"
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite error loop
+            e.target.src = ''; // Provide a fallback image
+          }}
+        />
+      </div>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        className="mb-4"
+      /><br></br>
+      <button
+        onClick={editimage}
+        className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
+      >
+        Save uploaded picture
+      </button>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
@@ -1396,7 +1647,7 @@ const removeAward = (index) => {
                 onClick={savePersonalInfo22}
                 className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
               >
-                Save Personal Information
+                {isSaving ? 'Saving...' : 'Save'}
               </button>
     
              
@@ -1419,88 +1670,7 @@ const removeAward = (index) => {
 
                 
               </div>
-              <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-  <h3 className="text-lg font-semibold mb-2">Social Links</h3>
-  {social.map((exp, index) => (
-    <div key={index} className="mb-4 border p-4">
-      <div className="mb-2">
-        <label htmlFor={`social-platform-${index}`} className="block">Platform</label>
-        <input
-          type="text"
-          id={`social-platform-${index}`}
-          name="Platform"
-          value={exp.platform}
-          onChange={(e) => handleSocialChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`social-link-${index}`} className="block">Link</label>
-        <input
-          type="text"
-          id={`social-link-${index}`}
-          name="Link"
-          value={exp.link}
-          onChange={(e) => handleSocialChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`experience-endDate-${index}`} className="block">End Date:</label>
-        <input
-          type="date"
-          id={`experience-endDate-${index}`}
-          name="end_date"
-          value={exp.end_date?.split('T')[0]}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`experience-company-${index}`} className="block">Company:</label>
-        <input
-          type="text"
-          id={`experience-company-${index}`}
-          name="company"
-          value={exp.company}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`experience-description-${index}`} className="block">Description:</label>
-        <textarea
-          id={`experience-description-${index}`}
-          name="description"
-          value={exp.description}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => removeExperience(index)}
-          className="bg-red-500 text-white p-2"
-        >
-          Remove Experience
-        </button>
-        {/* {exp.new && (
-          <button
-            type="button"
-            onClick={() => saveExperience(index)}
-            className="bg-green-500 text-white p-2"
-          >
-            Save
-          </button>
-        )} */}
-      </div>
-    </div>
-  ))}
-  <button type="button" onClick={addExperience} className="mb-4 bg-blue-500 text-white p-2">
-    Add Experience
-  </button>
-</div>
+             
            
                 <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
   <h3 className="text-lg font-semibold mb-2">Experience Notes</h3>
@@ -1517,28 +1687,31 @@ const removeAward = (index) => {
           className="border p-2 w-full"
         />
       </div>
-      <div className="mb-2">
-        <label htmlFor={`experience-startDate-${index}`} className="block">Start Date:</label>
-        <input
-          type="date"
-          id={`experience-startDate-${index}`}
-          name="start_date"
-          value={exp.start_date?.split('T')[0]}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`experience-endDate-${index}`} className="block">End Date:</label>
-        <input
-          type="date"
-          id={`experience-endDate-${index}`}
-          name="end_date"
-          value={exp.end_date?.split('T')[0]}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
+      <div className="mb-2 flex space-x-4">
+  <div className="w-full">
+    <label htmlFor={`experience-startDate-${index}`} className="block">Start Date:</label>
+    <input
+      type="date"
+      id={`experience-startDate-${index}`}
+      name="start_date"
+      value={exp.start_date?.split('T')[0]}
+      onChange={(e) => handleExperienceChange(index, e)}
+      className="border p-2 w-full"
+    />
+  </div>
+  <div className="w-full">
+    <label htmlFor={`experience-endDate-${index}`} className="block">End Date:</label>
+    <input
+      type="date"
+      id={`experience-endDate-${index}`}
+      name="end_date"
+      value={exp.end_date?.split('T')[0]}
+      onChange={(e) => handleExperienceChange(index, e)}
+      className="border p-2 w-full"
+    />
+  </div>
+</div>
+
       <div className="mb-2">
         <label htmlFor={`experience-company-${index}`} className="block">Company:</label>
         <input
@@ -1585,146 +1758,187 @@ const removeAward = (index) => {
   </button>
 </div>
 
-
-<div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-  <h3 className="text-lg font-semibold mb-2">Awards</h3>
-  {awards.map((award, index) => (
-    <div key={index} className="mb-4 border p-4">
-      <div className="mb-2">
-        <label htmlFor={`award-title-${index}`} className="block">Award Title:</label>
-        <input
-          type="text"
-          id={`award-title-${index}`}
-          name="title"
-          value={award.title}
-          onChange={(e) => handleAwardChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`award-year-${index}`} className="block">Year:</label>
-        <input
-          type="date"
-          id={`award-year-${index}`}
-          name="year"
-          value={award.year?.split('T')[0]}
-          onChange={(e) => handleAwardChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`award-description-${index}`} className="block">Description:</label>
-        <textarea
-          id={`award-description-${index}`}
-          name="description"
-          value={award.description}
-          onChange={(e) => handleAwardChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="flex items-center gap-2">
+<div>
+      <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold mb-2">Experience Notes</h3>
+        {pastExperiences.map((exp, index) => (
+          <div key={index} className="mb-4 border p-4">
+            <div className="mb-2">
+              <label className="block">Job Title:</label>
+              <input
+                type="text"
+                value={exp.title}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Start Date:</label>
+              <input
+                type="date"
+                value={exp.start_date}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">End Date:</label>
+              <input
+                type="date"
+                value={exp.end_date}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Company:</label>
+              <input
+                type="text"
+                value={exp.company}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Description:</label>
+              <textarea
+                value={exp.description}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+          </div>
+        ))}
         <button
           type="button"
-          onClick={() => removeAward(index)}
-          className="mt-2 bg-red-500 text-white p-2"
+          onClick={addExperience}
+          className="mb-4 bg-blue-500 text-white p-2"
         >
-          Remove Award
+          Add Experience
         </button>
-        {/* {award.new && (
-          <button
-            type="button"
-            onClick={() => saveAward(index)}
-            className="mt-2 bg-green-500 text-white p-2"
-          >
-            Save
-          </button>
-        )} */}
       </div>
-    </div>
-  ))}
 
-  <button type="button" onClick={addAward} className="mb-4 bg-blue-500 text-white p-2">
-    Add Award
-  </button>
-</div>
-
-            
-<div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-  <h3 className="text-lg font-semibold mb-2">Education</h3>
-  {education.map((edu, index) => (
-    <div key={index} className="mb-4 border p-4">
-      <div className="mb-2">
-        <label htmlFor={`education-title-${index}`} className="block">Title:</label>
-        <input
-          type="text"
-          id={`education-title-${index}`}
-          name="title"
-          value={edu.title}
-          onChange={(e) => handleEducationChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`education-year-${index}`} className="block">Year:</label>
-        <input
-          type="date"
-          id={`education-year-${index}`}
-          name="year"
-          value={edu.year?.split('T')[0]}
-          onChange={(e) => handleEducationChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`education-academy-${index}`} className="block">Academy:</label>
-        <textarea
-          id={`education-academy-${index}`}
-          name="academy"
-          value={edu.academy}
-          onChange={(e) => handleEducationChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`education-description-${index}`} className="block">Description:</label>
-        <textarea
-          id={`education-description-${index}`}
-          name="description"
-          value={edu.description}
-          onChange={(e) => handleEducationChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="flex items-center gap-2">
+      <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold mb-2">Awards</h3>
+        {awards.map((award, index) => (
+          <div key={index} className="mb-4 border p-4">
+            <div className="mb-2">
+              <label className="block">Award Title:</label>
+              <input
+                type="text"
+                value={award.title}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Year:</label>
+              <input
+                type="date"
+                value={award.year}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Description:</label>
+              <textarea
+                value={award.description}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+          </div>
+        ))}
         <button
           type="button"
-          onClick={() => removeEducation(index)}
-          className="mt-2 bg-red-500 text-white p-2"
+          onClick={addAward}
+          className="mb-4 bg-blue-500 text-white p-2"
         >
-          Remove Education
+          Add Award
         </button>
-        {/* {edu.new && (
-          <button
-            type="button"
-            onClick={() => saveEducation(index)}
-            className="mt-2 bg-green-500 text-white p-2"
-          >
-            Save
-          </button>
-        )} */}
       </div>
-    </div>
-  ))}
 
-  <button type="button" onClick={addEducation} className="mb-4 bg-blue-500 text-white p-2">
-    Add Education
-  </button>
-</div>
+      <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold mb-2">Education</h3>
+        {education.map((edu, index) => (
+          <div key={index} className="mb-4 border p-4">
+            <div className="mb-2">
+              <label className="block">Title:</label>
+              <input
+                type="text"
+                value={edu.title}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Year:</label>
+              <input
+                type="date"
+                value={edu.year}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Academy:</label>
+              <textarea
+                value={edu.academy}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block">Description:</label>
+              <textarea
+                value={edu.description}
+                readOnly
+                className="border p-2 w-full"
+              />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addEducation}
+          className="mb-4 bg-blue-500 text-white p-2"
+        >
+          Add Education
+        </button>
+      </div>
+
+      {/* Modals for adding Experience, Award, and Education */}
+      <Modal
+        isOpen={showExperienceModal}
+        onClose={() => setShowExperienceModal(false)}
+        onSave={saveExperience}
+        type="Experience"
+        data={experienceData}
+        handleChange={handleExperienceChange}
+      />
+      <Modal
+        isOpen={showAwardModal}
+        onClose={() => setShowAwardModal(false)}
+        onSave={saveAward}
+        type="Award"
+        data={awardData}
+        handleChange={handleAwardChange}
+      />
+      <Modal
+        isOpen={showEducationModal}
+        onClose={() => setShowEducationModal(false)}
+        onSave={saveEducation}
+        type="Education"
+        data={educationData}
+        handleChange={handleEducationChange}
+      />
+    </div>
 <button
                 onClick={savePersonalInfo22}
                 className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
               >
-                Save 
+               {isSaving ? 'Saving...' : 'Save'}
               </button>
 </div>
 
@@ -1733,13 +1947,29 @@ const removeAward = (index) => {
 {endpoint === 'student' && (
             <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4 text-gray-900">Student Profile</h2>
-              {/* <div className="flex mb-8">
-                <img
-                  src={image}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full"
-                />
-              </div> */}
+              <div className="flex mb-8">
+        <img
+          src={`https://server.avyudha.com/student/dp/${id}?token=${localStorage.getItem('token')}`}
+          alt="Profile"
+          className="w-32 h-32 rounded-full"
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite error loop
+            e.target.src = ''; // Provide a fallback image
+          }}
+        />
+      </div>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        className="mb-4"
+      /><br></br>
+      <button
+        onClick={editimage}
+        className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
+      >
+        Save uploaded picture
+      </button>
              
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
@@ -1884,7 +2114,7 @@ const removeAward = (index) => {
                   onClick={savePersonalInfo2}
                   className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
                 >
-                  Save
+                 {isSaving ? 'Saving...' : 'Save'}
                 </button></div>
                 )}
                 {endpoint==='organization' && 
@@ -1896,19 +2126,29 @@ const removeAward = (index) => {
         
                <div className="w-full bg-white p-12 mb-4 rounded-lg shadow-md">
                 <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
-                 {/* <div className="flex mb-8">
-                   <img
-                     src={image}
-                     alt="Profile"
-                     className="w-32 h-32 rounded-full"
-                   />
-                 </div> */}
-                 <button
-                   onClick={editimage}
-                   className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
-                 >
-                   Edit
-                 </button>
+                <div className="flex mb-8">
+        <img
+          src={`https://server.avyudha.com/org/download/logo/${id}?token=${localStorage.getItem('token')}`}
+          alt="Profile"
+          className="w-32 h-32 rounded-full"
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite error loop
+            e.target.src = ''; // Provide a fallback image
+          }}
+        />
+      </div>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleImageChange}
+        className="mb-4"
+      /><br></br>
+      <button
+        onClick={editimage}
+        className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-4"
+      >
+        Save uploaded picture
+      </button>
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                    <div>
                      <label className="block text-gray-700 text-sm font-bold mb-2">Organisation Name</label>
@@ -2026,15 +2266,7 @@ const removeAward = (index) => {
                      />
                    </div>
                  
-                   <div>
-                   <label className="block text-gray-700 text-sm font-bold mb-2">Facebook</label>
-                   <input
-                       type="text"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                       value={facebook}
-                       onChange={(e) => setfaceBook(e.target.value)}
-                     />
-                   </div>
+              
                    {/* <div>
                    <label className="block text-gray-700 text-sm font-bold mb-2">Instagram</label>
                    <input
@@ -2044,15 +2276,7 @@ const removeAward = (index) => {
                        onChange={(e) => setInsta(e.target.value)}
                      />
                    </div> */}
-                   <div>
-                   <label className="block text-gray-700 text-sm font-bold mb-2">LinkedIn</label>
-                   <input
-                       type="text"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                       value={linkedin}
-                       onChange={(e) => setLinkedin(e.target.value)}
-                     />
-                   </div>
+                   
                  <div>
                    <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
                    <input
@@ -2087,7 +2311,7 @@ const removeAward = (index) => {
                    onClick={savePersonalOrg}
                    className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-8"
                  >
-                   Save 
+                  {isSaving ? 'Saving...' : 'Save Personal Info'}
                  </button>
        
                  {/* <div className="w-full bg-white p-4 mb-6 rounded-lg shadow-md">
@@ -2261,15 +2485,33 @@ const removeAward = (index) => {
 
 </div> */}
 <div className="">
-        <div className="bg-white p-6 rounded-lg  mx-auto ml-24">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 mt-6">Job Location</h2>
+        <div className="bg-white p-6 rounded-lg  mx-auto ml-12">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 mt-6 mx-auto">Job Location</h2>
           
-          {coordinates ? (
-        <Map coordinates={coordinates} onCoordinatesChange={handleCoordinatesChange} />
-      ) : (
-        <p>Location not available</p>
+          <button
+        type="button"
+        onClick={handleShowMap}
+        className="mb-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+      >
+        Show Map
+      </button>
+
+      {showMap && coordinates && (
+        <>
+          <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
+          <button
+            type="button"
+            onClick={fetchCurrentLocation}
+            className="mt-2 bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+          >
+            Get Current Location
+          </button>
+        </>
       )}
+
+      {showMap && !coordinates && <p>Location not available</p>}
         </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Contact Address</label>
                   <input
@@ -2279,9 +2521,36 @@ const removeAward = (index) => {
                     onChange={(e) => setContactAddress(e.target.value)}
                   />
                 </div>
-
+                 <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Country</label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                  />
+                </div>
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">State</label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Pincode</label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value)}
+                  />
+                </div>
+               
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">City/District</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -2290,11 +2559,12 @@ const removeAward = (index) => {
                   />
                 </div>
       </div>
+      </div>
       <button
                 className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 onClick={savePersonalInfoLoc}
-              >
-                Save Personal Info
+              > {isSaving ? 'Saving...' : 'Save Personal Info'}
+               
               </button>
               
             </div></div>

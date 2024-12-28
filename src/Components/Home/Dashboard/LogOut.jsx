@@ -28,7 +28,7 @@ const Logout = () => {
               <Sidebar />
        <Header />
        <div className="lg:ml-64 lg:mt-18 p-4">
-      <h1>Do you want to Logout?</h1><br></br><br></br>
+      <h1 className='text-4xl text-red-600 mt-12'>Do you want to Logout?</h1><br></br><br></br>
       <button onClick={handleLogout}  className={`px-6 py-3 font-semibold text-white rounded-md transition-all duration-300 bg-primary bg-[#1E40AF] shadow-md
   }`}>
         Logout

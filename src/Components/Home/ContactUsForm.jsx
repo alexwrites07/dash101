@@ -5,7 +5,7 @@ export default function ContactUsForm() {
         <div className="max-w-9xl mx-auto w-full h-full bg-white border border-[#a0a0a0] mx-4 md:p-12 p-6 py-24 md:rounded-[20px] rounded-[20px]">
             <form className="flex flex-col gap-4 mx-1 -my-12">
                 <div className="md:flex md:space-x-4">
-                    <div className="w-full">
+                    <div className="w-full mt-4">
                         <label htmlFor="firstName">First Name*</label>
                         <input
                             type="text"
@@ -56,7 +56,7 @@ export default function ContactUsForm() {
 
                 <button
                     type="submit"
-                    className="bg-[#285196] text-white px-4 py-2 w-full rounded-[50px]"
+                    className="bg-[#285196] text-white px-4 py-2 w-full mb-4 rounded-[50px]"
                 >
                     Submit
                 </button>

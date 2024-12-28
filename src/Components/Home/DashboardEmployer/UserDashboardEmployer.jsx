@@ -1,5 +1,5 @@
 import React, { useState, useEffect }  from 'react';
-import Sidebar from './SidebarEmployer';
+import Sidebar from "../Dashboard/Sidebar";
 import Header from './HeaderEmployer';
 import { FaBriefcase, FaEye, FaStar, FaUserCheck, FaBell, FaBookmark, FaMoneyBillAlt, FaMapMarkerAlt } from 'react-icons/fa';
 

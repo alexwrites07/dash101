@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from "./SidebarEmployer";
+import Sidebar from "../Dashboard/Sidebar";
 import Header from "./HeaderEmployer";
 import { FaMapMarkerAlt, FaPencilAlt, FaTimes, FaLock, FaUnlock } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';

@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from './SidebarEmployer';
+import Sidebar from "../Dashboard/Sidebar";
 import Header from './HeaderEmployer';
 import { FaWallet, FaMoneyBillWave, FaHistory } from 'react-icons/fa';
 

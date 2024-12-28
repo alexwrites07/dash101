@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Sidebar from './SidebarEmployer';
+import Sidebar from "../Dashboard/Sidebar";
 import Header from './HeaderEmployer';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import axios from 'axios'; // Ensure Axios is installed

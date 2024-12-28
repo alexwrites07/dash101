@@ -1,6 +1,6 @@
 import React from 'react';
 import Dashboard from './DashboardEmployer';
-import Sidebar from './SidebarEmployer';
+import Sidebar from "../Dashboard/Sidebar";
 import Header from './HeaderEmployer';
 const Locations = () => {
   return (

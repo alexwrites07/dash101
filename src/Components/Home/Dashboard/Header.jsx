@@ -10,8 +10,9 @@ const Header = () => {
   const navigate = useNavigate();
 
   const [newNotificationCount, setNewNotificationCount] = useState(0);
+  const [notificationMessage, setNotificationMessage] = useState("");
 
-  // Fetch unread notifications count
+  // Fetch unread notifications count and message
   const fetchUnreadNotifications = async () => {
     const token = localStorage.getItem("token");
 
@@ -24,8 +25,11 @@ const Header = () => {
 
       if (response.data?.message === "No unread notifications found for this user.") {
         setNewNotificationCount(0);
-      } else if (response.data?.length) {
-        setNewNotificationCount(response.data.length); // Count unread notifications
+        setNotificationMessage(""); // Reset message
+      } else if (response.data?.notifications?.length) {
+        setNewNotificationCount(response.data.notifications.length);
+        
+        setNotificationMessage(response.data.notifications[0]?.message || "New notifications");
       }
     } catch (error) {
       console.error("Error fetching unread notifications:", error);
@@ -34,7 +38,11 @@ const Header = () => {
 
   // Handle notification icon click
   const handleNotificationClick = () => {
-    navigate("/dashboard");
+    if (notificationMessage) {
+      alert(notificationMessage); // Show the notification message
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   useEffect(() => {
@@ -42,7 +50,7 @@ const Header = () => {
     fetchUnreadNotifications();
 
     // Optionally, fetch notifications at intervals
-    const intervalId = setInterval(fetchUnreadNotifications, 30000); // Refresh every 30 seconds
+    const intervalId = setInterval(fetchUnreadNotifications, 3000); // Refresh every 30 seconds
 
     return () => clearInterval(intervalId); // Cleanup interval
   }, []);
@@ -62,7 +70,9 @@ const Header = () => {
       <div className="flex">
         <div className="relative">
           <HiBell
-            className="w-6 h-6 mr-6 cursor-pointer hover:text-gray-400 transition duration-300"
+            className={`w-6 h-6 mr-6 cursor-pointer transition duration-300 ${
+              newNotificationCount > 0 ? "text-red-600": "hover:text-gray-400" 
+            }`}
             onClick={handleNotificationClick}
           />
           {/* Show red badge for new notifications */}

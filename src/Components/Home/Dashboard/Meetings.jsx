@@ -3,6 +3,7 @@ import { createMeeting, deleteMeeting, editMeeting, getPurchasedContacts } from 
 import './Meeting.css'; // Import the CSS file
 import Sidebar from './Sidebar';
 import Header from './Header';
+
 const Meetings = () => {
   const [meetings, setMeetings] = useState([]);
   const [purchasedContacts, setPurchasedContacts] = useState([]);
@@ -107,144 +108,151 @@ const Meetings = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg mt-24">
+    <div className="max-w-5xl mx-auto p-6 bg-white shadow-xl rounded-lg mt-24">
       <Sidebar />
-       <Header />
-       <div className="lg:ml-64 lg:mt-18 p-4">
-      <h1>Meeting Manager</h1>
-      
-      <div className="create-meeting">
-        <h2>Create a New Meeting</h2>
-        <input
-          type="text"
-          placeholder="Title"
-          value={newMeeting.meetingTitle}
-          onChange={(e) => setNewMeeting({ ...newMeeting, meetingTitle: e.target.value })}
-        />
-        <input
-          type="email"
-          placeholder="Participant Email"
-          value={newMeeting.participantsEmail}
-          onChange={(e) => setNewMeeting({ ...newMeeting, participantsEmail: e.target.value.split(',') })}
-        />
-        <input
-          type="date"
-          placeholder="Date"
-          value={newMeeting.date}
-          onChange={(e) => setNewMeeting({ ...newMeeting, date: e.target.value })}
-        />
-        <input
-          type="time"
-          placeholder="Time"
-          value={newMeeting.time}
-          onChange={(e) => setNewMeeting({ ...newMeeting, time: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Duration (in minutes)"
-          value={newMeeting.duration}
-          onChange={(e) => setNewMeeting({ ...newMeeting, duration: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Meeting Link"
-          value={newMeeting.meetingLink}
-          onChange={(e) => setNewMeeting({ ...newMeeting, meetingLink: e.target.value })}
-        />
-        <button onClick={handleCreateMeeting}>Create Meeting</button>
+      <Header />
+      <div className="lg:ml-64 lg:mt-18 p-6">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6">Meeting Manager</h1>
+
+        {/* Create Meeting Form */}
+        <div className="create-meeting mb-12 bg-gray-50 p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold text-gray-700 mb-4">Create a New Meeting</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <input
+              type="text"
+              placeholder="Meeting Title"
+              value={newMeeting.meetingTitle}
+              onChange={(e) => setNewMeeting({ ...newMeeting, meetingTitle: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <input
+              type="email"
+              placeholder="Participant Emails (comma-separated)"
+              value={newMeeting.participantsEmail}
+              onChange={(e) => setNewMeeting({ ...newMeeting, participantsEmail: e.target.value.split(',') })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <input
+              type="date"
+              value={newMeeting.date}
+              onChange={(e) => setNewMeeting({ ...newMeeting, date: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <input
+              type="time"
+              value={newMeeting.time}
+              onChange={(e) => setNewMeeting({ ...newMeeting, time: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <input
+              type="number"
+              value={newMeeting.duration}
+              onChange={(e) => setNewMeeting({ ...newMeeting, duration: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <input
+              type="text"
+              value={newMeeting.meetingLink}
+              onChange={(e) => setNewMeeting({ ...newMeeting, meetingLink: e.target.value })}
+              placeholder="Meeting Link"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+          <button
+            onClick={handleCreateMeeting}
+            className="w-full mt-4 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Create Meeting
+          </button>
+        </div>
+
+        {/* Meetings List */}
+        <div className="meetings bg-gray-50 p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold text-gray-700 mb-6">Meetings</h2>
+          <ul>
+            {meetings.length > 0 ? (
+              meetings.map((meeting) => (
+                <li key={meeting._id} className="p-6 border-b border-gray-200 hover:bg-gray-100">
+                  <div className="font-semibold text-lg">{meeting.meetingTitle}</div>
+                  <div className="text-gray-600 text-sm">{new Date(meeting.date).toLocaleDateString()}</div>
+                  <div className="text-gray-600 text-sm">{meeting.time}</div>
+                  <div className="text-gray-600 text-sm">{meeting.duration} mins</div>
+                  <div className="flex gap-4 mt-4">
+                    <button
+                      onClick={() => handleEditButtonClick(meeting)}
+                      className="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteMeeting(meeting._id)}
+                      className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))
+            ) : (
+              <p className="text-gray-500 mt-4">No meetings found. Please create a new meeting.</p>
+            )}
+          </ul>
+        </div>
+
+        {/* Edit Meeting Modal */}
+        {editMeetingData && (
+          <div className="edit-meeting bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto mt-8">
+            <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Edit Meeting</h2>
+            <div className="space-y-4">
+              <input
+                type="text"
+                placeholder="Title"
+                value={editMeetingData.meetingTitle}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, meetingTitle: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <input
+                type="email"
+                placeholder="Participant Email"
+                value={editMeetingData.participantsEmail}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, participantsEmail: e.target.value.split(',') })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <input
+                type="date"
+                value={editMeetingData.date}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, date: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <input
+                type="time"
+                value={editMeetingData.time}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, time: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <input
+                type="number"
+                value={editMeetingData.duration}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, duration: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <input
+                type="text"
+                placeholder="Meeting Link"
+                value={editMeetingData.meetingLink}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, meetingLink: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <button
+                onClick={() => handleEditMeeting(editMeetingData._id, editMeetingData)}
+                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-
-      <div className="meetings">
-        <h2>Meetings</h2>
-        <ul>
-
-        {meetings.length > 0 ? (
-  meetings.map((meeting) => (
-    <li key={meeting._id} className="p-4 border-b">
-      <div className="font-semibold">{meeting.meetingTitle}</div>
-      <div className="text-gray-600">{new Date(meeting.date).toLocaleDateString()}</div>
-      <div className="text-gray-600">{meeting.time}</div>
-      <div className="text-gray-600">{meeting.duration} mins</div>
-      <div className="flex gap-2 mt-2">
-        <button
-          onClick={() => handleEditButtonClick(meeting)}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => handleDeleteMeeting(meeting._id)}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Delete
-        </button>
-      </div>
-    </li>
-  ))
-) : (
-  <p className="text-gray-500 mt-4">No meetings found. Please create a new meeting.</p>
-)}
-
-        </ul>
-      </div>
-
-      {editMeetingData && (
-  <div className="edit-meeting bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto mt-8">
-    <h2 className="text-2xl font-semibold mb-4 text-center text-primary">Edit Meeting</h2>
-    <div className="space-y-4">
-      <input
-        type="text"
-        placeholder="Title"
-        value={editMeetingData.meetingTitle}
-        onChange={(e) => setEditMeetingData({ ...editMeetingData, meetingTitle: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <input
-        type="email"
-        placeholder="Participant Email (comma-separated)"
-        value={editMeetingData.participantsEmail}
-        onChange={(e) => setEditMeetingData({ ...editMeetingData, participantsEmail: e.target.value.split(',') })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <input
-        type="date"
-        placeholder="Date"
-        value={editMeetingData.date}
-        onChange={(e) => setEditMeetingData({ ...editMeetingData, date: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <input
-        type="time"
-        placeholder="Time"
-        value={editMeetingData.time}
-        onChange={(e) => setEditMeetingData({ ...editMeetingData, time: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <input
-        type="number"
-        placeholder="Duration (in minutes)"
-        value={editMeetingData.duration}
-        onChange={(e) => setEditMeetingData({ ...editMeetingData, duration: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <input
-        type="text"
-        placeholder="Meeting Link"
-        value={editMeetingData.meetingLink}
-        onChange={(e) => setEditMeetingData({ ...editMeetingData, meetingLink: e.target.value })}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-      />
-      <button
-        onClick={() => handleEditMeeting(editMeetingData._id, editMeetingData)}
-        className="w-full py-2 bg-green-400 text-black font-medium rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
-      >
-        Update Meeting
-      </button>
-    </div>
-  </div>
-)}
-
-    </div>
     </div>
   );
 };
