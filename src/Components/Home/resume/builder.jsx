@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Resume from './Resume.jsx';
+// import Resume from './Resume.jsx';
 import Section from './Section.jsx';
 import html2pdf from 'html2pdf.js';
 import { Modal,Button } from 'flowbite-react';
@@ -7,7 +7,7 @@ import AcademicDetails from './academicModal.jsx';
 function FormattingHelp() {
   return (
     <div style={styles.helpSection}>
-      <h2 style={styles.helpTitle}>Formatting Text</h2>
+      {/* <h2 style={styles.helpTitle}>Formatting Text</h2>
       <p style={styles.helpText}>Enhance your text with simple markdown-like formatting:</p>
       <ul style={styles.helpList}>
         <li ><span style={styles.boldText}>*Bold*</span> - Enclose text in  asterisks to make it <b>Bold</b>.</li>
@@ -15,7 +15,7 @@ function FormattingHelp() {
         <li><span style={styles.underlineText}>_Underline_</span> - Enclose text in underscores to <u>Underline</u> it.</li>
         <li><span style={styles.linkText}>[Link Text](http://example.com)</span> - Create a hyperlink by using square brackets for the text followed by the URL in parentheses.</li>
       
-      </ul>
+      </ul> */}
     </div>
   );
 }
