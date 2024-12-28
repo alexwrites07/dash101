@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { HiCreditCard, HiOutlineSwitchHorizontal, HiMail, HiCalendar, HiLogout, HiX, HiKey, HiViewGrid, HiUpload, HiBriefcase, HiBookmark, HiBell, HiUsers } from 'react-icons/hi';
-import '../Dashboard/Sidebar.css';
+import './SideBarEmployer.css';
 import { HiMenu, HiUser } from 'react-icons/hi'; 
 
 const Sidebar = ({ activeTab }) => {
