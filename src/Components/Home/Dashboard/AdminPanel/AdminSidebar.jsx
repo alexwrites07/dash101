@@ -4,7 +4,7 @@ import {
   HiChat, HiCalendar, HiLogout, HiMenu, HiLockClosed, HiTrash, HiUserGroup, HiCash, HiChevronDown
 } from 'react-icons/hi';
 import { NavLink } from 'react-router-dom';
-import '../Sidebar.css';
+import './Sidebar2.css';
 
 const Sidebar = ({ activeTab }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

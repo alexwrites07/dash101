@@ -1,0 +1,8 @@
+.custom-sidebar{
+    margin-top: -1rem !important;
+}
+@media (max-width: 1040px) {
+  .custom-sidebar {
+    display: none;
+  }
+}
