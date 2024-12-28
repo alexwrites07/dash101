@@ -31,7 +31,7 @@ import Reviews from './Components/Home/Dashboard/Reviews.jsx';
 import GoogleMap2 from './Components/Home/GoogleMap';
 import PurchasedContacts from './Components/Home/Dashboard/PurchasedContacts.jsx';
 import AdminFooterPanel from './Components/Home/Dashboard/AdminPanel/FeaturedFooter.jsx';
-import ResumeBuilder from './Components/Home/resume/builder.jsx';
+// import ResumeBuilder from './Components/Home/resume/builder.jsx';
 import YourProfile from './Components/Home/Dashboard/YourProfile.jsx';
 import AppliedCompany from './Components/Home/Dashboard/AppliedCompany.jsx';
 import Locations from './Components/Home/DashboardEmployer/LocationsEmployer.jsx';
@@ -175,7 +175,7 @@ function AppContent() {
         <Route path="/learningneeds" element={<LearningNeeds />} />
         <Route path="/myclasses" element={<MyClasses/>} />
         <Route path="/reviews" element={<Reviews/>} />
-        <Route path='/resume' element={<ResumeBuilder/>}/>
+        {/* <Route path='/resume' element={<ResumeBuilder/>}/> */}
         <Route path="/demo-form" element={<DemoForm />} />
         <Route path="/organizationpost" element={<OrganizationFinder />} />
         <Route path="/findtutor" element={<TutorFinder />} />
