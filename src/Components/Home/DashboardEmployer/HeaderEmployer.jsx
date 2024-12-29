@@ -5,6 +5,7 @@ import "@reach/menu-button/styles.css";
 import "../Dashboard/Header.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import nm from "../../../assets/ac.png"
 
 const Header = () => {
   const navigate = useNavigate();
@@ -60,9 +61,9 @@ const Header = () => {
       {/* Logo */}
       <a href="/" className="flex items-center">
         <img
-          className="w-32 h-12 shadow-lg"
-          src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp"
-          alt="logo"
+          className="w-36 h-36 -mt-12 -mb-12 "
+          src={nm}
+           alt="logo"
         />
       </a>
 
@@ -98,7 +99,7 @@ const Header = () => {
             </MenuItem>
             <MenuItem
               as={MenuLink}
-              href="/"
+              href="/logout"
               className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
             >
               Logout

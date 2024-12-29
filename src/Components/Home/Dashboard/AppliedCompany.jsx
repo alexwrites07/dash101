@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { Link } from 'react-router-dom';
 
 const AppliedCompany = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [appliedNeeds, setAppliedNeeds] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortOption, setSortOption] = useState('default');
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [loadingNeeds, setLoadingNeeds] = useState(true);
   const [errorJobs, setErrorJobs] = useState(null);
@@ -14,13 +13,13 @@ const AppliedCompany = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
+
     // Fetch Applied Jobs
     fetch('https://server.avyudha.com/tutor/applications', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
@@ -33,7 +32,6 @@ const AppliedCompany = () => {
         const transformedJobs = data.map((job, index) => ({
           id: job._id || index,
           jobTitle: job.title || 'N/A',
-          company: 'N/A',
           location: `${job.location.city}, ${job.location.state}`,
           dateApplied: new Date(job.lastDateToApply).toLocaleDateString(),
           status: job.applicants?.[0]?.status || 'N/A',
@@ -51,7 +49,7 @@ const AppliedCompany = () => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => {
@@ -92,21 +90,24 @@ const AppliedCompany = () => {
             {loadingJobs && <p>Loading jobs...</p>}
             {errorJobs && <p>Error: {errorJobs}</p>}
             {!loadingJobs && !errorJobs && (
-              <table className="min-w-full bg-white">
+              <table className="min-w-full bg-white text-left">
                 <thead>
-                  <tr>
+                  <tr className="bg-gray-100">
                     <th className="py-2 px-4 border-b">Job Title</th>
+                    <th className="py-2 px-4 border-b">Location</th>
                     <th className="py-2 px-4 border-b">Date Applied</th>
                     <th className="py-2 px-4 border-b">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {appliedJobs.map((job) => (
-                    <tr key={job.id}>
+                    <tr key={job.id} className="hover:bg-gray-50">
                       <td className="py-2 px-4 border-b">
-                        <p className="font-semibold">{job.jobTitle}</p>
-                        <p className="text-gray-600">{job.location}</p>
+                        <Link to={`/getjobs/${job.id}`} className="text-blue-500 hover:underline">
+                          {job.jobTitle}
+                        </Link>
                       </td>
+                      <td className="py-2 px-4 border-b">{job.location}</td>
                       <td className="py-2 px-4 border-b">{job.dateApplied}</td>
                       <td className="py-2 px-4 border-b">{job.status}</td>
                     </tr>
@@ -123,9 +124,9 @@ const AppliedCompany = () => {
             {loadingNeeds && <p>Loading learning needs...</p>}
             {errorNeeds && <p>Error: {errorNeeds}</p>}
             {!loadingNeeds && !errorNeeds && (
-              <table className="min-w-full bg-white">
+              <table className="min-w-full bg-white text-left">
                 <thead>
-                  <tr>
+                  <tr className="bg-gray-100">
                     <th className="py-2 px-4 border-b">Requirement</th>
                     <th className="py-2 px-4 border-b">Location</th>
                     <th className="py-2 px-4 border-b">Salary</th>
@@ -134,8 +135,12 @@ const AppliedCompany = () => {
                 </thead>
                 <tbody>
                   {appliedNeeds.map((need) => (
-                    <tr key={need.id}>
-                      <td className="py-2 px-4 border-b">{need.requirement}</td>
+                    <tr key={need.id} className="hover:bg-gray-50">
+                      <td className="py-2 px-4 border-b">
+                        <Link to={`/getNeed/${need.id}`} className="text-blue-500 hover:underline">
+                          {need.requirement}
+                        </Link>
+                      </td>
                       <td className="py-2 px-4 border-b">{need.location}</td>
                       <td className="py-2 px-4 border-b">{need.salary}</td>
                       <td className="py-2 px-4 border-b">{need.available}</td>

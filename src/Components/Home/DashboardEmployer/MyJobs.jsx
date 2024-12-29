@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from "../Dashboard/Sidebar";
 import Header from "./HeaderEmployer";
 import { FaMapMarkerAlt, FaPencilAlt, FaTimes, FaLock, FaUnlock } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const ManageJobs = () => {
@@ -67,6 +67,10 @@ const ManageJobs = () => {
 
   // Handle removing a job
   const handleRemoveJob = async (jobId) => {
+    // Ask for confirmation before deleting
+    const isConfirmed = window.confirm("Are you sure you want to delete this job?");
+    if (!isConfirmed) return; // Exit if the user cancels
+  
     try {
       const response = await axios.delete(`https://server.avyudha.com/deleteJob/${jobId}`, {
         headers: {
@@ -74,7 +78,7 @@ const ManageJobs = () => {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.status === 200) {
         // Update job list after successful deletion
         setJobs((prevJobs) => prevJobs.filter((job) => job.job._id !== jobId));
@@ -83,6 +87,7 @@ const ManageJobs = () => {
       console.error('Error deleting job:', error);
     }
   };
+  
 
   // Handle search input
   const handleSearch = (e) => {
@@ -152,7 +157,8 @@ const ManageJobs = () => {
                   {filteredJobs.map((job) => (
                     <tr key={job.job._id}>
                       <td className="py-2 px-4 border-b">
-                        <p className="font-semibold">{job.job.title}</p>
+                      <Link to={`/getjobs/${job.job._id}`} className="text-blue-500 hover:underline">
+                        <p className="font-semibold">{job.job.title}</p></Link>
                         {job.job.tags.find(tag => tag.active && tag.name === 'featured') && <span className="bg-yellow-200 text-yellow-800 px-2 py-1 text-sm rounded-full ml-1">Featured</span>}
                         {job.job.tags.find(tag => tag.active && tag.name === 'urgent') && <span className="bg-red-200 text-red-800 px-2 py-1 text-sm rounded-full ml-1">Urgent</span>}
                         <p className="text-gray-600 flex items-center">
@@ -168,18 +174,22 @@ const ManageJobs = () => {
                       </td>
                       <td className="py-2 px-4 border-b">{job.job.isClosed ? 'Closed' : 'Open'}</td>
                       <td className="py-2 px-4 border-b">
-                        <button 
-                          onClick={() => handleLockJob(job.job._id)}
-                          className={`mr-2 ${job.job.isClosed ? 'text-green-600' : 'text-blue-600'} hover:${job.job.isClosed ? 'text-green-800' : 'text-blue-800'}`}
-                        >
-                          {job.job.isClosed ? <FaUnlock /> : <FaLock />}
-                        </button>
-                        {/* <button onClick={() => handleEditJob(job)} className="mr-2 text-blue-500">
-                          <FaPencilAlt />
-                        </button> */}
-                        <button onClick={() => handleRemoveJob(job.job._id)} className="text-blue-500">
-                          <FaTimes />
-                        </button>
+                      <button 
+  onClick={() => handleLockJob(job.job._id)}
+  className={`mr-2 ${job.job.isClosed ? 'text-green-600' : 'text-blue-600'} hover:${job.job.isClosed ? 'text-green-800' : 'text-blue-800'}`}
+  title={job.job.isClosed ? 'Open' : 'Close'} // Tooltip for the lock/unlock button
+>
+  {job.job.isClosed ? <FaUnlock /> : <FaLock />}
+</button>
+
+<button 
+  onClick={() => handleRemoveJob(job.job._id)}
+  className="text-blue-500"
+  title="Delete" // Tooltip for the delete button
+>
+  <FaTimes />
+</button>
+
                       </td>
                     </tr>
                   ))}

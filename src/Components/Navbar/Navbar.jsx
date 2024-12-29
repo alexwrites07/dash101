@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import nm from '../../assets/ac.png';
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,8 +33,8 @@ function Navbar() {
             <div className="container mx-auto flex items-center justify-between">
               <a href="/" className="flex items-center">
                 <img
-                  className="w-32 h-12 mr-2 -mt-1"
-                  src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp"
+                  className="w-36 h-36 mr-2 -mt-12 -mb-12"
+                  src={nm}
                   alt="logo"
                 />
               </a>

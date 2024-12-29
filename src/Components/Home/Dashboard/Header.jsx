@@ -3,6 +3,8 @@ import { HiBell, HiUser } from "react-icons/hi";
 import { Menu, MenuList, MenuButton, MenuItem, MenuLink } from "@reach/menu-button";
 import "@reach/menu-button/styles.css";
 import "./Header.css";
+import nm from '../../../assets/ac.png'
+import { useLocation, Link } from 'react-router-dom'; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -11,7 +13,19 @@ const Header = () => {
 
   const [newNotificationCount, setNewNotificationCount] = useState(0);
   const [notificationMessage, setNotificationMessage] = useState("");
+ // Set initial notification count
+  const [notificationRead, setNotificationRead] = useState(false); // State to track if notification is read
+  const location = useLocation(); // Get current location
 
+  // Effect to reset the notification on navigating to dashboard
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      setNotificationRead(true); // Mark as read when on the dashboard
+    }
+  }, [location.pathname]); // Runs every time the location changes
+
+  // Handle click on the notification icon
+ 
   // Fetch unread notifications count and message
   const fetchUnreadNotifications = async () => {
     const token = localStorage.getItem("token");
@@ -38,11 +52,7 @@ const Header = () => {
 
   // Handle notification icon click
   const handleNotificationClick = () => {
-    if (notificationMessage) {
-      alert(notificationMessage); // Show the notification message
-    } else {
-      navigate("/dashboard");
-    }
+    setNotificationRead(true); // Mark notification as read when clicked
   };
 
   useEffect(() => {
@@ -60,28 +70,35 @@ const Header = () => {
       {/* Logo */}
       <a href="/" className="flex items-center">
         <img
-          className="w-32 h-12 shadow-lg"
-          src="https://kridhatutor.com/wp-content/uploads/2020/04/kridha-tutor-tuition-logo-e1681547247439.webp"
+          className="w-36 h-36 -mt-12 -mb-12 "
+          src={nm}
           alt="logo"
         />
       </a>
 
       {/* Notification Bell and User Menu */}
       <div className="flex">
-        <div className="relative">
-          <HiBell
-            className={`w-6 h-6 mr-6 cursor-pointer transition duration-300 ${
-              newNotificationCount > 0 ? "text-red-600": "hover:text-gray-400" 
-            }`}
-            onClick={handleNotificationClick}
-          />
-          {/* Show red badge for new notifications */}
-          {newNotificationCount > 0 && (
-            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
-              {newNotificationCount}
-            </span>
-          )}
-        </div>
+      <div className="relative">
+        <HiBell
+          className={`w-6 h-6 mr-6 cursor-pointer transition duration-300 ${
+            notificationRead || newNotificationCount === 0
+              ? 'text-gray-400' // Normal color if read or no notifications
+              : 'text-red-600' // Red color if not read
+          }`}
+          onClick={handleNotificationClick} // Mark as read on click
+        />
+        {/* Show red badge for new notifications */}
+        {newNotificationCount > 0 && !notificationRead && (
+          <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+            {newNotificationCount}
+          </span>
+        )}
+      </div>
+    
+      {/* Example links to navigate */}
+      {/* <Link to="/dashboard">Go to Dashboard</Link> */}
+      {/* <Link to="/other-page">Go to Other Page</Link> */}
+   
 
         {/* User Menu */}
         <Menu>
@@ -98,7 +115,7 @@ const Header = () => {
             </MenuItem>
             <MenuItem
               as={MenuLink}
-              href="/"
+              href="/logout"
               className="block px-4 py-2 hover:bg-gray-100 transition duration-300"
             >
               Logout

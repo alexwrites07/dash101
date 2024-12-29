@@ -51,6 +51,7 @@ const [experienceNote, setExperienceNote] = useState('');
 const [isSaving, setIsSaving] = useState(false);
 const [pastExperiences, setPastExperiences] = useState([]);
 const [social, setSocial] = useState([]);
+const [isExpanded, setIsExpanded] = useState(false);
 const [awards, setAwards] = useState([]);
 const [education, setEducation] = useState([]);
 const [showMap, setShowMap] = useState(false);
@@ -70,6 +71,9 @@ const [name, setName] = useState('');
 const [userName, setUserName] = useState('');
 const [fullName, setFullName] = useState('');
 const [schoolName, setSchoolName] = useState('');
+const [selectedLanguages, setSelectedLanguages] = useState([]); // State to track selected languages
+
+
 const [parentName, setParentName] = useState('');
 const [classes, setclasses] = useState('X');
 const [tags, setTags] = useState('X');
@@ -81,7 +85,10 @@ const [country, setCountry] = useState('');
 const [pin, setPin] = useState('');
 const [landmark, setLandmark] = useState('');
 const [state, setState] = useState('');
-
+const [qualificationInput, setQualificationInput] = useState(""); // Input field state
+  // Suggestions dropdown state
+  const [selectedQualifications, setSelectedQualifications] = useState([]); // Selected qualifications state
+ 
 const [highestQualification, setHighestQualification] = useState('');
 const [age, setAge] = useState('');
 const [email, setEmail] = useState('');
@@ -99,7 +106,7 @@ const [parentPhone, setparentPhone ] = useState('');
 const [phone, setPhone ] = useState('');
 const [contactNumber, setContactNumber ] = useState('');
 const [suggestions1, setSuggestions1] = useState([]);
-
+const [inputLanguages, setInputLanguages] = useState(""); 
 const [id, setId] = useState('');
 const [description, setDescription] = useState('');
 const [socialNetworks, setSocialNetworks] = useState([{ network: '', facebook: '', url: '' }]);
@@ -115,12 +122,54 @@ const [longitude, setLongitude] = useState('');
 const [error, setError] = useState(null); // To handle errors if geolocation fails
 const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
 const [coordinates, setCoordinates] = useState(["Set to your Location","Set to your Location"]);
+const [inputText, setInputText] = useState("");
 
+const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
+  const [selectedLevels, setSelectedLevels] = useState([]); // Selected levels state
+  const [expandedIndexes, setExpandedIndexes] = useState([]); // Tracks which experiences are expanded
+  const [expandedIndex1, setExpandedIndex1] = useState([]); 
+  const toggleExpand = (index) => {
+    if (expandedIndexes.includes(index)) {
+      setExpandedIndexes(expandedIndexes.filter((i) => i !== index)); // Collapse
+    } else {
+      setExpandedIndexes([...expandedIndexes, index]); // Expand
+    }
+  };
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  
+    const toggleExpand1 = (index) => {
+      setExpandedIndex(expandedIndex === index ? null : index);
+    };
+  // Load selected teaching levels from localStorage on component mount
+  const toggleExpand2 = (index1) => {
+    setExpandedIndex1(expandedIndex1 === index1 ? null : index1);
+  };
+  const handleInputChange3 = (e) => {
+    const value = e.target.value;
+    setTeachlvl(value);
 
+    // Filter suggestions based on input
+    const filtered = teachinglvl.filter((level) =>
+      level.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredLvl(filtered);
+  };
 
+  const handleLevelSelect = (level) => {
+    if (!selectedLevels.includes(level)) {
+      setSelectedLevels([...selectedLevels, level]);
+    }
+    setTeachlvl(""); // Clear the input after selection
+    setFilteredLvl([]); // Clear suggestions
+  };
+
+  const handleLevelRemove = (levelToRemove) => {
+    const updatedLevels = selectedLevels.filter((level) => level !== levelToRemove);
+    setSelectedLevels(updatedLevels);
+  };
 const [dob, setDOB] = useState('');
-const suggestions = ["Male", "Female", "Other"].filter((option) => option !== gender);
+const suggestions = ["Male", "Female", "No Preference"].filter((option) => option !== gender);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -171,7 +220,7 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
           setEmail(data.email || '');
           setHighestQualification(data.highestQualification || '');
           setExperienceTime(data.totalExperience || '');
-          setLanguages(data.spokenLanguages || []);
+          setSelectedLanguages(data.spokenLanguages || []);
           setId(data._id||'');
           setSalaryType(data.jobAlerts?.maxExpectedSalary.value || '');
           setSalaryPeriod(data.jobAlerts?.maxExpectedSalary.period || '');
@@ -185,7 +234,7 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
           setPin (data.location.pinCode || '');
           setSchoolName(data.schoolName||'');
           setParentName(data.parentName||'');
-          setTeachlvl(data.teachingLevels || '');
+          setSelectedLevels(data.teachingLevels || '');
           setLocation(data.location?.city || '');
           setRating (data.rating || '');
           setCategories(data.categories || []);
@@ -208,11 +257,18 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
 
           setFullName(data.fullName);
           setEmail(data.email);
-          setDOB(new Date(data.dob).toISOString().slice(0, 10));
+          const date = new Date(data.dob);
+          const day = String(date.getDate()).padStart(2, '0');  // Ensure day is two digits
+          const month = String(date.getMonth() + 1).padStart(2, '0');  // Month is zero-based, so add 1
+          const year = date.getFullYear();
+          
+          const formattedDOB = `${day}/${month}/${year}`;
+          setDOB(formattedDOB);
+          
 
 
           setGender(data.gender);
-          setQualification(data.qualifications);
+          setSelectedQualifications(data.qualifications);
           setExperienceTime(data.totalExperience);
          
           setSalary(data.salary || '');
@@ -248,25 +304,112 @@ const suggestions = ["Male", "Female", "Other"].filter((option) => option !== ge
     setLatitude(newCoordinates[0]);
     setLongitude(newCoordinates[1]);
   };
+  const handleInputChange1 = (e) => {
+    const value = e.target.value;
+    setInputText(value);
+    if (value) {
+      const filtered = language.filter((lang) =>
+        lang.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredLang(filtered);
+    } else {
+      setFilteredLang([]);
+    }
+  };
+
+  const handleLanguageSelect = (language) => {
+    if (!selectedLanguages.includes(language)) {
+      setSelectedLanguages([...selectedLanguages, language]);
+    }
+    setInputText(""); // Clear input after selection
+    setFilteredLang([]); // Clear suggestions
+  };
+
+  const handleLanguageRemove = (languageToRemove) => {
+    const updatedLanguages = selectedLanguages.filter(
+      (lang) => lang !== languageToRemove
+    );
+    setSelectedLanguages(updatedLanguages);
+  };
+  const handleInputChange2 = (e) => {
+    const value = e.target.value;
+    setQualificationInput(value);
+
+    // Split by commas and filter suggestions based on the last input
+    const lastInput = value.split(",").pop().trim();
+    if (lastInput) {
+      const filtered = qualificationsList.filter((q) =>
+        q.toLowerCase().includes(lastInput.toLowerCase())
+      );
+      setFilteredQualifications(filtered);
+    } else {
+      setFilteredQualifications([]);
+    }
+  };
+
+  const handleQualificationSelect = (qualification) => {
+    const currentQualifications = qualificationInput
+      .split(",")
+      .map((q) => q.trim());
+
+    // Replace the last incomplete input with the selected suggestion
+    if (!currentQualifications.includes(qualification)) {
+      currentQualifications[currentQualifications.length - 1] = qualification;
+    }
+
+    setSelectedQualifications([...new Set([...selectedQualifications, qualification])]);
+    setQualificationInput(""); // Clear the input after selection
+    setFilteredQualifications([]); // Clear suggestions
+  };
+
+  const handleQualificationRemove = (qualificationToRemove) => {
+    const updatedQualifications = selectedQualifications.filter(
+      (q) => q !== qualificationToRemove
+    );
+    setSelectedQualifications(updatedQualifications);
+  };
   const fetchCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude,longitude } = position.coords;
-        setCoordinates([latitude,longitude]);
-        setResponses((prev) => ({
-          ...prev,
-          location: {
-            ...prev.location,
-            coordinates: [latitude, longitude],
-          },
-        }));
-      }, (error) => {
-        console.error("Error fetching location:", error);
-      });
+      const options = {
+        enableHighAccuracy: true, // Request high accuracy
+        timeout: 10000, // Timeout after 10 seconds
+        maximumAge: 0, // Do not use cached position
+      };
+  
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCoordinates([latitude, longitude]);
+          setResponses((prev) => ({
+            ...prev,
+            location: {
+              ...prev.location,
+              coordinates: [latitude, longitude],
+            },
+          }));
+        },
+        (error) => {
+          console.error("Error fetching location:", error);
+          alert("Unable to retrieve your location.");
+        },
+        options
+      );
     } else {
       alert("Geolocation is not supported by this browser.");
     }
   };
+  // Format a date string in dd/mm/yyyy to yyyy-mm-dd format for the input
+const formatDateToInput = (dob) => {
+  const [day, month, year] = dob.split('/');
+  return `${year}-${month}-${day}`;
+};
+
+// Convert the date from yyyy-mm-dd (input value) to dd/mm/yyyy
+const formatInputToDate = (value) => {
+  const [year, month, day] = value.split('-');
+  return `${day}/${month}/${year}`;
+};
+
 
   const handleShowMap = () => {
     setShowMap(true);
@@ -859,16 +1002,16 @@ const editimage = async () => {
           // },
          gender,
          highestQualification,
-         qualifications:qualification,
+         qualifications:selectedQualifications,
          experienceTime,
-         spokenLanguages:languages,
+         spokenLanguages:selectedLanguages,
          jobAlerts: {
           minExpectedSalary: { value: salary1, period: salaryPeriod },
           maxExpectedSalary: { value: salaryType, period: salaryPeriod },
           
          
         },
-         teachingLevels:teachlvl,
+         teachingLevels:selectedLevels,
          video,
          categories,
          description,
@@ -1276,14 +1419,15 @@ const editimage = async () => {
                 </div>
     
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
-                  <input
-                    type="date"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={dob}
-                    onChange={(e) => setDOB(e.target.value)}
-                  />
-                </div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
+  <input
+    type="date"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={dob ? formatDateToInput(dob)?.split('T')[0] : ''}
+    onChange={(e) => setDOB(formatInputToDate(e.target.value))}
+  />
+</div>
+
 
                 <div>
       <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
@@ -1303,7 +1447,7 @@ const editimage = async () => {
         {/* Options */}
         <option value="Male">Male</option>
         <option value="Female">Female</option>
-        <option value="Other">Other</option>
+        <option value="No Preference">No Preference</option>
       </select>
     </div>
 
@@ -1367,49 +1511,111 @@ const editimage = async () => {
                 </div> */}
 
 
-                <div className="relative">
-  <label className="block text-gray-700 text-sm font-bold mb-2">Qualifications</label>
-  <input
-    type="text"
-    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-    value={qualification}
-    onChange={(e) => {
-      setQualification(e.target.value);
-      const lastInput = e.target.value.split(',').pop().trim(); // Get the last part after the last comma
-      const filtered = qualifications1.filter(q =>
-        q.toLowerCase().includes(lastInput.toLowerCase())
-      );
-      setFilteredQualifications(filtered);
-    }}
-  />
+<div className="relative">
+      <label className="block text-gray-700 text-sm font-bold mb-2">
+        Qualifications
+      </label>
+      <input
+        type="text"
+        className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+        value={qualificationInput}
+        onChange={handleInputChange}
+        placeholder="Type to search qualifications..."
+      />
 
-  {filteredQualifications.length > 0 && (
-    <ul
-      ref={suggestionsRef}
-      className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
-    >
-      {filteredQualifications.map((q, index) => (
-        <li
-          key={index}
-          onClick={() => {
-            const selectedQualifications = qualification
-              .split(',')
-              .map(qual => qual.trim());
-            if (!selectedQualifications.includes(q)) {
-              selectedQualifications[selectedQualifications.length - 1] = q; // Replace the last input with the selected suggestion
-            }
-            setQualification(selectedQualifications.join(', ') + ', '); // Add a comma after the selection
-            setFilteredQualifications([]); // Clear the list after selection
-          }}
-          className="cursor-pointer p-2 hover:bg-gray-100"
+      {/* Suggestions Dropdown */}
+      {filteredQualifications.length > 0 && (
+        <ul
+          ref={suggestionsRef}
+          className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
         >
-          {q}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+          {filteredQualifications.map((qualification, index) => (
+            <li
+              key={index}
+              onClick={() => handleQualificationSelect(qualification)}
+              className="cursor-pointer p-2 hover:bg-gray-100"
+            >
+              {qualification}
+            </li>
+          ))}
+        </ul>
+      )}
 
+      {/* Selected Qualifications */}
+      {selectedQualifications.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-md font-bold mb-2">Selected Qualifications:</h2>
+          <div className="flex flex-wrap gap-2">
+            {selectedQualifications.map((qualification, index) => (
+              <span
+                key={index}
+                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-3 rounded-lg flex items-center"
+              >
+                {qualification}
+                <button
+                  onClick={() => handleQualificationRemove(qualification)}
+                  className="ml-2 text-red-500 hover:text-red-700"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+    <div className="mb-4">
+      <label htmlFor="languages" className="block text-gray-700 text-sm font-bold font-bold mb-2">
+        Languages:
+      </label>
+      <div className="mb-4 relative">
+        <input
+          type="text"
+          value={inputText}
+          onChange={handleInputChange1}
+          placeholder="Type to search languages..."
+          className="w-full p-2 border border-gray-300 rounded-lg"
+        />
+
+        {/* Suggestions Dropdown */}
+        {filteredLang.length > 0 && (
+          <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
+            {filteredLang.map((lang, index) => (
+              <li
+                key={index}
+                onClick={() => handleLanguageSelect(lang)}
+                className="cursor-pointer p-2 hover:bg-gray-100"
+              >
+                {lang}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Selected Languages */}
+      {selectedLanguages.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-md font-bold mb-2">Selected Languages:</h2>
+          <div className="flex flex-wrap gap-2">
+            {selectedLanguages.map((language, index) => (
+              <span
+                key={index}
+                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-3 rounded-lg flex items-center"
+              >
+                {language}
+                <button
+                  onClick={() => handleLanguageRemove(language)}
+                  className="ml-2 text-red-500 hover:text-red-700"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
 
 {/* 
                 <div>
@@ -1438,66 +1644,6 @@ const editimage = async () => {
                  />
                     
                 </div>
-    
-                <div className="relative">
-  <label className="block text-gray-700 text-sm font-bold mb-2">Languages</label>
-  <input
-    type="text"
-    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-    value={languages}
-    onChange={(e) => {
-      setLanguages(e.target.value);
-      const lastInput = e.target.value.split(',').pop().trim();
-      const filtered1 = language.filter(q =>
-        q.toLowerCase().includes(lastInput.toLowerCase())
-      );
-      setFilteredLang(filtered1);
-    }}
-  />
-  {filteredLang.length > 0 && (
-    <ul
-      ref={suggestionsRef}
-      className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
-    >
-      {filteredLang.map((q, index) => (
-        <li
-          key={index}
-          onClick={() => {
-            const selectedLanguages = languages
-              .split(',')
-              .map(lang => lang.trim());
-            if (!selectedLanguages.includes(q)) {
-              selectedLanguages[selectedLanguages.length - 1] = q; // Replace the last input with the selected suggestion
-            }
-            setLanguages(selectedLanguages.join(', ') + ', '); // Add a comma after the selection
-            setFilteredLang([]); // Clear the list after selection
-          }}
-          className="cursor-pointer p-2 hover:bg-gray-100"
-        >
-          {q}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
-    
-                {/* <div>
-
-                <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
-                  <select
-                      className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                      value={salaryType}
-                      onChange={(e) => setSalaryType(e.target.value)}
-                  >
-                    <option value="">Salary Type</option>
-                    <option value="Hourly">Hourly</option>
-                    <option value="Daily">Daily</option>
-                    <option value="Weekly">Weekly</option>
-                    <option value="Monthly">Monthly</option>
-                    <option value="Yearly<">Yearly</option>
-                  </select>
-                </div> */}
                 <div className="mb-4">
 <label className="block text-gray-700 text-sm font-bold mb-2">Min Salary</label>
   <input
@@ -1517,11 +1663,7 @@ const editimage = async () => {
     onChange={(e) => setSalaryType(e.target.value)}
   />
 </div>
-
-
-                </div>
-
-                <div>
+<div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Salary Period</label>
                   <select
     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -1534,6 +1676,13 @@ const editimage = async () => {
     <option value="annually">annually</option>
   </select>
                 </div> 
+                
+              
+   
+                </div>
+
+        
+        
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
                   <input
@@ -1543,45 +1692,91 @@ const editimage = async () => {
                     onChange={(e) => setVideo(e.target.value)}
                   />
                 </div> 
-                <div className='relative'>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Teching Level</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={teachlvl}
-                    onChange={(e) => {
-                      setTeachlvl(e.target.value);
-                      const filtered12 = teachinglvl.filter(q =>
-                        q.toLowerCase().includes(e.target.value.toLowerCase())
-                      );
-                      setFilteredLvl(filtered12);
-                    }}
-                    />
-                    {filteredLvl.length > 0 && (
-                      <ul ref={suggestionsRef} className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
-                        {filteredLvl.map((q, index) => (
-                          <li
-                            key={index}
-                            onClick={() => {
-                              setTeachlvl(q);
-                              setFilteredLvl([]);  // Clear the list after selection
-                            }}
-                            className="cursor-pointer p-2 hover:bg-gray-100"
-                          >
-                            {q}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                 
-                </div> 
 
+    
+                {/* <div>
 
-             
+                <label className="block text-gray-700 text-sm font-bold mb-2">Salary Type</label>
+                  <select
+                      className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                      value={salaryType}
+                      onChange={(e) => setSalaryType(e.target.value)}
+                  >
+                    <option value="">Salary Type</option>
+                    <option value="Hourly">Hourly</option>
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Yearly<">Yearly</option>
+                  </select>
+                </div> */}
+           
+           <div className="relative">
+      <label className="block text-gray-700 text-sm font-bold mb-2">Teaching Level</label>
+      <input
+        type="text"
+        className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+        value={teachlvl}
+        onChange={handleInputChange3}
+        placeholder="Type to search teaching levels..."
+      />
+
+      {/* Suggestions Dropdown */}
+      {filteredLvl.length > 0 && (
+        <ul
+          ref={suggestionsRef}
+          className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
+        >
+          {filteredLvl.map((level, index) => (
+            <li
+              key={index}
+              onClick={() => handleLevelSelect(level)}
+              className="cursor-pointer p-2 hover:bg-gray-100"
+            >
+              {level}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Selected Levels */}
+      {selectedLevels.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-md  mb-2">Selected Teaching Levels:</h2>
+          <div className="flex flex-wrap gap-2">
+            {selectedLevels.map((level, index) => (
+              <span
+                key={index}
+                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-3 rounded-lg flex items-center"
+              >
+                {level}
+                <button
+                  onClick={() => handleLevelRemove(level)}
+                  className="ml-2 text-red-500 hover:text-red-700"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <div >
+                
+    
+                <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></textarea>
+              </div> 
 
     
                 <div className="mb-4">
-            <label htmlFor="categories" className="block">Categories:</label>
+            <label htmlFor="categories" className="block font-bold">Categories:</label>
             <div className="mb-4 relative">
         <input
           type="text"
@@ -1610,7 +1805,7 @@ const editimage = async () => {
       {/* Selected Categories */}
       {categories.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-md font-bold mb-2">Selected Categories:</h2>
+          <h2 className="text-md mb-2">Selected Categories:</h2>
           <div className="flex flex-wrap gap-2">
             {categories.map((category, index) => (
               <span
@@ -1631,16 +1826,7 @@ const editimage = async () => {
       )}
     </div>
              
-              <div >
-                
-    
-                <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
-                <textarea
-                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
-              </div>
+            
            
     
               <button
@@ -1672,241 +1858,237 @@ const editimage = async () => {
               </div>
              
            
-                <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-  <h3 className="text-lg font-semibold mb-2">Experience Notes</h3>
-  {pastExperiences.map((exp, index) => (
-    <div key={index} className="mb-4 border p-4">
-      <div className="mb-2">
-        <label htmlFor={`experience-title-${index}`} className="block">Job Title:</label>
-        <input
-          type="text"
-          id={`experience-title-${index}`}
-          name="title"
-          value={exp.title}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2 flex space-x-4">
-  <div className="w-full">
-    <label htmlFor={`experience-startDate-${index}`} className="block">Start Date:</label>
-    <input
-      type="date"
-      id={`experience-startDate-${index}`}
-      name="start_date"
-      value={exp.start_date?.split('T')[0]}
-      onChange={(e) => handleExperienceChange(index, e)}
-      className="border p-2 w-full"
-    />
-  </div>
-  <div className="w-full">
-    <label htmlFor={`experience-endDate-${index}`} className="block">End Date:</label>
-    <input
-      type="date"
-      id={`experience-endDate-${index}`}
-      name="end_date"
-      value={exp.end_date?.split('T')[0]}
-      onChange={(e) => handleExperienceChange(index, e)}
-      className="border p-2 w-full"
-    />
-  </div>
-</div>
-
-      <div className="mb-2">
-        <label htmlFor={`experience-company-${index}`} className="block">Company:</label>
-        <input
-          type="text"
-          id={`experience-company-${index}`}
-          name="company"
-          value={exp.company}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="mb-2">
-        <label htmlFor={`experience-description-${index}`} className="block">Description:</label>
-        <textarea
-          id={`experience-description-${index}`}
-          name="description"
-          value={exp.description}
-          onChange={(e) => handleExperienceChange(index, e)}
-          className="border p-2 w-full"
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => removeExperience(index)}
-          className="bg-red-500 text-white p-2"
-        >
-          Remove Experience
-        </button>
-        {/* {exp.new && (
-          <button
-            type="button"
-            onClick={() => saveExperience(index)}
-            className="bg-green-500 text-white p-2"
-          >
-            Save
-          </button>
-        )} */}
-      </div>
+              <div className="mb-4 w-full bg-white p-6 rounded-lg shadow-md">
+      <h3 className="text-lg font-semibold mb-4">Experience Notes</h3>
+      {pastExperiences.map((exp, index) => (
+        <div key={index} className="mb-4 border p-4 rounded-lg">
+          <div className="flex justify-between items-center">
+            <h4 className="font-semibold text-gray-800">
+              {exp.title || "Untitled Experience"}
+            </h4>
+            <button
+              onClick={() => toggleExpand(index)}
+              className="text-blue-500 hover:underline"
+            >
+              {expandedIndexes.includes(index) ? "↑" : "↓"}
+            </button>
+          </div>
+          {expandedIndexes.includes(index) && (
+            <div>
+              <div className="mb-2">
+                <label htmlFor={`experience-title-${index}`} className="block">
+                  Job Title:
+                </label>
+                <input
+                  type="text"
+                  id={`experience-title-${index}`}
+                  name="title"
+                  value={exp.title}
+                  onChange={(e) => handleExperienceChange(index, e)}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2 flex space-x-4">
+                <div className="w-full">
+                  <label htmlFor={`experience-startDate-${index}`} className="block">
+                    Start Date:
+                  </label>
+                  <input
+                    type="date"
+                    id={`experience-startDate-${index}`}
+                    name="start_date"
+                    value={exp.start_date?.split("T")[0]}
+                    onChange={(e) => handleExperienceChange(index, e)}
+                    className="border p-2 w-full"
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor={`experience-endDate-${index}`} className="block">
+                    End Date:
+                  </label>
+                  <input
+                    type="date"
+                    id={`experience-endDate-${index}`}
+                    name="end_date"
+                    value={exp.end_date?.split("T")[0]}
+                    onChange={(e) => handleExperienceChange(index, e)}
+                    className="border p-2 w-full"
+                  />
+                </div>
+              </div>
+              <div className="mb-2">
+                <label htmlFor={`experience-company-${index}`} className="block">
+                  Company:
+                </label>
+                <input
+                  type="text"
+                  id={`experience-company-${index}`}
+                  name="company"
+                  value={exp.company}
+                  onChange={(e) => handleExperienceChange(index, e)}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2">
+                <label htmlFor={`experience-description-${index}`} className="block">
+                  Description:
+                </label>
+                <textarea
+                  id={`experience-description-${index}`}
+                  name="description"
+                  value={exp.description}
+                  onChange={(e) => handleExperienceChange(index, e)}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => removeExperience(index)}
+                  className="bg-red-500 text-white p-2 rounded"
+                >
+                  Remove Experience
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={addExperience}
+        className="mb-4 bg-blue-500 text-white p-2 rounded"
+      >
+        Add Experience
+      </button>
     </div>
-  ))}
-  <button type="button" onClick={addExperience} className="mb-4 bg-blue-500 text-white p-2">
-    Add Experience
-  </button>
-</div>
-
 <div>
-      <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-2">Experience Notes</h3>
-        {pastExperiences.map((exp, index) => (
-          <div key={index} className="mb-4 border p-4">
-            <div className="mb-2">
-              <label className="block">Job Title:</label>
-              <input
-                type="text"
-                value={exp.title}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block">Start Date:</label>
-              <input
-                type="date"
-                value={exp.start_date}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block">End Date:</label>
-              <input
-                type="date"
-                value={exp.end_date}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block">Company:</label>
-              <input
-                type="text"
-                value={exp.company}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block">Description:</label>
-              <textarea
-                value={exp.description}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addExperience}
-          className="mb-4 bg-blue-500 text-white p-2"
-        >
-          Add Experience
-        </button>
-      </div>
+   
 
-      <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-2">Awards</h3>
-        {awards.map((award, index) => (
-          <div key={index} className="mb-4 border p-4">
-            <div className="mb-2">
-              <label className="block">Award Title:</label>
-              <input
-                type="text"
-                value={award.title}
-                readOnly
-                className="border p-2 w-full"
-              />
+<div className="mb-4 w-full bg-white p-4 rounded-lg shadow-md">
+      <h3 className="text-lg font-semibold mb-2">Awards</h3>
+      
+      {awards.map((award, index) => (
+        <div key={index} className="mb-4 border p-4 rounded-md">
+          <div className="flex justify-between items-center">
+            <div>
+              <span className="font-semibold">{award.title}</span>
             </div>
-            <div className="mb-2">
-              <label className="block">Year:</label>
-              <input
-                type="date"
-                value={award.year}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block">Description:</label>
-              <textarea
-                value={award.description}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
+            <button
+              onClick={() => toggleExpand1(index)}
+              className="text-blue-500 "
+            >
+              {expandedIndex === index ?  "↑" : "↓"}
+            </button>
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={addAward}
-          className="mb-4 bg-blue-500 text-white p-2"
-        >
-          Add Award
-        </button>
-      </div>
 
-      <div className="mb-4 w-full bg-white p-12 mb-4 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-2">Education</h3>
-        {education.map((edu, index) => (
-          <div key={index} className="mb-4 border p-4">
-            <div className="mb-2">
-              <label className="block">Title:</label>
-              <input
-                type="text"
-                value={edu.title}
-                readOnly
-                className="border p-2 w-full"
-              />
+          {expandedIndex === index && (
+            <div className="mt-4">
+              <div className="mb-2">
+                <label className="block">Award Title:</label>
+                <input
+                  type="text"
+                  value={award.title}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2">
+                <label className="block">Year:</label>
+                <input
+                  type="date"
+                  value={award.year}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2">
+                <label className="block">Description:</label>
+                <textarea
+                  value={award.description}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
             </div>
-            <div className="mb-2">
-              <label className="block">Year:</label>
-              <input
-                type="date"
-                value={edu.year}
-                readOnly
-                className="border p-2 w-full"
-              />
+          )}
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={addAward}
+        className="mb-4 bg-blue-500 text-white p-2"
+      >
+        Add Award
+      </button>
+    </div>
+    <div className="mb-4 w-full bg-white p-4 rounded-lg shadow-md">
+      <h3 className="text-lg font-semibold mb-2">Education</h3>
+
+      {education.map((edu, index1) => (
+        <div key={index1} className="mb-4 border p-4 rounded-md">
+          <div className="flex justify-between items-center">
+            <div>
+              <span className="font-semibold">{edu.title}</span> 
             </div>
-            <div className="mb-2">
-              <label className="block">Academy:</label>
-              <textarea
-                value={edu.academy}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block">Description:</label>
-              <textarea
-                value={edu.description}
-                readOnly
-                className="border p-2 w-full"
-              />
-            </div>
+            <button
+              onClick={() => toggleExpand2(index1)}
+              className="text-blue-500 "
+            >
+              {expandedIndex1 === index1 ?  "↑" : "↓"}
+            </button>
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={addEducation}
-          className="mb-4 bg-blue-500 text-white p-2"
-        >
-          Add Education
-        </button>
-      </div>
+
+          {expandedIndex1 === index1 && (
+            <div className="mt-4">
+              <div className="mb-2">
+                <label className="block">Title:</label>
+                <input
+                  type="text"
+                  value={edu.title}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2">
+                <label className="block">Year:</label>
+                <input
+                  type="date"
+                  value={edu.year}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2">
+                <label className="block">Academy:</label>
+                <textarea
+                  value={edu.academy}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-2">
+                <label className="block">Description:</label>
+                <textarea
+                  value={edu.description}
+                  readOnly
+                  className="border p-2 w-full"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <button
+        type="button"
+        onClick={addEducation}
+        className="mb-4 bg-blue-500 text-white p-2"
+      >
+        Add Education
+      </button>
+    </div>
 
       {/* Modals for adding Experience, Award, and Education */}
       <Modal
@@ -2001,14 +2183,14 @@ const editimage = async () => {
                   />
                 </div>
                 <div>
-                     <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
-                     <input
-                       type="date"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                       value={dob?.split('T')[0]}
-                       onChange={(e) => setDOB(e.target.value)}
-                     />
-                   </div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
+  <input
+    type="date"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={dob ? formatDateToInput(dob)?.split('T')[0] : ''}
+    onChange={(e) => setDOB(formatInputToDate(e.target.value))}
+  />
+</div>
 
                 {/* <div>
               <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
@@ -2484,34 +2666,10 @@ const editimage = async () => {
           
 
 </div> */}
-<div className="">
-        <div className="bg-white p-6 rounded-lg  mx-auto ml-12">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 mt-6 mx-auto">Job Location</h2>
-          
-          <button
-        type="button"
-        onClick={handleShowMap}
-        className="mb-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
-      >
-        Show Map
-      </button>
-
-      {showMap && coordinates && (
-        <>
-          <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
-          <button
-            type="button"
-            onClick={fetchCurrentLocation}
-            className="mt-2 bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-          >
-            Get Current Location
-          </button>
-        </>
-      )}
-
-      {showMap && !coordinates && <p>Location not available</p>}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+<div className="bg-white w-full bg-white p-12 mb-4 rounded-lg shadow-md ">
+<label className="block text-2xl font-bold mb-6">Location</label>
+                  
+        <div className="grid grid-cols-1 lg:grid-cols-2  gap-4  -mb-6">
         <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Contact Address</label>
                   <input
@@ -2559,6 +2717,32 @@ const editimage = async () => {
                   />
                 </div>
       </div>
+      <div className="bg-white p-6 rounded-lg  mx-auto ml-12">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 mt-6 mx-auto">Job Location</h2>
+          
+          <button
+        type="button"
+        onClick={handleShowMap}
+        className="mb-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
+      >
+        Show Map
+      </button>
+
+      {showMap && coordinates && (
+        <>
+          <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
+          <button
+            type="button"
+            onClick={fetchCurrentLocation}
+            className="mt-2 bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+          >
+            Get Current Location
+          </button>
+        </>
+      )}
+
+      {showMap && !coordinates && <p>Location not available</p>}
+        </div>
       </div>
       <button
                 className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700"

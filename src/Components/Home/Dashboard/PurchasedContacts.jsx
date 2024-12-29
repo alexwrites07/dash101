@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 
@@ -67,25 +68,32 @@ const PurchasedContacts = () => {
           {data?.purchasedContacts?.length > 0 ? (
             data.purchasedContacts.map((contact, index) => (
               <div key={index} className="border-b border-gray-300 pb-4 mb-4">
-                <h3 className="text-xl font-semibold text-gray-800">{contact.name}</h3>
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {contact.contactType === "Organization" && (
+                    <Link to={`/getOrg/${contact.contactInfo?.id}`} className="flex w-full text-blue-500 hover:underline">
+                      {contact.name}
+                    </Link>
+                  )}
+                  {contact.contactType === "LearningNeeds" && (
+                    <Link to={`/getNeed/${contact.contactInfo?.id}`} className="text-blue-500 hover:underline">
+                      {contact.name}
+                    </Link>
+                  )}
+                  {contact.contactType === "tutor" && (
+                    <Link to={`/getTutor/${contact.contactInfo?.id}`} className="block w-full text-blue-500 hover:underline">
+                      {contact.name}
+                    </Link>
+                  )}
+                  {["Jobs", "job", "Job"].includes(contact.contactType) && (
+                    <Link to={`/getjobs/${contact.contactInfo?.id}`} className="text-blue-500 hover:underline">
+                      {contact.name}
+                    </Link>
+                  )}
+                </h3>
                 <p className="text-sm text-gray-500">Contact Type: {contact.contactType}</p>
                 <div className="mt-2">
-                  <p className="text-gray-700">Email: {contact.contactInfo.email || "N/A"}</p>
-                  <p className="text-gray-700">Contact Number: {contact.contactInfo.contactNumber || "N/A"}</p>
-                  {contact.contactInfo.socialMediaLinks?.platform &&
-                    contact.contactInfo.socialMediaLinks?.link && (
-                      <p className="text-gray-700">
-                        Social Media ({contact.contactInfo.socialMediaLinks.platform}):{" "}
-                        <a
-                          href={`https://${contact.contactInfo.socialMediaLinks.link}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 underline"
-                        >
-                          {contact.contactInfo.socialMediaLinks.link}
-                        </a>
-                      </p>
-                    )}
+                  <p className="text-gray-700">Email: {contact.contactInfo?.email || "N/A"}</p>
+                  <p className="text-gray-700">Contact Number: {contact.contactInfo?.contactNumber || "N/A"}</p>
                 </div>
               </div>
             ))
@@ -93,25 +101,27 @@ const PurchasedContacts = () => {
             <p className="text-gray-600">No purchased contacts found.</p>
           )}
 
-          
-{data?.purchasedJobs?.length > 0 ? (
-  <>
-    <h2 className="text-2xl font-bold mt-6 mb-4 text-gray-800">Purchased Jobs</h2>
-    {data.purchasedJobs.map((job, index) => (
-      <div key={index} className="border-b border-gray-300 pb-4 mb-4">
-        <h3 className="text-xl font-semibold text-gray-800">{job.jobTitle}</h3>
-        <p className="text-sm text-gray-500">Employer: {job.employer}</p>
-        <div className="mt-2">
-          <p className="text-gray-700">Email: {job.contactInfo?.email || "N/A"}</p>
-          <p className="text-gray-700">Contact Number: {job.contactInfo?.contactNumber || "N/A"}</p>
-        </div>
-      </div>
-    ))}
-  </>
-) : (
-  <p className="text-gray-600">No purchased jobs found.</p>
-)}
-
+          {data?.purchasedJobs?.length > 0 ? (
+            <>
+              <h2 className="text-2xl font-bold mt-6 mb-4 text-gray-800">Purchased Jobs</h2>
+              {data.purchasedJobs.map((job, index) => (
+                <div key={index} className="border-b border-gray-300 pb-4 mb-4">
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    <Link to={`/getjobs/${job._id}`} className="text-blue-500 hover:underline">
+                      {job.jobTitle}
+                    </Link>
+                  </h3>
+                  <p className="text-sm text-gray-500">Employer: {job.employer}</p>
+                  <div className="mt-2">
+                    <p className="text-gray-700">Email: {job.contactInfo?.email || "N/A"}</p>
+                    <p className="text-gray-700">Contact Number: {job.contactInfo?.contactNumber || "N/A"}</p>
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <p className="text-gray-600">No purchased jobs found.</p>
+          )}
         </div>
       </div>
     </div>

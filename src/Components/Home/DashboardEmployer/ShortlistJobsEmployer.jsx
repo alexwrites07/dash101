@@ -67,28 +67,37 @@ const ShortlistJobs = () => {
   };
 
   const handleRemoveCandidate = async (id) => {
-    try {
-      const response = await axios.delete(`https://server.avyudha.com/bookmark`, {
-        data: { employeeId: id },  // Send employerId in the body of the request
-        headers: {
-          Authorization: `Bearer ${token}`  // Pass the token for authorization
+    // Show confirmation dialog
+    const isConfirmed = window.confirm('Are you sure you want to delete this candidate?');
+  
+    // If the user clicks "OK", proceed with the deletion
+    if (isConfirmed) {
+      try {
+        const response = await axios.delete(`https://server.avyudha.com/bookmark`, {
+          data: { employeeId: id },  // Send employerId in the body of the request
+          headers: {
+            Authorization: `Bearer ${token}`  // Pass the token for authorization
+          }
+        });
+        
+        // If the deletion is successful, update the frontend state
+        if (response.status === 200) {
+          const updatedCandidates = shortlistedCandidates.filter(
+            (candidate) => candidate.id !== id
+          );
+          setShortlistedCandidates(updatedCandidates);
+          console.log(`Deleted candidate with ID: ${id}`);
+        } else {
+          console.error("Failed to delete candidate");
         }
-      });
-      
-      // If the deletion is successful, update the frontend state
-      if (response.status === 200) {
-        const updatedCandidates = shortlistedCandidates.filter(
-          (candidate) => candidate.id !== id
-        );
-        setShortlistedCandidates(updatedCandidates);
-        console.log(`Deleted candidate with ID: ${id}`);
-      } else {
-        console.error("Failed to delete candidate");
+      } catch (error) {
+        console.error("Error deleting candidate: ", error);
       }
-    } catch (error) {
-      console.error("Error deleting candidate: ", error);
+    } else {
+      console.log("Deletion cancelled");
     }
   };
+  
   
 
   // Filter candidates based on search query
@@ -98,7 +107,24 @@ const ShortlistJobs = () => {
       candidate.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       candidate.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
+  function formatIndianSalary(salary) {
+    // Convert the salary to a string
+    let salaryStr = salary.toString();
+  
+    // Regular expression to add commas for the Indian number system
+    let [integer, decimal] = salaryStr.split('.');
+  
+    // Format the integer part with commas
+    let lastThree = integer.slice(-3);
+    let otherNumbers = integer.slice(0, integer.length - 3);
+    if (otherNumbers !== '') lastThree = ',' + lastThree;
+    let formattedInteger = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+  
+    // Return the formatted salary with the decimal part (if any)
+    return formattedInteger + (decimal ? '.' + decimal : '');
+  }
+  
+  
   // Sort candidates based on selected option
   const sortedCandidates = filteredCandidates.sort((a, b) => {
     if (sortOption === "name") {
@@ -157,7 +183,7 @@ const ShortlistJobs = () => {
 
             <div className="space-y-4">
               {sortedCandidates.map((candidate) => (
-                <Link to={`/getTutor/${candidate.id}`} className="block w-full">
+               
                 <div
                   key={candidate.id}
                   className="bg-gray-100 p-4 rounded-lg flex items-start"
@@ -171,9 +197,11 @@ const ShortlistJobs = () => {
 
                   <div className="flex-1">
                     {/* Candidate Name and Title */}
+                    <Link to={`/getTutor/${candidate.id}`} className="block w-full">
                     <h3 className="text-xl font-semibold text-gray-900">
                       {candidate.name}
                     </h3>
+                    </Link>
                     <p className="text-sm text-gray-600">{candidate.title}</p>
 
                     {/* Location and Salary */}
@@ -183,11 +211,12 @@ const ShortlistJobs = () => {
                         {candidate.location}
                       </div>
                       <div className="flex items-center">
-                        <FaMoneyBillAlt className="mr-1" /> {candidate.salary}
-                      </div>
+  Rs.{formatIndianSalary(candidate.salary)}
+</div>
+
                     </div>
                   </div>
-
+                
                   {/* Action Icons */}
                   <div className="ml-auto flex space-x-2">
                     {/* <button
@@ -208,9 +237,10 @@ const ShortlistJobs = () => {
                     >
                       <FaTrash className="w-6 h-6" />
                     </button>
+
                   </div>
                 </div>
-                </Link>
+             
               ))}
             </div>
           </section>
