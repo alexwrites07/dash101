@@ -9,7 +9,11 @@ import { Link } from 'react-router-dom';
 
 const NeedDescription = () => {
   const { IId } = useParams();
+  
   const [job, setJob] = useState(null);
+  const [contactDetails, setContactDetails] = useState(null);
+  const [isContactUnlocked, setIsContactUnlocked] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rating, setRating] = useState(0);
@@ -37,15 +41,62 @@ const NeedDescription = () => {
         console.error('Error fetching reviews:', error);
       }
     };
+    const fetchUnlockedContacts = async () => {
+      console.log (IId);
+      try {
+        const token = localStorage.getItem('token');
+        const type = localStorage.getItem('type');
+        // Replace with the actual Id you're comparing against, make sure it's a string or ObjectId
+        console.log("Comparing Job ID:", IId);
+        if (!token || !type) return;
+    
+        const response = await axios.get('https://server.avyudha.com/purchasedNeeds', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        // Debugging: Log the IId and response to ensure correctness
+        console.log("Comparing Job ID:", IId);
+        console.log("Response Data:", response.data);
+        
+        // Find the purchased contact that matches the provided IId
+        const purchasedContact = response.data?.find(
+          (item) => item._id.toString() === IId.toString() // Convert both to strings for comparison
+        ) || null;
+        
+        // Debugging: Log the purchased contact details
+        console.log("Purchased Contact:", purchasedContact);
+        
+        if (purchasedContact) {
+          // Log the contactInfo if a match is found
+          console.log("Contact Info:", purchasedContact._id);
+        } else {
+          console.log("No matching job found for the given IId.");
+        }
+        
+        // Set unlockedContacts status based on whether the contact is found
+        if (purchasedContact) {
+          setIsContactUnlocked(true);
+        } else {
+          setIsContactUnlocked(false);
+        }
+        console.log (isContactUnlocked);
+      } catch (error) {
+        console.error('Error fetching unlocked contacts:', error);
+      }
+    };
+    const type = localStorage.getItem('type');
     const fetchBookmarkStatus = async () => {
       try {
         const token = localStorage.getItem('token');
+       
         if (!token) {
           console.warn("Authentication token not found.");
+          alert ("Please login")
           return;
         }
-  
-        const response = await axios.get('https://server.avyudha.com/dashboard/Tutor', {
+        const type = localStorage.getItem('type');
+        
+        const response = await axios.get(`https://server.avyudha.com/dashboard/${type}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -61,6 +112,7 @@ const NeedDescription = () => {
 
     fetchJobDetails();
     fetchReviews();
+    fetchUnlockedContacts();
   }, [IId]);
 
   const openModal = () => {
@@ -74,7 +126,31 @@ const NeedDescription = () => {
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
-
+  const ContactModal = ({ contactDetails, isContactModalOpen, setIsContactModalOpen }) => {
+    return (
+      isContactModalOpen && contactDetails && (
+        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+          <div className="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Contact Details</h2>
+            
+            {/* Displaying Contact Number */}
+            <p><strong>Contact Number:</strong> {contactDetails?.contactNumber || 'Contact number not available'}</p>
+  
+            {/* Displaying Email */}
+            <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
+  
+            {/* Close Button */}
+            <button 
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => setIsContactModalOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )
+    );
+  };
   const handleSubmit = () => {
     setSubmittedComment(comment);
     setComment('');
@@ -84,7 +160,7 @@ const NeedDescription = () => {
     const token = localStorage.getItem('token');
   
     if (!token) {
-      alert('Authentication token not found. Please log in again.');
+      alert('Please login');
       return;
     }
   
@@ -131,7 +207,7 @@ const NeedDescription = () => {
   
     const token = localStorage.getItem('token');
     if (!token) {
-      alert('Authentication token not found. Please log in again.');
+      alert('Please login');
       return;
     }
   
@@ -216,11 +292,20 @@ const NeedDescription = () => {
       <HiOutlineBookmark className="w-6 h-6" />
     )}
   </button>
-  <button
-    onClick={buyContact}
-    className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-    Buy Contacts (100 coins)
-  </button>
+  {isContactUnlocked ? (
+            <button onClick={handleViewContact} className="bg-[#6699CC] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+              View Contact
+            </button>
+          ) : (
+            <button onClick={buyContact} className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+              Buy Contact (100 coins)
+            </button>
+          )}
+            <ContactModal 
+        contactDetails={contactDetails} 
+        isContactModalOpen={isContactModalOpen} 
+        setIsContactModalOpen={setIsContactModalOpen}
+      />
         
         {!job.fulfilled ? (
           <div></div>
@@ -245,33 +330,15 @@ const NeedDescription = () => {
         {/* Display Email and Phone */}
         
         <p><strong>Board:</strong> {job.board}</p>
+    
         <p><strong>Requirements:</strong> {job.requirement}</p>
 
-        {/* Video Player */}
-        <h2 className="text-xl font-semibold text-gray-800 mt-4">Rate Need</h2>
-              <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-2">Submit Your Review</h3>
-          <StarRating rating={rating} reviewedId={IId} onRatingChange={handleRating} />
+      
          
         </div>
 
-        {/* Reviews Section */}
-        <h2 className="text-xl font-semibold mb-2 mt-6">Reviews</h2>
-            {reviews.length > 0 ? (
-              reviews.map(review => (
-                <div key={review._id} className="border-b mb-4 pb-2">
-                  <p><strong>{review.reviewerUsername}</strong></p>
-                  <p>Rating - <strong>{review.rating}/5</strong></p>
-                  <p>{review.description}</p>
-                  <p className="text-gray-500 text-sm">{new Date(review.createdDate).toLocaleDateString()}</p>
-                </div>
-              ))
-            ) : (
-              <p>No reviews available.</p>
-            )}
+       
 
-        
-      </div>
     </div>
     <button
             onClick={handleShare}

@@ -2281,7 +2281,7 @@ const editimage = async () => {
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
                   <input
                     type="text"
@@ -2289,7 +2289,7 @@ const editimage = async () => {
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                   />
-                </div>
+                </div> */}
                 
                 </div>
                 <button
@@ -2679,22 +2679,13 @@ const editimage = async () => {
                     onChange={(e) => setContactAddress(e.target.value)}
                   />
                 </div>
-                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Country</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                  />
-                </div>
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">State</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">City/District</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                 </div>
                 <div>
@@ -2706,16 +2697,27 @@ const editimage = async () => {
                     onChange={(e) => setPin(e.target.value)}
                   />
                 </div>
-               
+             
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">City/District</label>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">State</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
                   />
                 </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Country</label>
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                  />
+                </div>
+               
+             
       </div>
       <div className="bg-white p-6 rounded-lg  mx-auto ml-12">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 mt-6 mx-auto">Job Location</h2>

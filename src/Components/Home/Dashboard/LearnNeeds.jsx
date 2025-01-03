@@ -63,12 +63,12 @@ const LearningNeeds = () => {
                 className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
               >
                 <h3 className="text-lg font-semibold text-gray-800">
-                  {learningNeed.email}
+                  {learningNeed.requirement}
                 </h3>
                 <p className="text-sm text-gray-600 mt-2">
                   {learningNeed.phone}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">{learningNeed.requirement}</p>
+                <p className="text-sm text-gray-500 mt-1">{learningNeed.description}</p>
                 <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
                   Book a Demo
                 </button>

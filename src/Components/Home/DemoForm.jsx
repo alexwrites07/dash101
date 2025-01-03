@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Map from './MapDemo'; // Import your Map component
+import Map from './MappinDemo'; // Import your Map component
 import categories from '../Home/Dashboard/AdminPanel/categories.json';
-
+import axios from 'axios';
 
 const questions = [
   {
@@ -34,6 +34,12 @@ const questions = [
     options: [ 'Just looking at options','Immediately', 'Within a month'],
   },
   {
+    id: 'available',
+    question: 'When are you available? *',
+    type: 'select',
+    options: ['Weekends', 'Weekdays', 'Any'],
+  },
+  {
     id: 'salary',
     question: 'What is your budget? *',
     type: 'salary',
@@ -41,7 +47,7 @@ const questions = [
   {
     id: 'typeOfClass',
     question: 'How would you like to attend your tuition classes? *',
-    type: 'checkbox',
+    type: 'radio',
     options: ['Online (Recommended)', "Offline: At tutor's place","Offline: At student's place", 'Offline: Nearby classes'],
   },
   {
@@ -64,15 +70,15 @@ const DemoForm = () => {
     description: '',
     board: '',
     location: {
-      coordinates: ["set loaction","set loaction"],
+      coordinates: [28.6139, 77.2090],
       address: '',
       landmark: '',
       city: '',
-      pinCode: '',
+      pinCode: '110001',
       state: '',
     },
-    available:'Nil',
-    salary: { period: 'monthly', max: 0 },
+    available:'',
+    salary: { period: '', max: 0 },
     start: '',
     typeOfClass: [],
     genderPreference: '',
@@ -88,6 +94,36 @@ const DemoForm = () => {
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
+    const type = localStorage.getItem("type");
+    const token = localStorage.getItem("token");
+
+    if (type && token) {
+      // Fetch data directly if type and token exist
+      axios
+        .get(`https://server.avyudha.com/dashboard/${type}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          const data = response.data;
+           
+          (type === 'student') ? responses.phone = data.phone : responses.phone = data.contactNumber;
+
+            responses.email=data.email,
+          
+          console.log(responses.phone);
+          // console.log(type);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      // Redirect or handle missing type/token
+      console.error("Missing type or token in localStorage.");
+      setLoading(false);
+    }
     // Filter suggestions based on the user input for the "requirement" field
     if (responses.requirement) {
       const filteredSuggestions = categories.filter(option =>
@@ -97,7 +133,8 @@ const DemoForm = () => {
     } else {
       setSuggestions([]); // Clear suggestions if the input is empty
     }
-  }, [responses.requirement]);
+  }
+  , [responses.requirement]);
   const handleNext = async (event) => {
     event.preventDefault();
 
@@ -211,18 +248,21 @@ const DemoForm = () => {
       },
     }));
   };
-
   const handleMapChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
+    handleCoordinatesChange(newCoordinates);  // Use the updated function to modify the location
+  };
+  
+ const handleCoordinatesChange = (coordinates) => {
     setResponses((prev) => ({
       ...prev,
       location: {
         ...prev.location,
-        coordinates: newCoordinates,
+         // Save latitude as pin code
+        coordinates:coordinates,
       },
     }));
   };
-
   const handleOtpSubmit = async (event) => {
     event.preventDefault();
     const payload = {
@@ -246,7 +286,7 @@ const DemoForm = () => {
       }
 
       const data = await response.json();
-      alert('OTP verification response:', data);
+      alert('Submitted Successfully');
     } catch (error) {
       alert('Error verifying OTP:', error);
     }
@@ -256,31 +296,90 @@ const DemoForm = () => {
     switch (question.type) {
       case 'salary':
         return (
-          <div className="mt-8 mb-6 flex items-center">
-            <select
-              name="period"
-              value={responses.salary.period}
-              onChange={handlesalaryChange}
-              className="shadow appearance-none border rounded mr-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-               >
-              <option value="monthly">Monthly</option>
-              <option value="hourly">Hourly</option>
-              <option value="daily">Daily</option>
-              <option value="yearly">Yearly</option>
-              <option value="Not sure, will discuss with tutor and decide">Not sure, just want to see options</option>
-            </select>
-            <input
-              type="text"
-              name="max"
-              placeholder="Enter your maximum budget"
-              value={responses.salary.max}
-              onChange={handlesalaryChange}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              />
+          <div className="mt-8 mb-6">
+            <div className="flex items-center">
+              <select
+                name="period"
+                value={responses.salary.period}
+                onChange={handlesalaryChange}
+                className="shadow appearance-none border rounded mr-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select an option</option>
+                <option value="monthly">Monthly</option>
+                <option value="hourly">Hourly</option>
+                <option value="daily">Daily</option>
+                <option value="yearly">Yearly</option>
+                <option value="Not sure, will discuss with tutor and decide">
+                  Not sure, will discuss with tutor and decide
+                </option>
+              </select>
+      
+              {['monthly', 'hourly', 'daily', 'yearly'].includes(responses.salary.period) && (
+                <input
+                  type="text"
+                  name="max"
+                  placeholder="Enter your maximum budget"
+                  value={responses.salary.max}
+                  onChange={(e) =>
+                    setResponses((prev) => ({
+                      ...prev,
+                      salary: {
+                        ...prev.salary,
+                        max: e.target.value,
+                      },
+                    }))
+                  }
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              )}
+            </div>
+      
+            {['monthly', 'hourly', 'daily', 'yearly'].includes(responses.salary.period) && (
+        <div className="mt-4">
+          <input
+            type="range"
+            min="0"
+            max="20000"
+            step="100"
+            value={responses.salary.max || 0}
+            onChange={(e) =>
+              setResponses((prev) => ({
+                ...prev,
+                salary: { ...prev.salary, max: e.target.value },
+              }))
+            }
+            className="slider w-full appearance-none h-2 bg-gray-400 rounded-lg focus:outline-none"
+            style={{
+              appearance: 'black',
+            }}
+          />
+          <style jsx>{`
+            .slider::-webkit-slider-thumb {
+              appearance: none;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: black;
+              cursor: pointer;
+            }
+            .slider::-moz-range-thumb {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: black;
+              cursor: pointer;
+            }
+          `}</style>
+          <p className="text-black text-sm mt-2">
+            Selected Value: {responses.salary.max || 0}
+          </p>
+        </div>
+      )}
           </div>
         );
+      
         case 'autocomplete':
           return (
             <div>
@@ -411,17 +510,23 @@ const DemoForm = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
               required
            />
-            <input
-              type="text"
-              placeholder="Pin Code"
-              value={responses.location.pinCode}
-              onChange={(e) => handleLocationChange(e, 'pinCode')}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+               
+        <input
+          type="text"
+          placeholder="PinCode"
+          value={responses.location.pincode}
+          onChange={(e) => handleLocationChange(e, 'pincode')}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
               required
-           />
-
-            <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
-            <button
+        />
+      
+      <Map pincode={responses.location.pincode} onCoordinatesChange={handleMapChange} />
+      <div>
+        <p>Selected Coordinates:</p>
+        <p>Latitude: {coordinates[0]}</p>
+        <p>Longitude: {coordinates[1]}</p>
+      </div>
+            {/* <button
               type="button"
               onClick={fetchCurrentLocation}
 
@@ -429,7 +534,7 @@ const DemoForm = () => {
               className="mt-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded"
             >
               Get Current Location
-            </button>
+            </button> */}
 
           </div>
         );
@@ -472,7 +577,7 @@ const DemoForm = () => {
       {isSubmitted ? (
        <div className="text-center">
        {/* <h2 className="text-xl font-semibold">Thank you!</h2> */}
-       <p className="mt-8">An OTP has been sent to your contact details. Please verify it below.</p>
+       <p className="mt-8">An OTP has been sent to your email. Please verify it below.</p>
        {isOtpSent && (
          <form className="mt-8 border p-4 rounded-lg shadow-md">
            <input

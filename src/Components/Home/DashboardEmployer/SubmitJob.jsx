@@ -7,7 +7,7 @@ import categoriesList from '../Dashboard/AdminPanel/categories.json'
 const SubmitJobPost = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
- 
+  const [tagName, setTagName] = useState('');
   const [tags, setTags] = useState();
   const [category, setCategory] = useState("");
   const [minSalary, setMinSalary] = useState("");
@@ -33,7 +33,7 @@ const SubmitJobPost = () => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [qualificationInput, setQualificationInput] = useState("");
-  const [filteredQualifications, setFilteredQualifications] = useState([]);
+ 
   const [selectedQualifications, setSelectedQualifications] = useState([]);
   const [highestQualificatio, setHighestQualificatio] = useState('');
   const suggestionsRef = useRef(null);
@@ -48,6 +48,54 @@ const SubmitJobPost = () => {
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
   const [country, setCountry] = useState("");
+  const [filteredQualifications, setFilteredQualifications] = useState([
+    'Bachelors in Computer Science',
+    'Masters in Physics',
+    'Doctorate in Chemistry',
+    'Diploma in Engineering',
+    'MBA in Marketing',
+    'Bachelors in Electrical Engineering',
+    'Masters in Data Science',
+    'PhD in Artificial Intelligence',
+  ]);
+  
+
+  const handleInputChange1 = (e) => {
+    setQualificationInput(e.target.value);
+    filterQualifications(e.target.value);
+  };
+
+  const filterQualifications = (input) => {
+    if (input) {
+      setFilteredQualifications(
+        filteredQualifications.filter((qualification) =>
+          qualification.toLowerCase().includes(input.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredQualifications([
+        'Bachelors in Computer Science',
+        'Masters in Physics',
+        'Doctorate in Chemistry',
+        'Diploma in Engineering',
+        'MBA in Marketing',
+        'Bachelors in Electrical Engineering',
+        'Masters in Data Science',
+        'PhD in Artificial Intelligence',
+      ]);
+    }
+  };
+
+  const handleQualificationSelect = (qualification) => {
+    setSelectedQualifications(qualification);
+    setQualificationInput(qualification); // Set input to selected value
+    setFilteredQualifications([]); // Hide suggestions after selection
+  };
+
+  const handleClearSelection = () => {
+    setSelectedQualification('');
+    setQualificationInput(''); // Clear both input and selected qualification
+  };
 
   const qualifications1 = [
     "B.Sc. in Physics",
@@ -216,14 +264,15 @@ const SubmitJobPost = () => {
   const saveJobPost = async () => {
     const jobData = {
       title: jobTitle,
-      tags: {
-       name:tags,
-      },
+      tags,
       location: {
         type: "Point",
-        coordinates: [latitude,longitude],
-        landmark: "Nearby Landmark",
-        address: friendlyAddress,
+        coordinates: [latitude, longitude],
+        
+        address: address,
+        city:city,
+      state:state,
+      pincode:pincode,
       },
       salary: {
         min: parseInt(minSalary, 10),
@@ -244,10 +293,8 @@ const SubmitJobPost = () => {
      
       maxApplicants,
       lastDateToApply: applicationDeadline,
-      address,
-      city,
-      state,
-      pincode,
+      
+      
       country,
     };
 
@@ -307,21 +354,17 @@ const SubmitJobPost = () => {
     setFilteredQualifications(filtered);
   };
   
-  const handleQualificationSelect = (qualification) => {
-    const currentQualifications = qualificationInput
-      .split(",")
-      .map((q) => q.trim());
-
-    // Replace the last incomplete input with the selected suggestion
-    if (!currentQualifications.includes(qualification)) {
-      currentQualifications[currentQualifications.length - 1] = qualification;
+  
+  const handleAddTag = () => {
+    if (tagName.trim()) {
+      setTags((prevTags) => {
+        // Ensure prevTags is an array before updating
+        const updatedTags = Array.isArray(prevTags) ? [...prevTags, { name: tagName.trim(), active: true }] : [{ name: tagName.trim(), active: true }];
+        return updatedTags;
+      });
+      setTagName(''); // Clear input field
     }
-
-    setSelectedQualifications([...new Set([...selectedQualifications, qualification])]);
-    setQualificationInput(""); // Clear the input after selection
-    setFilteredQualifications([]); // Clear suggestions
   };
-
   const handleQualificationRemove = (qualificationToRemove) => {
     const updatedQualifications = selectedQualifications.filter(
       (q) => q !== qualificationToRemove
@@ -360,7 +403,7 @@ const SubmitJobPost = () => {
   };
   const handleMapChange = (newCoordinates) => {
     // Reverse the order of coordinates to ensure latitude is first and longitude is second
-    const reversedCoordinates = [newCoordinates[1], newCoordinates[0]];
+    const reversedCoordinates = [newCoordinates[0], newCoordinates[1]];
   
     setCoordinates(reversedCoordinates);
   
@@ -457,16 +500,17 @@ const SubmitJobPost = () => {
       <label className="block   mb-2">
         Qualifications
       </label>
+      <div className="relative">
       <input
         type="text"
         className="w-full p-2 border border-gray-300 rounded-lg mb-4"
         value={qualificationInput}
-        onChange={handleInputChange}
+        onChange={handleInputChange1}
         placeholder="Type to search qualifications..."
       />
 
       {/* Suggestions Dropdown */}
-      {filteredQualifications.length > 0 && (
+      {filteredQualifications.length > 0 && qualificationInput && (
         <ul
           ref={suggestionsRef}
           className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
@@ -483,29 +527,27 @@ const SubmitJobPost = () => {
         </ul>
       )}
 
-      {/* Selected Qualifications */}
-      {selectedQualifications.length > 0 && (
+      {/* Selected Qualification */}
+      {selectedQualifications&& (
         <div className="mb-4">
-          <h2 className="text-md mb-2">Selected Qualifications:</h2>
-          <div className="flex flex-wrap gap-2">
-            {selectedQualifications.map((qualification, index) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-3 rounded-lg flex items-center"
-              >
-                {qualification}
-                <button
-                  onClick={() => handleQualificationRemove(qualification)}
-                  className="ml-2 text-red-500 hover:text-red-700"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
+          <h2 className="text-md mb-2">Selected Qualification:</h2>
+          {/* <input
+            type="text"
+            value={selectedQualifications}
+            className="w-full p-2 border border-gray-300 rounded-lg"
+            disabled
+            readOnly
+          /> */}
+          {/* <button
+            onClick={handleClearSelection}
+            className="ml-2 text-red-500 hover:text-red-700"
+          >
+            ×
+          </button> */}
         </div>
       )}
     </div>
+    /</div>
 
             <div className="mb-4 grid grid-cols-2 gap-4">
               <div>
@@ -617,16 +659,41 @@ const SubmitJobPost = () => {
         </div>
       )}
     </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Tags</label>
-              <input
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-              />
-            
+    <div>
+      {/* Input field to add tags */}
+      <input
+        type="text"
+        value={tagName}
+        onChange={(e) => setTagName(e.target.value)}
+        placeholder="Enter tag name"
+        className="w-full p-2 border border-gray-300 rounded mb-2"
+      />
+      <button
+        onClick={handleAddTag}
+        className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
+      >
+        Add Tag
+      </button>
+
+      {/* Display tags */}
+      <h3>Active Tags:</h3>
+      <div>
+        {Array.isArray(tags) && tags.length > 0 ? (
+          tags.map((tag, index) => (
+            <div key={index}>
+              {tag.name} (Active: {tag.active ? 'Yes' : 'No'})
             </div>
+          ))
+        ) : (
+          <p>No tags available</p>
+        )}
+      </div>
+    </div>
+
+
+
+
+
             <div className="mb-4">
               <label className="block text-gray-700">Address</label>
               <input

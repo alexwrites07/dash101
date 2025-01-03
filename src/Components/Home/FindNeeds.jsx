@@ -58,7 +58,7 @@ const NeedsFinder = () => {
         return;
       }
 
-      const response = await axios.get('https://server.avyudha.com/learning-needs', {
+      const response = await axios.get('https://server.avyudha.com/learning-needs?limit=1000', {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',

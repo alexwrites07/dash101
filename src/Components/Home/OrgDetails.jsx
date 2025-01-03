@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Jobs/Map';
 import StarRating from './Jobs/StarRating';
@@ -7,10 +7,13 @@ import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import './Home.css';
 
 const OrgDescription = () => {
+  const navigate = useNavigate();
   const { iid } = useParams();
+  const [contactDetails, setContactDetails] = useState(null);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [job, setJob] = useState(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
-
+  const [isContactUnlocked, setIsContactUnlocked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -37,11 +40,43 @@ const OrgDescription = () => {
         console.error('Error fetching reviews:', error);
       }
     };
+    const fetchUnlockedContacts = async () => {
+      console.log (iid);
+      try {
+        const token = localStorage.getItem('token');
+        const type = localStorage.getItem('type');
+        // Replace with the actual Id you're comparing against, make sure it's a string or ObjectId
+        
+        if (!token || !type) return;
+    
+        const response = await axios.get(`https://server.avyudha.com/purchasedContacts`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        // Debugging: Log the ID and contactInfo.id to verify if they match
+        console.log("Comparing Id:", `${iid}`);
+    
+        const purchasedContact1 = response.data?.purchasedContacts?.find(
+          (contact) => contact.contactInfo.id.toString() === iid.toString() // Convert both to strings for accurate comparison
+        ) || null;
+    
+        console.log("Found Contact:", purchasedContact1); // Log the found contact or null if not found
+    
+        // Set unlockedContacts status based on whether the contact is found
+        if (purchasedContact1) {
+          setIsContactUnlocked(true);
+        } else {
+          setIsContactUnlocked(false);
+        }
+      } catch (error) {
+        console.error('Error fetching unlocked contacts:', error);
+      }
+    };
     const fetchBookmarkStatus = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          console.warn("Authentication token not found.");
+          console.warn("Please Login");
           return;
         }
   
@@ -60,6 +95,7 @@ const OrgDescription = () => {
     fetchBookmarkStatus();
     fetchJobDetails();
     fetchReviews();
+    fetchUnlockedContacts();
     
   }, [iid]);
 
@@ -68,7 +104,7 @@ const OrgDescription = () => {
     const token = localStorage.getItem('token'); // Adjust if your token is stored differently
     
     if (!token) {
-      alert("Authentication token not found. Please log in again.");
+      navigate('/login')
       return;
     }
   
@@ -108,6 +144,32 @@ const OrgDescription = () => {
       alert('Only Tutors can bookmark.');
     }
   };
+  
+  const ContactModal = ({ contactDetails, isContactModalOpen, setIsContactModalOpen }) => {
+    return (
+      isContactModalOpen && contactDetails && (
+        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+          <div className="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Contact Details</h2>
+            
+            {/* Displaying Contact Number */}
+            <p><strong>Contact Number:</strong> {contactDetails?.contactNumber || 'Contact number not available'}</p>
+  
+            {/* Displaying Email */}
+            <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
+  
+            {/* Close Button */}
+            <button 
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => setIsContactModalOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )
+    );
+  };
   const buyContact = async () => {
     if (!iid) {
       console.error(' ID not available');
@@ -143,7 +205,40 @@ const OrgDescription = () => {
     setSubmittedComment(comment);
     setComment('');
   };
+  const handleViewContact = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
 
+    try {
+      const response = await axios.get('https://server.avyudha.com/purchasedContacts', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    
+      // Loop through purchasedContacts array and find the contact with matching ID
+      const purchasedContact = response.data?.purchasedContacts?.find(
+        (contact) => contact.contactInfo.id === iid // Access contactInfo.id
+      )?.contactInfo || null; // If not found, return null
+    
+      console.log(purchasedContact);
+    
+      if (purchasedContact) {
+        setContactDetails(purchasedContact
+
+          
+        );  // Set the contact details to your state
+        setIsContactModalOpen(true);  // Open modal with contact details
+      } else {
+        alert('Contact not found in purchased contacts.');
+      }
+    } catch (error) {
+      console.error('Error fetching contact details:', error);
+      alert('Failed to fetch contact details.');
+    }
+    
+  };
   if (error) return <p>{error}</p>;
   if (!job) return <p>Loading...</p>;
 
@@ -179,11 +274,20 @@ const OrgDescription = () => {
             {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
           </button> */}
       
-  <button
-    onClick={buyContact}
-    className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-    Buy Contacts (100 coins)
-  </button>
+      {isContactUnlocked ? (
+            <button onClick={handleViewContact} className="bg-[#6699CC] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+              View Contact
+            </button>
+          ) : (
+            <button onClick={buyContact} className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
+              Buy Contact ({job.contactCost} coins)
+            </button>
+          )}
+          <ContactModal 
+        contactDetails={contactDetails} 
+        isContactModalOpen={isContactModalOpen} 
+        setIsContactModalOpen={setIsContactModalOpen}
+      />
         </div>
       </div>
 

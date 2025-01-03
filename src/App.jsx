@@ -11,6 +11,7 @@ import InstituteProfileView from './Components/Home/Dashboard/AdminPanel/Feature
 import DemoForm from './Components/Home/DemoForm.jsx';
 import EmployerProfileView from './Components/Home/Dashboard/AdminPanel/OrganisationProfile.jsx';
 import Home from './Components/Home/Home';
+import FAQ from './Components/Home/FAQs.jsx'
 import Error404 from './Components/Home/Error.jsx';
 import Sidebar from './Components/Home/Dashboard/AdminPanel/AdminSidebar.jsx';
 import SignUp from './Components/Auth/SignUp';
@@ -190,8 +191,10 @@ function AppContent() {
         <Route path="/jobs/edit/:id" element={<EditJob />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/jobpost" element={<JobPost />} />
+        <Route path="/faqs" element={<FAQ />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/getOrg/:iid" element={<OrgDescription/>} />
+
         <Route path="/getNeed/:IId" element={<NeedDescription/>} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/purchasedcontacts" element={<PurchasedContacts />} />

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import TutorFinder from '../Findtutor';
 const MyClasses = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

@@ -1,46 +1,68 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Map = ({ coordinates, onCoordinatesChange }) => {
-  // Initialize state in [latitude, longitude] format
-  const [currentPosition, setCurrentPosition] = useState([coordinates[0], coordinates[1]]);
+  const [currentPosition, setCurrentPosition] = useState(coordinates || [0, 0]);
+  const [address, setAddress] = useState('');
+  const [apiKey, setApiKey] = useState('AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw');
+  const fetchAddress = async (lat, lng) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+      );
+      if (response.data.results.length > 0) {
+        setAddress(response.data.results[0].formatted_address);
+      } else {
+        setAddress('No address found');
+      }
+    } catch (error) {
+      console.error('Error fetching address:', error);
+      setAddress('Error fetching address');
+    }
+  };
 
   useEffect(() => {
-    if (!coordinates) return;
+    if (coordinates) {
+      setCurrentPosition(coordinates);
+      fetchAddress(coordinates[0], coordinates[1]);
+    }
+  }, [coordinates]);
 
+  const handleMapClick = async (event) => {
+    const newCoordinates = [event.latLng.lat(),event.latLng.lng()];
+    setCurrentPosition(newCoordinates);
+    onCoordinatesChange(newCoordinates);
+    await fetchAddress(newCoordinates[0], newCoordinates[1]);
+  };
+
+  useEffect(() => {
     const mapElement = document.getElementById('map');
     if (!mapElement) return;
 
-    // Initialize the map with the coordinates in [latitude, longitude] format
     const map = new window.google.maps.Map(mapElement, {
-      center: { lat: coordinates[0], lng: coordinates[1] }, // Correct format: lat for latitude, lng for longitude
+      center: { lat: currentPosition[0], lng: currentPosition[1] },
       zoom: 12,
     });
 
     const marker = new window.google.maps.Marker({
-      position: { lat: coordinates[0], lng: coordinates[1] },
+      position: { lat: currentPosition[0], lng: currentPosition[1] },
       map: map,
       draggable: true,
     });
 
-    // Handle marker drag end event
-    marker.addListener('dragend', (event) => {
-      const newCoordinates = [event.latLng.lat(), event.latLng.lng()]; // [latitude, longitude]
+    marker.addListener('dragend', async (event) => {
+      const newCoordinates = [event.latLng.lat(), event.latLng.lng()];
       setCurrentPosition(newCoordinates);
-      onCoordinatesChange(newCoordinates); // Send [latitude, longitude] to parent
+      onCoordinatesChange(newCoordinates);
+      await fetchAddress(newCoordinates[0], newCoordinates[1]);
     });
 
-    // Handle map click event
-    map.addListener('click', (event) => {
-      const newCoordinates = [event.latLng.lat(), event.latLng.lng()]; // [latitude, longitude]
-      setCurrentPosition(newCoordinates);
-      onCoordinatesChange(newCoordinates); // Send [latitude, longitude] to parent
-      marker.setPosition(event.latLng); // Update marker position on click
-    });
+    map.addListener('click', handleMapClick);
 
     return () => {
       marker.setMap(null);
     };
-  }, [coordinates, onCoordinatesChange]);
+  }, [currentPosition, onCoordinatesChange]);
 
   return (
     <div>
@@ -48,6 +70,7 @@ const Map = ({ coordinates, onCoordinatesChange }) => {
       <div className="coordinates-display">
         <p>Latitude: {currentPosition[0]}</p>
         <p>Longitude: {currentPosition[1]}</p>
+        <p>Address: {address}</p>
       </div>
     </div>
   );
