@@ -9,8 +9,8 @@ const TeachingSection = () => {
         <div className="flex-1 md:pr-8 mb-8 md:mb-0">
           <h2 className="text-3xl md:text-4xl text-[#041F96] font-bold mb-4">Want to Teach?</h2>
           <p className="text-lg text-gray-800 mb-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eget neque non
-            ligula interdum venenatis.
+        <em>
+  Join Avyudha.com and connect with more than 7,000+ tutors, 100+ organizations on the platform. Create a strong profile and grow your network.  </em>
           </p>
           <Link to="/login">
             <button className="bg-[#041F96] text-white py-2 px-4 rounded-lg hover:bg-[#041F96] focus:outline-none">

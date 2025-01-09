@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { HiCreditCard, HiOutlineSwitchHorizontal, HiMail, HiCalendar, HiLogout, HiX, HiKey, HiViewGrid, HiUpload, HiBriefcase, HiBookmark, HiBell, HiUsers } from 'react-icons/hi';
+import { HiCreditCard, HiOutlineSwitchHorizontal,HiClipboard,HiLibrary, HiMail, HiCalendar, HiLogout, HiX, HiKey, HiViewGrid, HiUpload, HiBriefcase, HiBookmark, HiBell, HiUsers } from 'react-icons/hi';
 import './SideBar.css';
 import { HiMenu, HiUser } from 'react-icons/hi'; 
 
@@ -30,7 +30,10 @@ const Sidebar = ({ activeTab }) => {
   if (userType === 'tutor') {
     sidebarLinks = [
       { to: '/dashboard', icon: <HiViewGrid className="w-6 h-6" />, label: 'User Dashboard' },
+
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
+      { to: '/jobpost', icon: <HiClipboard className="w-6 h-6" />, label: 'Jobs' },
+      { to: '/needpost', icon: <HiLibrary className="w-6 h-6" />, label: 'Needs' },
       { to: '/upload-resume', icon: <HiUpload className="w-6 h-6" />, label: 'Uploads' },
       { to: '/applied-company', icon: <HiBriefcase className="w-6 h-6" />, label: 'My Applied' },
       { to: '/shortlist-jobs', icon: <HiBookmark className="w-6 h-6" />, label: 'Shortlist Jobs' },
@@ -42,6 +45,7 @@ const Sidebar = ({ activeTab }) => {
     sidebarLinks = [
       { to: '/dashboard', icon: <HiViewGrid className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Your Profile' },
+      {to: '/findtutor', icon: <HiClipboard className="w-6 h-6" />, label: 'Tutors' },
       { to: '/learningneeds', icon: <HiBriefcase className="w-6 h-6" />, label: 'Learning Needs' },
       { to: '/myclasses', icon: <HiCalendar className="w-6 h-6" />, label: 'My Classes' },
       { to: '/purchasedcontacts', icon: <HiUsers className="w-6 h-6" />, label: 'Purhcased Contacts' },
@@ -51,6 +55,7 @@ const Sidebar = ({ activeTab }) => {
     sidebarLinks = [
       { to: '/dashboard', icon: <HiBell className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
+      {to: '/findtutor', icon: <HiClipboard className="w-6 h-6" />, label: 'Tutors' },
       { to: '/my-jobs-employer', icon: <HiBriefcase className="w-6 h-6" />, label: 'My Jobs' },
       { to: '/upload-resume-employer', icon: <HiUpload className="w-6 h-6" />, label: 'Submit Job' },
 
@@ -75,7 +80,7 @@ const Sidebar = ({ activeTab }) => {
         className={`min-h-[400px] fixed top-24 left-0 w-80 h-screen pt-10 bg-white shadow-lg border-r-2 border-gray-200 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 lg:translate-x-0 overflow-y-auto`}
         aria-label="Sidebar"
       >
-        <div className="h-[800px] px-3 pb-4 bg-white mb-12">
+        <div className="h-[850px] px-3 pb-4 bg-white mb-12">
           <ul className="space-y-2 font-medium">
             <li className="text-black mb-2">
               <p>Welcome User</p> {/* Replace with user email */}

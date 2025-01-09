@@ -5,6 +5,7 @@ import AdminProfile from './Components/Home/Dashboard/AdminPanel/AdminProfile.js
 import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
 import TestimonialPage from './Components/Home/Dashboard/AdminPanel/FeaturedTestinomials.jsx';
 import Login from './Components/Auth/Login';
+import JobPostManagement from './Components/Home/DashboardEmployer/EditJobsEmployer.jsx';
 import EditTutor from './Components/Home/Dashboard/AdminPanel/TeacherEdit.jsx';
 import StudentEdit from './Components/Home/Dashboard/AdminPanel/StudentEdit.jsx';
 import InstituteProfileView from './Components/Home/Dashboard/AdminPanel/FeaturedInstitute.jsx';
@@ -139,7 +140,7 @@ function AppContent() {
     || location.pathname === '/meetings-employer' || location.pathname === '/update-password-employer'
     || location.pathname === '/upload-resume-employer' || location.pathname === '/your-profile-employer' 
     || location.pathname === '/locations-employer' || location.pathname === '/shortlist-jobs-employer'
-    || location.pathname === '/wallet' ||location.pathname === '/edit-job/:jobid'
+    || location.pathname === '/wallet' ||location.pathname === '/edit-job/:jobid'||location.pathname === '/edit-job-employer/:jobId'
     || location.pathname === '/learning-need-posts'|| location.pathname === '/reviews-rating'
     || location.pathname === '/pricing-employer'||location.pathname === '/user-dashboard-employer'
     ||location.pathname === '/applied-company-employer'|| location.pathname === '/delete-profile-employer'||Location.pathname === '/edit-job'
@@ -247,6 +248,7 @@ function AppContent() {
         <Route path="/edit-category/:id" element={<CategoryEdit />}  />
         <Route path="/my-jobs-employer" element={<MyJobs />} />
         <Route path="/edit-job/:jobid" element={<EditJobs />} />
+        <Route path="/edit-job-employer/:jobId" element={<JobPostManagement />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/add-tags" element={<Tag/>}/>
         <Route path="/edit-job-post" element={<EditJobPost/>}/>

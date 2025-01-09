@@ -6,12 +6,13 @@ export default function ContactUs() {
     <div className="bg-gray-100 min-h-screen flex flex-col mt-6 items-center mx-auto">
       <div className="lg:p-10 p-2 -mt-8 lg:mt-8 md:h-[500px] h-[200px] w-full">
         <div className="h-full w-full">
-          <iframe
-            className="h-full w-full rounded-lg shadow-2xl  max-w-7xl  mx-auto"
-            src="https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1sLondon+Eye,+London,+United+Kingdom!5e0!6i14"
-            allowFullScreen=""
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+        <iframe
+  className="h-full w-full rounded-lg shadow-2xl max-w-7xl mx-auto"
+  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3669.2388746229427!2d85.1344444!3d25.6102778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1700000000000"
+  allowFullScreen=""
+  referrerPolicy="no-referrer-when-downgrade"
+></iframe>
+
         </div>
       </div>
       <title>24x7 Support for Your Machines | Contact Us</title>
@@ -38,9 +39,9 @@ export default function ContactUs() {
               <HiOutlineOfficeBuilding className="text-primary lg:text-3xl text-2xl" />
               <p className="text-primary lg:text-2xl font-semibold text-xl mb-2">Head Office</p>
             </div>
-            <p className="text-[12px] lg:text-[16px]">229, Udyog Bhavan, Sonawala Road,</p>
-            <p className="text-[12px] lg:text-[16px]">Goregaon East, Mumbai,</p>
-            <p className="text-[12px] lg:text-[16px]">Maharashtra 400063, India</p>
+            <p className="text-[12px] lg:text-[16px]">ACS pvt ltd.</p>
+            <p className="text-[12px] lg:text-[16px]">B HUB, 5th floor, Block A, Maurya Lok Complex</p>
+            <p className="text-[12px] lg:text-[16px]">PATNA, Bihar, India – 800001</p>
           </div>
 
           <div className="lg:w-[30%] w-full text-center">
@@ -48,7 +49,7 @@ export default function ContactUs() {
               <HiOutlinePhone className="text-primary lg:text-3xl text-2xl" />
               <p className="text-primary lg:text-2xl font-semibold text-xl mb-2">Contact</p>
             </div>
-            <p>+91 932 233 84 15</p>
+            <p>+91 700 312 89 93</p>
           </div>
 
           <div className="lg:w-[30%] w-full text-center">
@@ -56,7 +57,7 @@ export default function ContactUs() {
               <HiOutlineMail className="text-primary lg:text-3xl text-2xl" />
               <p className="text-primary lg:text-2xl font-semibold text-xl mb-2">Email</p>
             </div>
-            <p>hello@avyudha.com</p>
+            <p>mail@kridhatutor.com</p>
           </div>
         </div>
 

@@ -9,9 +9,25 @@ const ManageJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
+  const [jobData, setJobData] = useState({
+    title: '',
+    description: '',
+    salary: '',
+    careerLevel: '',
+    experience: '',
+    gender: 'Any',
+    qualificationInput: '',
+    tags: [],
+    location: '',
+    city: '',
+    state: '',
+    pinCode: '',
+    category: '',
+  });
+  const [jobIdToEdit, setJobIdToEdit] = useState(null);
   const navigate = useNavigate();
-
   const token = localStorage.getItem('token');
+
   // Fetch posted jobs from API
   useEffect(() => {
     const fetchJobs = async () => {
@@ -22,72 +38,13 @@ const ManageJobs = () => {
             'Content-Type': 'application/json',
           },
         });
-
         setJobs(response.data); // Assuming the jobs data is in response.data
       } catch (error) {
         console.error('Error fetching jobs:', error);
       }
     };
-
     fetchJobs();
-  }, []);
-
-  // Toggle job open/close status
-  const handleLockJob = async (jobId) => {
-    try {
-      const response = await axios.patch(
-        `https://server.avyudha.com/jobs/${jobId}/toggle-close`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      
-      const updatedJob = response.data.job;
-
-      // Update the job in local state with new 'isClosed' value
-      const updatedJobs = jobs.map((job) =>
-        job.job._id === updatedJob._id ? { ...job, job: { ...job.job, isClosed: updatedJob.isClosed } } : job
-      );
-      setJobs(updatedJobs);
-
-      console.log('Job status toggled:', response.data.message);
-    } catch (error) {
-      console.error('Error toggling job status:', error);
-    }
-  };
-
-  // Handle editing a job
-  const handleEditJob = (job) => {
-    navigate(`/edit-job/` + job.job._id);
-  };
-
-  // Handle removing a job
-  const handleRemoveJob = async (jobId) => {
-    // Ask for confirmation before deleting
-    const isConfirmed = window.confirm("Are you sure you want to delete this job?");
-    if (!isConfirmed) return; // Exit if the user cancels
-  
-    try {
-      const response = await axios.delete(`https://server.avyudha.com/deleteJob/${jobId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (response.status === 200) {
-        // Update job list after successful deletion
-        setJobs((prevJobs) => prevJobs.filter((job) => job.job._id !== jobId));
-      }
-    } catch (error) {
-      console.error('Error deleting job:', error);
-    }
-  };
-  
+  }, [token]);
 
   // Handle search input
   const handleSearch = (e) => {
@@ -112,6 +69,110 @@ const ManageJobs = () => {
       }
       return 0;
     });
+
+  // Fetch job details for editing
+  const fetchJobDetails = async (jobId) => {
+    try {
+      const response = await axios.get(`https://server.avyudha.com/getjobs/${jobIdToEdit}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const job = response.data;
+      setJobData({
+        title: job.title,
+        description: job.description,
+        salary: job.salary,
+        careerLevel: job.careerLevel,
+        experience: job.experience,
+        gender: job.gender,
+        qualificationInput: job.qualificationInput,
+        tags: job.tags,
+        location: job.location,
+        city: job.city,
+        state: job.state,
+        pinCode: job.pinCode,
+        category: job.category,
+      });
+      setJobIdToEdit(jobId);
+    } catch (error) {
+      console.error('Error fetching job details:', error);
+    }
+  };
+
+  // Handle updating job details
+  const handleUpdateJob = async () => {
+    try {
+      const response = await axios.put(
+        `https://server.avyudha.com/updateJob/${jobIdToEdit}`,
+        jobData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log('Job updated:', response.data);
+      // After successful update, navigate back to the job management page
+      navigate('/manage-jobs');
+    } catch (error) {
+      console.error('Error updating job:', error);
+    }
+  };
+
+  // Toggle job open/close status
+  const handleLockJob = async (jobId) => {
+    try {
+      const response = await axios.patch(
+        `https://server.avyudha.com/jobs/${jobId}/toggle-close`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const updatedJob = response.data.job;
+      const updatedJobs = jobs.map((job) =>
+        job.job._id === updatedJob._id ? { ...job, job: { ...job.job, isClosed: updatedJob.isClosed } } : job
+      );
+      setJobs(updatedJobs);
+      console.log('Job status toggled:', response.data.message);
+    } catch (error) {
+      console.error('Error toggling job status:', error);
+    }
+  };
+
+  // Handle editing a job
+  const handleEditJob = (jobId) => {
+    fetchJobDetails(jobId); // Fetch the job details to populate the fields
+    navigate(`/edit-job-employer/${jobId}`); // Navigate to the job edit page
+  };
+
+  // Handle removing a job
+  const handleRemoveJob = async (jobId) => {
+    const isConfirmed = window.confirm("Are you sure you want to delete this job?");
+    if (!isConfirmed) return;
+
+    try {
+      const response = await axios.delete(`https://server.avyudha.com/deleteJob/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        setJobs((prevJobs) => prevJobs.filter((job) => job.job._id !== jobId));
+      }
+    } catch (error) {
+      console.error('Error deleting job:', error);
+    }
+  };
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -157,8 +218,9 @@ const ManageJobs = () => {
                   {filteredJobs.map((job) => (
                     <tr key={job.job._id}>
                       <td className="py-2 px-4 border-b">
-                      <Link to={`/getjobs/${job.job._id}`} className="text-blue-500 hover:underline">
-                        <p className="font-semibold">{job.job.title}</p></Link>
+                        <Link to={`/getjobs/${job.job._id}`} className="text-blue-500 hover:underline">
+                          <p className="font-semibold">{job.job.title}</p>
+                        </Link>
                         {job.job.tags.find(tag => tag.active && tag.name === 'featured') && <span className="bg-yellow-200 text-yellow-800 px-2 py-1 text-sm rounded-full ml-1">Featured</span>}
                         {job.job.tags.find(tag => tag.active && tag.name === 'urgent') && <span className="bg-red-200 text-red-800 px-2 py-1 text-sm rounded-full ml-1">Urgent</span>}
                         <p className="text-gray-600 flex items-center">
@@ -173,23 +235,28 @@ const ManageJobs = () => {
                         Expiry date: {new Date(job.job.lastDateToApply).toLocaleDateString()}
                       </td>
                       <td className="py-2 px-4 border-b">{job.job.isClosed ? 'Closed' : 'Open'}</td>
-                      <td className="py-2 px-4 border-b">
-                      <button 
-  onClick={() => handleLockJob(job.job._id)}
-  className={`mr-2 ${job.job.isClosed ? 'text-green-600' : 'text-blue-600'} hover:${job.job.isClosed ? 'text-green-800' : 'text-blue-800'}`}
-  title={job.job.isClosed ? 'Open' : 'Close'} // Tooltip for the lock/unlock button
->
-  {job.job.isClosed ? <FaUnlock /> : <FaLock />}
-</button>
-
-<button 
-  onClick={() => handleRemoveJob(job.job._id)}
-  className="text-blue-500"
-  title="Delete" // Tooltip for the delete button
->
-  <FaTimes />
-</button>
-
+                      <td className="py-2 px-4 border-b flex items-center">
+                        <button 
+                          onClick={() => handleLockJob(job.job._id)}
+                          className={`mr-2 ${job.job.isClosed ? 'text-green-600' : 'text-blue-600'} hover:${job.job.isClosed ? 'text-green-800' : 'text-blue-800'}`}
+                          title={job.job.isClosed ? 'Open' : 'Close'}
+                        >
+                          {job.job.isClosed ? <FaUnlock /> : <FaLock />}
+                        </button>
+                        <button 
+                          onClick={() => handleEditJob(job.job._id)}
+                          className="text-yellow-500 hover:text-yellow-800 mr-2"
+                          title="Edit"
+                        >
+                          <FaPencilAlt />
+                        </button>
+                        <button 
+                          onClick={() => handleRemoveJob(job.job._id)}
+                          className="text-blue-500"
+                          title="Delete"
+                        >
+                          <FaTimes />
+                        </button>
                       </td>
                     </tr>
                   ))}

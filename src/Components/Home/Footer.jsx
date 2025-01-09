@@ -9,9 +9,9 @@ const Footer = () => {
           {/* Contact Information */}
           <div className="w-full md:w-1/4 mb-6">
             <h2 className="text-xl font-bold mb-4">Contact Us</h2>
-            <p>Call us: 123 456 7890</p>
-            <p>Darbhanga, Bihar, India.</p>
-            <p>Email: kridha@kridha.com</p>
+            <p>ACS pvt ltd.</p>
+            <p>B HUB, 5th floor, Block A, Maurya Lok Complex</p>
+            <p>PATNA, Bihar,India – 800001</p>
             
       {/* Download App Section */}
       <div className="flex  mt-12 mb-6">

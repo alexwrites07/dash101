@@ -235,7 +235,7 @@ export default function SignUp() {
                                             ) : (
                                                 <form className="space-y-4 lg:space-y-6" onSubmit={handleOtpSubmit}>
                                                     <h1 className="text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl">
-                                                        Enter OTP
+                                                        Enter OTP (in email)
                                                     </h1>
                                                     <div>
                                                         <label htmlFor="otp" className="block mb-1 text-sm font-medium text-blue-500">OTP</label>

@@ -2763,4 +2763,3 @@ const editimage = async () => {
   
 
 export default YourProfile;
-
