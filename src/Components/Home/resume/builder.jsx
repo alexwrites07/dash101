@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Resume from './resume.jsx';
-import Section from './Section.jsx';
+import Section from './section.jsx';
 import html2pdf from 'html2pdf.js';
 import { Modal,Button } from 'flowbite-react';
 import AcademicDetails from './academicModal.jsx';
