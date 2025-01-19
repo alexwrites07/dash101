@@ -119,7 +119,7 @@ const AlertJobs = () => {
         <Sidebar />
         <div className="flex-1 lg:ml-24">
           <Header />
-          <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
+          <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 mt-24 flex flex-col items-center lg:items-start w-full">
             <h3 className='font-semibold'>Set Candidate Alerts</h3>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -150,18 +150,21 @@ const AlertJobs = () => {
 
 <div className="mb-4">
             <label htmlFor="categories" className="block ">Requirements:</label>
-            <div className="mb-4 relative">
-        <input
-          type="text"
-          value={inputText1}
-          onChange={handleCategoryInputChange}
-          placeholder="Type to search requirements..."
-          className="w-full p-2 border border-gray-300 rounded-lg"
-        />
+            <div className="mb-4">
+            <div className="">
+  <input
+    type="text"
+    value={inputText1}
+    onChange={handleCategoryInputChange}
+    placeholder="Type to search requirements..."
+    className="w-full p-2 border border-gray-300 rounded-lg mt-4 -z-0 "
+  />
+</div>
+
 
         {/* Suggestions Dropdown */}
         {suggestions1.length > 0 && (
-          <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
+          <ul className=" left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
             {suggestions1.map((category, index) => (
               <li
                 key={index}

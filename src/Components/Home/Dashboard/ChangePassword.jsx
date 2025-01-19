@@ -75,7 +75,7 @@ const UpdatePassword = () => {
 
           <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
             <form onSubmit={handleSubmit}>
-              <div className="mb-4 relative">
+              <div className="mb-4 ">
                 <label htmlFor="oldPassword" className="block text-gray-700 font-semibold mb-2">
                   Old Password
                 </label>
@@ -95,7 +95,7 @@ const UpdatePassword = () => {
                 </span>
               </div>
 
-              <div className="mb-4 relative">
+              <div className="mb-4 ">
                 <label htmlFor="newPassword" className="block text-gray-700 font-semibold mb-2">
                   New Password
                 </label>
@@ -115,7 +115,7 @@ const UpdatePassword = () => {
                 </span>
               </div>
 
-              <div className="mb-4 relative">
+              <div className="mb-4 ">
                 <label htmlFor="retypePassword" className="block text-gray-700 font-semibold mb-2">
                   Retype Password
                 </label>

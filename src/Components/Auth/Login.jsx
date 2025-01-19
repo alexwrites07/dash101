@@ -66,6 +66,7 @@ export default function Login() {
                 // Store token and type in local storage
                 localStorage.setItem("token", token);
                 localStorage.setItem("type", type);
+                console.log(token);
 
                 // Redirect to the appropriate dashboard
                 navigate(type === "admin" ? "/student-profiles" : "/your-profile");

@@ -81,8 +81,11 @@ import Catagories from './Components/Home/Catagories';
 import EditBlogPage from './Components/Home/Dashboard/AdminPanel/EditBlogs.jsx';
 import TeachingDescription from './Components/Home/Jobs/TeachingDescription.jsx';
 import NeedsFinder from './Components/Home/FindNeeds.jsx';
+import ResumeBuilder from './Components/Home/resume/builder.jsx'
+import TermsAndConditions from './Components/Home/Terms.jsx';
 // import WidgetCatagory from './Components/Home/Dashboard/AdminPanel/WidgetCatagory.jsx';
 import StudentProfileView from './Components/Home/Dashboard/AdminPanel/StudentProfile.jsx';
+import RefundPolicy from './Components/Home/Refund.jsx';
 import Category from './Components/Home/Dashboard/AdminPanel/Category.jsx';
 import HeroSectionManager from './Components/Home/Dashboard/AdminPanel/FeaturedHero.jsx';
 import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/FeaturedCategory.jsx';
@@ -93,6 +96,7 @@ import WalletManager from './Components/Home/Dashboard/AdminPanel/Wallet.jsx';
 import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
 import DpEditDelete from './Components/Home/Dashboard/AdminPanel/DP.jsx';
 import Doc from './Components/Home/Dashboard/AdminPanel/DocVerify.jsx';
+import PrivacyPolicy from './Components/Home/Privacy.jsx';
 
 function AdminRoute({ element: Component, ...rest }) {
   const userType = localStorage.getItem('type'); // Get userType from localStorage
@@ -177,6 +181,9 @@ function AppContent() {
         <Route path="/learningneeds" element={<LearningNeeds />} />
         <Route path="/myclasses" element={<MyClasses/>} />
         <Route path="/reviews" element={<Reviews/>} />
+        <Route path="/privacy" element={<PrivacyPolicy/>} />
+        <Route path="/terms" element={<TermsAndConditions/>} />
+        <Route path='/resume' element={<ResumeBuilder/>}/>
         {/* <Route path='/resume' element={<ResumeBuilder/>}/> */}
         <Route path="/demo-form" element={<DemoForm />} />
         <Route path="/organizationpost" element={<OrganizationFinder />} />
@@ -188,6 +195,7 @@ function AppContent() {
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/dpchange" element={<DpEditDelete />} />
         <Route path="/docchange" element={<Doc />} />
+        <Route path="/refund" element={<RefundPolicy />} />
         <Route path="/Catagories" element={<Catagories />} />
         <Route path="/jobs/edit/:id" element={<EditJob />} />
         <Route path="/logout" element={<Logout />} />

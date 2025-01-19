@@ -296,7 +296,7 @@ const AlertJobs = () => {
         <Sidebar />
         <div className="flex-1 lg:ml-24">
           <Header />
-          <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
+          <div className="lg:ml-64 lg:mt-18 p-4 mt-36 lg:p-28 flex flex-col items-center lg:items-start w-full">
             <h3 className="font-semibold">Set Candidate Alerts</h3>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -335,7 +335,7 @@ const AlertJobs = () => {
             </div> */}
           <div className="mb-4">
             <label htmlFor="categories" className="block ">Categories:</label>
-            <div className="mb-4 relative">
+            <div className="mb-4 ">
         <input
           type="text"
           value={inputText1}
@@ -383,7 +383,7 @@ const AlertJobs = () => {
         </div>
       )}
     </div>
-    <div className="relative">
+    <div className="">
       <label className="block   mb-2">
         Qualifications
       </label>

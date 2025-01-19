@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import ContactUsForm from "../ContactUsForm";
+import ContactDashboard from "../ContactDashboard";
 import { HiUser, HiStar, HiEye, HiBriefcase, HiBookmark, HiCheck } from "react-icons/hi";  // Use HiCheck instead of HiCheckCircle
 
 const UserDashboard = () => {
@@ -258,7 +258,7 @@ const UserDashboard = () => {
         </div>
         <div className="ml-36 my-4">
           <p className="text-2xl mb-6">Help and Support</p>
-          <ContactUsForm/></div>
+          <ContactDashboard/></div>
       </div>
     </div>
   );

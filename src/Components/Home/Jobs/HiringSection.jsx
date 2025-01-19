@@ -20,13 +20,13 @@ const HiringSection = () => {
             Do You Need a Teacher?
           </h2>
           <p className="text-lg text-gray-800 mb-4">
-          <br />  <em>
-  Avyudha.com is your one-stop solution. With more than 8,000+ tutors and fast increasing, our strong database can provide tutors with the best quality and affordability customized just for your needs.  </em>
+          <br />  
+  Avyudha.com is your one-stop solution. With more than 8,000+ tutors and fast increasing, our strong database can provide tutors with the best quality and affordability customized just for your needs. 
   <br /><br />  
           </p>
           <div className="text-left">
           <Link to="/login">
-            <button className="bg-[#041F96] text-white py-2 px-4 rounded-lg hover:bg-[#041F96] focus:outline-none">
+            <button className="bg-[#041F96] text-white py-2 px-4 rounded-lg hover:bg-[#041F96]  hover:bg-blue-700 focus:outline-none">
               Let's Connect
             </button>
             </Link>

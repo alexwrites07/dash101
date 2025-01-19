@@ -14,7 +14,7 @@ const SubmitJobPost = () => {
   const [maxSalary, setMaxSalary] = useState("");
   const [salaryPeriod, setSalaryPeriod] = useState("monthly");
   const [careerLevel, setCareerLevel] = useState("");
-  const [gender, setGender] = useState("Any");
+  const [gender, setGender] = useState("Male");
   const [experience, setExperience] = useState("");
   const [qualification, setQualification] = useState("");
   const [workCommitment, setWorkCommitment] = useState("Full-time");
@@ -412,11 +412,15 @@ const SubmitJobPost = () => {
   };
   
   return (
-    <div className="flex flex-col lg:flex-row max-w-5xl">
+    <div className="flex flex-col lg:flex-row">
+      {/* Sidebar */}
       <Sidebar />
-      <div className="flex-1 mr-12">
+
+      {/* Main Content */}
+      <div className="flex-1 bg-gray-100">
+        {/* Header */}
         <Header />
-        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col w-full mr-12">
+      <div className="lg:mt-12 lg:ml-64 p-6 mt-12 lg:p-12 flex flex-col justify-center lg:justify-start mt-36">
           <h1 className="text-xl font-bold mb-6">Submit a Job Post</h1>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="mb-4">
@@ -496,11 +500,11 @@ const SubmitJobPost = () => {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="">
       <label className="block   mb-2">
         Qualifications
       </label>
-      <div className="relative">
+      <div className="">
       <input
         type="text"
         className="w-full p-2 border border-gray-300 rounded-lg mb-4"
@@ -611,7 +615,7 @@ const SubmitJobPost = () => {
 
             <div className="mb-4">
             <label htmlFor="categories" className="block ">Categories:</label>
-            <div className="mb-4 relative">
+            <div className="mb-4 ">
         <input
           type="text"
           value={inputText1}

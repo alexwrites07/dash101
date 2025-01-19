@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaBriefcase, FaChalkboardTeacher,FaCalendarAlt,FaMapMarkerAlt, FaRegCalendarAlt, FaMoneyBillWave, FaClock } from "react-icons/fa";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { Link } from 'react-router-dom';
 
 const FeaturedJobsAndNeeds = () => {
@@ -24,6 +27,12 @@ const FeaturedJobsAndNeeds = () => {
       }
     };
     fetchData();
+
+      AOS.init({
+        duration: 1000, // Animation duration
+        once: true,     // Trigger animation only once
+      });
+   
   }, []);
 
   const toggleShowMoreJobs = () => setShowAllJobs(!showAllJobs);
@@ -40,18 +49,46 @@ const FeaturedJobsAndNeeds = () => {
         <div className="flex-1">
           <h2 className="text-3xl font-bold mb-4 text-[#041F96]">Featured Jobs</h2>
           {jobs.slice(0, visibleJobs).map((job, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div key={index} className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6 transition-transform transform hover:scale-105 hover:shadow-2x">
               <Link to={`/getjobs/${job._id}`} className="block">
-                <h3 className="text-xl font-semibold text-[#041F96] mb-2">{job.title}</h3>
-                <p className="text-sm text-gray-600 mb-2">
-                  {job.location.city}, {job.location.state}
-                </p>
-                <p className="text-sm text-gray-600 mb-2">{job.experience} experience</p>
-                <p className="text-sm text-gray-600 mb-2">
-                  {job.salary.min} - {job.salary.max} {job.salary.period}
-                </p>
-                <p className="text-sm text-gray-600">Apply by: {new Date(job.lastDateToApply).toLocaleDateString()}</p>
-              </Link>
+              <div
+      className=" rounded-lg p-6"
+      data-aos="zoom-in" // Animation type
+    >
+      {/* Job Title */}
+      <div className="flex items-center text-[#041F96] text-xl font-semibold mb-2">
+        <FaBriefcase className="mr-2 text-[#041F96]" />
+        <h3>{job.title}</h3>
+      </div>
+
+      {/* Job Location */}
+      <div className="flex items-center text-gray-600 text-sm mb-2">
+        <FaMapMarkerAlt className="mr-2 text-gray-600" />
+        <p>
+          {job.location.city}, {job.location.state}
+        </p>
+      </div>
+
+      {/* Job Experience */}
+      <div className="flex items-center text-gray-600 text-sm mb-2">
+        <FaClock className="mr-2 text-gray-600" />
+        <p>{job.experience} experience</p>
+      </div>
+
+      {/* Job Salary */}
+      <div className="flex items-center text-gray-600 text-sm mb-2">
+        <FaMoneyBillWave className="mr-2 text-gray-600" />
+        <p>
+          {job.salary.min} - {job.salary.max} {job.salary.period}
+        </p>
+      </div>
+
+      {/* Application Deadline */}
+      <div className="flex items-center text-gray-600 text-sm">
+        <FaRegCalendarAlt className="mr-2 text-gray-600" />
+        <p>Apply by: {new Date(job.lastDateToApply).toLocaleDateString()}</p>
+      </div>
+    </div></Link>
             </div>
           ))}
           <button
@@ -66,13 +103,44 @@ const FeaturedJobsAndNeeds = () => {
         <div className="flex-1">
           <h2 className="text-3xl font-bold mb-4 text-[#041F96]">Featured Learning Needs</h2>
           {learningNeeds.slice(0, visibleNeeds).map((need, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-lg p-6 mb-6">
-              <h3 className="text-xl font-semibold text-[#041F96] mb-2">{need.requirement}</h3>
-              <p className="text-sm text-gray-600 mb-2">{need.location.city}, {need.location.state}</p>
-              <p className="text-sm text-gray-600 mb-2">{need.board} board</p>
-              {/* <p className="text-sm text-gray-600 mb-2">Gender Preference: {need.genderPreference}</p> */}
-              <p className="text-sm text-gray-600 mb-2">Available: {need.available}</p>
-              <p className="text-sm text-gray-600">Start: {need.start}</p>
+            <div key={index} className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6 transition-transform transform hover:scale-105 hover:shadow-2x">
+              <Link to={`/getNeed/${need._id}`} className="block">
+              <div
+      className=" rounded-lg p-6"
+      data-aos="zoom-in" // Animation type
+    >
+      {/* Requirement */}
+      <div className="flex items-center text-[#041F96] text-xl font-semibold mb-2">
+        <FaChalkboardTeacher className="mr-2 text-[#041F96]" />
+        <h3>{need.requirement}</h3>
+      </div>
+
+      {/* Location */}
+      <div className="flex items-center text-gray-600 text-sm mb-2">
+        <FaMapMarkerAlt className="mr-2 text-gray-600" />
+        <p>
+          {need.location.city}, {need.location.state}
+        </p>
+      </div>
+
+      {/* Board */}
+      <div className="flex items-center text-gray-600 text-sm mb-2">
+        <FaChalkboardTeacher className="mr-2 text-gray-600" />
+        <p>{need.board} board</p>
+      </div>
+
+      {/* Availability */}
+      <div className="flex items-center text-gray-600 text-sm mb-2">
+        <FaClock className="mr-2 text-gray-600" />
+        <p>Available: {need.available}</p>
+      </div>
+
+      {/* Start Date */}
+      <div className="flex items-center text-gray-600 text-sm">
+        <FaCalendarAlt className="mr-2 text-gray-600" />
+        <p>Start: {need.start}</p>
+      </div>
+    </div></Link>
             </div>
           ))}
           <button

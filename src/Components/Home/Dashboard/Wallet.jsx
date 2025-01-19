@@ -45,6 +45,7 @@ const WalletPage = () => {
   }, [token, type]);
 
   const handleAddMoney = async (amount) => {
+    amount*=100;
     try {
       const response = await axios.post(
         'https://server.avyudha.com/createOrder',
@@ -70,7 +71,7 @@ const WalletPage = () => {
       <Sidebar />
       <div className="flex-1 ml-64 py-8 px-4">
         <Header />
-        <div className="mt-24 lg:mt-28 p-6 lg:p-10">
+        <div className="mt-24 lg:mt-28 -ml-64 p-6 md:ml-24 lg:p-10">
           <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Wallet</h1>
           <div className="balance-card bg-blue-700 from-green-400 to-blue-500 text-white rounded-lg p-6 shadow-md mb-8">
             <h2 className="text-xl font-semibold">Your Wallet Balance</h2>

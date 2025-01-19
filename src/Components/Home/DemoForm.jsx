@@ -87,6 +87,7 @@ const DemoForm = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [otp, setOtp] = useState('');
+  const [isLocationCorrect, setIsLocationCorrect] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [coordinates, setCoordinates] = useState(["set loaction","set loaction"]);
@@ -525,6 +526,17 @@ const DemoForm = () => {
         <p>Selected Coordinates:</p>
         <p>Latitude: {coordinates[0]}</p>
         <p>Longitude: {coordinates[1]}</p>
+      </div>
+      <div className="mt-2">
+        <label>
+          <input
+            type="checkbox"
+            checked={isLocationCorrect}
+            onChange={() => setIsLocationCorrect(!isLocationCorrect)}
+            required
+          />
+          Click the checkbox if the location on the map is correct
+        </label>
       </div>
             {/* <button
               type="button"

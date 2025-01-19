@@ -11,6 +11,7 @@ import axios from "axios";
 const Header = () => {
   const navigate = useNavigate();
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [newNotificationCount, setNewNotificationCount] = useState(0);
   const [notificationMessage, setNotificationMessage] = useState("");
  // Set initial notification count
@@ -66,7 +67,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="header fixed top-0 left-0 right-0 z-1000 bg-white text-black flex items-center justify-between p-12 shadow-lg h-16">
+    <header className="header fixed top-0 left-0 right-0 bg-white text-black flex items-center justify-between p-12 shadow-lg h-16">
       {/* Logo */}
       <a href="/" className="flex items-center">
         <img

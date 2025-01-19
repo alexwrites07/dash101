@@ -153,7 +153,7 @@ const ShortlistJobs = () => {
       <Sidebar />
       <div className="flex-1 bg-gray-100">
         <Header />
-        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
+        <div className="lg:ml-64 lg:mt-18 mt-36 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
           <h1 className="text-3xl font-bold mb-6 text-gray-900">
             Candidate Shortlist
           </h1>

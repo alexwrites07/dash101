@@ -105,11 +105,11 @@ const UploadResume = () => {
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 m-12">
+    <div className="flex flex-col lg:flex-row min-h-screen">
+    <Header />
+    <div className="flex-1 bg-gray-100 ">
       <Sidebar />
-      <div className="mt-12 lg:ml-64 lg:mt-16 p-4 lg:p-12">
-        <Header />
-        <h1 className="text-3xl font-semibold text-gray-800 mb-8">Manage Resume and ID Proof</h1>
+        <h1 className="text-3xl font-semibold mt-36 mx-4 text-gray-800 mb-8">Manage Resume and ID Proof</h1>
 
         {/* Resume Section */}
         <div className="bg-white p-6 shadow-md rounded-lg mb-6">

@@ -26,7 +26,8 @@ const TutorFinder = () => {
     city: '',
     totalExperience: '',
     gender:'',
-    highestQualification:'',
+    qualifications:'',
+    
     minExpectedSalary: '',
     maxExpectedSalary: '',
     tags: '',
@@ -79,7 +80,7 @@ const TutorFinder = () => {
   };
   const fetchTutors = async () => {
     try {
-      const response = await axios.get('https://server.avyudha.com/getTutors');
+      const response = await axios.get('https://server.avyudha.com/getTutors?limit=1000000000');
       if (response.data && response.data.tutors && Array.isArray(response.data.tutors)) {
         setTutors(response.data.tutors);
         setFilteredTutors(response.data.tutors); // Set the initial filtered tutors
@@ -166,270 +167,268 @@ const TutorFinder = () => {
       [name]: value,
     });
   };
-  const applyFilters = () => {
-    const filtered = tutors.filter((tutor) => {
-      const {
-        subjectsTaught,
-        location,
-        totalExperience,
-        highestQualification,
-        gender,
-        jobAlerts,
-        tags,
-        categories,
-      } = tutor;
+  const handleApplyFilter = async () => {
+    setTutors([]);  // Clear current tutors
   
-      const city = location?.city || '';
-      const minSalary = jobAlerts?.minExpectedSalary?.value || 0;
-      const maxSalary = jobAlerts?.maxExpectedSalary?.value || Infinity;
+    try {
+      const { city, distance, totalExperience, qualifications, gender, categories } = filters;
   
-      const matches = {
-        subjectMatch: !filters.subjectsTaught || subjectsTaught.includes(filters.subjectsTaught),
-        cityMatch: !filters.city || city.toLowerCase().includes(filters.city.toLowerCase()),
-        experienceMatch: !filters.totalExperience || totalExperience >= +filters.totalExperience,
-        qualMatch: !filters.highestQualification || highestQualification?.toLowerCase().includes(filters.highestQualification.toLowerCase()),
-        genderMatch: !filters.gender || gender.toLowerCase() === filters.gender.toLowerCase(),
-        minSalaryMatch: !filters.minExpectedSalary || minSalary >= +filters.minExpectedSalary,
-        maxSalaryMatch: !filters.maxExpectedSalary || maxSalary <= +filters.maxExpectedSalary,
-        categoryMatch: filters.categories.length === 0 || filters.categories.some(cat => categories.includes(cat))
-      };
-  
-      const isMatch = Object.values(matches).every(Boolean);
-  
-      if (distanceFilter && !filterByDistance(tutor)) return false;
+      let queryString = `location.city=${city}&totalExperience=${totalExperience}&qualifications=${qualifications}&gender=${gender}`;
       
-      return isMatch;
-    });
+      if (distance && userCoords) {
+        // Add distance condition to the query string if user coordinates are available
+        queryString += `&distance=${distance}`;
+      }
   
-    setFilteredTutors(filtered);
+      if (categories.length > 0) {
+        queryString += `&categories=${categories.join(',')}`;
+      }
+  
+      const url = `https://server.avyudha.com/getTutors?${queryString}`;
+  
+      const response = await axios.get(url);
+  
+      if (response.data && response.data.tutors) {
+        setTutors(response.data.tutors);
+      } else {
+        console.error("No tutors found with the selected filters.");
+      }
+    } catch (err) {
+      console.error("An error occurred while fetching tutors.", err);
+    }
   };
-  
-  
-  
   
 
    
 
-  return (
-    <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
-      <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] w-4/5">
-        <div className="md:hidden w-full flex justify-end mb-6">
-          
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none"
-          >
-            <HiFilter className="w-4 h-4" />
-          </button>
-        </div>
-        <div className={`md:block p-4 bg-gray-100 rounded-lg shadow-lg mb-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
-          <form className="space-y-4">
-            {/* <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subjectsTaught">Subjects Taught</label>
-              <input
-                type="text"
-                name="subjectsTaught"
-                value={filters.subjectsTaught}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div> */}
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">City</label>
-              <input
-                type="text"
-                name="city"
-                value={filters.city}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-              <button
-                type="button"
-                onClick={fetchUserCoordinates}
-                className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
-              >
-                Use My Location
-              </button>
-            </div>
-            <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="distance">Distance (in km)</label>
-          <input
-            type="number"
-            name="distance"
-            id="distance"
-            placeholder="Enter distance in km"
-            value={distanceFilter}
-            onChange={(e) => setDistanceFilter(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div>
-       
-        <div className="mb-4 relative">
-  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
-    Categories
-  </label>
-  <input
-    type="text"
-    placeholder="Start typing to search categories..."
-    value={inputText1}
-    onChange={handleCategoryInputChange}
-    className="border p-2 w-full rounded-lg"
-  />
-  
-  {/* Suggestions Dropdown */}
-  {suggestions1.length > 0 && (
-    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
-      {suggestions1.map((cat, idx) => (
-        <li
-          key={idx}
-          onClick={() => handleCategorySelect(cat)}
-          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-        >
-          {cat}
-        </li>
-      ))}
-    </ul>
-  )}
-
-  {/* Selected Categories */}
-  {filters.categories.length > 0 && (
-    <div className="mt-2 flex flex-wrap gap-2">
-      {filters.categories.map((category, idx) => (
-        <span
-          key={idx}
-          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
-        >
-          {category}
-          <button
-            onClick={() => handleCategoryRemove(category)}
-            className="text-blue-500 hover:text-blue-700 focus:outline-none"
-          >
-            &times;
-          </button>
-        </span>
-      ))}
-    </div>
-  )}
-</div>
-
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="totalExperience">Experience (Years)</label>
-              <input
-                type="number"
-                name="totalExperience"
-                value={filters.totalExperience}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="highestQualification">Qualification</label>
-              <input
-                type="text"
-                name="highestQualification"
-                value={filters.highestQualification}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="gender">Gender</label>
-               
-            <select
-            value={filters.gender}
-            onChange={handleFilterChange}
- 
-  className="border rounded px-3 py-2"
->
- 
-  <option value="">All Genders</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-  <option value="Others">Others</option>
-</select>
-</div>
-            <button
-              type="button"
-              onClick={applyFilters}
-              className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
-            >
-              Apply Filters
-            </button>
-          </form>
-        </div>
-        <div className="flex flex-col items-start justify-start w-full ml-8">
-          <div className='text-3xl font-bold text-[#041F96] mb-6'>Tutors</div>
-          {paginatedTutors.length > 0 ? (
-          paginatedTutors.map((tutor, index) => (
-              <div className="shadow rounded flex flex-col md:flex-row items-start py-4 mb-4 w-full" key={index}>
-                <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16">
+return (
+  <div className="flex flex-col md:flex-row mx-auto p-6 bg-[#F9FAFB] text-[#0D1B2A]">
+    <div className="flex flex-col md:flex-row mx-auto w-4/5">
+      {/* Tutors Section */}
+      <div className="flex flex-col items-start justify-start w-full md:mr-8">
+        <div className="text-4xl font-bold text-[#0D1B2A] mb-6">Tutors</div>
+        {tutors.length > 0 ? (
+          tutors.map((tutor, index) => (
+            <div className="flex flex-col md:flex-row items-center justify-between shadow-lg rounded-lg py-6 px-8 mb-6 w-full bg-white transition duration-300 hover:shadow-xl cursor-pointer transform hover:scale-105" key={index}>
+              {/* Image Section */}
+              <div className="flex-shrink-0 h-24 w-24 rounded-md overflow-hidden bg-gray-200">
                 <img
-  src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
-  alt=""
-  className="w-24 h-16 rounded-md mx-2 "
-/>
+                  src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
+                  alt="Tutor"
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
+              {/* Tutor Details Section */}
+              <div className="flex-1 px-6">
+                <div className="text-xl font-semibold text-[#0D1B2A]">{tutor.fullName}</div>
+                <div className="text-sm text-[#3A506B] font-medium">{tutor.title}</div>
+                <div className="text-sm text-gray-500">
+                  {tutor.location?.city}, {tutor.location?.state}
                 </div>
-                <Link to={`/getTutor/${tutor._id}`} className="block w-full">
-                  <div className="flex  md:justify-between w-full ml-2">
-                    <div>
-                      <div className="text-lg font-semibold">{tutor.fullName}</div>
-                      <div className="text-gray-600">{tutor.title}</div>
-                      {/* <span className="text-gray-600 mr-4">Rating - {tutor.rating}</span> */}
-                      <div className="text-gray-600 mr-2">{tutor.location?.city}, {tutor.location?.state}</div>
-                      <div className="text-gray-600 mr-6">{tutor.totalExperience} years</div>
-                      <div className="text-gray-600 mr-6">{tutor.highestQualification}</div>
-                    </div>
-                    <div>
-                    
-                      <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2 my-auto">
-          {userCoords && tutor.location?.coordinates && (
-            <p className="text-gray-700 mr-4">Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km</p>
-          )}
-        </div>
-                    </div>
-                    <div className="mt-2 md:mt-0 flex items-center mr-4">
-                      {/* <button className="ml-2 mr-6">
-                        {tutor.bookmarked ? <HiBookmark className="text-blue-500" /> : <HiOutlineBookmark />}
-                      </button> */}
-                      <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
-                        View
-                      </button>
-                    </div>
-                  </div>
+                <div className="text-sm text-gray-500">
+                  {tutor.totalExperience} years of experience
+                </div>
+                <div className="text-sm text-gray-500">
+                  {tutor.qualifications}
+                </div>
+                <div className="text-sm text-gray-500 capitalize">{tutor.gender}</div>
+              </div>
+
+              {/* Distance Section */}
+              {userCoords && tutor.location?.coordinates && (
+                <div className="flex flex-col items-center text-gray-700">
+                  <p className="text-sm">Distance:</p>
+                  <span className="text-lg font-semibold text-[#0D1B2A]">
+                    {calculateDistance(
+                      userCoords,
+                      tutor.location.coordinates
+                    ).toFixed(2)} km
+                  </span>
+                </div>
+              )}
+
+              {/* View Button Section */}
+              <div className="flex items-center ml-6">
+                <Link to={`/getTutor/${tutor._id}`}>
+                  <button className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300">
+                    View Profile
+                  </button>
                 </Link>
               </div>
-            ))
-          ) : (
-            <div>No tutors match your criteria.</div>
-          )}
-          <div className="mt-4 flex justify-between w-full">
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500">No tutors match your criteria.</div>
+        )}
+
+        {/* Pagination Section */}
+        <div className="mt-6 flex justify-between w-full">
           <button
             onClick={goToPreviousPage}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+            className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
           >
             Previous
           </button>
-          <span className="text-gray-700">
+          <span className="text-gray-700 font-medium">
             Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={goToNextPage}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+            className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
           >
             Next
           </button>
         </div>
-        </div>
-        
-        
+      </div>
+
+      {/* Filters Section */}
+      <div
+        className={`md:block p-6 bg-white rounded-lg shadow-lg ${showFilters ? "" : "hidden"}`}
+        style={{
+          width: "100%",
+          maxWidth: "320px",
+          height: "fit-content",
+        }}
+      >
+        <form className="space-y-1">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="city">
+              City
+            </label>
+            <input
+              type="text"
+              name="city"
+              value={filters.city}
+              onChange={handleFilterChange}
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={fetchUserCoordinates}
+              className="mt-4 bg-[#3A506B] text-white px-5 py-2 rounded-full hover:bg-[#1E3D58] transition duration-300"
+            >
+              Use My Location
+            </button>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="distance">
+              Distance (in km)
+            </label>
+            <input
+              type="number"
+              name="distance"
+              id="distance"
+              placeholder="Enter distance in km"
+              value={distanceFilter}
+              onChange={(e) => handleFilterChange}
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+            />
+          </div>
+          
+                
+          <div className="mb-4 relative">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
+              Categories
+            </label>
+            <input
+              type="text"
+              placeholder="Start typing to search categories..."
+              value={inputText1}
+              onChange={handleCategoryInputChange}
+              className="border p-2 w-full rounded-lg"
+            />
+            
+            {/* Suggestions Dropdown */}
+            {suggestions1.length > 0 && (
+              <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+                {suggestions1.map((cat, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => handleCategorySelect(cat)}
+                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                  >
+                    {cat}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Selected Categories */}
+            {filters.categories.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {filters.categories.map((category, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+                  >
+                    {category}
+                    <button
+                      onClick={() => handleCategoryRemove(category)}
+                      className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="experience">
+              Experience
+            </label>
+            <input
+              type="number"
+              name="totalExperience"
+              value={filters.totalExperience}
+              onChange={handleFilterChange}
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="qualifications">
+              Qualification
+            </label>
+            <input
+              type="text"
+              name="qualifications"
+              value={filters.qualifications}
+              onChange={handleFilterChange}
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="gender">
+              Gender
+            </label>
+            <select
+              name="gender"
+              value={filters.gender}
+              onChange={handleFilterChange}
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+            >
+              <option value="">All</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            onClick={handleApplyFilter}
+            className="w-full bg-[#F4A261] text-white px-5 py-3 rounded-full hover:bg-[#E76F51] transition duration-300"
+          >
+            Apply Filters
+          </button>
+        </form>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default TutorFinder;

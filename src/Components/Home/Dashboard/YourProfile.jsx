@@ -1511,7 +1511,7 @@ const editimage = async () => {
                 </div> */}
 
 
-<div className="relative">
+<div className="">
       <label className="block text-gray-700 text-sm font-bold mb-2">
         Qualifications
       </label>
@@ -1568,7 +1568,7 @@ const editimage = async () => {
       <label htmlFor="languages" className="block text-gray-700 text-sm font-bold font-bold mb-2">
         Languages:
       </label>
-      <div className="mb-4 relative">
+      <div className="mb-4 ">
         <input
           type="text"
           value={inputText}
@@ -1711,7 +1711,7 @@ const editimage = async () => {
                   </select>
                 </div> */}
            
-           <div className="relative">
+           <div className="">
       <label className="block text-gray-700 text-sm font-bold mb-2">Teaching Level</label>
       <input
         type="text"
@@ -1763,21 +1763,24 @@ const editimage = async () => {
       )}
     </div>
 
-    <div >
-                
-    
-                <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
-                <textarea
-                  className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
-              </div> 
+    <div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+  <textarea
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={description}
+    maxLength={4000} // Set the maximum length
+    onChange={(e) => setDescription(e.target.value)}
+  ></textarea>
+  <p className="text-sm text-gray-500">
+    {description.length}/4000 characters
+  </p> {/* Optional: Shows the character count */}
+</div>
+
 
     
                 <div className="mb-4">
             <label htmlFor="categories" className="block font-bold">Categories:</label>
-            <div className="mb-4 relative">
+            <div className="mb-4 ">
         <input
           type="text"
           value={inputText1}
@@ -2428,15 +2431,19 @@ const editimage = async () => {
                      </select>
                    </div> */}
        
-                   <div>
-                     <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
-                     <input
-                       type="text"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                       value={description}
-                       onChange={(e) => setDescription(e.target.value)}
-                     />
-                   </div>
+       <div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+  <textarea
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+    value={description}
+    maxLength={4000} // Set the maximum length
+    onChange={(e) => setDescription(e.target.value)}
+  ></textarea>
+  <p className="text-sm text-gray-500">
+    {description.length}/4000 characters
+  </p> {/* Optional: Shows the character count */}
+</div>
+
        
                    <div>
                    <label className="block text-gray-700 text-sm font-bold mb-2">Website</label>
@@ -2459,7 +2466,7 @@ const editimage = async () => {
                      />
                    </div> */}
                    
-                 <div>
+                 {/* <div>
                    <label className="block text-gray-700 text-sm font-bold mb-2">Introduction Video</label>
                    <input
                      type="text"
@@ -2467,7 +2474,7 @@ const editimage = async () => {
                      value={video}
                      onChange={(e) => setVideo(e.target.value)}
                    />
-                 </div>
+                 </div> */}
                    {/* <div>
                      <label className="block text-gray-700 text-sm font-bold mb-2">Salary you will offer (₹)</label>
                      <input

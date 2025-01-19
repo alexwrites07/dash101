@@ -5,8 +5,9 @@ import { FaMapMarkerAlt, FaPencilAlt, FaTimes, FaLock, FaUnlock } from 'react-ic
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
-const ManageJobs = () => {
+const ManageJobs = (JobId) => {
   const [jobs, setJobs] = useState([]);
+  const [applicants, setApplicants] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
   const [jobData, setJobData] = useState({
@@ -51,6 +52,49 @@ const ManageJobs = () => {
     setSearchQuery(e.target.value);
   };
 
+
+  // Fetch applicants function
+  const fetchApplicants = async (jobId) => {
+    try {
+      const response = await axios.get(`https://server.avyudha.com/jobs/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      // No need for `response.json()` as `axios` already parses the JSON response
+      const data = response.data;
+  
+      setApplicants((prevData) => ({
+        ...prevData,
+        [jobId]: data.applicants, // Store applicants under the specific job ID
+      }));
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+      alert("Failed to fetch applicants. Please try again.");
+    }
+  };
+  
+  // Delete applicant function
+  const deleteApplicant = async (applicantId,jobIdToEdit) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.delete(
+        `https://server.avyudha.com/jobs/${jobIdToEdit}/applicants/${applicantId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("Applicant deleted successfully.Please refresh!");
+      setApplicants(applicants.filter((applicant) => applicant._id !== applicantId)); // Update the UI
+    } catch (error) {
+      // console.error("Error deleting applicant:", error);
+      // alert("Failed to delete applicant. Please try again.");
+    }
+  };
   // Handle sorting by date
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
@@ -205,7 +249,7 @@ const ManageJobs = () => {
 
             {filteredJobs.length > 0 ? (
               <table className="min-w-full bg-white">
-                <thead className="bg-gray-100 text-gray-700">
+                {/* <thead className="bg-gray-100 text-gray-700">
                   <tr>
                     <th className="py-2 px-4 border-b">Title</th>
                     <th className="py-2 px-4 border-b">Applicants</th>
@@ -213,7 +257,7 @@ const ManageJobs = () => {
                     <th className="py-2 px-4 border-b">Status</th>
                     <th className="py-2 px-4 border-b">Actions</th>
                   </tr>
-                </thead>
+                </thead> */}
                 <tbody>
                   {filteredJobs.map((job) => (
                     <tr key={job.job._id}>
@@ -230,10 +274,41 @@ const ManageJobs = () => {
                       </td>
                       <td className="py-2 px-4 border-b">{job.totalApplicants} Applicant(s)</td>
                       <td className="py-2 px-4 border-b">
-                        Created: {new Date(job.job.createdAt).toLocaleDateString()}
-                        <br />
-                        Expiry date: {new Date(job.job.lastDateToApply).toLocaleDateString()}
-                      </td>
+              <button
+                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-lg"
+                onClick={() => fetchApplicants(job.job._id)}
+              >
+                View Applicants
+              </button>
+
+              {applicants[job.job._id] && applicants[job.job._id].length > 0 && (
+                <div className="mt-4 bg-gray-100 border rounded-lg p-4">
+                  <h3 className="text-lg font-semibold mb-2">Applicants</h3>
+                  <ul className="space-y-2">
+                    {applicants[job.job._id].map((applicant, ind) => (
+                      <li key={ind}>
+                        <p>
+                        
+                        <Link to={`/getTutor/${applicant._id}`} className="block w-full text-blue-600">
+                           {applicant.fullName}
+                          </Link>
+                        </p>
+                        <button
+                className="mt-2 bg-red-500 hover:bg-blue-600 text-white py-1 px-3 rounded-lg"
+                onClick={() => deleteApplicant(applicant._id,job.job._id)}
+              >
+                Reject Applicant
+              </button>
+                        {/* <p>
+                          <strong>Description:</strong> {applicant.description}
+                        </p> */}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </td>
+
                       <td className="py-2 px-4 border-b">{job.job.isClosed ? 'Closed' : 'Open'}</td>
                       <td className="py-2 px-4 border-b flex items-center">
                         <button 

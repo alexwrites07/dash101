@@ -57,10 +57,11 @@ const TransactionHistory = () => {
   }
 
   return (
-    <div className="max-w-4xl mt-24 mx-auto p-6 bg-white rounded-lg">
+    <div className="flex flex-col lg:flex-row min-h-screen">
+    <Header />
+    <div className="flex-1 bg-gray-100 ">
       <Sidebar />
-      <Header />
-      <div className="lg:ml-64 lg:mt-18 p-4">
+      <div className="lg:ml-64 lg:mt-18 mt-36 p-4">
         <h1 className="text-2xl font-bold mb-4">Transaction History</h1>
         <div className="flex justify-between items-center mb-4">
           <button
@@ -114,6 +115,7 @@ const TransactionHistory = () => {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

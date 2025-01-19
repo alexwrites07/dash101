@@ -60,7 +60,7 @@ const NeedDescription = () => {
         
         // Find the purchased contact that matches the provided IId
         const purchasedContact = response.data?.find(
-          (item) => item._id.toString() === IId.toString() // Convert both to strings for comparison
+          (item) => item.learningNeed._id.toString() === IId.toString() // Convert both to strings for comparison
         ) || null;
         
         // Debugging: Log the purchased contact details
@@ -118,7 +118,49 @@ const NeedDescription = () => {
   const openModal = () => {
     setIsModalOpen(true);
   };
- 
+  const handleViewContact = async () => {
+    console.log (IId);
+    try {
+      const token = localStorage.getItem('token');
+      const type = localStorage.getItem('type');
+      // Replace with the actual Id you're comparing against, make sure it's a string or ObjectId
+      console.log("Comparing Job ID:", IId);
+      if (!token || !type) return;
+  
+      const response = await axios.get('https://server.avyudha.com/purchasedNeeds', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      // Debugging: Log the IId and response to ensure correctness
+      console.log("Comparing Job ID:", IId);
+      console.log("Response Data:", response.data);
+      
+      // Find the purchased contact that matches the provided IId
+      const purchasedContact = response.data?.find(
+        (item) => item.learningNeed._id.toString() === IId.toString() // Convert both to strings for comparison
+      ) || null;
+      
+      // Debugging: Log the purchased contact details
+      console.log("Purchased Contact:", purchasedContact);
+      
+      if (purchasedContact) {
+        // Log the contactInfo if a match is found
+        console.log("Contact Info:", purchasedContact._id);
+      } else {
+        console.log("No matching job found for the given IId.");
+      }
+      
+      // Set unlockedContacts status based on whether the contact is found
+      if (purchasedContact) {
+        setIsContactUnlocked(true);
+      } else {
+        setIsContactUnlocked(false);
+      }
+      console.log (isContactUnlocked);
+    } catch (error) {
+      console.error('Error fetching unlocked contacts:', error);
+    }
+  };
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -340,11 +382,11 @@ const NeedDescription = () => {
        
 
     </div>
-    <button
+    {/* <button
             onClick={handleShare}
             className="ml-4 text-gray-500 hover:text-gray-700 focus:outline-none">
             <HiBookmark className="w-6 h-6" />
-          </button>
+          </button> */}
     <div className="bg-white p-6 rounded-lg md:w-2/5 md:ml-4 mt-4 md:mt-0">
       <h2 className="text-xl font-semibold mb-4">Map Location</h2>
       {job.location?.coordinates ? (

@@ -33,7 +33,7 @@ const LearningNeeds = () => {
     <div className="bg-gray-100 min-h-screen py-6 px-4">
        <Sidebar />
        <Header />
-       <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 bg-gray-100 lg:space-x-8">
+       <div className="lg:ml-64 mt-24 lg:mt-18 p-4 lg:p-28 bg-gray-100 lg:space-x-8">
         {/* Tutor Card Section */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-800">Find Your Tutor</h2>

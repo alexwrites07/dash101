@@ -16,8 +16,9 @@ const JobPost = () => {
   const [sortBy, setSortBy] = useState('date');
   const [filters, setFilters] = useState({
     keyword: '',
-    location: '',
+    city: '',
     skillAndExperience: [],
+    jobCategories:[],
     jobType: '',
     totalExperience: '',
     gender:'',
@@ -37,7 +38,7 @@ const JobPost = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('https://server.avyudha.com/jobs?limit=1000000');
+      const response = await axios.get('https://server.avyudha.com/jobs?limit=1000000000');
       console.log('API response:', response.data);
       if (response.data && Array.isArray(response.data.jobs)) {
         const jobsWithBookmarks = response.data.jobs.map(job => ({
@@ -194,39 +195,54 @@ const JobPost = () => {
     return distance <= distanceFilter;
   };
 
-  const applyFilters = () => {
-    // Filter jobs based on current filters and distance filter
-    let filteredJobs = jobs.filter((job) => {
-      const { keyword, location, jobType, totalExperience, gender, careerLevel, salary,skillAndExperience } = filters;
+  const applyFilters = async () => {
+    // Build the query parameters based on available filters
+    const {city,distance, skillAndExperience, gender } = filters;
+    console.log(filteredJobs);
+    // Start with the base URL
+    let url = 'https://server.avyudha.com/jobs?';
   
-      let isMatch = true;
+    // Dynamically append filters to the URL
+    if (distance && userCoords) {
+      // Add distance condition to the query string if user coordinates are available
+      url += `&distance=${distance}`;
+    }
+    if (skillAndExperience.length > 0) {
+      url += `&jobCategories=${skillAndExperience.join(',')}`;
+    }
+    if (city) {
+      url += `&location.city=${encodeURIComponent(city)}`;
+    }
+   
+    if (gender) {
+      url += `&gender=${encodeURIComponent(gender)}`;
+    }
+   
   
-      if (keyword && job.title && !job.title.toLowerCase().includes(keyword.toLowerCase())) isMatch = false;
-      if (location && job.location && job.location.city && !job.location.city.toLowerCase().includes(location.toLowerCase())) isMatch = false;
-      if (skillAndExperience && job.skillAndExperience && !job.skillAndExperience.includes(skillAndExperience)) isMatch = false;
-      if (jobType && job.jobType && !job.jobType.toLowerCase().includes(jobType.toLowerCase())) isMatch = false;
-      if (totalExperience && job.totalExperience && !job.totalExperience.toLowerCase().includes(totalExperience.toLowerCase())) isMatch = false;
-      if (careerLevel && job.careerLevel && !job.careerLevel.toLowerCase().includes(careerLevel.toLowerCase())) isMatch = false;
-      if (salary && job.salary && parseInt(job.salary.replace(/[^0-9.-]+/g, '')) < parseInt(salary)) isMatch = false;
-      if (skillAndExperience && job.skillAndExperience !== "") {
-        const skillExists = job.skillAndExperience.includes(skillAndExperience);
-        if (!skillExists) isMatch = false;
+    // Make the GET request to the server
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+  
+      // If the request was successful, update the state with the filtered jobs
+      if (response.ok) {
+        
+        setFilteredJobs(data.jobs); // Assuming the API returns the filtered list of jobs
+        console.log("after",filteredJobs);
+      } else {
+        console.error('Failed to fetch jobs:', data.message);
       }
-      // Gender filter - case insensitive
-      if (gender && job.gender && !job.gender.toLowerCase().includes(gender.toLowerCase())) isMatch = false;
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    }
   
-      if (distanceFilter && !filterByDistance(job)) isMatch = false;
-  
-      return isMatch;
-    });
-  
-    setFilteredJobs(filteredJobs); // Update filtered jobs with new filters
-    setShowFilters(false);
+    setShowFilters(false); // Optionally hide the filters after applying
+    
   };
   
+ 
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const visibleJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   const goToNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
@@ -266,262 +282,261 @@ const JobPost = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return (
-    <div className="flex flex-col md:flex-row " style={margin}>
-          <div className="max-w-full mx-auto flex flex-col md:flex-row" >
-      {/* Sidebar for Filters (Hidden on Small Screens) */}
-      <div className="md:hidden w-full flex justify-end mb-6">
-  <button
-    onClick={() => setShowFilters(!showFilters)}
-    className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-non"
-  >
-    <HiFilter className="w-4 h-4" />
-  </button>
-</div>
 
-      <div className="w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4">
-      
-      <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
-        <form className="space-y-4">
-          {/* Filters */}
-          {/* Keyword Filter */}
-          {/* <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
-            <input
-              type="text"
-              name="keyword"
-              id="keyword"
-              value={filters.keyword}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div> */}
 
-          {/* Location Filter */}
-          <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">City</label>
+return (
+  <div className="flex flex-col md:flex-row mx-auto p-6 bg-[#F9FAFB] text-[#0D1B2A]">
+    <div className="flex flex-col md:flex-row mx-auto w-4/5">
+    {/* Sidebar for Filters (Hidden on Small Screens) */}
+    <div className="md:hidden w-full flex justify-end mb-6">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="text-white px-4 py-2 rounded-lg bg-[#3A506B] focus:outline-none"
+          >
+            <HiFilter className="w-4 h-4" />
+          </button>
+        </div>
+
+    <div className="w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4 ">
+    
+    <div className={`md:block w-full p-4 bg-white rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
+      <form className="space-y-4">
+        {/* Filters */}
+        {/* Keyword Filter */}
+        {/* <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
           <input
             type="text"
-            name="location"
-            placeholder="Enter city"
-            id="location"
-            value={filters.location}
+            name="keyword"
+            id="keyword"
+            value={filters.keyword}
             onChange={handleFilterChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
-         <button
-  type="button" // Add type="button" to prevent form submission
-  onClick={fetchUserCoordinates}
-  className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
->
-  Use My Location
-</button>
+        </div> */}
 
-        </div>
-
+        {/* Location Filter */}
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="distance">Distance (in km)</label>
-          <input
-            type="number"
-            name="distance"
-            id="distance"
-            placeholder="Enter distance in km"
-            value={distanceFilter}
-            onChange={(e) => setDistanceFilter(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
+        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="location">City</label>
+        <input
+          type="text"
+          name="city"
+          placeholder="Enter city"
+          id="city"
+          value={filters.city}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+        />
+       <button
+        type="button" // Add type="button" to prevent form submission
+        onClick={fetchUserCoordinates}
+        className="mt-4 bg-[#3A506B] text-white px-5 py-2 rounded-full hover:bg-[#1E3D58] transition duration-300"
+        >
+        Use My Location
+        </button>
+
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="distance">Distance (in km)</label>
+                <input
+                  type="number"
+                  name="distance"
+                  id="distance"
+                  placeholder="Enter distance in km"
+                  value={distanceFilter}
+                  onChange={(e) => setDistanceFilter(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+                />
+              </div>
+
+              <div className="mb-4 relative">
+        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="skillAndExperience">
+        Categories
+        </label>
+        <input
+          type="text"
+          placeholder="Start typing to search Categories..."
+          value={inputText1}
+          onChange={handleskillAndExperienceInputChange}
+          className="border p-2 w-full rounded-lg"
+        />
+
+        {/* Suggestions Dropdown */}
+        {suggestions1.length > 0 && (
+          <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+            {suggestions1.map((cat, idx) => (
+              <li
+                key={idx}
+                onClick={() => handleskillAndExperienceSelect(cat)}
+                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+              >
+                {cat}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {/* Selected skillAndExperience */}
+        {filters.skillAndExperience.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {filters.skillAndExperience.map((skillAndExperience, idx) => (
+              <span
+                key={idx}
+                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+              >
+                {skillAndExperience}
+                <button
+                  onClick={() => handleskillAndExperienceRemove(skillAndExperience)}
+                  className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
         </div>
 
-        <div className="mb-4 relative">
-  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="skillAndExperience">
-   Categories
-  </label>
-  <input
-    type="text"
-    placeholder="Start typing to search Categories..."
-    value={inputText1}
-    onChange={handleskillAndExperienceInputChange}
-    className="border p-2 w-full rounded-lg"
-  />
-  
-  {/* Suggestions Dropdown */}
-  {suggestions1.length > 0 && (
-    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
-      {suggestions1.map((cat, idx) => (
-        <li
-          key={idx}
-          onClick={() => handleskillAndExperienceSelect(cat)}
-          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-        >
-          {cat}
-        </li>
-      ))}
-    </ul>
-  )}
-
-  {/* Selected skillAndExperience */}
-  {filters.skillAndExperience.length > 0 && (
-    <div className="mt-2 flex flex-wrap gap-2">
-      {filters.skillAndExperience.map((skillAndExperience, idx) => (
-        <span
-          key={idx}
-          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
-        >
-          {skillAndExperience}
-          <button
-            onClick={() => handleskillAndExperienceRemove(skillAndExperience)}
-            className="text-blue-500 hover:text-blue-700 focus:outline-none"
-          >
-            &times;
-          </button>
-        </span>
-      ))}
-    </div>
-  )}
-</div>
-
-          {/* Career Level Filter */}
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Gender</label>
+                {/* Career Level Filter */}
+                <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="gender">
+              Gender
+            </label>
             <select
-  name="gender"  // Added name attribute
-  value={filters.gender}
-  onChange={handleFilterChange}
-  className="border rounded px-3 py-2"
->
-  <option value="">All Genders</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-  <option value="Any">Others</option>
-</select>
-
+              name="gender"
+              value={filters.gender}
+              onChange={handleFilterChange}
+              className="border rounded px-4 py-3 w-full"
+            >
+              <option value="">All Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Others">Others</option>
+            </select>
           </div>
-
-  
-
-          {/* Apply Filters Button */}
           <button
             type="button"
             onClick={applyFilters}
-            className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+            className="w-full bg-[#F4A261] text-white px-5 py-3 rounded-full hover:bg-[#E76F51] transition duration-300"
           >
-            View
+            Apply Filters
           </button>
         </form>
-        </div>
+      </div>
       </div>
 
-      <div className="w-full ">
-        {/* Jobs header */}
-        <div className="flex items-center justify-between mb-4">
+            <div className="w-full ">
+              {/* Jobs header */}
+              <div className="flex flex-col items-start justify-start w-full md:ml-8">
+        <div className="text-4xl font-bold text-[#0D1B2A] mb-6">
+          Available Jobs
+        </div>
+              
+                <div className="w-full">
+            
+              
+              
+              {filteredJobs.length > 0 ? (
+        <div className="">
+          
+          {filteredJobs.map((job, index) => (
+        <div className="flex flex-col md:flex-row items-center justify-between shadow-lg rounded-lg py-6 px-8 mb-6 w-full bg-white transition duration-300 hover:shadow-xl cursor-pointer transform hover:scale-105" key={index}>
+          <Link to={`/getjobs/${job._id}`} className="flex w-full">
+          <div className="flex  md:justify-between w-full ml-2">
+          {/* Company Info Section */}
+          
+
+          {/* Job Info Section */}
+          <div className="w-[450px] md:-ml-4">
+        <h3 className="text-gray-700 text-center md:text-left font-semibold md:mr-2 md:ml-8">{job.companyName}</h3>
+        <p className="text-gray-700 text-center md:text-left text-bold font-semibold md:mr-2 text-xl md:ml-8">{job.title}</p>
+        <p className="text-gray-500 text-center md:text-left md:mr-2 md:ml-8 font-semibold">{job.location?.city},{job.location?.state}</p>
         
-          <div className="w-full">
-       
+        <p className="text-sm text-red-500 text-center md:text-left md:ml-8 ">Amount: Rs. {job.salary.min}&nbsp;{job.salary.period}</p>
+        <br></br>
+        <p className="text-sm text-gray-600 text-center md:text-left md:ml-8 font-semibold"> {job.jobCreated?.split('T')[0]}</p>
+
+        </div>
+
+
+          {/* Distance Section */}
+          <div className="flex justify-center w-3/5 md:w-1/4 mt-2 md:mt-0 mx-8">
+            {userCoords && job.location?.coordinates && (
+              <p className="text-gray-700 text-2xs text-center">
+                Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
+              </p>
+            )}
+          </div>
+
+          {/* Status and Actions Section */}
+          <div className="flex-shrink-0">
+                  <button className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300">
+                    View
+                  </button>
+                </div>
+        </div>
+        </Link>
+
+
         
-        
-        {visibleJobs.length > 0 ? (
-  <div className="">
-    <h1 className="text-3xl font-bold text-[#041F96] mb-6">Available Jobs</h1>
-    {visibleJobs.map((job, index) => (
-  <div className="shadow rounded  items-start md:ml-8 border-b border-gray-200 py-4 mb-4" key={index}>
-    
-    <Link to={`/getjobs/${job._id}`} className="block">
-    <div className="flex  md:justify-between w-full ml-2">
-    {/* Company Info Section */}
-    
+        </div>
+        ))}
+        </div>
+        ) : (
+        <p className="text-gray-700">No jobs found.</p>
+        )}
+        {isModalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
+                  <h2 className="text-2xl font-bold mb-4">Upload Resume</h2>
+                  <form>
+                    <input type="file" className="mb-4 w-full" />
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
-    {/* Job Info Section */}
-    <div className="w-[450px] md:-ml-4">
-  <h3 className="text-gray-700 text-center md:text-left font-semibold md:mr-2 md:ml-8">{job.companyName}</h3>
-  <p className="text-gray-700 text-center md:text-left text-bold font-semibold md:mr-2 text-xl md:ml-8">{job.title}</p>
-  <p className="text-gray-700 text-center md:text-left md:mr-2 md:ml-8">{job.location?.city},{job.location?.state}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8"> {job.jobCreated?.split('T')[0]}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8">Rs.{job.salary.min}&nbsp;{job.salary.period}</p>
-  <p className="text-sm text-gray-600 text-center md:text-left md:ml-8"></p>
-
-</div>
-
-
-    {/* Distance Section */}
-    <div className="flex justify-center w-3/5 md:w-1/4 mt-2 md:mt-0 mx-8">
-      {userCoords && job.location?.coordinates && (
-        <p className="text-gray-700 text-2xs text-center">
-          Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
-        </p>
-      )}
-    </div>
-
-    {/* Status and Actions Section */}
-    <div className="flex items-center justify-center w-full md:w-1/4 mt-2 md:mt-0 space-x-4 mr-12">
-      
-      <button
-        className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none"
-      >
-        View
-      </button>
-    </div>
-  </div>
-</Link>
-
-
-   
-  </div>
-))}
-  </div>
-) : (
-  <p className="text-gray-700">No jobs found.</p>
-)}
-{isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
-            <h2 className="text-2xl font-bold mb-4">Upload Resume</h2>
-            <form>
-              <input type="file" className="mb-4 w-full" />
-              <div className="flex justify-end">
+              </div>
+        </div>
+              <div className="mt-4 flex justify-between">
                 <button
-                  type="button"
-                  onClick={closeModal}
-                  className="bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 transition duration-300 mr-2"
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 1}
+                  className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
                 >
-                  Cancel
+                  Previous
                 </button>
+                <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
                 <button
-                  type="submit"
-                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages}
+                  className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
                 >
-                  Submit
+                  Next
                 </button>
               </div>
-            </form>
+              <br></br>
+            </div>
           </div>
-        </div>
-      )}
-
-        </div>
-</div>
-        <div className="mt-4 flex justify-between">
-          <button
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
-          <button
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-        <br></br>
-      </div>
-    </div>
-   
-    </div>
-  );
+        
+          </div>
+        );
 };
 
 export default JobPost;
