@@ -3,7 +3,7 @@ import { HiBell, HiUser } from "react-icons/hi";
 import { Menu, MenuList, MenuButton, MenuItem, MenuLink } from "@reach/menu-button";
 import "@reach/menu-button/styles.css";
 import "./Header.css";
-import nm from '../../../assets/ac.png'
+import nm from '../../../assets/av.png'
 import { useLocation, Link } from 'react-router-dom'; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -54,6 +54,7 @@ const Header = () => {
   // Handle notification icon click
   const handleNotificationClick = () => {
     setNotificationRead(true); // Mark notification as read when clicked
+    navigate('/dashboard');
   };
 
   useEffect(() => {

@@ -74,11 +74,11 @@ const Categories = () => {
   // );
 
   return (
-    <div className="relative max-w-full mx-auto mb-4" style={{ margin: '6% 5% 4% 5%', overflowX: 'hidden' }}>
+    <div className="relative max-w-full mx-auto mb-4" style={{ margin: '6% 1% 4% 1%', overflowX: 'hidden' }}>
       <div className="text-3xl font-bold text-gray-800 mb-4 text-center">Popular Teachers</div>
       <div className="text-lg text-center">Choose your favourite Tutor</div>
   
-      <div className="mt-12 flex items-center relative mb-4">
+      <div className="mt-12  flex items-center relative mb-4">
         <button onClick={scrollLeft} className="absolute left-6 -mt-12 mb-4 bg-gray-400 text-white p-3 rounded-full shadow-lg hover:bg-gray-500 transition">
           &lt;
         </button>
@@ -87,7 +87,7 @@ const Categories = () => {
           ref={containerRef}
           style={{
             scrollSnapType: 'x mandatory',
-            gap: '1rem', // Adjusted for better spacing
+            gap: '.01rem', // Adjusted for better spacing
           }}
         >
           {tutors.map((tutor, index) => (
@@ -96,8 +96,8 @@ const Categories = () => {
               className="bg-white rounded-lg shadow-lg p-6 mx-4 mb-4 transition-transform transform hover:scale-105 hover:shadow-2xl"
               style={{
                 flex: '0 0 auto',
-                minWidth: '250px',
-                maxWidth: '250px',
+                minWidth: '300px',
+                maxWidth: '300px',
                 scrollSnapAlign: 'center',
               }}
             >
@@ -105,7 +105,7 @@ const Categories = () => {
 
 
 
-    <div className="bg-white  p-6 flex flex-col items-center text-center h-80">
+    <div className="bg-white  p-6 flex flex-col items-center text-center h-64">
       {/* Tutor Image */}
       <img
         src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
@@ -147,9 +147,9 @@ const Categories = () => {
       </div>
 
       {/* Button */}
-      <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c8a] transition duration-200">
+      {/* <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c8a] transition duration-200">
         View Profile
-      </button>
+      </button> */}
     </div>
   
 

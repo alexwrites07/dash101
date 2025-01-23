@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TuitionCards = () => {
   const cards = [
@@ -67,12 +68,15 @@ const TuitionCards = () => {
       <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
         Explore Categories
       </h1>
+     
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      
         {cards.map((card, index) => (
           <div
             key={index}
             className="bg-gray-200 shadow-lg rounded-md overflow-hidden hover:scale-105 transition-transform duration-300"
           >
+            <Link to ="/demo-form">
             <img 
               src={card.imageUrl} 
               alt={card.title} 
@@ -86,9 +90,11 @@ const TuitionCards = () => {
                 {card.description}
               </p>
             </div>
+            </Link>
           </div>
         ))}
       </div>
+      
     </div>
   );
   

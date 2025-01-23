@@ -407,7 +407,7 @@ const formatDateToInput = (dob) => {
 // Convert the date from yyyy-mm-dd (input value) to dd/mm/yyyy
 const formatInputToDate = (value) => {
   const [year, month, day] = value.split('-');
-  return `${day}/${month}/${year}`;
+  return `${month}/${day}/${year}`;
 };
 
 

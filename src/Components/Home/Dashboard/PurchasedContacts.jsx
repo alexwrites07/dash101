@@ -51,10 +51,12 @@ const PurchasedContacts = () => {
       const filtered = {
         purchasedContacts: data.purchasedContacts?.filter((contact) =>
           (contact.contactInfo?.email || "").toLowerCase().includes(query.toLowerCase()) ||
+        (contact.contactInfo?.name || "").toLowerCase().includes(query.toLowerCase()) ||
           (contact.contactInfo?.contactNumber || "").includes(query)
         ),
         purchasedJobs: data.purchasedJobs?.filter((job) =>
           (job.contactInfo?.email || "").toLowerCase().includes(query.toLowerCase()) ||
+        (job.contactInfo?.name || "").toLowerCase().includes(query.toLowerCase()) ||
           (job.contactInfo?.contactNumber || "").includes(query)
         ),
       };
@@ -117,7 +119,7 @@ const PurchasedContacts = () => {
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Purchased Contacts</h2>
           <input
             type="text"
-            placeholder="Search by email or phone number"
+            placeholder="Search by email or name or phone number"
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="w-full p-2 mb-6 border border-gray-300 rounded-lg"
@@ -144,6 +146,7 @@ const PurchasedContacts = () => {
                 <p className="text-sm text-gray-500">Contact Type: {contact.contactType}</p>
                 <div className="mt-2">
                   <p className="text-gray-700">Email: {contact.contactInfo?.email || "N/A"}</p>
+                  <p className="text-gray-700">Name: {contact.contactInfo?.name || "N/A"}</p>
                   <p className="text-gray-700">
                     Contact Number: {contact.contactInfo?.contactNumber || "N/A"}
                   </p>

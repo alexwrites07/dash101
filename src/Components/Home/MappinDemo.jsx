@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 const Map = ({ pincode, onCoordinatesChange }) => {
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
-
+  const apiKey = "AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw"; 
   const initializeMap = (lat, lng) => {
     if (map) {
       map.setCenter({ lat, lng });
@@ -29,12 +29,14 @@ const Map = ({ pincode, onCoordinatesChange }) => {
 
     newMarker.addListener('dragend', (event) => {
       const newCoordinates = [event.latLng.lat(), event.latLng.lng()];
+      console.log('Dragged coordinates:', newCoordinates); // Debugging
       onCoordinatesChange(newCoordinates);
     });
 
     newMap.addListener('click', (event) => {
       const newCoordinates = [event.latLng.lat(), event.latLng.lng()];
       newMarker.setPosition(event.latLng);
+      console.log('Clicked coordinates:', newCoordinates); // Debugging
       onCoordinatesChange(newCoordinates);
     });
 
@@ -57,23 +59,24 @@ const Map = ({ pincode, onCoordinatesChange }) => {
 
   const handleFetchLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        
-        // Reset the map center and marker position to the user's current location
-        if (marker) {
-          marker.setPosition({ lat: latitude, lng: longitude });
-          map.setCenter({ lat: latitude, lng: longitude });
-          onCoordinatesChange([latitude, longitude]);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          if (marker) {
+            marker.setPosition({ lat: latitude, lng: longitude });
+            map.setCenter({ lat: latitude, lng: longitude });
+            onCoordinatesChange([latitude, longitude]);
+          }
+        },
+        (error) => {
+          alert("Error fetching location: " + error.message);
         }
-      }, (error) => {
-        alert('Error fetching location: ' + error.message);
-      });
+      );
     } else {
-      alert('Geolocation is not supported by this browser.');
+      alert("Geolocation is not supported by this browser.");
     }
   };
-  
 
   const handleFetchByPincode = () => {
     if (!pincode) return;
@@ -96,8 +99,18 @@ const Map = ({ pincode, onCoordinatesChange }) => {
   return (
     <div>
       <div>
-        <button className='bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none m-4 -ml-0' onClick={handleFetchByPincode}>Fetch by Pincode</button>
-        <button className='bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none m-4' onClick={handleFetchLocation}>Fetch My Location</button>
+        <button
+          className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none m-4 -ml-0"
+          onClick={handleFetchByPincode}
+        >
+          Fetch by Pincode
+        </button>
+        <button
+          className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none m-4"
+          onClick={handleFetchLocation}
+        >
+          Fetch My Location
+        </button>
       </div>
       <div id="map" style={{ width: '100%', height: '400px' }}></div>
     </div>

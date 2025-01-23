@@ -5,10 +5,12 @@ import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import './Jobpost.css';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
+import { FaMapMarkerAlt, FaGraduationCap, FaStar } from "react-icons/fa";
+import { HiOutlineLocationMarker, HiOutlineClock, HiOutlineAcademicCap } from "react-icons/hi"; // Importing icons
 
 const TutorFinder = () => {
   const [tutors, setTutors] = useState([]);
-  const [distanceFilter, setDistanceFilter] = useState('');
+  const [distance, setdistance] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [rating, setRating] = useState("");
@@ -24,10 +26,11 @@ const TutorFinder = () => {
   const [filters, setFilters] = useState({
     subjectsTaught: '',
     city: '',
+    distance:'',
     totalExperience: '',
-    gender:'',
     qualifications:'',
-    
+    gender:'',
+    highestQualification:'',
     minExpectedSalary: '',
     maxExpectedSalary: '',
     tags: '',
@@ -80,7 +83,7 @@ const TutorFinder = () => {
   };
   const fetchTutors = async () => {
     try {
-      const response = await axios.get('https://server.avyudha.com/getTutors?limit=1000000000');
+      const response = await axios.get('https://server.avyudha.com/getTutors');
       if (response.data && response.data.tutors && Array.isArray(response.data.tutors)) {
         setTutors(response.data.tutors);
         setFilteredTutors(response.data.tutors); // Set the initial filtered tutors
@@ -120,12 +123,12 @@ const TutorFinder = () => {
   };
 
   const filterByDistance = (job) => {
-    if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
+    if (!userCoords || !distance || !job.location || !job.location.coordinates) return true;
 
     const jobCoords = job.location.coordinates;
     const distance = calculateDistance(userCoords, jobCoords);
 
-    return distance <= distanceFilter;
+    return distance <= distance;
   };
   
   const totalPages = Math.ceil(filteredTutors.length / jobsPerPage);
@@ -150,8 +153,8 @@ const TutorFinder = () => {
   const fetchUserCoordinates = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setUserCoords([latitude, longitude]);
+        const {longitude,latitude } = position.coords;
+        setUserCoords([longitude,latitude]);
       }, (error) => {
         console.error('Error fetching user coordinates:', error);
       });
@@ -167,11 +170,13 @@ const TutorFinder = () => {
       [name]: value,
     });
   };
+
   const handleApplyFilter = async () => {
     setTutors([]);  // Clear current tutors
   
     try {
-      const { city, distance, totalExperience, qualifications, gender, categories } = filters;
+      
+      const { city,totalExperience,  distance, qualifications, gender, categories } = filters;
   
       let queryString = `location.city=${city}&totalExperience=${totalExperience}&qualifications=${qualifications}&gender=${gender}`;
       
@@ -198,103 +203,38 @@ const TutorFinder = () => {
     }
   };
   
+  
+  
+  
+  
 
    
 
-return (
-  <div className="flex flex-col md:flex-row mx-auto p-6 bg-[#F9FAFB] text-[#0D1B2A]">
-    <div className="flex flex-col md:flex-row mx-auto w-4/5">
-      {/* Tutors Section */}
-      <div className="flex flex-col items-start justify-start w-full md:mr-8">
-        <div className="text-4xl font-bold text-[#0D1B2A] mb-6">Tutors</div>
-        {tutors.length > 0 ? (
-          tutors.map((tutor, index) => (
-            <div className="flex flex-col md:flex-row items-center justify-between shadow-lg rounded-lg py-6 px-8 mb-6 w-full bg-white transition duration-300 hover:shadow-xl cursor-pointer transform hover:scale-105" key={index}>
-              {/* Image Section */}
-              <div className="flex-shrink-0 h-24 w-24 rounded-md overflow-hidden bg-gray-200">
-                <img
-                  src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
-                  alt="Tutor"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Tutor Details Section */}
-              <div className="flex-1 px-6">
-                <div className="text-xl font-semibold text-[#0D1B2A]">{tutor.fullName}</div>
-                <div className="text-sm text-[#3A506B] font-medium">{tutor.title}</div>
-                <div className="text-sm text-gray-500">
-                  {tutor.location?.city}, {tutor.location?.state}
-                </div>
-                <div className="text-sm text-gray-500">
-                  {tutor.totalExperience} years of experience
-                </div>
-                <div className="text-sm text-gray-500">
-                  {tutor.qualifications}
-                </div>
-                <div className="text-sm text-gray-500 capitalize">{tutor.gender}</div>
-              </div>
-
-              {/* Distance Section */}
-              {userCoords && tutor.location?.coordinates && (
-                <div className="flex flex-col items-center text-gray-700">
-                  <p className="text-sm">Distance:</p>
-                  <span className="text-lg font-semibold text-[#0D1B2A]">
-                    {calculateDistance(
-                      userCoords,
-                      tutor.location.coordinates
-                    ).toFixed(2)} km
-                  </span>
-                </div>
-              )}
-
-              {/* View Button Section */}
-              <div className="flex items-center ml-6">
-                <Link to={`/getTutor/${tutor._id}`}>
-                  <button className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300">
-                    View Profile
-                  </button>
-                </Link>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-center text-gray-500">No tutors match your criteria.</div>
-        )}
-
-        {/* Pagination Section */}
-        <div className="mt-6 flex justify-between w-full">
+  return (
+    <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
+      <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] w-4/5">
+        <div className="md:hidden w-full flex justify-end mb-6">
+          
           <button
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
+            onClick={() => setShowFilters(!showFilters)}
+            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none"
           >
-            Previous
-          </button>
-          <span className="text-gray-700 font-medium">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
-          >
-            Next
+            <HiFilter className="w-4 h-4" />
           </button>
         </div>
-      </div>
-
-      {/* Filters Section */}
-      <div
-        className={`md:block p-6 bg-white rounded-lg shadow-lg ${showFilters ? "" : "hidden"}`}
-        style={{
-          width: "100%",
-          maxWidth: "320px",
-          height: "fit-content",
-        }}
-      >
-        <form className="space-y-1">
-          <div className="mb-4">
+        <div className={`md:block p-4 bg-gray-100 rounded-lg shadow-lg mb-6 ${showFilters ? '' : 'hidden'}`} style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}>
+          <form className="space-y-4">
+            {/* <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subjectsTaught">Subjects Taught</label>
+              <input
+                type="text"
+                name="subjectsTaught"
+                value={filters.subjectsTaught}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div> */}
+  <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="city">
               City
             </label>
@@ -314,19 +254,24 @@ return (
             </button>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="distance">
-              Distance (in km)
-            </label>
-            <input
-              type="number"
-              name="distance"
-              id="distance"
-              placeholder="Enter distance in km"
-              value={distanceFilter}
-              onChange={(e) => handleFilterChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-            />
-          </div>
+  <label
+    className="block text-gray-700 text-sm font-medium mb-2"
+    htmlFor="distance"
+  >
+    Distance (in km)
+  </label>
+  <input
+  type="number"
+  name="distance"
+  id="distance"
+  placeholder="Enter distance in km"
+  value={filters.distance}
+  onChange={handleFilterChange}
+  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+/>
+
+</div>
+
           
                 
           <div className="mb-4 relative">
@@ -390,12 +335,14 @@ return (
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="qualifications">
-              Qualification
+              Qualifications
             </label>
             <input
               type="text"
               name="qualifications"
-              value={filters.qualifications}
+              value={filters.qualifications ?? ''}
+
+
               onChange={handleFilterChange}
               className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
             />
@@ -416,18 +363,113 @@ return (
               <option value="Other">Other</option>
             </select>
           </div>
+            <button
+              type="button"
+              onClick={handleApplyFilter}
+              className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+            >
+              Apply Filters
+            </button>
+          </form>
+        </div>
+    
+        <div className="flex flex-col items-start justify-start w-full ml-8">
+  <div className="text-3xl font-bold text-[#041F96] mb-6">Tutors</div>
+  {tutors.length > 0 ? (
+    tutors.map((tutor, index) => (
+      <div
+        className="shadow rounded flex flex-col md:flex-row items-start py-4 mb-4 w-full hover:shadow-lg transition duration-300"
+        key={index}
+      >
+        {/* Image Section */}
+        <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+          <img
+            src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
+            alt=""
+            className="w-32 h-32 object-cover rounded-md mx-2"
+          />
+        </div>
+
+        <Link to={`/getTutor/${tutor._id}`} className="block w-full">
+          <div className="flex flex-col w-full ml-2">
+            {/* Heading Section */}
+            <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
+            <div className="text-gray-600">{tutor.title}</div>
+
+            {/* Details Section (Horizontal Layout) */}
+            <div className="flex flex-wrap md:flex-nowrap gap-6 mt-2">
+              <div className="flex items-center gap-2">
+                <FaMapMarkerAlt className="text-gray-600" />
+                <span className="text-sm text-gray-600">
+                  {tutor.location?.city}, {tutor.location?.state}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaGraduationCap className="text-gray-600" />
+                <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaStar className="text-gray-600" />
+                <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
+              </div>
+
+              {/* Distance Section with Icon */}
+              {userCoords && tutor.location?.coordinates && (
+                <div className="flex items-center gap-2 mt-2 md:mt-0">
+                  <FaMapMarkerAlt className="text-gray-600" />
+                  <span className="text-sm text-gray-600">
+                    Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </Link>
+        <Link to={`/getTutor/${tutor._id}`} className="block w-full">
+        {/* View Button Section */}
+        <div className="flex justify-end mt-4 px-4">
+            <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
+              View
+            </button>
+          </div>
+          </Link>
+      </div>
+    ))
+  ) : (
+    <div>No tutors match your criteria.</div>
+  )}
+
+
+
+
+
+          <div className="mt-4 flex justify-between w-full">
           <button
-            type="button"
-            onClick={handleApplyFilter}
-            className="w-full bg-[#F4A261] text-white px-5 py-3 rounded-full hover:bg-[#E76F51] transition duration-300"
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
           >
-            Apply Filters
+            Previous
           </button>
-        </form>
+          <span className="text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+        </div>
+        
+        
       </div>
     </div>
-  </div>
-);
+  );
+
+
 
 };
 

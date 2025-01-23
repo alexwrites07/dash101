@@ -3,10 +3,12 @@ import axios from 'axios';
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import './Jobpost.css';
+import { FaMapMarkerAlt, FaBuilding, FaStar } from "react-icons/fa";
 
 const OrganizationFinder = () => {
   const [tutors, setTutors] = useState([]);
-  const [distanceFilter, setDistanceFilter] = useState('');
+  const [org, setOrg] = useState([]);
+  const [distance, setDistance] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [inputText, setInputText] = useState('');
@@ -29,7 +31,7 @@ const OrganizationFinder = () => {
     try {
       const response = await axios.get('https://server.avyudha.com/getOrgs');
       if (response.data && response.data.organizations && Array.isArray(response.data.organizations)) {
-        setTutors(response.data.organizations);
+        setOrg(response.data.organizations);
         setFilteredTutors(response.data.organizations);
       } else {
         console.error('Invalid data format received:', response.data);
@@ -66,15 +68,12 @@ const OrganizationFinder = () => {
 
   const fetchUserCoordinates = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserCoords([latitude, longitude]);
-        },
-        (error) => {
-          console.error('Error fetching user coordinates:', error);
-        }
-      );
+      navigator.geolocation.getCurrentPosition((position) => {
+        const {longitude,latitude } = position.coords;
+        setUserCoords([longitude,latitude]);
+      }, (error) => {
+        console.error('Error fetching user coordinates:', error);
+      });
     } else {
       console.error('Geolocation is not supported by this browser.');
     }
@@ -100,35 +99,42 @@ const OrganizationFinder = () => {
   };
 
   const filterByDistance = (job) => {
-    if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
+    if (!userCoords || !distance || !job.location || !job.location.coordinates) return true;
     const jobCoords = job.location.coordinates;
     const distance = calculateDistance(userCoords, jobCoords);
-    return distance <= distanceFilter;
+    return distance <= distance;
   };
 
-  const applyFilters = () => {
-    const filtered = tutors.filter((tutor) => {
-      const { subjectsRequired, organizationType } = tutor;
-      const city = tutor.location?.city || '';
-      const subjectMatch = filters.subjectsRequired
-        ? subjectsRequired.includes(filters.subjectsRequired)
-        : true;
-      const cityMatch = filters.city
-        ? city.toLowerCase().includes(filters.city.toLowerCase())
-        : true;
-      const organizationMatch = filters.organizationType
-        ? organizationType.toLowerCase().includes(filters.organizationType.toLowerCase())
-        : true;
-
-      let isMatch = subjectMatch && cityMatch && organizationMatch;
-
-      if (distanceFilter && !filterByDistance(tutor)) isMatch = false;
-
-      return isMatch;
-    });
-    setFilteredTutors(filtered);
+  const handleApplyFilter = async () => {
+    setOrg([]);  // Clear current tutors
+  
+    try {
+      const { city, distance} = filters;
+  
+      let queryString = `city=${city}`;
+      
+      if (distance && userCoords){
+        // Add distance condition to the query string if user coordinates are available
+        queryString += `&maxDistance=${distance}`;
+      }
+  
+      // if (categories.length > 0) {
+      //   queryString += `&categories=${categories.join(',')}`;
+      // }
+  
+      const url = `https://server.avyudha.com/getOrgs?${queryString}`;
+  
+      const response = await axios.get(url);
+  
+      if (response.data && response.data.organizations) {
+        setOrg(response.data.organizations);
+      } else {
+        console.error("No tutors found with the selected filters.");
+      }
+    } catch (err) {
+      console.error("An error occurred while fetching tutors.", err);
+    }
   };
-
   return (
     <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
       <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
@@ -169,8 +175,8 @@ const OrganizationFinder = () => {
                 name="distance"
                 id="distance"
                 placeholder="Enter distance in km"
-                value={distanceFilter}
-                onChange={(e) => setDistanceFilter(e.target.value)}
+                value={distance}
+                onChange={(e) => handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
             </div>
@@ -187,7 +193,7 @@ const OrganizationFinder = () => {
             </div>
             <button
               type="button"
-              onClick={applyFilters}
+              onClick={handleApplyFilter}
               className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
             >
               Apply Filters
@@ -195,68 +201,78 @@ const OrganizationFinder = () => {
           </form>
         </div>
         <div className="flex flex-col items-start justify-start w-full">
-          <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Organizations</div>
-          {filteredTutors.length > 0 ? (
-            
-            filteredTutors.map((tutor, index) => (
-              <div
-  className="shadow rounded flex flex-col md:flex-row items-center border-b border-gray-200 py-4 mb-4 w-full ml-8"
-  key={index}
->
-  <Link to={`/getOrg/${tutor._id}`} className="flex w-full">
-    
-    {/* Section 1: Image */}
-    <div className="flex-shrink-0 w-1/6 flex items-center justify-center">
-      <img
-        src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
-        alt={tutor.title}
-        className="w-32 h-32 object-cover rounded-md mx-2"
-      />
-    </div>
+  <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">Organizations</div>
+  {org.length > 0 ? (
+    org.map((tutor, index) => (
+      <div
+        className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full ml-8 hover:shadow-lg transition duration-300"
+        key={index}
+      >
+        <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
+          {/* Section 1: Image */}
+          <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+            <img
+              src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
+              alt={tutor.title}
+              className="w-32 h-32 object-cover rounded-md mx-2"
+            />
+          </div>
 
-    {/* Section 2: Details */}
-    <div className="flex-grow w-4/6 px-4">
-      <h2 className="text-lg font-semibold">{tutor.name}</h2>
-      <h2 className="text-sm text-gray-700">
-        Requirements: {tutor.subjectsRequired.join(", ")}
-      </h2>
-      <h2 className="text-sm text-gray-700">
-        Description: {tutor.description}
-      </h2>
-      <h2 className="text-sm text-gray-700">
-        Location: {tutor.location.city}, {tutor.location.address}
-      </h2>
-      <h2 className="text-sm text-gray-700">
-        Organization Type: {tutor.organizationType}
-      </h2>
-      <h2 className="text-sm text-gray-700">Rating: {tutor.rating}</h2>
-      {userCoords && tutor.location?.coordinates && (
-        <p className="text-gray-700 mt-2">
-          Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-        </p>
-      )}
-    </div>
+          {/* Section 2: Details */}
+          <div className="flex-grow px-4 w-full md:w-4/6">
+            <h2 className="text-lg font-semibold text-gray-800">{tutor.name}</h2>
+            <div className="flex flex-col gap-4 mt-2 text-sm text-gray-700">
+              {/* Location */}
+              <p className="flex items-center gap-2">
+                <FaMapMarkerAlt className="text-gray-600" />
+                <span className="font-medium text-gray-600">Location:</span> {tutor.location.city}, {tutor.location.address}
+              </p>
+              {/* Organization Type */}
+              <p className="flex items-center gap-2">
+                <FaBuilding className="text-gray-600" />
+                <span className="font-medium text-gray-600">Organization Type:</span> {tutor.organizationType}
+              </p>
+              {/* Rating */}
+              <p className="flex items-center gap-2">
+                <FaStar className="text-yellow-500" />
+                <span className="font-medium text-gray-600">Rating:</span> {tutor.rating}
+              </p>
+            </div>
 
-    {/* Section 3: View Button */}
-    <div className="flex-shrink-0 w-1/6 flex items-center justify-center">
-      <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
-        View
-      </button>
-    </div>
+            {/* Description */}
+            <div className="mt-4">
+              <p className="text-sm text-gray-700">
+                <span className="font-medium text-gray-600">Description:</span> {tutor.description}
+              </p>
+            </div>
 
-  </Link>
-</div>
+            {/* Distance */}
+            {userCoords && tutor.location?.coordinates && (
+              <p className="text-gray-700 mt-4">
+                <span className="font-medium text-gray-600">Distance:</span> {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+              </p>
+            )}
 
+            {/* View Button */}
+            <div className="flex justify-end mt-4">
+              <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c6b] focus:outline-none">
+                View
+              </button>
+            </div>
+          </div>
+        </Link>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
+  )}
 
-            ))
-          ) : (
-            <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
-          )}
         </div>
       </div>
       
     </div>
   );
+
 };
 
 export default OrganizationFinder;

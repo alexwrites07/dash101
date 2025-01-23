@@ -26,7 +26,8 @@ const FrequentlyHiringCompanies = () => {
           name: company.name,
           _id: company._id,
           location: `${company.location.city}, ${company.location.state}`,
-          industry: company.category || "Unknown Industry",
+          organizationType: company.organizationType || " ",
+          rating :company.rating,
           logo: company.logo || "https://via.placeholder.com/150", // Fallback logo in case of missing logo
         }));
         setCompanies(fetchedCompanies);

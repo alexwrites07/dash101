@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import './Login.css'; 
+import "./Login.css"; 
 import LoadingSpinner from "../Loading/Loading";
 import axios from "axios";
 
@@ -16,28 +16,26 @@ export default function SignUp() {
     const [otp, setOtp] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
+
+    // Roles and images
     const roles = ["Teacher", "Institution", "Students", "Admin"];
-    const [currentIndex, setCurrentIndex] = useState(1);
-    const [currentRole, setCurrentRole] = useState(roles[currentIndex]);
-    const [isFading, setIsFading] = useState(false);
-    const imgUrl = [
-        "https://res.cloudinary.com/dr9iwqqv7/image/upload/v1719392884/vector-male-teacher-with-pointer-on-lesson-at-blackboard-in-classroom-removebg-preview_zhf9xe.png",
-        "https://res.cloudinary.com/dr9iwqqv7/image/upload/v1719395157/facade-school-educational-institution-boy-vector-32443814-removebg-preview_f0xdya.png",
-        "https://res.cloudinary.com/dr9iwqqv7/image/upload/c_fill,h_400/v1719395572/a-student-boy-cartoon-character-isolated-on-white-background-free-vector-removebg-preview_uamkbb.png",
-        "https://res.cloudinary.com/dr9iwqqv7/image/upload/v1719395442/556-5569981_data-clipart-administrator-system-administrator-clipart-hd-png-removebg-preview_1_ebjcc4.png"
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const currentRole = roles[currentIndex];
+
+    const roleImages = [
+        "https://i.pinimg.com/736x/ec/7f/1f/ec7f1ffc43a71274e16953245fc34ee7.jpg", // Teacher
+        "https://i.pinimg.com/736x/8c/ad/57/8cad5787632904714301f367a69b2e27.jpg", // Institution
+        "https://i.pinimg.com/736x/54/d1/f1/54d1f153037e28aa467fe04166166459.jpg", // Student
+        "https://i.pinimg.com/736x/1f/08/63/1f086353dda55ebf102569b60f0bdf26.jpg" // Admin
     ];
 
-    useEffect(() => {
-        setCurrentRole(roles[currentIndex]);
-    }, [currentIndex]);
-
-    const homeImgSrc = imgUrl[currentIndex];
+    const homeImgSrc = roleImages[currentIndex];
 
     async function handleSubmit(e) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-        setSuccessMessage(""); // Clear any previous success message
+        setSuccessMessage("");
 
         const apiRoutes = {
             Teacher: "https://server.avyudha.com/register/tutor",
@@ -51,28 +49,15 @@ export default function SignUp() {
         }
 
         try {
-            // Separate payload based on the role, but do not modify the structure
-            let payload;
-            if (currentRole === "Institution") {
-                payload = {
-                    name: name,
-                    username: username,
-                    email:email,
-                    password:password,
-                    phone:phone
-                };
-            } else {
-                payload = {
-                    fullName: name,
-                    username: username,
-                    email:email,
-                    password:password,
-                    phone:phone
-                };
-            }
+            const payload = {
+                fullName: name,
+                username: username,
+                email: email,
+                password: password,
+                phone: phone,
+            };
 
             const response = await axios.post(apiRoutes[currentRole], payload);
-            console.log(response);
             setIsOtpSent(true);
         } catch (err) {
             setError("Signup failed. Please try again.");
@@ -85,188 +70,347 @@ export default function SignUp() {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
-    
-        // Define verification API routes for different roles
-        const verificationApiRoutes = {
-            Teacher: "https://server.avyudha.com/register/tutor/verify",
-            Institution: "https://server.avyudha.com/register/organization/verify",
-            Students: "https://server.avyudha.com/register/student/verify",
-        };
-    
+        setSuccessMessage("");
+
         try {
-            const response = await axios.post(verificationApiRoutes[currentRole], {
-                email,
-                otp,
-            });
-            // Redirect to login page with success message
-            setSuccessMessage("You are successfully signed up now. Please log in with your credentials.");
-            setTimeout(() => navigate("/login"), 2000); // Redirect after a short delay
+            const payload = {
+                otp: otp,
+                username: username,
+            };
+
+            const response = await axios.post("https://server.avyudha.com/verify-otp", payload);
+            setSuccessMessage("Signup successful! Redirecting...");
+            setTimeout(() => navigate("/login"), 2000);
         } catch (err) {
-            setError("OTP verification failed. Please try again.");
+            setError("Invalid OTP. Please try again.");
         } finally {
             setIsLoading(false);
         }
     }
-    
 
-    function roleChangeInLogin(index) {
-        setIsFading(true);
-        setTimeout(() => {
-            setCurrentIndex(index);
-            setIsFading(false);
-        }, 300); 
-    }
-
+    // return (
+    //     <>
+    //         {isLoading ? (
+    //             <div>
+    //                 <LoadingSpinner />
+    //             </div>
+    //         ) : (
+    //             <div
+    //                 className="w-screen h-screen bg-cover bg-center flex flex-col items-center justify-center"
+    //                 style={{ backgroundImage: `url(${homeImgSrc})` }}
+    //             >
+    //                 <div className="bg-white opacity-95 p-6 rounded-lg shadow-lg w-full max-w-md">
+    //                     <div className="flex justify-around mb-4">
+    //                         {roles.map((role, index) => (
+    //                             <div
+    //                                 key={index}
+    //                                 className={`cursor-pointer px-4 py-2 rounded-lg ${
+    //                                     currentIndex === index
+    //                                         ? "bg-blue-500 text-white"
+    //                                         : "bg-gray-200 text-black"
+    //                                 }`}
+    //                                 onClick={() => setCurrentIndex(index)}
+    //                             >
+    //                                 {role}
+    //                             </div>
+    //                         ))}
+    //                     </div>
+    //                     <h1 className="text-2xl font-bold text-center text-[#041F96] mb-4">
+    //                         {isOtpSent ? "Enter OTP" : `${currentRole} Sign Up`}
+    //                     </h1>
+    //                     {!isOtpSent ? (
+    //                         <form className="space-y-4" onSubmit={handleSubmit}>
+    //                             <div>
+    //                                 <label
+    //                                     htmlFor="name"
+    //                                     className="block mb-1 text-sm font-medium text-blue-500"
+    //                                 >
+    //                                     Your Name
+    //                                 </label>
+    //                                 <input
+    //                                     type="text"
+    //                                     id="name"
+    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
+    //                                     placeholder="Your Full Name"
+    //                                     required
+    //                                     onChange={(e) => setName(e.target.value)}
+    //                                 />
+    //                             </div>
+    //                             <div>
+    //                                 <label
+    //                                     htmlFor="username"
+    //                                     className="block mb-1 text-sm font-medium text-blue-500"
+    //                                 >
+    //                                     Username
+    //                                 </label>
+    //                                 <input
+    //                                     type="text"
+    //                                     id="username"
+    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
+    //                                     placeholder="Username"
+    //                                     required
+    //                                     onChange={(e) => setUsername(e.target.value)}
+    //                                 />
+    //                             </div>
+    //                             <div>
+    //                                 <label
+    //                                     htmlFor="email"
+    //                                     className="block mb-1 text-sm font-medium text-blue-500"
+    //                                 >
+    //                                     Email
+    //                                 </label>
+    //                                 <input
+    //                                     type="email"
+    //                                     id="email"
+    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
+    //                                     placeholder="name@domain.com"
+    //                                     required
+    //                                     onChange={(e) => setEmail(e.target.value)}
+    //                                 />
+    //                             </div>
+    //                             <div>
+    //                                 <label
+    //                                     htmlFor="password"
+    //                                     className="block mb-1 text-sm font-medium text-blue-500"
+    //                                 >
+    //                                     Password
+    //                                 </label>
+    //                                 <input
+    //                                     type="password"
+    //                                     id="password"
+    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
+    //                                     placeholder="••••••••"
+    //                                     required
+    //                                     onChange={(e) => setPassword(e.target.value)}
+    //                                 />
+    //                             </div>
+    //                             <div>
+    //                                 <label
+    //                                     htmlFor="phone"
+    //                                     className="block mb-1 text-sm font-medium text-blue-500"
+    //                                 >
+    //                                     Phone Number
+    //                                 </label>
+    //                                 <input
+    //                                     type="tel"
+    //                                     id="phone"
+    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
+    //                                     placeholder="+91XXXXXXXX"
+    //                                     required
+    //                                     onChange={(e) => setPhone(e.target.value)}
+    //                                 />
+    //                             </div>
+    //                             <button
+    //                                 type="submit"
+    //                                 className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+    //                             >
+    //                                 Sign Up
+    //                             </button>
+    //                             {error && <p className="text-red-500">{error}</p>}
+    //                         </form>
+    //                     ) : (
+    //                         <form className="space-y-4" onSubmit={handleOtpSubmit}>
+    //                             <div>
+    //                                 <label
+    //                                     htmlFor="otp"
+    //                                     className="block mb-1 text-sm font-medium text-blue-500"
+    //                                 >
+    //                                     Enter OTP
+    //                                 </label>
+    //                                 <input
+    //                                     type="text"
+    //                                     id="otp"
+    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
+    //                                     placeholder="Enter OTP"
+    //                                     required
+    //                                     onChange={(e) => setOtp(e.target.value)}
+    //                                 />
+    //                             </div>
+    //                             <button
+    //                                 type="submit"
+    //                                 className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+    //                             >
+    //                                 Verify OTP
+    //                             </button>
+    //                             {error && <p className="text-red-500">{error}</p>}
+    //                             {successMessage && (
+    //                                 <p className="text-green-500">{successMessage}</p>
+    //                             )}
+    //                         </form>
+    //                     )}
+    //                 </div>
+    //             </div>
+    //         )}
+    //     </>
+    // );
     return (
         <>
-            {isLoading ? (
-                <div>
-                    <LoadingSpinner />
-                </div>
-            ) : (
-                <div className="lg:h-1/2 h-[800px] w-screen p-3 bg-white-900">
-                    <div className={`${currentIndex === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'} overflow-hidden lg:flex lg:flex-row flex-col-reverse h-full w-full flex items-center justify-center bg-white-900 rounded-[20px]`}>
-                        <div className="overflow-hidden lg:w-3/5 h-full flex justify-center place-items-top lg:place-items-center bg-white-900 rounded-[20px]">
-                            <img
-                                src={homeImgSrc}
-                                alt="left"
-                                className={`h-[80%] object-contain lg:object-center object-top transition-opacity duration-500 ${isFading ? 'opacity-0' : 'opacity-100'}`}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-screen w-screen bg-gray-100">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            
+              <div
+                className="flex flex-col items-center justify-center bg-no-repeat bg-cover bg-center"
+                style={{
+                    height: "calc(100vh - 8rem)", // Space between navbar and footer
+                    backgroundImage: `url(${homeImgSrc})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+                >
+                <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md border border-gray-300 mx-4">
+                    <h1 className="text-xl font-semibold text-center text-[#041F96] mb-3">
+                    {isOtpSent ? "Enter OTP" : `${currentRole} Sign Up`}
+                    </h1>
+                    <div className="flex justify-around mb-3">
+                    {roles.map((role, index) => (
+                        <div
+                        key={index}
+                        className={`cursor-pointer px-3 py-1 text-xs rounded-lg font-medium transition-all ${
+                            currentIndex === index
+                            ? "bg-[#041F96] text-white"
+                            : "bg-gray-200 text-black hover:bg-gray-300"
+                        }`}
+                        onClick={() => setCurrentIndex(index)}
+                        >
+                        {role}
+                        </div>
+                    ))}
+                    </div>
+
+                    {!isOtpSent ? (
+                    <form className="space-y-2" onSubmit={handleSubmit}>
+                        <div>
+                        <label
+                            htmlFor="name"
+                            className="block mb-1 text-xs font-medium text-blue-600"
+                        >
+                            Your Name
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                            placeholder="Your Full Name"
+                            required
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        </div>
+                        <div>
+                        <label
+                            htmlFor="username"
+                            className="block mb-1 text-xs font-medium text-blue-600"
+                        >
+                            Username
+                        </label>
+                        <input
+                            type="text"
+                            id="username"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                            placeholder="Username"
+                            required
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        </div>
+                        <div>
+                        <label
+                            htmlFor="email"
+                            className="block mb-1 text-xs font-medium text-blue-600"
+                        >
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                            placeholder="name@domain.com"
+                            required
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        </div>
+                        <div>
+                        <label
+                            htmlFor="password"
+                            className="block mb-1 text-xs font-medium text-blue-600"
+                        >
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="password"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                            placeholder="••••••••"
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        </div>
+                        <div>
+                        <label
+                            htmlFor="phone"
+                            className="block mb-1 text-xs font-medium text-blue-600"
+                        >
+                            Phone Number
+                        </label>
+                        <div className="flex items-center">
+                            <span className="px-2 py-1 bg-gray-200 border border-gray-300 rounded-l-lg text-sm">
+                            +91
+                            </span>
+                            <input
+                            type="tel"
+                            id="phone"
+                            className="w-full p-2 border border-gray-300 rounded-r-lg text-sm focus:ring-black"
+                            placeholder="XXXXXXXXXX"
+                            pattern="[0-9]{10}"
+                            required
+                            onChange={(e) => setPhone(`+91${e.target.value}`)}
                             />
                         </div>
-
-                        <div className="lg:w-2/5 w-full ml-10 mr-10 bg-white-900 rounded-[20px]">
-                            <section className="bg-white-900">
-                                <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-full lg:py-0">
-                                    <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white">
-                                        {/* Placeholder for logo */}
-                                    </a>
-                                    <div className="w-full bg-white rounded-lg shadow lg:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-300 dark:border-gray-700">
-                                        <div className="p-6 space-y-4 lg:space-y-6 sm:p-8">
-                                            {!isOtpSent ? (
-                                                <>
-                                                    <h1 className={`text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
-                                                        {currentRole} SignUp
-                                                    </h1>
-                                                    <form className="space-y-4 lg:space-y-6" onSubmit={handleSubmit}>
-                                                        <div>
-                                                            <label htmlFor="name" className="block mb-1 text-sm font-medium text-blue-500">Your Name</label>
-                                                            <input
-                                                                type="text"
-                                                                name="name"
-                                                                id="name"
-                                                                className="bg-gray-50 border border-gray-300 text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
-                                                                placeholder="Mr/Mrs"
-                                                                required=""
-                                                                onChange={(e) => setName(e.target.value)}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="username" className="block mb-1 text-sm font-medium text-blue-500">Your Username</label>
-                                                            <input
-                                                                type="text"
-                                                                name="username"
-                                                                id="username"
-                                                                className="bg-gray-50 border border-gray-300 text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
-                                                                placeholder="Mr/Mrs"
-                                                                required=""
-                                                                onChange={(e) => setUsername(e.target.value)}
-                                                            />
-                                                        </div>
-                                                       
-                                                        <div>
-                                                            <label htmlFor="email" className="block mb-1 text-sm font-medium text-blue-500">Your email</label>
-                                                            <input
-                                                                type="email"
-                                                                name="email"
-                                                                id="email"
-                                                                className="bg-gray-50 border border-gray-300 text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
-                                                                placeholder="name@company.com"
-                                                                required=""
-                                                                onChange={(e) => setEmail(e.target.value)}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">Password</label>
-                                                            <input
-                                                                type="password"
-                                                                name="password"
-                                                                id="password"
-                                                                placeholder="••••••••"
-                                                                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
-                                                                required=""
-                                                                onChange={(e) => setPassword(e.target.value)}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                        <label htmlFor="phone" className="block mb-1 text-sm font-medium text-blue-500">
-                                                            Phone Number
-                                                        </label>
-                                                        <input
-                                                            type="tel"
-                                                            name="phone"
-                                                            id="phone"
-                                                            placeholder="+91XXXXXXXX"
-                                                            required
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
-                                                            onChange={(e) => setPhone(e.target.value)}
-                                                        />
-                                                    </div>
-                                                        <button
-                                                            type="submit"
-                                                            className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                                        >
-                                                            Sign Up
-                                                        </button>
-                                                        {error && <p style={{ color: "red" }}>{error}</p>}
-                                                        {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-                                                        <div className="flex justify-center gap-4 mt-4">
-                                                            {roles.map((role, index) => (
-                                                                <button
-                                                                    key={index}
-                                                                    onClick={() => roleChangeInLogin(index)}
-                                                                    className={`px-4 py-2 font-bold rounded-lg text-black ${currentIndex === index ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'}`}
-                                                                >
-                                                                    {role}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    </form>
-                                                </>
-                                            ) : (
-                                                <form className="space-y-4 lg:space-y-6" onSubmit={handleOtpSubmit}>
-                                                    <h1 className="text-xl font-bold leading-tight tracking-tight text-[#041F96] lg:text-2xl">
-                                                        Enter OTP (in email)
-                                                    </h1>
-                                                    <div>
-                                                        <label htmlFor="otp" className="block mb-1 text-sm font-medium text-blue-500">OTP</label>
-                                                        <input
-                                                            type="text"
-                                                            name="otp"
-                                                            id="otp"
-                                                            className="bg-gray-50 border border-gray-300 text-black sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 placeholder-gray-400 text-black focus:ring-blue-500 border-blue-500"
-                                                            placeholder="Enter OTP"
-                                                            required=""
-                                                            onChange={(e) => setOtp(e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <button
-                                                        type="submit"
-                                                        className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                                    >
-                                                        Verify OTP
-                                                    </button>
-                                                    {error && <p style={{ color: "red" }}>{error}</p>}
-                                                    {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-                                                </form>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
                         </div>
-                    </div>
+                        <button
+                        type="submit"
+                        className="w-full bg-[#041F96] text-white text-sm p-2 rounded-lg hover:bg-blue-700 transition"
+                        >
+                        Sign Up
+                        </button>
+                        {error && <p className="text-xs text-red-500">{error}</p>}
+                    </form>
+                    ) : (
+                    <form className="space-y-2" onSubmit={handleOtpSubmit}>
+                        <div>
+                        <label
+                            htmlFor="otp"
+                            className="block mb-1 text-xs font-medium text-[#041F96]"
+                        >
+                            Enter OTP
+                        </label>
+                        <input
+                            type="text"
+                            id="otp"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                            placeholder="Enter OTP"
+                            required
+                            onChange={(e) => setOtp(e.target.value)}
+                        />
+                        </div>
+                        <button
+                        type="submit"
+                        className="w-full bg-[#041F96] text-white text-sm p-2 rounded-lg hover:bg-blue-700 transition"
+                        >
+                        Verify OTP
+                        </button>
+                        {error && <p className="text-xs text-red-500">{error}</p>}
+                        {successMessage && <p className="text-xs text-green-500">{successMessage}</p>}
+                    </form>
+                    )}
                 </div>
-            )}
+                </div>
+
+          )}
         </>
-    );
+      );
+      
+    
+    
 }

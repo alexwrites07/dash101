@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+const apiKey = "AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw"; 
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Jobs/Map';

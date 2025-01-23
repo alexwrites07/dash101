@@ -25,15 +25,31 @@ const Logout = () => {
 
   return (
     <div className="logout-container lg:ml-64 lg:mt-18 p-4 mt-24">
-              <Sidebar />
-       <Header />
-       <div className="lg:ml-64 lg:mt-18 p-4">
-      <h1 className='text-4xl text-red-600 mt-12'>Do you want to Logout?</h1><br></br><br></br>
-      <button onClick={handleLogout}  className={`px-6 py-3 font-semibold text-white rounded-md transition-all duration-300 bg-primary bg-[#1E40AF] shadow-md
-  }`}>
-        Logout
-      </button>
-    </div>
+          
+          <div className="lg:-ml-64 lg:mt-18 p-4 flex flex-col items-center">
+  <h1 className="text-4xl text-red-600 mt-12 text-center">Do you want to Logout?</h1>
+  <br />
+  <br />
+  <div className="flex gap-4">
+    {/* Logout Button */}
+    <button
+      onClick={handleLogout}
+      className="px-6 py-3 font-semibold text-white rounded-md transition-all duration-300 bg-primary bg-[#1E40AF] shadow-md"
+    >
+      Logout
+    </button>
+
+    {/* No Button */}
+    <button
+      onClick={() => window.location.href = '/your-profile'}
+      className="px-6 py-3 font-semibold text-white rounded-md transition-all duration-300 bg-red-600 shadow-md hover:bg-red-700"
+    >
+      No
+    </button>
+  </div>
+</div>
+
+
     </div>
   );
 };

@@ -45,7 +45,7 @@ const TransactionHistory = () => {
   };
 
   const formatDate = (utcDate) => {
-    return dayjs(utcDate).format("DD MMM YYYY, h:mm A");
+    return dayjs(utcDate).format("DD MMM YYYY");
   };
 
   if (loading) {

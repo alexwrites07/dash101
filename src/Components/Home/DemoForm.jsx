@@ -5,6 +5,11 @@ import axios from 'axios';
 
 const questions = [
   {
+    id: 'location',
+    question: 'What is your location? *',
+    type: 'location', // Custom type for the map
+  },
+  {
     id: 'requirement',
     question: 'What is your Learning Need Category? *',
     type: 'autocomplete',
@@ -22,11 +27,7 @@ const questions = [
     type: 'select',
     options: ['ICSE', 'CBSE', 'State Board', 'International Baccalaureate', 'IGCSE', 'None of the above'],
   },
-  {
-    id: 'location',
-    question: 'What is your location? *',
-    type: 'location', // Custom type for the map
-  },
+  
   {
     id: 'start',
     question: 'When do you plan to start your tuition? *',
@@ -118,12 +119,12 @@ const DemoForm = () => {
           console.error("Error fetching data:", error);
         })
         .finally(() => {
-          setLoading(false);
+          // setLoading(false);
         });
     } else {
       // Redirect or handle missing type/token
       console.error("Missing type or token in localStorage.");
-      setLoading(false);
+      // setLoading(false);
     }
     // Filter suggestions based on the user input for the "requirement" field
     if (responses.requirement) {
@@ -252,6 +253,10 @@ const DemoForm = () => {
   const handleMapChange = (newCoordinates) => {
     setCoordinates(newCoordinates);
     handleCoordinatesChange(newCoordinates);  // Use the updated function to modify the location
+  
+     
+    
+    
   };
   
  const handleCoordinatesChange = (coordinates) => {
@@ -272,7 +277,7 @@ const DemoForm = () => {
     };
 
     try {
-      const response = await fetch('https:/server.avyudha.com/verify-learning-need-otp', {
+      const response = await fetch('https://server.avyudha.com/verify-learning-need-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -521,12 +526,21 @@ const DemoForm = () => {
               required
         />
       
-      <Map pincode={responses.location.pincode} onCoordinatesChange={handleMapChange} />
-      <div>
-        <p>Selected Coordinates:</p>
-        <p>Latitude: {coordinates[0]}</p>
-        <p>Longitude: {coordinates[1]}</p>
-      </div>
+      
+      {!isLocationCorrect && (
+        <>
+          <Map
+            pincode={responses.location.pincode}
+            onCoordinatesChange={handleMapChange}
+          />
+          <div>
+            <p>Selected Coordinates:</p>
+            <p>Latitude: {responses.location.coordinates[0]}</p>
+            <p>Longitude: {responses.location.coordinates[1]}</p>
+          </div>
+        </>
+      )}
+
       <div className="mt-2">
         <label>
           <input
@@ -535,7 +549,7 @@ const DemoForm = () => {
             onChange={() => setIsLocationCorrect(!isLocationCorrect)}
             required
           />
-          Click the checkbox if the location on the map is correct
+          Click the checkbox if the location on the map is correct (the map will disappear)
         </label>
       </div>
             {/* <button

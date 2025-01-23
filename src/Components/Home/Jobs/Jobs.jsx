@@ -47,7 +47,10 @@ const FeaturedJobsAndNeeds = () => {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Featured Jobs Section */}
         <div className="flex-1">
-          <h2 className="text-3xl font-bold mb-4 text-[#041F96]">Featured Jobs</h2>
+        <div className="flex justify-between items-start w-full">
+          <a
+    href="/jobpost" className="text-3xl font-bold mb-4 text-[#041F96]">Featured Jobs</a>
+   </div>
           {jobs.slice(0, visibleJobs).map((job, index) => (
             <div key={index} className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6 transition-transform transform hover:scale-105 hover:shadow-2x">
               <Link to={`/getjobs/${job._id}`} className="block">
@@ -91,17 +94,25 @@ const FeaturedJobsAndNeeds = () => {
     </div></Link>
             </div>
           ))}
-          <button
-            className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#03357A] focus:outline-none"
-            onClick={toggleShowMoreJobs}
-          >
-            {showAllJobs ? 'Show Less' : 'Show More'}
-          </button>
+     
+  <button
+    className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#03357A] focus:outline-none"
+    onClick={toggleShowMoreJobs}
+  >
+    {showAllJobs ? 'Show Less' : 'Show More'}
+  </button>
+  
+
+
+          
         </div>
 
         {/* Featured Learning Needs Section */}
         <div className="flex-1">
-          <h2 className="text-3xl font-bold mb-4 text-[#041F96]">Featured Learning Needs</h2>
+        <div className="flex justify-between items-start w-full">
+          <a
+    href="/needpost" className="text-3xl font-bold mb-4 text-[#041F96]">Featured Learning Needs</a>
+       </div>
           {learningNeeds.slice(0, visibleNeeds).map((need, index) => (
             <div key={index} className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6 transition-transform transform hover:scale-105 hover:shadow-2x">
               <Link to={`/getNeed/${need._id}`} className="block">

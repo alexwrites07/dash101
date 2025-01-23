@@ -75,7 +75,8 @@ const WalletPage = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Wallet</h1>
           <div className="balance-card bg-blue-700 from-green-400 to-blue-500 text-white rounded-lg p-6 shadow-md mb-8">
             <h2 className="text-xl font-semibold">Your Wallet Balance</h2>
-            <p className="text-3xl font-bold mt-2">₹{balance}</p>
+            <h2 className="text-2xs font-semibold">Conversion : ₹1 = 1 coin</h2>
+            <p className="text-3xl font-bold mt-2">{balance} coins</p>
           </div>
           <div className="add-money">
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">Add Money</h3>
@@ -86,8 +87,8 @@ const WalletPage = () => {
                   onClick={() => handleAddMoney(amount)}
                   className="bg-blue-700 text-white font-medium py-3 px-5 rounded-lg shadow transition duration-200"
                 >
-                  Add ₹{amount}
-                </button>
+                  Add {amount} coins
+                 </button>
               ))}
             </div>
             <div className="mt-6">
@@ -105,7 +106,7 @@ const WalletPage = () => {
                 onClick={() => handleAddMoney(customAmount)}
                 className="mt-4 bg-blue-600 text-white font-medium py-3 px-5 rounded-lg shadow transition duration-200"
               >
-                Add ₹{customAmount}
+                Add {customAmount} coins
               </button>
             </div>
           </div>

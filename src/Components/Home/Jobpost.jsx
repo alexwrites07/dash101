@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
+import { FaMapMarkerAlt, FaCalendarAlt, FaRupeeSign } from 'react-icons/fa';
 import './Jobpost.css';
 
 const JobPost = () => {
@@ -16,9 +17,8 @@ const JobPost = () => {
   const [sortBy, setSortBy] = useState('date');
   const [filters, setFilters] = useState({
     keyword: '',
-    city: '',
+    location: '',
     skillAndExperience: [],
-    jobCategories:[],
     jobType: '',
     totalExperience: '',
     gender:'',
@@ -30,7 +30,7 @@ const JobPost = () => {
   const [showFilters, setShowFilters] = useState(false);
   const jobsPerPage = 15;
   const [userCoords, setUserCoords] = useState(null);
-  const [distanceFilter, setDistanceFilter] = useState('');
+  const [distance, setdistance] = useState('');
 
   useEffect(() => {
     fetchJobs();
@@ -38,7 +38,7 @@ const JobPost = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get('https://server.avyudha.com/jobs?limit=1000000000');
+      const response = await axios.get('https://server.avyudha.com/jobs?limit=1000000');
       console.log('API response:', response.data);
       if (response.data && Array.isArray(response.data.jobs)) {
         const jobsWithBookmarks = response.data.jobs.map(job => ({
@@ -187,12 +187,12 @@ const JobPost = () => {
   };
 
   const filterByDistance = (job) => {
-    if (!userCoords || !distanceFilter || !job.location || !job.location.coordinates) return true;
+    if (!userCoords || !distance || !job.location || !job.location.coordinates) return true;
 
     const jobCoords = job.location.coordinates;
     const distance = calculateDistance(userCoords, jobCoords);
 
-    return distance <= distanceFilter;
+    return distance <= distance;
   };
 
   const applyFilters = async () => {
@@ -240,9 +240,9 @@ const JobPost = () => {
     
   };
   
- 
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const visibleJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   const goToNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
@@ -255,8 +255,8 @@ const JobPost = () => {
   const fetchUserCoordinates = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setUserCoords([latitude, longitude]);
+        const {longitude,latitude } = position.coords;
+        setUserCoords([longitude,latitude]);
       }, (error) => {
         console.error('Error fetching user coordinates:', error);
       });
@@ -264,7 +264,6 @@ const JobPost = () => {
       console.error('Geolocation is not supported by this browser.');
     }
   };
-
   const [margin, setMargin] = useState({ margin: '2% 1% 0.5% 4%' });
 
   useEffect(() => {
@@ -282,42 +281,40 @@ const JobPost = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  return (
+    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
+    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
+      {/* Sidebar for Filters (Hidden on Small Screens) */}
+      <div className="md:hidden w-full flex justify-end mb-6">
+  <button
+    onClick={() => setShowFilters(!showFilters)}
+    className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-non"
+  >
+    <HiFilter className="w-4 h-4" />
+  </button>
+</div>
 
+      <div className="w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4">
+      
+      <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
+        <form className="space-y-4">
+          {/* Filters */}
+          {/* Keyword Filter */}
+          {/* <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
+            <input
+              type="text"
+              name="keyword"
+              id="keyword"
+              value={filters.keyword}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div> */}
 
-return (
-  <div className="flex flex-col md:flex-row mx-auto p-6 bg-[#F9FAFB] text-[#0D1B2A]">
-    <div className="flex flex-col md:flex-row mx-auto w-4/5">
-    {/* Sidebar for Filters (Hidden on Small Screens) */}
-    <div className="md:hidden w-full flex justify-end mb-6">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="text-white px-4 py-2 rounded-lg bg-[#3A506B] focus:outline-none"
-          >
-            <HiFilter className="w-4 h-4" />
-          </button>
-        </div>
-
-    <div className="w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4 ">
-    
-    <div className={`md:block w-full p-4 bg-white rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
-      <form className="space-y-4">
-        {/* Filters */}
-        {/* Keyword Filter */}
-        {/* <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="keyword">Keyword</label>
-          <input
-            type="text"
-            name="keyword"
-            id="keyword"
-            value={filters.keyword}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-2 border rounded-lg"
-          />
-        </div> */}
-
-        {/* Location Filter */}
-        <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="location">City</label>
+          {/* Location Filter */}
+          <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="location">City</label>
         <input
           type="text"
           name="city"
@@ -327,216 +324,232 @@ return (
           onChange={handleFilterChange}
           className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
         />
-       <button
-        type="button" // Add type="button" to prevent form submission
-        onClick={fetchUserCoordinates}
-        className="mt-4 bg-[#3A506B] text-white px-5 py-2 rounded-full hover:bg-[#1E3D58] transition duration-300"
-        >
-        Use My Location
-        </button>
+         <button
+  type="button" // Add type="button" to prevent form submission
+  onClick={fetchUserCoordinates}
+  className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+>
+  Use My Location
+</button>
 
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="distance">Distance (in km)</label>
-                <input
-                  type="number"
-                  name="distance"
-                  id="distance"
-                  placeholder="Enter distance in km"
-                  value={distanceFilter}
-                  onChange={(e) => setDistanceFilter(e.target.value)}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-                />
-              </div>
-
-              <div className="mb-4 relative">
-        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="skillAndExperience">
-        Categories
-        </label>
-        <input
-          type="text"
-          placeholder="Start typing to search Categories..."
-          value={inputText1}
-          onChange={handleskillAndExperienceInputChange}
-          className="border p-2 w-full rounded-lg"
-        />
-
-        {/* Suggestions Dropdown */}
-        {suggestions1.length > 0 && (
-          <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
-            {suggestions1.map((cat, idx) => (
-              <li
-                key={idx}
-                onClick={() => handleskillAndExperienceSelect(cat)}
-                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-              >
-                {cat}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Selected skillAndExperience */}
-        {filters.skillAndExperience.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {filters.skillAndExperience.map((skillAndExperience, idx) => (
-              <span
-                key={idx}
-                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
-              >
-                {skillAndExperience}
-                <button
-                  onClick={() => handleskillAndExperienceRemove(skillAndExperience)}
-                  className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                >
-                  &times;
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
         </div>
 
-                {/* Career Level Filter */}
-                <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="gender">
-              Gender
-            </label>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2"  htmlFor="distance">Distance (in km)</label>
+          <input
+            type="number"
+            name="distance"
+            id="distance"
+            placeholder="Enter distance in km"
+            value={distance}
+            onChange={handleFilterChange}
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+        </div>
+
+        <div className="mb-4 relative">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="skillAndExperience">
+   Categories
+  </label>
+  <input
+    type="text"
+    placeholder="Start typing to search Categories..."
+    value={inputText1}
+    onChange={handleskillAndExperienceInputChange}
+    className="border p-2 w-full rounded-lg"
+  />
+  
+  {/* Suggestions Dropdown */}
+  {suggestions1.length > 0 && (
+    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+      {suggestions1.map((cat, idx) => (
+        <li
+          key={idx}
+          onClick={() => handleskillAndExperienceSelect(cat)}
+          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+        >
+          {cat}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {/* Selected skillAndExperience */}
+  {filters.skillAndExperience.length > 0 && (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {filters.skillAndExperience.map((skillAndExperience, idx) => (
+        <span
+          key={idx}
+          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+        >
+          {skillAndExperience}
+          <button
+            onClick={() => handleskillAndExperienceRemove(skillAndExperience)}
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          >
+            &times;
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
+</div>
+
+          {/* Career Level Filter */}
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="careerLevel">Gender</label>
             <select
-              name="gender"
-              value={filters.gender}
-              onChange={handleFilterChange}
-              className="border rounded px-4 py-3 w-full"
-            >
-              <option value="">All Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Others">Others</option>
-            </select>
+  name="gender"  // Added name attribute
+  value={filters.gender}
+  onChange={handleFilterChange}
+  className="border rounded px-3 py-2"
+>
+  <option value="">All Genders</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Any">Others</option>
+</select>
+
           </div>
+
+  
+
+          {/* Apply Filters Button */}
           <button
             type="button"
             onClick={applyFilters}
-            className="w-full bg-[#F4A261] text-white px-5 py-3 rounded-full hover:bg-[#E76F51] transition duration-300"
+            className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
           >
-            Apply Filters
+            View
           </button>
         </form>
-      </div>
-      </div>
-
-            <div className="w-full ">
-              {/* Jobs header */}
-              <div className="flex flex-col items-start justify-start w-full md:ml-8">
-        <div className="text-4xl font-bold text-[#0D1B2A] mb-6">
-          Available Jobs
         </div>
-              
-                <div className="w-full">
-            
-              
-              
-              {filteredJobs.length > 0 ? (
-        <div className="">
-          
-          {filteredJobs.map((job, index) => (
-        <div className="flex flex-col md:flex-row items-center justify-between shadow-lg rounded-lg py-6 px-8 mb-6 w-full bg-white transition duration-300 hover:shadow-xl cursor-pointer transform hover:scale-105" key={index}>
-          <Link to={`/getjobs/${job._id}`} className="flex w-full">
-          <div className="flex  md:justify-between w-full ml-2">
-          {/* Company Info Section */}
-          
+      </div>
 
-          {/* Job Info Section */}
-          <div className="w-[450px] md:-ml-4">
-        <h3 className="text-gray-700 text-center md:text-left font-semibold md:mr-2 md:ml-8">{job.companyName}</h3>
-        <p className="text-gray-700 text-center md:text-left text-bold font-semibold md:mr-2 text-xl md:ml-8">{job.title}</p>
-        <p className="text-gray-500 text-center md:text-left md:mr-2 md:ml-8 font-semibold">{job.location?.city},{job.location?.state}</p>
+      <div className="w-full ">
+        {/* Jobs header */}
+        <div className="flex items-center justify-between mb-4">
         
-        <p className="text-sm text-red-500 text-center md:text-left md:ml-8 ">Amount: Rs. {job.salary.min}&nbsp;{job.salary.period}</p>
-        <br></br>
-        <p className="text-sm text-gray-600 text-center md:text-left md:ml-8 font-semibold"> {job.jobCreated?.split('T')[0]}</p>
-
-        </div>
-
-
-          {/* Distance Section */}
-          <div className="flex justify-center w-3/5 md:w-1/4 mt-2 md:mt-0 mx-8">
-            {userCoords && job.location?.coordinates && (
-              <p className="text-gray-700 text-2xs text-center">
-                Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
-              </p>
-            )}
+          <div className="w-full">
+       
+       
+        
+          {filteredJobs.length > 0 ? (
+  <div>
+    <h1 className="text-3xl font-bold text-[#041F96] mb-6">Available Jobs</h1>
+    {filteredJobs.map((job, index) => (
+      <div
+        className="shadow rounded-lg transition duration-300 hover:bg-gray-50 items-start md:ml-8 border-b border-gray-200 py-4 mb-4 hover:shadow-lg"
+        key={index}
+      >
+        <Link to={`/getjobs/${job._id}`} className="block">
+          {/* Job Heading */}
+          <div className="mb-2 px-4">
+            <h3 className="text-gray-700 font-semibold text-lg">{job.companyName}</h3>
+            <p className="text-black text-xl font-semibold">{job.title}</p>
           </div>
 
-          {/* Status and Actions Section */}
-          <div className="flex-shrink-0">
-                  <button className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300">
-                    View
-                  </button>
-                </div>
-        </div>
-        </Link>
-
-
-        
-        </div>
-        ))}
-        </div>
-        ) : (
-        <p className="text-gray-700">No jobs found.</p>
-        )}
-        {isModalOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
-                  <h2 className="text-2xl font-bold mb-4">Upload Resume</h2>
-                  <form>
-                    <input type="file" className="mb-4 w-full" />
-                    <div className="flex justify-end">
-                      <button
-                        type="button"
-                        onClick={closeModal}
-                        className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="bg-[#3A506B] text-white px-6 py-2 rounded-lg hover:bg-[#1E3D58] transition duration-300"
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-
-              </div>
-        </div>
-              <div className="mt-4 flex justify-between">
-                <button
-                  onClick={goToPreviousPage}
-                  disabled={currentPage === 1}
-                  className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
-                >
-                  Previous
-                </button>
-                <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
-                <button
-                  onClick={goToNextPage}
-                  disabled={currentPage === totalPages}
-                  className="px-6 py-3 bg-[#3A506B] text-white rounded-lg hover:bg-[#1E3D58] disabled:opacity-50 transition duration-300"
-                >
-                  Next
-                </button>
-              </div>
-              <br></br>
+          {/* Job Details */}
+          <div className="flex flex-col md:flex-row items-start justify-between px-4 text-sm text-gray-600">
+            <div className="flex items-center gap-2 mb-2 md:mb-0">
+              <FaMapMarkerAlt className="text-[#E63946]" />
+              <span className="font-medium">
+                {job.location?.city}, {job.location?.state}
+              </span>
             </div>
+
+            <div className="flex items-center gap-2 mb-2 md:mb-0">
+              <FaCalendarAlt className="text-[#2A9D8F]" />
+              <span className="font-medium">{job.jobCreated?.split('T')[0]}</span>
+            </div>
+
+            <div className="flex items-center gap-2 mb-2 md:mb-0">
+              <FaRupeeSign className="text-[#F4A261]" />
+              <span className="font-medium">
+                Rs.{job.salary.min} {job.salary.period}
+              </span>
+            </div>
+
+            {userCoords && job.location?.coordinates && (
+              <div className="flex items-center gap-2 mb-2 md:mb-0">
+                <FaMapMarkerAlt className="text-[#E63946]" />
+                <span className="font-medium">Distance: </span>
+                <span className="font-medium">
+                  {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
+                </span>
+              </div>
+            )}
+            </div>
+
+
+          {/* View Button */}
+          <div className="flex justify-end mt-4 px-4">
+            <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
+              View
+            </button>
           </div>
-        
+        </Link>
+      </div>
+    ))}
+  </div>
+) : (
+  <p className="text-gray-700">No jobs found.</p>
+)}
+
+
+{isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
+            <h2 className="text-2xl font-bold mb-4">Upload Resume</h2>
+            <form>
+              <input type="file" className="mb-4 w-full" />
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="bg-gray-500 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 transition duration-300 mr-2"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
-        );
+        </div>
+      )}
+
+        </div>
+</div>
+        <div className="mt-4 flex justify-between">
+          <button
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-[#041F96] text-white rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+        <br></br>
+      </div>
+    </div>
+   
+    </div>
+  );
+
+
 };
 
 export default JobPost;
