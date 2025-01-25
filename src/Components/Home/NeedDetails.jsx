@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 const apiKey = "AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw"; 
 import { useParams } from 'react-router-dom';
+import { FaMapMarkerAlt, FaDollarSign, FaClipboard, FaCalendarAlt, FaCalendarDay, FaChalkboardTeacher, FaVenusMars } from "react-icons/fa";
+
 import axios from 'axios';
 import Map from './Jobs/Map';
 import StarRating from './Jobs/StarRating';
@@ -319,13 +321,40 @@ const NeedDescription = () => {
     <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
       <h1 className="text-3xl font-bold mb-4">{job.requirement}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <p><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
-        <p><strong>Salary:</strong> Up to {job.salary?.max} {job.salary?.period}</p>
-        <p><strong>Requirement:</strong> {job.requirement}</p>
-        <p><strong>Available:</strong> {job.available}</p>
-        <p><strong>Start Date:</strong> {job.start}</p>
-        <p><strong>Class Type:</strong> {job.typeOfClass?.join(", ")}</p>
-        <p><strong>Gender Preference:</strong> {job.genderPreference}</p>
+      <p className="flex items-center gap-2">
+  <FaMapMarkerAlt className="text-black" />
+  <strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})
+</p>
+
+<p className="flex items-center gap-2">
+  <FaDollarSign className="text-black" />
+  <strong>Salary:</strong> Up to {job.salary?.max} {job.salary?.period}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaClipboard className="text-black" />
+  <strong>Requirement:</strong> {job.requirement}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaCalendarAlt className="text-black" />
+  <strong>Available:</strong> {job.available}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaCalendarDay className="text-black" />
+  <strong>Start Date:</strong> {job.start}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaChalkboardTeacher className="text-black" />
+  <strong>Class Type:</strong> {job.typeOfClass?.join(", ")}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaVenusMars className="text-black" />
+  <strong>Gender Preference:</strong> {job.genderPreference}
+</p>
         <button
         onClick={handleBookmarkToggle}
         className='text-blue-500 hover:text-blue-600 focus:outline-none ml-4'>
@@ -340,9 +369,19 @@ const NeedDescription = () => {
               View Contact
             </button>
           ) : (
-            <button onClick={buyContact} className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-              Buy Contact (100 coins)
-            </button>
+            <button
+            onClick={buyContact}
+            disabled={!job.contactCost || job.contactCost === 0}
+            className={`${
+              !job.contactCost || job.contactCost === 0
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#041F96] hover:bg-gray-800"
+            } text-white font-bold py-2 px-4 rounded transition duration-300`}
+          >
+            {job.contactCost && job.contactCost > 0
+              ? `Buy Contact (${job.contactCost} coins)`
+              : "Not Available to Buy"}
+          </button>
           )}
             <ContactModal 
         contactDetails={contactDetails} 

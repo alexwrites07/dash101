@@ -1,12 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import categoriesList from './categories.json'
 import Map from '../../MapDemo';
 
 const EditJob = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [coordinates, setCoordinates] = useState([0, 0]);
+  const [inputText1, setInputText1] = useState(''); 
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions1, setSuggestions1] = useState([]);
+  const [formData, setFormData] = useState({ categories: [] });
+ 
+  const handleCategoryInputChange = (e) => {
+    const input = e.target.value;
+    setInputText1(input);
+
+    const filteredSuggestions = categoriesList.filter(
+      (category) =>
+        category.toLowerCase().includes(input.toLowerCase()) &&
+        !jobData.jobCategories.includes(category)
+    );
+    setSuggestions1(filteredSuggestions);
+  };
+
+  const handleCategorySelect = (category) => {
+    setJobData((prevData) => ({
+      ...prevData,
+      jobCategories: [...prevData.jobCategories, category],
+    }));
+    setInputText1('');
+    setSuggestions1([]);
+  };
+
+  const handleCategoryRemove = (categoryToRemove) => {
+    setJobData((prevData) => ({
+      ...prevData,
+      jobCategories: prevData.jobCategories.filter((category) => category !== categoryToRemove),
+    }));
+  };
+
   const [jobData, setJobData] = useState({
     title: '',
     location: {
@@ -14,6 +48,7 @@ const EditJob = () => {
       state: '',
       pinCode: '',
       address:'',
+      country:'',
       coordinates: ['0', '0'],
       type: 'Point',
     },
@@ -126,6 +161,7 @@ const EditJob = () => {
         "location.state": jobData.location.state,
         "location.pinCode": jobData.location.pinCode,
         "location.address": jobData.location.address,
+        "location.country": jobData.location.country,
         "location.coordinates": jobData.location.coordinates,
         "location.type": jobData.location.type,
         "salary.min": jobData.salary.min,
@@ -209,6 +245,15 @@ const EditJob = () => {
         name="address"
         placeholder="Address"
         value={jobData.location.address || ''}
+        onChange={(e) => handleNestedChange(e, 'location', 'address')}
+        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+       <label className="block font-medium text-gray-700">Country</label>
+      <input
+        type="text"
+        name="country"
+        placeholder="country"
+        value={jobData.location.country || ''}
         onChange={(e) => handleNestedChange(e, 'location', 'address')}
         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
@@ -321,15 +366,39 @@ const EditJob = () => {
         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
        <label className="block font-medium text-gray-700">Categories</label>
-       <input
-          type="text"
-          name="jobCategories"
-          value={jobData.jobCategories?.join(', ')||''}
-          onChange={handleCategoryChange}
-          placeholder="Job Categories (comma separated)"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-     
-        />
+       <div className="mb-4">
+           
+       <label className="block font-medium text-gray-700">Categories</label>
+      <input
+        type="text"
+        placeholder="Add Category"
+        value={inputText1}
+        onChange={handleCategoryInputChange}
+        className="w-full px-4 py-2 border rounded-md"
+      />
+      <ul>
+        {suggestions1.map((suggestion) => (
+          <li
+            key={suggestion}
+            onClick={() => handleCategorySelect(suggestion)}
+            className="cursor-pointer hover:bg-gray-100"
+          >
+            {suggestion}
+          </li>
+        ))}
+      </ul>
+      <div className="flex flex-wrap space-x-2">
+        {jobData.jobCategories.map((category) => (
+          <span
+            key={category}
+            className="px-2 py-1 bg-gray-200 rounded-full cursor-pointer"
+            onClick={() => handleCategoryRemove(category)}
+          >
+            {category} &times;
+          </span>
+        ))}
+      </div>
+            </div>
     
 
       <label className="block font-medium text-gray-700">Qualification</label>

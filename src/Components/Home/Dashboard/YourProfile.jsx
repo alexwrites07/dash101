@@ -117,6 +117,8 @@ const [location, setLocation] = useState('');
 const [mapsLocation, setMapsLocation] = useState('');
 const [introductionVideo, setIntroductionVideo] = useState('');
 const [image, setImage] = useState('');
+const [organizationType, setOrganizationType] = useState('');
+
 const [latitude, setLatitude] = useState('');
 const [longitude, setLongitude] = useState('');
 const [error, setError] = useState(null); // To handle errors if geolocation fails
@@ -211,6 +213,7 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
           setUserName(data.username || '');
           setclasses(data.class || '');
           setEmail (data.email);
+          setOrganizationType(data.organizationType);
           setBoard (data.boardOfEducation);
           setHighestQualification(data.highestQualification);
           setGender(data.gender || '');
@@ -1139,6 +1142,7 @@ const editimage = async () => {
           contactNumber,
           website,
           description,
+          organizationType,
           facebook,
           linkedin,
           video
@@ -2370,8 +2374,8 @@ const editimage = async () => {
                      <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
+                    value={organizationType}
+                    onChange={(e) => setOrganizationType(e.target.value)}
                   />
                    </div>
        

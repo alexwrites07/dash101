@@ -181,8 +181,10 @@ const TutorFinder = () => {
       let queryString = `location.city=${city}&totalExperience=${totalExperience}&qualifications=${qualifications}&gender=${gender}`;
       
       if (distance && userCoords) {
+        const reversedCoords = [...userCoords].reverse(); 
         // Add distance condition to the query string if user coordinates are available
-        queryString += `&distance=${distance}`;
+        queryString += `&maxDistance=${distance}`;
+        queryString += `&coordinates=${reversedCoords}`;
       }
   
       if (categories.length > 0) {

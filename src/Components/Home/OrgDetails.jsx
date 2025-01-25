@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Map from './Jobs/Map';
+import { FaBuilding, FaMapMarkerAlt, FaStar } from "react-icons/fa";
+
 import StarRating from './Jobs/StarRating';
 import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import './Home.css';
@@ -264,10 +266,20 @@ const OrgDescription = () => {
     )}
   </button>&nbsp; &nbsp;&nbsp;&nbsp;</h1>
           {/* <p><strong>Category:</strong> {job.category}</p> */}
-          <p><strong>Organization Type:</strong> {job.organizationType}</p>
-          <p><strong>Location:</strong> {job.location.city}, {job.location?.state} </p>
-          <p><strong>Website:</strong> {job.website}</p>
-          <p><strong>Rating:</strong> {job.rating}</p>
+          <p className="flex items-center gap-2">
+  <FaBuilding className="text-black" />
+  <strong>Organization Type:</strong> {job.organizationType}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaMapMarkerAlt className="text-black" />
+  <strong>Location:</strong> {job.location.city}, {job.location?.state}
+</p>
+
+<p className="flex items-center gap-2">
+  <FaStar className="text-black" />
+  <strong>Rating:</strong> {job.rating}
+</p>
           {/* <p><strong>Location:</strong> {job.profileViews.count}</p> */}
           <br></br>
           {/* <button onClick={handleBookmarkToggle} className="text-blue-500  hover:text-blue-600 focus:outline-none ">
@@ -279,9 +291,19 @@ const OrgDescription = () => {
               View Contact
             </button>
           ) : (
-            <button onClick={buyContact} className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-              Buy Contact ({job.contactCost} coins)
-            </button>
+            <button
+            onClick={buyContact}
+            disabled={!job.contactCost || job.contactCost === 0}
+            className={`${
+              !job.contactCost || job.contactCost === 0
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#041F96] hover:bg-gray-800"
+            } text-white font-bold py-2 px-4 rounded transition duration-300`}
+          >
+            {job.contactCost && job.contactCost > 0
+              ? `Buy Contact (${job.contactCost} coins)`
+              : "Not Available to Buy"}
+          </button>
           )}
           <ContactModal 
         contactDetails={contactDetails} 

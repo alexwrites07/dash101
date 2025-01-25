@@ -20,6 +20,7 @@ const OrganizationFinder = () => {
   const [filters, setFilters] = useState({
     organizationType: '',
     city: '',
+    distance:'',
     subjectsRequired: '',
   });
 
@@ -90,12 +91,12 @@ const OrganizationFinder = () => {
       
     }
   };
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters({
-      ...filters,
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
       [name]: value,
-    });
+    }));
   };
 
   const filterByDistance = (job) => {
@@ -105,36 +106,38 @@ const OrganizationFinder = () => {
     return distance <= distance;
   };
 
-  const handleApplyFilter = async () => {
-    setOrg([]);  // Clear current tutors
+  const ApplyFilter = async () => {
+
+      // Create the base URL
+      let url = `https://server.avyudha.com/getOrgs?`;
+
+      // Extract filters
+      const { city, distance, organizationType } = filters;
   
-    try {
-      const { city, distance} = filters;
-  
-      let queryString = `city=${city}`;
-      
-      if (distance && userCoords){
-        // Add distance condition to the query string if user coordinates are available
-        queryString += `&maxDistance=${distance}`;
+      // Add filters to the URL if they are present
+      if (city) {
+        url += `city=${city}&`;
+      }
+      if (organizationType) {
+        url += `organizationType=${organizationType}&`;
+      }
+      if ((distance && userCoords)) {
+        const reversedCoords = [...userCoords].reverse(); // Reverse the coordinates for query
+        url += `maxDistance=${distance}&coordinates=${reversedCoords.join(",")}&`;
       }
   
-      // if (categories.length > 0) {
-      //   queryString += `&categories=${categories.join(',')}`;
-      // }
-  
-      const url = `https://server.avyudha.com/getOrgs?${queryString}`;
-  
+      // Fetch filtered data
       const response = await axios.get(url);
   
+      // Set the response data to org state if valid
       if (response.data && response.data.organizations) {
         setOrg(response.data.organizations);
       } else {
-        console.error("No tutors found with the selected filters.");
+        console.error("No organizations found with the selected filters.");
+        setOrg([]); // In case no valid data returned, set empty
       }
-    } catch (err) {
-      console.error("An error occurred while fetching tutors.", err);
-    }
   };
+  
   return (
     <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
       <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
@@ -175,8 +178,8 @@ const OrganizationFinder = () => {
                 name="distance"
                 id="distance"
                 placeholder="Enter distance in km"
-                value={distance}
-                onChange={(e) => handleFilterChange}
+                value={filters.distance}
+                onChange={handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
             </div>
@@ -193,7 +196,7 @@ const OrganizationFinder = () => {
             </div>
             <button
               type="button"
-              onClick={handleApplyFilter}
+              onClick={ApplyFilter}
               className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
             >
               Apply Filters

@@ -125,21 +125,53 @@ const NeedsFinder = () => {
     });
   };
 
-  const applyFilters = () => {
-    const filtered = tutors.filter((tutor) => {
-      const { location, genderPreference, categories } = tutor;
-      const city = location?.city || '';
+  const applyFilters = async () => {
+    // Build the query parameters based on available filters
+    const {city,distance, genderPreference,categories } = filters;
+    
+    // Start with the base URL
+    let url = 'https://server.avyudha.com/learning-needs?';
+  
+    // Dynamically append filters to the URL
+    if ((distance && userCoords)) {
+      const reversedCoords = [...userCoords].reverse(); // Reverse the coordinates for query
+      url += `maxDistance=${distance}&coordinates=${userCoords.join(",")}&`;
+    }
 
-      const matches = {
-        cityMatch: !filters.city || city.toLowerCase().includes(filters.city.toLowerCase()),
-        genderMatch: !filters.genderPreference || genderPreference.toLowerCase() === filters.genderPreference.toLowerCase(),
-        categoryMatch: filters.categories.length === 0 || filters.categories.some((cat) => categories.includes(cat)),
-      };
-
-      return Object.values(matches).every(Boolean) && (!distanceFilter || filterByDistance(tutor));
-    });
-
-    setFilteredTutors(filtered);
+    // if (skillAndExperience.length > 0) {
+    //   url += `&jobCategories=${skillAndExperience.join(',')}`;
+    // }
+    if (city) {
+      url += `location.city=${encodeURIComponent(city)}&`;
+    }
+   
+    if (genderPreference) {
+      url += `genderPreference=${encodeURIComponent(genderPreference)}&`;
+    }
+    if (categories.length > 0) {
+      url += `&requirement=${categories.join(',')}`;
+    }
+   
+  
+    // Make the GET request to the server
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+  
+      // If the request was successful, update the state with the filtered jobs
+      if (response.ok) {
+        
+        setFilteredTutors(data.learningNeeds); // Assuming the API returns the filtered list of jobs
+        // console.log(filteredTutors);
+      } else {
+        console.error('Failed to fetch jobs:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    }
+  
+    setShowFilters(false); // Optionally hide the filters after applying
+    
   };
 
   const filterByDistance = (job) => {
@@ -189,15 +221,15 @@ const NeedsFinder = () => {
                 name="distance"
                 id="distance"
                 placeholder="Enter distance in km"
-                value={distanceFilter}
-                onChange={(e) => setDistanceFilter(e.target.value)}
+                value={filters.distance}
+                onChange={handleFilterChange}
                 className="w-full px-3 py-2 border rounded-lg"
               />
             </div>
           
             <div className="mb-4 relative">
   <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
-    Categories
+    Requirements
   </label>
   <input
     type="text"
@@ -270,8 +302,8 @@ const NeedsFinder = () => {
         </div>
         <div className="flex flex-col items-start justify-start w-full">
           <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Learning Needs</div>
-          {filteredTutors.length > 0 ? (
-            filteredTutors.map((tutor, index) => (
+          {filteredTutors?.length > 0 ? (
+            filteredTutors?.map((tutor, index) => (
               <div className="shadow rounded flex flex-col md:flex-row items-start ml-8 border-b border-gray-200 py-4 mb-4 w-full" key={index}>
                 <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
                 <Link to={`/getNeed/${tutor._id}`} className="block w-full">

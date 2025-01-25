@@ -1,6 +1,8 @@
 import React, { useState, useEffect,  } from 'react';
 import { Navigate, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FaMapMarkerAlt, FaMoneyBillWave, FaClock, FaBriefcase, FaGraduationCap, FaLanguage, FaLevelUpAlt, FaStar, FaVenusMars } from 'react-icons/fa';
+
 import Map from './Map';
 import StarRating from './StarRating';
 import { HiBookmark, HiOutlineBookmark} from 'react-icons/hi';
@@ -320,18 +322,17 @@ const TeachingDescription = () => {
         <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
           <h1 className="text-3xl font-bold mb-4">{job.fullName}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
-            <p><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
-            <p><strong>Salary Period:</strong> {job.jobAlerts?.minExpectedSalary?.period}</p>
-            <p><strong>Experience:</strong> {job.totalExperience} years</p>
-            <p><strong>Highest Qualification:</strong> {job.highestQualification}</p>
-            <p><strong>Qualifications:</strong> {job.highestQualification}</p>
-            <p><strong>Spoken Languages</strong> {job.spokenLanguages}</p>
-            <p><strong>Teaching Level</strong> {job.teachingLevels}</p>
-            <p><strong>Rating</strong> {job.rating}</p>
-            <p><strong>Gender</strong> {job.gender}</p>
-
-
+          <p><FaMapMarkerAlt className="inline-block mr-2 text-black" /><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
+      <p><FaMoneyBillWave className="inline-block mr-2 text-black" /><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
+      <p><FaClock className="inline-block mr-2 text-black" /><strong>Salary Period:</strong> {job.jobAlerts?.minExpectedSalary?.period}</p>
+      <p><FaBriefcase className="inline-block mr-2 text-black" /><strong>Experience:</strong> {job.totalExperience} years</p>
+      <p><FaGraduationCap className="inline-block mr-2 text-black" /><strong>Highest Qualification:</strong> {job.highestQualification}</p>
+      <p><FaGraduationCap className="inline-block mr-2 text-black" /><strong>Qualifications:</strong> {job.highestQualification}</p>
+      <p><FaLanguage className="inline-block mr-2 text-black" /><strong>Spoken Languages:</strong> {job.spokenLanguages}</p>
+      <p><FaLevelUpAlt className="inline-block mr-2 text-black" /><strong>Teaching Level:</strong> {job.teachingLevels}</p>
+      <p><FaStar className="inline-block mr-2 text-black" /><strong>Rating:</strong> {job.rating}</p>
+      <p><FaVenusMars className="inline-block mr-2 text-black" /><strong>Gender:</strong> {job.gender}</p>
+  
 
 
         
@@ -351,9 +352,20 @@ const TeachingDescription = () => {
               View Contact
             </button>
           ) : (
-            <button onClick={buyContact} className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-              Buy Contact ({job.contactCost}coins)
-            </button>
+            <button
+  onClick={buyContact}
+  disabled={!job.contactCost || job.contactCost === 0}
+  className={`${
+    !job.contactCost || job.contactCost === 0
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-[#041F96] hover:bg-gray-800"
+  } text-white font-bold py-2 px-4 rounded transition duration-300`}
+>
+  {job.contactCost && job.contactCost > 0
+    ? `Buy Contact (${job.contactCost} coins)`
+    : "Not Available to Buy"}
+</button>
+
           )}
      
 

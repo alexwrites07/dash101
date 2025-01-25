@@ -187,79 +187,93 @@ const [education, setEducation] = useState([]);
 
 const handleEducationChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedEducation = education.map((edu, i) =>
-        i === index ? { ...edu, [name]: value } : edu
-    );
-    setEducation(updatedEducation);
+    setFormData((prevState) => {
+        const updatedEducation = [...prevState.education];
+        updatedEducation[index][name] = value;
+        return { ...prevState, education: updatedEducation };
+    });
 };
 
 const addEducation = () => {
-    setEducation([...education, { title: '', year: '', academy: '', description: '' }]);
+    const updatedEducation = [
+        ...formData.education,
+        { title: '', year: '', academy: '', description: '' },
+    ];
+    setFormData({ ...formData, education: updatedEducation });
 };
 
+// Remove an education entry by index
 const removeEducation = (index) => {
-    const updatedEducation = education.filter((_, i) => i !== index);
-    setEducation(updatedEducation);
+    const updatedEducation = formData.education.filter((_, i) => i !== index);
+    setFormData({ ...formData, education: updatedEducation });
 };
 
 // Past Experiences State Management
-const [pastExperiences, setPastExperiences] = useState([]);
-
 const handleExperienceChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedExperiences = pastExperiences.map((exp, i) =>
-        i === index ? { ...exp, [name]: value } : exp
-    );
-    setPastExperiences(updatedExperiences);
+    setFormData((prevState) => {
+        const updatedExperiences = [...prevState.pastExperiences];
+        updatedExperiences[index][name] = value;
+        return { ...prevState, pastExperiences: updatedExperiences };
+    });
 };
 
 const addExperience = () => {
-    setPastExperiences([...pastExperiences, { title: '', start_date: '', end_date: '', company: '', description: '' }]);
+    const updatedExperiences = [
+        ...formData.pastExperiences,
+        { title: '', start_date: '', end_date: '', company: '', description: '' },
+    ];
+    setFormData({ ...formData, pastExperiences: updatedExperiences });
 };
 
 const removeExperience = (index) => {
-    const updatedExperiences = pastExperiences.filter((_, i) => i !== index);
-    setPastExperiences(updatedExperiences);
+    const updatedExperiences = formData.pastExperiences.filter((_, i) => i !== index);
+    setFormData({ ...formData, pastExperiences: updatedExperiences });
 };
 
 // Qualifications State Management
-const [qualifications, setQualifications] = useState([]);
-
 const handleQualificationChange = (index, e) => {
-    const updatedQualifications = qualifications.map((qualification, i) =>
-        i === index ? e.target.value : qualification
-    );
-    setQualifications(updatedQualifications);
+    const { value } = e.target;
+    setFormData((prevState) => {
+        const updatedQualifications = [...prevState.qualifications];
+        updatedQualifications[index] = value;
+        return { ...prevState, qualifications: updatedQualifications };
+    });
 };
 
 const addQualification = () => {
-    setQualifications([...qualifications, '']);
+    const updatedQualifications = [...formData.qualifications, ''];
+    setFormData({ ...formData, qualifications: updatedQualifications });
 };
 
 const removeQualification = (index) => {
-    const updatedQualifications = qualifications.filter((_, i) => i !== index);
-    setQualifications(updatedQualifications);
+    const updatedQualifications = formData.qualifications.filter((_, i) => i !== index);
+    setFormData({ ...formData, qualifications: updatedQualifications });
 };
 
 // Awards State Management
-const [awards, setAwards] = useState([]);
-
 const handleAwardChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedAwards = awards.map((award, i) =>
-        i === index ? { ...award, [name]: value } : award
-    );
-    setAwards(updatedAwards);
+    setFormData((prevState) => {
+        const updatedAwards = [...prevState.awards];
+        updatedAwards[index][name] = value;
+        return { ...prevState, awards: updatedAwards };
+    });
 };
 
 const addAward = () => {
-    setAwards([...awards, { title: '', year: '', description: '' }]);
+    const updatedAwards = [
+        ...formData.awards,
+        { title: '', year: '', description: '' },
+    ];
+    setFormData({ ...formData, awards: updatedAwards });
 };
 
 const removeAward = (index) => {
-    const updatedAwards = awards.filter((_, i) => i !== index);
-    setAwards(updatedAwards);
+    const updatedAwards = formData.awards.filter((_, i) => i !== index);
+    setFormData({ ...formData, awards: updatedAwards });
 };
+
 
     const handleCheckboxChange = (name) => {
         setFormData((prevData) => ({
@@ -632,6 +646,13 @@ const removeAward = (index) => {
                             className="border p-2 w-full"
                         />
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => removeExperience(index)}
+                        className="bg-red-500 text-white p-2 mt-2"
+                    >
+                        Remove Experience
+                    </button>
                 </div>
             ))}
             <button type="button" onClick={addExperience} className="mb-4 bg-blue-500 text-white p-2">
@@ -674,6 +695,13 @@ const removeAward = (index) => {
                             className="border p-2 w-full"
                         />
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => removeAward(index)}
+                        className="bg-red-500 text-white p-2 mt-2"
+                    >
+                        Remove Award
+                    </button>
                 </div>
             ))}
             <button type="button" onClick={addAward} className="mb-4 bg-blue-500 text-white p-2">
@@ -771,6 +799,13 @@ const removeAward = (index) => {
                             className="border p-2 w-full"
                         />
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => removeEducation(index)}
+                        className="bg-red-500 text-white p-2 mt-2"
+                    >
+                        Remove Education
+                    </button>
                 </div>
             ))}
             <button type="button" onClick={addEducation} className="mb-4 bg-blue-500 text-white p-2">

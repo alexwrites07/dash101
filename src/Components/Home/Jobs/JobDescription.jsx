@@ -5,6 +5,8 @@ import Map from './Map';
 import { HiBookmark, HiOutlineBookmark} from 'react-icons/hi';
 import StarRating from './StarRating';
 import '../Home.css';
+import { FaMapMarkerAlt, FaMoneyBillWave, FaBriefcase, FaGraduationCap, FaLevelUpAlt, FaCalendarAlt, FaUserClock, FaLaptop } from 'react-icons/fa';
+
 
 const JobDescription = () => {
   const navigate = useNavigate();
@@ -388,15 +390,38 @@ const JobDescription = () => {
     )}
   </button></h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <p><strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}</p>
-            <p><strong>Salary:</strong> {job.salary.min} - {job.salary.max} ({job.salary.period})</p>
-            <p><strong>Experience:</strong> {job.experience} years</p>
-            <p><strong>Qualification:</strong> {job.qualification}</p>
-            <p><strong>Career Level:</strong> {job.careerLevel}</p>
-            <p><strong>Commitment:</strong> {job.workDetails.commitment}</p>
-            <p><strong>Mode:</strong> {job.workDetails.mode}</p>
-            <p><strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}</p>
-            
+          <p>
+        <FaMapMarkerAlt className="inline-block mr-2 text-black" />
+        <strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}
+      </p>
+      <p>
+        <FaMoneyBillWave className="inline-block mr-2 text-black" />
+        <strong>Salary:</strong> {job.salary?.min} - {job.salary?.max} ({job.salary?.period})
+      </p>
+      <p>
+        <FaBriefcase className="inline-block mr-2 text-black" />
+        <strong>Experience:</strong> {job.experience} years
+      </p>
+      <p>
+        <FaGraduationCap className="inline-block mr-2 text-black" />
+        <strong>Qualification:</strong> {job.qualification}
+      </p>
+      <p>
+        <FaLevelUpAlt className="inline-block mr-2 text-black" />
+        <strong>Gender:</strong> {job.gender}
+      </p>
+      <p>
+        <FaUserClock className="inline-block mr-2 text-black" />
+        <strong>Commitment:</strong> {job.workDetails?.commitment}
+      </p>
+      <p>
+        <FaLaptop className="inline-block mr-2 text-black" />
+        <strong>Mode:</strong> {job.workDetails?.mode}
+      </p>
+      <p>
+        <FaCalendarAlt className="inline-block mr-2 text-black" />
+        <strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}
+      </p> 
             {job.isClosed ? (
               <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
                 Closed
@@ -419,9 +444,19 @@ const JobDescription = () => {
               View Contact
             </button>
           ) : (
-            <button onClick={buyContact} className="bg-[#041F96] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-              Buy Contact (100 coins)
-            </button>
+            <button
+  onClick={buyContact}
+  disabled={!job.contactCost || job.contactCost === 0}
+  className={`${
+    !job.contactCost || job.contactCost === 0
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-[#041F96] hover:bg-gray-800"
+  } text-white font-bold py-2 px-4 rounded transition duration-300`}
+>
+  {job.contactCost && job.contactCost > 0
+    ? `Buy Contact (${job.contactCost} coins)`
+    : "Not Available to Buy"}
+</button>
           )}
             <ContactModal 
         contactDetails={contactDetails} 

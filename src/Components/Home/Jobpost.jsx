@@ -204,9 +204,12 @@ const JobPost = () => {
   
     // Dynamically append filters to the URL
     if (distance && userCoords) {
+      const reversedCoords = [...userCoords].reverse(); 
       // Add distance condition to the query string if user coordinates are available
-      url += `&distance=${distance}`;
+      url+= `&maxDistance=${distance}`;
+      url+= `&coordinates=${reversedCoords}`;
     }
+
     if (skillAndExperience.length > 0) {
       url += `&jobCategories=${skillAndExperience.join(',')}`;
     }
@@ -341,7 +344,7 @@ const JobPost = () => {
             name="distance"
             id="distance"
             placeholder="Enter distance in km"
-            value={distance}
+            value={filters.distance}
             onChange={handleFilterChange}
             className="w-full px-3 py-2 border rounded-lg"
           />
