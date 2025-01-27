@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import DistanceDisplay from '../Distance';
 import './Jobpost.css';
 import { FaMapMarkerAlt, FaBuilding, FaStar } from "react-icons/fa";
 
@@ -223,8 +224,8 @@ const OrganizationFinder = () => {
 
           {/* Section 2: Details */}
           <div className="flex-grow px-4 w-full md:w-4/6">
-            <h2 className="text-lg font-semibold text-gray-800">{tutor.name}</h2>
-            <div className="flex flex-col gap-4 mt-2 text-sm text-gray-700">
+            <h2 className="text-lg font-semibold text-gray-800">{tutor.name}</h2><br></br>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4  -ml-2 text-sm text-gray-800">
               {/* Location */}
               <p className="flex items-center gap-2">
                 <FaMapMarkerAlt className="text-gray-600" />
@@ -237,7 +238,7 @@ const OrganizationFinder = () => {
               </p>
               {/* Rating */}
               <p className="flex items-center gap-2">
-                <FaStar className="text-yellow-500" />
+                <FaStar className="text-gray-500" />
                 <span className="font-medium text-gray-600">Rating:</span> {tutor.rating}
               </p>
             </div>
@@ -245,14 +246,19 @@ const OrganizationFinder = () => {
             {/* Description */}
             <div className="mt-4">
               <p className="text-sm text-gray-700">
-                <span className="font-medium text-gray-600">Description:</span> {tutor.description}
-              </p>
+              <span className="">
+      Description: {tutor.description?.length > 100 
+        ? `${tutor.description.substring(0, 200)}...` 
+        : tutor.description}
+    </span> </p>
             </div>
 
             {/* Distance */}
             {userCoords && tutor.location?.coordinates && (
-              <p className="text-gray-700 mt-4">
-                <span className="font-medium text-gray-600">Distance:</span> {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+              <p className="text-gray-700 mt-4"><span className="text-sm text-gray-600">
+              Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+            </span>
+
               </p>
             )}
 

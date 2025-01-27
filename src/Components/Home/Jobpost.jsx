@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DistanceDisplay from '../Distance';
 import { Link } from 'react-router-dom';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
-import { FaMapMarkerAlt, FaCalendarAlt, FaRupeeSign } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaCalendarAlt, FaRupeeSign,FaClock,FaInfoCircle } from 'react-icons/fa';
 import './Jobpost.css';
 
 const JobPost = () => {
@@ -451,42 +452,62 @@ const JobPost = () => {
             <h3 className="text-gray-700 font-semibold text-lg">{job.companyName}</h3>
             <p className="text-black text-xl font-semibold">{job.title}</p>
           </div>
-
+<br></br>
           {/* Job Details */}
-          <div className="flex flex-col md:flex-row items-start justify-between px-4 text-sm text-gray-600">
-            <div className="flex items-center gap-2 mb-2 md:mb-0">
-              <FaMapMarkerAlt className="text-[#E63946]" />
-              <span className="font-medium">
-                {job.location?.city}, {job.location?.state}
-              </span>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 text-sm text-gray-800">
+  {/* Location */}
+  <div className="flex items-center gap-2 -my-1">
+    <FaMapMarkerAlt className="text-black" />
+    <span className="">{job.location?.city}, {job.location?.state},{job.location?.pinCode}</span>
+  </div>
 
-            <div className="flex items-center gap-2 mb-2 md:mb-0">
-              <FaCalendarAlt className="text-[#2A9D8F]" />
-              <span className="font-medium">{job.jobCreated?.split('T')[0]}</span>
-            </div>
+  {/* Commitment */}
+  <div className="flex items-center gap-2 -my-1">
+    <FaClock className="text-black" />
+    <span className="">{job.workDetails.commitment}</span>
+  </div>
 
-            <div className="flex items-center gap-2 mb-2 md:mb-0">
-              <FaRupeeSign className="text-[#F4A261]" />
-              <span className="font-medium">
-                Rs.{job.salary.min} {job.salary.period}
-              </span>
-            </div>
+  {/* Job Created */}
+  <div className="flex items-center gap-2 -my-1">
+    <FaCalendarAlt className="text-black" />
+    <span className="">Deadline:
+  {new Date(job.jobCreated)
+    .toLocaleDateString('en-GB')
+    .replace(/\//g, '/')}
+</span>
 
-            {userCoords && job.location?.coordinates && (
-              <div className="flex items-center gap-2 mb-2 md:mb-0">
-                <FaMapMarkerAlt className="text-[#E63946]" />
-                <span className="font-medium">Distance: </span>
-                <span className="font-medium">
-                  {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
-                </span>
-              </div>
-            )}
-            </div>
+  </div>
+
+  {/* Salary */}
+  <div className="flex items-center gap-2 -my-1">
+    <FaRupeeSign className="text-black" />
+    <span className="">Rs.{job.salary.min} {job.salary.period}</span>
+  </div>
+
+  {/* Details (Full Width) */}
+  <div className="flex items-center gap-2 -my-1 col-span-2">
+    <FaInfoCircle className="text-black" />
+    <span className="">
+      {job.description?.length > 100 
+        ? `${job.description.substring(0, 100)}...` 
+        : job.description}
+    </span>
+  </div>
+
+  {/* Distance */}
+  {userCoords && job.location?.coordinates && (
+    <div className="flex items-center gap-2 -my-1">
+      <FaMapMarkerAlt className="text-black" />
+      <span className="">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</span>
+    </div>
+  )}
+</div>
+
+
 
 
           {/* View Button */}
-          <div className="flex justify-end mt-4 px-4">
+          <div className="flex justify-end -mt-4 px-4">
             <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
               View
             </button>

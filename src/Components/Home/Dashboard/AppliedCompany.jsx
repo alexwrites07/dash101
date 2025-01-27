@@ -54,7 +54,7 @@ const AppliedCompany = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch applied learning needs');
+          throw new Error('Failed to fetch applied tuition');
         }
         return response.json();
       })
@@ -117,11 +117,11 @@ const AppliedCompany = () => {
             )}
           </section>
 
-          <h1 className="text-3xl font-bold mb-2 text-gray-900">Applied Learning Needs</h1>
-          <p className="text-lg mb-12 text-gray-700">List of learning needs you have applied for.</p>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">Applied Tuitions</h1>
+          <p className="text-lg mb-12 text-gray-700">List of Tuitions you have applied for.</p>
 
           <section className="w-full lg:w-2/3 bg-white p-4 mb-6 rounded-lg shadow-md">
-            {loadingNeeds && <p>Loading learning needs...</p>}
+            {loadingNeeds && <p>Loading tuition...</p>}
             {errorNeeds && <p>Error: {errorNeeds}</p>}
             {!loadingNeeds && !errorNeeds && (
               <table className="min-w-full bg-white text-left">

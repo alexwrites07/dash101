@@ -1,26 +1,24 @@
-import ContactUsForm from "./ContactUsForm";import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineOfficeBuilding } from "react-icons/hi";
+import ContactUsForm from "./Home/ContactUsForm";
+import axios from 'axios';
 
 export default function ContactUs() {
-  const [apiKey, setApiKey] = useState('AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw');
+  const apiKey = 'AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw'; // Use the API key from .env file
+ // This should display all available environment variables
+
   
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col mt-6 items-center mx-auto">
       <div className="lg:p-10 p-2 -mt-8 lg:mt-8 md:h-[500px] h-[200px] w-full">
         <div className="h-full w-full">
-        <iframe
-  className="h-full w-full rounded-lg shadow-2xl max-w-7xl mx-auto"
-  src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=25.610273,85.134448`}
-  allowFullScreen
-  referrerPolicy="no-referrer-when-downgrade"
-  onContextMenu={(e) => e.preventDefault()}
-/>
-
-
-
-
-
-
+          <iframe
+            className="h-full w-full rounded-lg shadow-2xl max-w-7xl mx-auto"
+            src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=25.610273,85.134448`}
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            onContextMenu={(e) => e.preventDefault()}
+          />
         </div>
       </div>
       <title>24x7 Support for Your Machines | Contact Us</title>

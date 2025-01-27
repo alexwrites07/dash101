@@ -2,7 +2,12 @@ import React, { useState, useEffect,  } from 'react';
 import { Navigate, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaMapMarkerAlt, FaMoneyBillWave, FaClock, FaBriefcase, FaGraduationCap, FaLanguage, FaLevelUpAlt, FaStar, FaVenusMars } from 'react-icons/fa';
+import Modal from "react-modal";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import "react-time-picker/dist/TimePicker.css";
 
+Modal.setAppElement("#root");
 import Map from './Map';
 import StarRating from './StarRating';
 import { HiBookmark, HiOutlineBookmark} from 'react-icons/hi';
@@ -22,6 +27,7 @@ const TeachingDescription = () => {
   const [comment, setComment] = useState('');
   const [submittedComment, setSubmittedComment] = useState('');
   const [error, setError] = useState(null);
+  const [availableSlots, setAvailableSlots] = useState([]);
   const [reviews, setReviews] = useState([]); // State for reviews
   const navigate = useNavigate();
   useEffect(() => {
@@ -34,6 +40,7 @@ const TeachingDescription = () => {
         setError('Failed to fetch job details. Please try again later.');
       }
     };
+
     const fetchUnlockedContacts = async () => {
       console.log (Id);
       try {
@@ -98,6 +105,96 @@ const TeachingDescription = () => {
     
   
   }, [Id]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [slots, setSlots] = useState([
+    { startTime: "10:00", endTime: "11:00" },
+    { startTime: "12:00", endTime: "13:00" },
+    { startTime: "14:00", endTime: "15:00" },
+  ]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [isModalOpen1, setIsModalOpen1] = useState(false);
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [duration, setDuration] = useState("");
+
+  const handleDateChange = (date) => setSelectedDate(date);
+
+  const handleSlotSelection = (slot) => {
+    setSelectedSlot(slot);
+    setIsModalOpen1(true); // Open modal for meeting details
+  };
+
+  const handleFormSubmit = async () => {
+    const payload = {
+      tutorId:Id,
+      meetingTitle:meetingTitle,
+      date: selectedDate.toISOString().split("T")[0],
+      startTime: selectedSlot.startTime,
+      endTime: selectedSlot.endTime,
+      duration: parseInt(duration),
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("https://server.avyudha.com/meetings/student", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("Meeting scheduled successfully!");
+      } else {
+        alert(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      alert("An error occurred while scheduling the meeting.");
+      console.error(error);
+    }
+
+    setIsModalOpen1(false); // Close modal
+  };
+  const [message, setMessage] = useState(''); // To store the message content
+  const [isSending, setIsSending] = useState(false); // To handle the loading state of the send button
+
+  // Handle the send message logic
+  const sendMessage = async () => {
+    if (!message.trim()) {
+      setError('Please enter a message');
+      return;
+    }
+
+    try {
+      setIsSending(true); // Start the loading state
+
+      const payload = {
+        recipientId: contactDetails?.id, // Assuming `id` is the unique identifier for the recipient
+        message: message.trim(), // Use the trimmed message
+      };
+
+      // Send the message
+      const response = await axios.post('https://server.avyudha.com/send-message', payload,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        alert('Message sent successfully');
+        setMessage(''); // Clear the message after sending
+      } else {
+        setError('Failed to send message');
+      }
+    } catch (error) {
+      setError('Error sending message');
+    } finally {
+      setIsSending(false); // End the loading state
+    }
+  };
+
   const buyContact = async () => {
     if (!Id) {
       console.error('ID not available');
@@ -143,28 +240,49 @@ const TeachingDescription = () => {
     }
   };
   
-  const ContactModal = ({ contactDetails, isContactModalOpen, setIsContactModalOpen }) => {
+  const ContactModal = ({ contactDetails, isContactModalOpen, job, setIsContactModalOpen }) => {
     return (
       isContactModalOpen && contactDetails && (
-        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
-          <div className="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Contact Details</h2>
-            
-            {/* Displaying Contact Number */}
-            <p><strong>Contact Number:</strong> {contactDetails?.contactNumber || 'Contact number not available'}</p>
-  
-            {/* Displaying Email */}
-            <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
-  
+        <div className="modal fixed inset-0 bg-gray-500 z-50 bg-opacity-50 flex justify-center items-center">
+        <div className="modal-content bg-white p-6 rounded-lg shadow-lg w-96 max-h-[80vh] overflow-y-auto">
+          <h2 className="text-xl font-bold mb-4">Contact Details</h2>
+          <p><strong>Contact Number:</strong> {contactDetails?.contactNumber || 'Contact number not available'}</p>
+          <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
+          <p><strong>Name:</strong> {contactDetails?.name || 'Name not available'}</p>
+          <p><strong>Free Slots:</strong></p>
+          {Object.keys(job.freeSlots).map((day) => (
+            <div key={day} className="mb-6">
+              <h3 className="text-sm font-medium mb-2">{day}</h3>
+              <ul className="space-y-2">
+                {job.freeSlots[day].map((slot) => (
+                  <li key={slot._id} className="flex items-center justify-between">
+                    <span>
+                      {slot.startTime} - {slot.endTime}
+                    </span>
+                    
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+       <button 
+  onClick={() => navigate('/meetings')} 
+  className="your-button-styling ml-2 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">
+  Book a Meeting
+</button>
+
             {/* Close Button */}
-            <button 
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            <button
+              className="ml-2 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
               onClick={() => setIsContactModalOpen(false)}
             >
               Close
             </button>
           </div>
         </div>
+      
+    
+      
       )
     );
   };
@@ -275,6 +393,25 @@ const TeachingDescription = () => {
   }
   };
   
+  const handleDateSelection = (date) => {
+    setSelectedDate(date);
+
+    // Get the day of the week from the selected date
+    const dayOfWeek = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(date);
+
+    // Check if the day exists in the freeSlots object
+    if (job.freeSlots[dayOfWeek]) {
+      setAvailableSlots(job.freeSlots[dayOfWeek]);
+    } else {
+      setAvailableSlots([]); // No slots available for the selected day
+    }
+  };
+
+  const handleSlotSelection1 = (slot) => {
+    console.log("Selected Slot:", slot);
+    // You can open a pop-up for meeting title and duration after this
+  };
+  
   const handleRating = (rate) => setRating(rate);
 
   const handleSubmitReview = async () => {
@@ -347,26 +484,139 @@ const TeachingDescription = () => {
       <HiOutlineBookmark className="w-6 h-6" />
     )}
   </button>
-          {isContactUnlocked ? (
-            <button onClick={handleViewContact} className="bg-[#6699CC] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
-              View Contact
-            </button>
-          ) : (
-            <button
-  onClick={buyContact}
-  disabled={!job.contactCost || job.contactCost === 0}
-  className={`${
-    !job.contactCost || job.contactCost === 0
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-[#041F96] hover:bg-gray-800"
-  } text-white font-bold py-2 px-4 rounded transition duration-300`}
->
-  {job.contactCost && job.contactCost > 0
-    ? `Buy Contact (${job.contactCost} coins)`
-    : "Not Available to Buy"}
-</button>
+  {job.classCost > 0 ? (
+  // Show "Book a Meet" button and open modal
+  <div>
+    <button
+      onClick={() => setIsModalOpen1(true)} // Open the modal when the button is clicked
+      className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300"
+    >
+      Book a Meet
+    </button>
 
-          )}
+    {/* Modal for Booking a Meet */}
+    {isModalOpen1 && (
+    <Modal
+    isOpen={isModalOpen1}
+    onRequestClose={() => setShowModal1(false)}
+    className="bg-white p-6 rounded-lg shadow-lg z-50 max-w-lg mx-auto mt-10 max-h-[90vh] overflow-y-auto"
+    overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+  >
+        <h2 className="text-lg font-bold mb-4">Select a Date and Slot</h2>
+        
+        {/* Calendar Section */}
+        <Calendar
+          onChange={handleDateSelection}
+          value={selectedDate}
+          className="mb-6 border rounded-lg shadow-lg"
+        />
+
+        {/* Available Slots */}
+        <h3 className="text-lg font-semibold mb-4">Available Slots</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {availableSlots.length > 0 ? (
+                availableSlots.map((slot, index) => (
+                  <button
+                    key={index}
+                    className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                    onClick={() => handleSlotSelection(slot)}
+                  >
+                    {slot.startTime} - {slot.endTime}
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500">No slots available for this day.</p>
+              )}
+            </div>
+
+        {/* Meeting Details */}
+        {selectedSlot && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-4">Meeting Details</h3>
+            <div className="mb-4">
+              <label className="block font-medium mb-2">Meeting Title</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg"
+                value={meetingTitle}
+                onChange={(e) => setMeetingTitle(e.target.value)}
+                placeholder="Enter meeting title"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-medium mb-2">Duration (minutes)</label>
+              <input
+                type="number"
+                className="w-full p-2 border rounded-lg"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="Enter duration"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                onClick={handleFormSubmit}
+              >
+                Submit
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+                onClick={() => setIsModalOpen1(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+    )}
+  </div>
+) : isContactUnlocked ? (
+  <div className="flex items-center space-x-4">
+    {/* View Contact Button */}
+    <button
+      onClick={handleViewContact}
+      className="bg-[#6699CC] w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300"
+    >
+      View Contact
+    </button>
+
+    {/* Message Input */}
+    <textarea
+      className="w-full p-2 border rounded-lg resize-none h-[80px] min-w-[300px] overflow-auto"
+      placeholder="Write your message..."
+      value={message}
+      onChange={(e) => setMessage(e.target.value)}
+      rows="4"
+    />
+
+    {/* Send Message Button */}
+    <button
+      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      onClick={sendMessage}
+      disabled={isSending}
+    >
+      {isSending ? "Sending..." : "Send Message"}
+    </button>
+  </div>
+) : (
+  <button
+    onClick={buyContact}
+    disabled={!job.contactCost || job.contactCost === 0}
+    className={`${
+      !job.contactCost || job.contactCost === 0
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-[#041F96] hover:bg-gray-800"
+    } text-white font-bold py-2 px-4 rounded transition duration-300`}
+  >
+    {job.contactCost && job.contactCost > 0
+      ? `Buy Contact (${job.contactCost} coins)`
+      : "Not Available to Buy"}
+  </button>
+)}
+
+
      
 
       {/* Contact Modal */}
@@ -374,6 +624,7 @@ const TeachingDescription = () => {
         contactDetails={contactDetails} 
         isContactModalOpen={isContactModalOpen} 
         setIsContactModalOpen={setIsContactModalOpen}
+        job={job}
       />
       </span>
 

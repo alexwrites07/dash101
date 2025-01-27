@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+import DistanceDisplay from '../Distance';
 import { HiFilter } from 'react-icons/hi';
 import { HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import './Jobpost.css';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
-import { FaMapMarkerAlt, FaGraduationCap, FaStar } from "react-icons/fa";
+import { FaMapMarkerAlt, FaBriefcase,FaGraduationCap, FaStar } from "react-icons/fa";
 import { HiOutlineLocationMarker, HiOutlineClock, HiOutlineAcademicCap } from "react-icons/hi"; // Importing icons
 
 const TutorFinder = () => {
@@ -393,39 +395,69 @@ const TutorFinder = () => {
         </div>
 
         <Link to={`/getTutor/${tutor._id}`} className="block w-full">
-          <div className="flex flex-col w-full ml-2">
-            {/* Heading Section */}
-            <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
-            <div className="text-gray-600">{tutor.title}</div>
+        <div className="flex flex-col w-full ml-2 relative">
+  {/* Heading Section */}
+  <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
+  <div className="text-gray-600">{tutor.title}</div>
 
-            {/* Details Section (Horizontal Layout) */}
-            <div className="flex flex-wrap md:flex-nowrap gap-6 mt-2">
-              <div className="flex items-center gap-2">
-                <FaMapMarkerAlt className="text-gray-600" />
-                <span className="text-sm text-gray-600">
-                  {tutor.location?.city}, {tutor.location?.state}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaGraduationCap className="text-gray-600" />
-                <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaStar className="text-gray-600" />
-                <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
-              </div>
+  {/* Details Section (Horizontal Layout) */}
+  <div className="flex flex-col mt-2">
+    <div className="flex justify-between items-center">
+      <div className="flex items-center gap-2">
+        <FaMapMarkerAlt className="text-gray-600" />
+        <span className="text-sm text-gray-600">
+          {tutor.location?.city}, {tutor.location?.state}
+        </span>
+      </div>
+     
+      <span className="flex items-center text-sm text-gray-600 font-semibold gap-1">
+  <FaStar className="" />
+  Rating: {tutor.rating}/5
+</span>
 
-              {/* Distance Section with Icon */}
-              {userCoords && tutor.location?.coordinates && (
-                <div className="flex items-center gap-2 mt-2 md:mt-0">
-                  <FaMapMarkerAlt className="text-gray-600" />
-                  <span className="text-sm text-gray-600">
+    </div>
+
+    <div className="flex items-center gap-2 my-1">
+      <FaGraduationCap className="text-gray-600" />
+      <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
+    </div>
+    <div className="flex items-center gap-2">
+  <FaBriefcase className="text-gray-600" />
+  <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
+</div>
+
+
+    <div className="flex items-center gap-2 -mr-24 mt-2">
+      <span className="text-sm text-gray-600">{tutor.description}</span>
+    </div>
+
+    {/* Categories */}
+    <div className="flex flex-wrap -mr-24 gap-2 mt-2">
+      {tutor.categories?.slice(0, 5).map((skill, index) => (
+        <span
+          key={index}
+          className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+
+    {/* Distance Section */}
+    {userCoords && tutor.location?.coordinates && (
+      <div className="absolute mt-8 right-12 -mr-24 flex items-center gap-2">
+        <FaMapMarkerAlt className="text-gray-600" />
+        <span className="text-sm text-gray-600">
                     Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
                   </span>
-                </div>
-              )}
-            </div>
-          </div>
+      </div>
+    )}
+
+    {/* View Button */}
+    
+  </div>
+</div>
+
         </Link>
         <Link to={`/getTutor/${tutor._id}`} className="block w-full">
         {/* View Button Section */}

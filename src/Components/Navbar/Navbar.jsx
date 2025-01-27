@@ -272,7 +272,7 @@ function Navbar() {
                               className="text-sm hover:bg-gray-100 block px-3 py-1"
                               onClick={closeAllMenus}
                             >
-                              Find Needs
+                              Find Tuitions
                             </Link>
                           </li>
                         </ul>
@@ -327,13 +327,14 @@ function Navbar() {
                           >
                             <ul className="py-1 space-y-1">
                               <li className="ml-4 md:ml-0">
-                                <Link
-                                  to="/your-profile"
-                                  className="text-sm hover:bg-gray-100 block px-3 py-1"
-                                  onClick={closeAllMenus}
-                                >
-                                  Your Profile
-                                </Link>
+                              <Link
+  to={localStorage.getItem("type") === "admin" ? "/student-profiles" : "/your-profile"}
+  className="text-sm hover:bg-gray-100 block px-3 py-1"
+  onClick={closeAllMenus}
+>
+  {localStorage.getItem("type") === "admin" ? "Admin Panel" : "Your Profile"}
+</Link>
+
                               </li>
                               <li className="ml-4 md:ml-0">
                               <Link

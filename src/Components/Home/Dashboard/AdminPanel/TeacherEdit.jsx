@@ -32,6 +32,7 @@ const EditTutor = () => {
             maxExpectedSalary: { value: '', period: '' },
         },
         pastExperiences: [],
+        classCost:'',
         awards: [],
         tags: [],
         categories: [],
@@ -530,6 +531,16 @@ const removeAward = (index) => {
     <option value="Female">Female</option>
     <option value="No Preference">No Preference</option>
   </select>
+</div>
+<div className="mb-2">
+  <label className="block font-medium text-gray-700">Class Cost</label>
+  <input
+    name="classCost"  
+    value={formData.classCost}  
+    onChange={handleChange}  
+    className="border p-2 rounded-md w-full"
+  />
+   
 </div>
 
 

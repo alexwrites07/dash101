@@ -475,18 +475,8 @@ const JobDescription = () => {
           <div className="text-gray-600 md:w-1/2">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Job Details</h2>
             <p className="text-black mb-4">{job.description}</p>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">Key Responsibilities</h2>
-            <ul className="list-disc list-inside mb-4">
-              {(job.keyResponsibilities || []).map((responsibility, index) => (
-                <li key={index}>{responsibility}</li>
-              ))}
-            </ul>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2 mt-6">Required Skills & Experience</h2>
-            <ul className="list-disc list-inside mb-4">
-              {(job.skillAndExperience || []).map((skill, index) => (
-                <li key={index}>{skill}</li>
-              ))}
-            </ul>
+            
+           
           
           </div>
           <div className="md:w-2/5">

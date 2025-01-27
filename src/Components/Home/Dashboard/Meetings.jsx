@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createMeeting, deleteMeeting, editMeeting, getPurchasedContacts } from "./MeetingServices.jsx";
-import './Meeting.css'; // Import the CSS file
-import Sidebar from './Sidebar';
-import Header from './Header';
+import "./Meeting.css"; // Import the CSS file
+import Sidebar from "./Sidebar";
+import Header from "./Header";
 
 const Meetings = () => {
   const [meetings, setMeetings] = useState([]);
@@ -14,6 +14,7 @@ const Meetings = () => {
     time: "",
     duration: 0,
     meetingLink: "",
+
   });
 
   const [editMeetingData, setEditMeetingData] = useState(null);
@@ -29,11 +30,11 @@ const Meetings = () => {
 
   const fetchMeetings = async () => {
     try {
-      const token = localStorage.getItem("token");  // Assuming token is stored in local storage
-      const response = await fetch("https:/server.avyudha.com/meetings", {
+      const token = localStorage.getItem("token"); // Assuming token is stored in local storage
+      const response = await fetch("https://server.avyudha.com/meetings", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,  // Send the token in the Authorization header
+          Authorization: `Bearer ${token}`, // Send the token in the Authorization header
         },
       });
       const meetingsData = await response.json();
@@ -51,7 +52,7 @@ const Meetings = () => {
         date: newMeeting.date,
         time: newMeeting.time,
         duration: newMeeting.duration,
-        meetingLink: newMeeting.meetingLink,
+        
       };
       await createMeeting(body);
       console.log("Meeting created successfully");
@@ -63,26 +64,28 @@ const Meetings = () => {
         duration: 60,
         meetingLink: "",
       }); // Reset state after creation
-      fetchMeetings();  // Refresh meetings list after creating a new meeting
+      fetchMeetings(); // Refresh meetings list after creating a new meeting
     } catch (error) {
       alert(error);
     }
   };
 
-  const handleEditMeeting = async (id, updatedData) => {
+  const handleEditMeeting = async () => {
     try {
       const body = {
-        meetingTitle: updatedData.meetingTitle || editMeetingData.meetingTitle,
-        participantsEmail: updatedData.participantsEmail || editMeetingData.participantsEmail,
-        date: updatedData.date || editMeetingData.date,
-        time: updatedData.time || editMeetingData.time,
-        duration: updatedData.duration || editMeetingData.duration,
-        meetingLink: updatedData.meetingLink || editMeetingData.meetingLink,
+        meetingTitle: editMeetingData.meetingTitle,
+        participantsEmail: editMeetingData.participantsEmail,
+        date: editMeetingData.date,
+        time: editMeetingData.time,
+        duration: editMeetingData.duration,
+        status:editMeetingData.status,
+        meetingLink:editMeetingData.meetingLink,
+       
       };
-      await editMeeting(id, body);
+      await editMeeting(editMeetingData._id, body);
       console.log("Meeting updated successfully");
       setEditMeetingData(null); // Reset after edit
-      fetchMeetings();  // Refresh meetings list after updating a meeting
+      fetchMeetings(); // Refresh meetings list after updating a meeting
     } catch (error) {
       console.log(error);
     }
@@ -92,7 +95,7 @@ const Meetings = () => {
     try {
       await deleteMeeting(id);
       console.log("Meeting deleted successfully");
-      fetchMeetings();  // Refresh meetings list after deletion
+      fetchMeetings(); // Refresh meetings list after deletion
     } catch (error) {
       console.log(error);
     }
@@ -104,7 +107,7 @@ const Meetings = () => {
 
   useEffect(() => {
     fetchPurchasedContacts();
-    fetchMeetings();  // Fetch meetings when the component mounts
+    fetchMeetings(); // Fetch meetings when the component mounts
   }, []);
 
   return (
@@ -112,6 +115,7 @@ const Meetings = () => {
       <Sidebar />
       <Header />
       <div className="lg:ml-64 lg:mt-18 p-6">
+        
         <h1 className="text-3xl font-semibold text-gray-800 mb-6">Meeting Manager</h1>
 
         {/* Create Meeting Form */}
@@ -127,9 +131,9 @@ const Meetings = () => {
             />
             <input
               type="email"
-              placeholder="Participant Emails (comma-separated)"
+              placeholder="Participant Email"
               value={newMeeting.participantsEmail}
-              onChange={(e) => setNewMeeting({ ...newMeeting, participantsEmail: e.target.value.split(',') })}
+              onChange={(e) => setNewMeeting({ ...newMeeting, participantsEmail: e.target.value.split(",") })}
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <input
@@ -150,13 +154,13 @@ const Meetings = () => {
               onChange={(e) => setNewMeeting({ ...newMeeting, duration: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <input
+            {/* <input
               type="text"
               value={newMeeting.meetingLink}
               onChange={(e) => setNewMeeting({ ...newMeeting, meetingLink: e.target.value })}
               placeholder="Meeting Link"
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-            />
+            /> */}
           </div>
           <button
             onClick={handleCreateMeeting}
@@ -177,6 +181,18 @@ const Meetings = () => {
                   <div className="text-gray-600 text-sm">{new Date(meeting.date).toLocaleDateString()}</div>
                   <div className="text-gray-600 text-sm">{meeting.time}</div>
                   <div className="text-gray-600 text-sm">{meeting.duration} mins</div>
+                  <div className="text-gray-600 text-sm">
+  <a 
+    href={meeting.meetingLink} 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="text-blue-600 hover:underline"
+  >
+    {meeting.meetingLink}
+  </a>
+</div>
+
+                  <div className="text-gray-600 text-sm">{meeting.status} </div>
                   <div className="flex gap-4 mt-4">
                     <button
                       onClick={() => handleEditButtonClick(meeting)}
@@ -215,7 +231,18 @@ const Meetings = () => {
                 type="email"
                 placeholder="Participant Email"
                 value={editMeetingData.participantsEmail}
-                onChange={(e) => setEditMeetingData({ ...editMeetingData, participantsEmail: e.target.value.split(',') })}
+                onChange={(e) =>
+                  setEditMeetingData({ ...editMeetingData, participantsEmail: e.target.value.split(",") })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <input
+                type="email"
+                placeholder="Link"
+                value={editMeetingData.meetingLink}
+                onChange={(e) =>
+                  setEditMeetingData({ ...editMeetingData, meetingLink: e.target.value.split(",") })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <input
@@ -234,18 +261,30 @@ const Meetings = () => {
                 type="number"
                 value={editMeetingData.duration}
                 onChange={(e) => setEditMeetingData({ ...editMeetingData, duration: e.target.value })}
+                placeholder="Duration (minutes)"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <input
+               
+
+<input
                 type="text"
-                placeholder="Meeting Link"
-                value={editMeetingData.meetingLink}
-                onChange={(e) => setEditMeetingData({ ...editMeetingData, meetingLink: e.target.value })}
+                value={editMeetingData.status}
+                onChange={(e) => setEditMeetingData({ ...editMeetingData, status: e.target.value })}
+                placeholder="Status"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
+              
+            </div>
+            <div className="flex justify-end mt-6">
               <button
-                onClick={() => handleEditMeeting(editMeetingData._id, editMeetingData)}
-                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onClick={() => setEditMeetingData(null)}
+                className="px-6 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditMeeting}
+                className="px-6 py-2 ml-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 Save Changes
               </button>

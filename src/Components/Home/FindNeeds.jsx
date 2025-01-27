@@ -2,7 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
+import { 
+  FaMapMarkerAlt, 
+  FaChalkboardTeacher, 
+  FaUsers, 
+  FaVenusMars, 
+  FaClock, 
+  FaRupeeSign, 
+  FaInfoCircle 
+} from "react-icons/fa"
 import './Jobpost.css';
+import DistanceDisplay from '../Distance';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
 
 const NeedsFinder = () => {
@@ -58,7 +68,7 @@ const NeedsFinder = () => {
         return;
       }
 
-      const response = await axios.get('https://server.avyudha.com/learning-needs?limit=1000', {
+      const response = await axios.get('https://server.avyudha.com/learning-needs?limit=10000000', {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -260,7 +270,7 @@ const NeedsFinder = () => {
       {filters.categories.map((category, idx) => (
         <span
           key={idx}
-          className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+          className="bg-blue-100 text-blue-800 text-sm  py-1 px-2 rounded-full flex items-center gap-1"
         >
           {category}
           <button
@@ -301,7 +311,7 @@ const NeedsFinder = () => {
           </form>
         </div>
         <div className="flex flex-col items-start justify-start w-full">
-          <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Learning Needs</div>
+          <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Tuition Needs</div>
           {filteredTutors?.length > 0 ? (
             filteredTutors?.map((tutor, index) => (
               <div className="shadow rounded flex flex-col md:flex-row items-start ml-8 border-b border-gray-200 py-4 mb-4 w-full" key={index}>
@@ -309,19 +319,67 @@ const NeedsFinder = () => {
                 <Link to={`/getNeed/${tutor._id}`} className="block w-full">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
                     <div>
-                    <h2 className="text-lg  font-semibold">{tutor.requirement}</h2>
-                      <h2 className="text-lg">{tutor.location.city}, {tutor.location.address}</h2>
-                      
-                      <h2 className="text-lg">{tutor.typeOfClass}</h2>
-                    </div>
-                    <div className="flex md:ml-4 md:items-center -mb-2 w-3/3 mr-2 ml-2">
-                      {userCoords && tutor.location?.coordinates && (
-                        <p className="text-gray-700 mr-4">Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km</p>
-                      )}
-                    </div>
+                    <h2 className="text-lg  font-semibold">{tutor.requirement}</h2>    <span className="bg-blue-500 mb-8  text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600">{tutor.typeOfClass}</span><br></br>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4  -ml-2 text-sm text-gray-800">
+  {/* Location */}
+  <div className="flex items-center gap-2 w-full md:w-1/2 mt-4">
+    <FaMapMarkerAlt className="text-black" />
+    <span className="">{tutor.location.city}, {tutor.location.address}</span>
+  </div>
+
+  {/* Type of Class */}
+  <div className="flex items-center gap-2 w-full md:w-1/2 mr-24">
+  <FaChalkboardTeacher className="text-black" />
+  <span className="">{tutor.start}</span>
+  </div>
+
+  {/* Connected Tutors Count */}
+  <div className="flex items-center gap-2 w-full md:w-1/2 mr-48">
+    <FaUsers className="text-black" />
+    <span className="">{tutor.connectedTutorsCount} Tutors connected</span>
+  </div>
+
+  {/* Gender Preference */}
+  <div className="flex items-center gap-2 w-full md:w-1/2">
+    <FaVenusMars className="text-black" />
+    <span className="">{tutor.genderPreference}</span>
+  </div>
+
+  {/* Availability */}
+  <div className="flex items-center gap-2 w-full md:w-1/2">
+    <FaClock className="text-black" />
+    <span className="">{tutor.available}</span>
+  </div>
+
+  {/* Salary */}
+  <div className="flex items-center gap-2 w-full md:w-1/2">
+    <FaRupeeSign className="text-black" />
+    <span className="">Rs. {tutor.salary.max}</span>
+  </div>
+
+  {/* Distance */}
+ 
+
+  {/* Description */}
+  <div className="flex items-center gap-2 w-full">
+    <FaInfoCircle className="text-black" />
+    <span className="">
+      {tutor.description?.length > 150 
+        ? `${tutor.description.substring(0, 150)}...` 
+        : tutor.description}
+    </span>
+  </div></div> {userCoords && tutor.location?.coordinates && (
+    <div className="flex mt-2 ml-2 items-center gap-2 w-full md:w-1/2">
+      <FaMapMarkerAlt className="text-black" />
+      Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+      </div>
+  )}
+</div>
+
                     <div className="mt-2 md:mt-0 flex items-center mr-4">
                      
-                      <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none">
+                      <button className="bg-[#041F96] text-white px-4 py-2 mt-48 rounded-lg hover:bg-primary-600 focus:outline-none">
                         View
                       </button>
                     </div>
@@ -331,7 +389,7 @@ const NeedsFinder = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-700 ml-4">No Learning Needs found matching your criteria.</p>
+            <p className="text-gray-700 ml-4">No Tuition Needs found matching your criteria.</p>
           )}
         </div>
       </div>

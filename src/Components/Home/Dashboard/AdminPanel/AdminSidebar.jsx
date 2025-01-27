@@ -26,7 +26,7 @@ const Sidebar = ({ activeTab }) => {
 
   // Define sidebar links
   const sidebarLinks = [
-    { to: '/admin-profile', icon: <HiChat className="w-6 h-6" />, label: 'Admin Profile' },
+    { to: '/admin-profile', icon: <HiChat className="w-6 h-6" />, label: 'Admin Profile and Analytics' },
     { to: '/dpchange', icon: <HiChat className="w-6 h-6" />, label: 'Dp Change' },
     { to: '/docchange', icon: <HiChat className="w-6 h-6" />, label: 'Doc Change' },
     { to: '/student-profiles', icon: <HiUser className="w-6 h-6" />, label: 'Student Profiles' },

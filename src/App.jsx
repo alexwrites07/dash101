@@ -10,6 +10,7 @@ import EditTutor from './Components/Home/Dashboard/AdminPanel/TeacherEdit.jsx';
 import StudentEdit from './Components/Home/Dashboard/AdminPanel/StudentEdit.jsx';
 import InstituteProfileView from './Components/Home/Dashboard/AdminPanel/FeaturedInstitute.jsx';
 import DemoForm from './Components/Home/DemoForm.jsx';
+import Conversation from './Components/Home/Dashboard/Conversation.jsx';
 import EmployerProfileView from './Components/Home/Dashboard/AdminPanel/OrganisationProfile.jsx';
 import Home from './Components/Home/Home';
 import FAQ from './Components/Home/FAQs.jsx'
@@ -24,7 +25,7 @@ import AdminHeader from './Components/Home/Dashboard/AdminPanel/FeaturedHeader.j
 import TutorFinder from './Components/Home/Findtutor.jsx';
 import LearningNeedsView from './Components/Home/Dashboard/AdminPanel/LearningNeeds.jsx';
 import MyClasses from './Components/Home/Dashboard/MyClasses.jsx';
-import ContactUs from './Components/Home/ContactUs.jsx';
+import ContactUs from './Components/ContactUs.jsx';
 import EditLearningNeed from './Components/Home/Dashboard/AdminPanel/EditLearningNeeds.jsx';
 import EditEmployerProfile from './Components/Home/Dashboard/AdminPanel/OrgEdit.jsx';
 import TutorProfileView from './Components/Home/Dashboard/AdminPanel/TeacherProfile.jsx';
@@ -92,6 +93,7 @@ import FeaturedCategoryPage from './Components/Home/Dashboard/AdminPanel/Feature
 import EditJobPost from './Components/Home/Dashboard/AdminPanel/EditJobPost.jsx';
 import AddLearning from './Components/Home/Dashboard/AdminPanel/LearningForm.jsx';
 import NeedDescription from './Components/Home/NeedDetails.jsx';
+import Meeti from './Components/Home/Dashboard/Schedule.jsx';
 import WalletManager from './Components/Home/Dashboard/AdminPanel/Wallet.jsx';
 import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
 import DpEditDelete from './Components/Home/Dashboard/AdminPanel/DP.jsx';
@@ -190,6 +192,7 @@ function AppContent() {
         {/* <Route path='/resume' element={<ResumeBuilder/>}/> */}
         <Route path="/demo-form" element={<DemoForm />} />
         <Route path="/organizationpost" element={<OrganizationFinder />} />
+        <Route path="/schedule-slot" element={<Meeti />} />
         <Route path="/findtutor" element={<TutorFinder />} />
         <Route path="/getTutor/:Id" element={<TeachingDescription />} />
         <Route path="/googlemap" element={<GoogleMap2 />} />
@@ -206,7 +209,7 @@ function AppContent() {
         <Route path="/faqs" element={<FAQ />} />
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/getOrg/:iid" element={<OrgDescription/>} />
-
+        <Route path="/conversation/:conversationId" element={<Conversation />} />
         <Route path="/getNeed/:IId" element={<NeedDescription/>} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/purchasedcontacts" element={<PurchasedContacts />} />

@@ -4,22 +4,18 @@ import categories from '../Home/Dashboard/AdminPanel/categories.json';
 import axios from 'axios';
 
 const questions = [
-  {
-    id: 'location',
-    question: 'What is your location? *',
-    type: 'location', // Custom type for the map
-  },
+
   {
     id: 'requirement',
-    question: 'What is your Learning Need Category? *',
+    question: 'What is your Tuition Category? *',
     type: 'autocomplete',
     placeholder: 'Enter your choice',
   },
   {
     id: 'description',
-    question: 'Write a short description for your learning need?',
+    question: 'Write a short description for your Tuition needs?',
     type: 'textarea',
-    placeholder: 'Describe your learning needs...',
+    placeholder: 'Describe your tuition needs...',
   },
   {
     id: 'board',
@@ -27,7 +23,11 @@ const questions = [
     type: 'select',
     options: ['ICSE', 'CBSE', 'State Board', 'International Baccalaureate', 'IGCSE', 'None of the above'],
   },
-  
+  {
+    id: 'location',
+    question: 'What is your location? *',
+    type: 'location', // Custom type for the map
+  },
   {
     id: 'start',
     question: 'When do you plan to start your tuition? *',

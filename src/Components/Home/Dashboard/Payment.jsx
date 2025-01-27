@@ -39,21 +39,29 @@ class Payment {
 
   async verifyPayment(response) {
     try {
-      const { payment_id, order_id, signature } = response;
-      const { amount, email } = this;
-
-      // Add token retrieval logic (assuming it's stored in localStorage)
+      console.log(response); // Log the entire response to inspect its structure
+  
+      const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response; // Destructure correctly
+      const { email, amount } = this;
+  
+      // Retrieve the token from localStorage
       const token = localStorage.getItem('token');
-
+  
+      // Construct the payload
+      const payload = {
+        razorpay_order_id: razorpay_order_id,  // Ensure correct field names
+        razorpay_payment_id: razorpay_payment_id,
+        razorpay_signature: razorpay_signature,
+        email,
+        amount: amount / 100, // Divide by 100 to match expected format
+      };
+  
+      console.log(payload);  // Log the payload before sending it
+  
+      // Send the payload to the server
       const verificationResponse = await axios.post(
         'https://server.avyudha.com/verifyPayment',
-        {
-          razorpay_order_id: order_id,
-          razorpay_payment_id: payment_id,
-          razorpay_signature: signature,
-          email,
-          amount: amount / 100, // Divide by 100 here
-        },
+        payload,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -61,7 +69,8 @@ class Payment {
           },
         }
       );
-
+  
+      // Handle the server response
       if (verificationResponse.status === 200) {
         alert('Payment verified successfully');
       } else {
@@ -72,6 +81,7 @@ class Payment {
       alert('Error verifying payment');
     }
   }
+  
 }
 
 export default Payment;

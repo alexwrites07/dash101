@@ -176,6 +176,10 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
   useEffect(() => {
     const token = localStorage.getItem('token');
     const type = localStorage.getItem('type');
+    if (!token) {
+      // If no token, redirect to error page
+      navigate("/error");
+    }
     setEndpoint(type);
   const handleClickOutside = (event) => {
       if (

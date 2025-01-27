@@ -183,6 +183,7 @@ const NeedDescription = () => {
   
             {/* Displaying Email */}
             <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
+            <p><strong>Name:</strong> {contactDetails?.name || 'Nmae not available'}</p>
   
             {/* Close Button */}
             <button 
@@ -234,7 +235,7 @@ const NeedDescription = () => {
           }
         );
   
-        alert('Learning Need bookmarked successfully!');
+        alert('Tuition bookmarked successfully!');
       }
   
       setIsBookmarked((prev) => !prev); // Toggle bookmark state on success
@@ -246,7 +247,7 @@ const NeedDescription = () => {
   
   const buyContact = async () => {
     if (!IId) {
-      console.error('Learning Need ID not available.');
+      console.error('Tuition Need ID not available.');
       return;
     }
   
@@ -284,8 +285,8 @@ const NeedDescription = () => {
   };
   const handleShare = () => {
     const shareData = {
-      title: job?.requirement || 'Learning Need',
-      text: `Check out this learning need: ${job?.requirement}`,
+      title: job?.requirement || 'Tuition Need',
+      text: `Check out this Tuition : ${job?.requirement}`,
       url: window.location.href,
     };
 

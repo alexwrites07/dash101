@@ -42,7 +42,7 @@ const ShortlistJobs = () => {
       }
     )
       .then((response) => {
-        if (!response.ok) throw new Error("Failed to fetch learning needs");
+        if (!response.ok) throw new Error("Failed to fetch Tuitions");
         return response.json();
       })
       .then((data) => setLearningNeeds(data))
@@ -71,7 +71,7 @@ const ShortlistJobs = () => {
         <main className="mt-24 lg:mt-28 -ml-72 p-6 lg:p-10">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-2xl font-bold text-gray-900 mb-8">
-              Shortlisted Jobs & Learning Needs
+              Shortlisted Jobs & Tuitions
             </h1>
 
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 space-y-4 lg:space-y-0">
@@ -142,7 +142,7 @@ const ShortlistJobs = () => {
                 {/* Learning Needs Section */}
                 <section>
                   <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                    Learning Needs
+                    Tuitions
                   </h2>
                   {filteredNeeds.length > 0 ? (
                     <ul className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -169,7 +169,7 @@ const ShortlistJobs = () => {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-500">No learning needs found.</p>
+                    <p className="text-gray-500">No Tuitions found.</p>
                   )}
                 </section>
               </>

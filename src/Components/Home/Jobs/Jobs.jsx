@@ -111,7 +111,7 @@ const FeaturedJobsAndNeeds = () => {
         <div className="flex-1">
         <div className="flex justify-between items-start w-full">
           <a
-    href="/needpost" className="text-3xl font-bold mb-4 text-[#041F96]">Featured Learning Needs</a>
+    href="/needpost" className="text-3xl font-bold mb-4 text-[#041F96]">Featured Tuitions</a>
        </div>
           {learningNeeds.slice(0, visibleNeeds).map((need, index) => (
             <div key={index} className="bg-gray-100 rounded-lg shadow-lg p-6 mb-6 transition-transform transform hover:scale-105 hover:shadow-2x">
