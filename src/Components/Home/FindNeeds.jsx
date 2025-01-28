@@ -62,17 +62,10 @@ const NeedsFinder = () => {
 
   const fetchTutors = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No authentication token found');
-        return;
-      }
+     
 
-      const response = await axios.get('https://server.avyudha.com/learning-needs?limit=10000000', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+      const response = await axios.get('https://server.avyudha.com/learning-needs', {
+       
       });
 
       if (response.data?.learningNeeds && Array.isArray(response.data.learningNeeds)) {
@@ -96,7 +89,7 @@ const NeedsFinder = () => {
     }
 
     const [lat1, lon1] = coords1;
-    const [lon2, lat2] = coords2;
+    const [lat2, lon2] = coords2;
 
     const dLat = toRadians(lat2 - lat1);
     const dLon = toRadians(lon2 - lon1);
@@ -116,8 +109,9 @@ const NeedsFinder = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setUserCoords([latitude, longitude]);
+          setUserCoords([latitude, longitude]);console.log(userCoords);
         },
+        
         (error) => {
           console.error('Error fetching user coordinates:', error);
         }
@@ -140,7 +134,7 @@ const NeedsFinder = () => {
     const {city,distance, genderPreference,categories } = filters;
     
     // Start with the base URL
-    let url = 'https://server.avyudha.com/learning-needs?';
+    let url = 'https://server.avyudha.com/learning-needs?limit=100000000000&';
   
     // Dynamically append filters to the URL
     if ((distance && userCoords)) {
@@ -377,12 +371,11 @@ const NeedsFinder = () => {
   )}
 </div>
 
-                    <div className="mt-2 md:mt-0 flex items-center mr-4">
-                     
-                      <button className="bg-[#041F96] text-white px-4 py-2 mt-48 rounded-lg hover:bg-primary-600 focus:outline-none">
-                        View
-                      </button>
-                    </div>
+<div className="flex justify-end mt-4 px-4">
+            <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
+              View
+            </button>
+          </div>
                     
                   </div>
                 </Link>

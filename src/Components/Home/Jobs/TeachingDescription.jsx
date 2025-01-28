@@ -249,27 +249,7 @@ const TeachingDescription = () => {
           <p><strong>Contact Number:</strong> {contactDetails?.contactNumber || 'Contact number not available'}</p>
           <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
           <p><strong>Name:</strong> {contactDetails?.name || 'Name not available'}</p>
-          <p><strong>Free Slots:</strong></p>
-          {Object.keys(job.freeSlots).map((day) => (
-            <div key={day} className="mb-6">
-              <h3 className="text-sm font-medium mb-2">{day}</h3>
-              <ul className="space-y-2">
-                {job.freeSlots[day].map((slot) => (
-                  <li key={slot._id} className="flex items-center justify-between">
-                    <span>
-                      {slot.startTime} - {slot.endTime}
-                    </span>
-                    
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-       <button 
-  onClick={() => navigate('/meetings')} 
-  className="your-button-styling ml-2 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">
-  Book a Meeting
-</button>
+        
 
             {/* Close Button */}
             <button

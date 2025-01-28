@@ -94,7 +94,7 @@ const NeedDescription = () => {
        
         if (!token) {
           console.warn("Authentication token not found.");
-          alert ("Please login")
+          
           return;
         }
         const type = localStorage.getItem('type');

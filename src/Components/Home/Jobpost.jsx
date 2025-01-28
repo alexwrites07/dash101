@@ -298,7 +298,7 @@ const JobPost = () => {
   </button>
 </div>
 
-      <div className="w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4">
+      <div className="sm:w-3/5 md:w-2/5 md:mr-4 md:-ml-4  rounded-lg  mb-4 md:mb-0 md:mr-4">
       
       <div className={`md:block w-full p-4 bg-gray-100 rounded-lg shadow-lg mb-6 md:mr-6 ${showFilters ? '' : 'hidden'}`} style={{ height: 'fit-content' }}>
         <form className="space-y-4">

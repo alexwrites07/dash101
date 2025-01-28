@@ -410,7 +410,7 @@ const TutorFinder = () => {
         </span>
       </div>
      
-      <span className="flex items-center text-sm text-gray-600 font-semibold gap-1">
+      <span className="flex items-center text-sm text-gray-600 lg:-mr-24 mr-12 font-semibold gap-1">
   <FaStar className="" />
   Rating: {tutor.rating}/5
 </span>
@@ -432,7 +432,7 @@ const TutorFinder = () => {
     </div>
 
     {/* Categories */}
-    <div className="flex flex-wrap -mr-24 gap-2 mt-2">
+    <div className="flex flex-wrap lg:-mr-24 gap-2 mt-2">
       {tutor.categories?.slice(0, 5).map((skill, index) => (
         <span
           key={index}
