@@ -430,16 +430,24 @@ const TeachingDescription = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
-        <div className="md:w-1/4 mb-4 md:mb-0">
-          
-            <img src={`https://server.avyudha.com/tutors/download/image/${Id}`} alt={job.title} className="w-full h-64 object-cover rounded-md" />
-          
-        </div>
-        <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
-          <h1 className="text-3xl font-bold mb-4">{job.fullName}</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <p><FaMapMarkerAlt className="inline-block mr-2 text-black" /><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
+   <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
+  {/* Image Section */}
+  <div className="sm:w-1/4 w-full flex justify-center sm:block mb-4 sm:mb-0">
+    <img
+      src={`https://server.avyudha.com/tutors/download/image/${Id}`}
+      alt={job.title}
+      className="w-32 h-32 sm:w-full sm:h-64 object-cover rounded-full sm:rounded-md"
+    />
+  </div>
+
+  {/* Name & Details */}
+  <div className="sm:w-1/2 w-full ml-12">
+  <h1 className="text-xl sm:text-3xl md:ml-0 -ml-12 font-bold mt-2  text-center mb-4 sm:text-left">
+  {job.fullName}
+</h1>
+
+    <div className="grid grid-cols-1 text-left  sm:grid-cols-2 gap-2 sm:gap-4 sm:text-left">
+      <p><FaMapMarkerAlt className="inline-block mr-2 text-black" /><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
       <p><FaMoneyBillWave className="inline-block mr-2 text-black" /><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
       <p><FaClock className="inline-block mr-2 text-black" /><strong>Salary Period:</strong> {job.jobAlerts?.minExpectedSalary?.period}</p>
       <p><FaBriefcase className="inline-block mr-2 text-black" /><strong>Experience:</strong> {job.totalExperience} years</p>
@@ -449,185 +457,72 @@ const TeachingDescription = () => {
       <p><FaLevelUpAlt className="inline-block mr-2 text-black" /><strong>Teaching Level:</strong> {job.teachingLevels}</p>
       <p><FaStar className="inline-block mr-2 text-black" /><strong>Rating:</strong> {job.rating}</p>
       <p><FaVenusMars className="inline-block mr-2 text-black" /><strong>Gender:</strong> {job.gender}</p>
-  
+    </div>
 
+    {/* Actions */}
+    <div className="flex space-x-4 justify-center sm:justify-start mt-4">
+   
 
-        
-            <span className="flex space-x-4">
-            <button
-    onClick={handleBookmarkToggle}
-    className="text-blue-500 hover:text-blue-600 focus:outline-none"
-  >
-    {isBookmarked ? (
-      <HiBookmark className="w-6 h-6" />
-    ) : (
-      <HiOutlineBookmark className="w-6 h-6" />
-    )}
-  </button>
-  {job.classCost > 0 ? (
-  // Show "Book a Meet" button and open modal
-  <div>
-    <button
-      onClick={() => setIsModalOpen1(true)} // Open the modal when the button is clicked
-      className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300"
-    >
-      Book a Meet
+      {job.classCost > 0 ? (
+        <button
+          onClick={() => setIsModalOpen1(true)}
+          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300"
+        >
+          Book a Meet
+        </button>
+      ) : isContactUnlocked ? (
+        <div className="flex flex-col  items-left text-left space-y-2 sm:space-y-0 sm:space-x-4">
+  {/* Bookmark and View Contact (Same Row on Small Screens) */}
+  <div className="flex w-full mb-2 sm:w-auto justify-left sm:justify-start space-x-2">
+    <button onClick={handleBookmarkToggle} className="text-blue-500 hover:text-blue-600 focus:outline-none">
+      {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
     </button>
 
-    {/* Modal for Booking a Meet */}
-    {isModalOpen1 && (
-    <Modal
-    isOpen={isModalOpen1}
-    onRequestClose={() => setShowModal1(false)}
-    className="bg-white p-6 rounded-lg shadow-lg z-50 max-w-lg mx-auto mt-10 max-h-[90vh] overflow-y-auto"
-    overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-  >
-        <h2 className="text-lg font-bold mb-4">Select a Date and Slot</h2>
-        
-        {/* Calendar Section */}
-        <Calendar
-          onChange={handleDateSelection}
-          value={selectedDate}
-          className="mb-6 border rounded-lg shadow-lg"
-        />
-
-        {/* Available Slots */}
-        <h3 className="text-lg font-semibold mb-4">Available Slots</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {availableSlots.length > 0 ? (
-                availableSlots.map((slot, index) => (
-                  <button
-                    key={index}
-                    className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-                    onClick={() => handleSlotSelection(slot)}
-                  >
-                    {slot.startTime} - {slot.endTime}
-                  </button>
-                ))
-              ) : (
-                <p className="text-gray-500">No slots available for this day.</p>
-              )}
-            </div>
-
-        {/* Meeting Details */}
-        {selectedSlot && (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-4">Meeting Details</h3>
-            <div className="mb-4">
-              <label className="block font-medium mb-2">Meeting Title</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded-lg"
-                value={meetingTitle}
-                onChange={(e) => setMeetingTitle(e.target.value)}
-                placeholder="Enter meeting title"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium mb-2">Duration (minutes)</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded-lg"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                placeholder="Enter duration"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-                onClick={handleFormSubmit}
-              >
-                Submit
-              </button>
-              <button
-                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
-                onClick={() => setIsModalOpen1(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-      </Modal>
-    )}
-  </div>
-) : isContactUnlocked ? (
-  <div className="flex items-center space-x-4">
-    {/* View Contact Button */}
-    <button
-      onClick={handleViewContact}
-      className="bg-[#6699CC] w-48 text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300"
-    >
+    <button onClick={handleViewContact} className="bg-[#6699CC] w-32 sm:w-48 text-white font-bold py-2 px-2 sm:px-4 rounded hover:bg-gray-800 transition duration-300">
       View Contact
     </button>
+  </div>
 
-    {/* Message Input */}
+  {/* Message Input (New Row on Small Screens) */}
+  <div className="w-full mt-2 flex  items-center space-y-2 sm:space-y-0 sm:space-x-4">
     <textarea
-      className="w-full p-2 border rounded-lg resize-none h-[80px] min-w-[300px] overflow-auto"
+      className="w-full sm:w-auto p-2 border rounded-lg resize-none h-[40px] sm:h-[80px] min-w-[180px] sm:min-w-[300px] overflow-auto"
       placeholder="Write your message..."
       value={message}
       onChange={(e) => setMessage(e.target.value)}
-      rows="4"
+      rows="2"
     />
 
-    {/* Send Message Button */}
-    <button
-      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      onClick={sendMessage}
-      disabled={isSending}
-    >
-      {isSending ? "Sending..." : "Send Message"}
+    <button className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded hover:bg-blue-600" onClick={sendMessage} disabled={isSending}>
+      {isSending ? "Sending..." : "Send"}
     </button>
   </div>
-) : (
-  <button
-    onClick={buyContact}
-    disabled={!job.contactCost || job.contactCost === 0}
-    className={`${
-      !job.contactCost || job.contactCost === 0
-        ? "bg-gray-400 cursor-not-allowed"
-        : "bg-[#041F96] hover:bg-gray-800"
-    } text-white font-bold py-2 px-4 rounded transition duration-300`}
-  >
-    {job.contactCost && job.contactCost > 0
-      ? `Buy Contact (${job.contactCost} coins)`
-      : "Not Available to Buy"}
-  </button>
-)}
+</div>
 
+      ) : (
+        <button
+          onClick={buyContact}
+          disabled={!job.contactCost || job.contactCost === 0}
+          className={`${
+            !job.contactCost || job.contactCost === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-[#041F96] hover:bg-gray-800"
+          } text-white font-bold py-2 px-4 rounded transition duration-300`}
+        >
+          {job.contactCost && job.contactCost > 0 ? `Buy Contact (${job.contactCost} coins)` : "Not Available to Buy"}
+        </button>
+      )}
+    </div>
+  </div>
 
-     
+  {/* Additional Content for Laptop View */}
+  <div className="md:w-1/4 flex flex-col items-end"></div>
+</div>
 
-      {/* Contact Modal */}
-      <ContactModal 
-        contactDetails={contactDetails} 
-        isContactModalOpen={isContactModalOpen} 
-        setIsContactModalOpen={setIsContactModalOpen}
-        job={job}
-      />
-      </span>
-
-            {!isActive ? (
-             <div></div>
-            ) : (
-              <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
-                Closed
-              </p>
-            )}
-            
-          </div>
-        </div>
-        <div className="md:w-1/4 flex flex-col items-end">
-          {/* Additional content if needed */}
-        </div>
-      </div>
 
       <div className="flex flex-col md:flex-row md:justify-between">
-        <div className="bg-white p-6 rounded-lg md:w-3/5">
+        <div className="bg-white p-6 rounded-lg md:w-2/5 sm:w-2/5">
           <div className="text-gray-600">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Tutor Details</h2>
-            <table className="table-auto w-full border-collapse border border-gray-200 mb-8">
+            <table className="table-auto border-collapse border border-gray-200 mb-8">
   <thead>
     <tr className="bg-gray-100">
       <th className="border border-gray-200 px-4 py-2 text-left">Categories</th>
@@ -653,7 +548,7 @@ const TeachingDescription = () => {
       <th className="border border-gray-200 px-4 py-2 text-left">Degree</th>
       <th className="border border-gray-200 px-4 py-2 text-left">Academy</th>
       <th className="border border-gray-200 px-4 py-2 text-left">Year</th>
-      <th className="border border-gray-200 px-4 py-2 text-left">Description</th>
+      <th className="border border-gray-200 px-4 py-2 text-left hidden sm:table-cell">Description</th>
     </tr>
   </thead>
   <tbody>
@@ -662,7 +557,7 @@ const TeachingDescription = () => {
         <td className="border border-gray-200 px-4 py-2">{edu.title}</td>
         <td className="border border-gray-200 px-4 py-2">{edu.academy}</td>
         <td className="border border-gray-200 px-4 py-2">{new Date(edu.year).getFullYear()}</td>
-        <td className="border border-gray-200 px-4 py-2">{edu.description}</td>
+        <td className="border border-gray-200 px-4 py-2 hidden sm:table-cell">{edu.description}</td>
       </tr>
     ))}
   </tbody>
@@ -676,7 +571,7 @@ const TeachingDescription = () => {
       <th className="border border-gray-200 px-4 py-2 text-left">Role</th>
       <th className="border border-gray-200 px-4 py-2 text-left">Company</th>
       <th className="border border-gray-200 px-4 py-2 text-left">Duration</th>
-      <th className="border border-gray-200 px-4 py-2 text-left">Description</th>
+      <th className="border border-gray-200 px-4 py-2 text-left hidden sm:table-cell">Description</th>
     </tr>
   </thead>
   <tbody>
@@ -687,7 +582,7 @@ const TeachingDescription = () => {
         <td className="border border-gray-200 px-4 py-2">
           {new Date(experience.start_date).getFullYear()} - {new Date(experience.end_date).getFullYear()}
         </td>
-        <td className="border border-gray-200 px-4 py-2">{experience.description}</td>
+        <td className="border border-gray-200 px-4 py-2 hidden sm:table-cell">{experience.description}</td>
       </tr>
     ))}
   </tbody>

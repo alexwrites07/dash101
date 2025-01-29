@@ -160,13 +160,13 @@ function Navbar() {
 
   return (
     <>
-      <div className="mt-2">
+      <div className="mt-2 ">
         <div className="border-b-2 -mt-2 w-full bg-white z-100 shadow-sm">
           <div className="max-w-full mb-2" style={{ margin: '2% 4% 0.5% 4%' }}>
             <nav className="border-gray-200 relative mx-auto">
               <div className="container mx-auto flex items-center justify-between">
                 <a href="/" className="flex items-center ">
-                  <img className="w-36 h-36 mr-2 -mt-12 -mb-12" src={nm} alt="logo" />
+                  <img className="w-36 h-36 mr-2 -mt-12 -mb-8 lg:-mb-12 " src={nm} alt="logo" />
                 </a>
                 <button
                   onClick={toggleMobileMenu}

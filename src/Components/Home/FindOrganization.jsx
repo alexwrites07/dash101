@@ -209,16 +209,16 @@ const OrganizationFinder = () => {
   {org.length > 0 ? (
     org.map((tutor, index) => (
       <div
-        className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full ml-8 hover:shadow-lg transition duration-300"
+        className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full md:ml-8 hover:shadow-lg transition duration-300"
         key={index}
       >
         <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
           {/* Section 1: Image */}
-          <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+          <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center lg:-mt-24 mb-4 md:mb-0">
             <img
               src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
               alt={tutor.title}
-              className="w-32 h-32 object-cover rounded-md mx-2"
+              className="w-24 h-24 object-cover rounded-full mx-2 "
             />
           </div>
 
@@ -229,17 +229,17 @@ const OrganizationFinder = () => {
               {/* Location */}
               <p className="flex items-center gap-2">
                 <FaMapMarkerAlt className="text-gray-600" />
-                <span className="font-medium text-gray-600">Location:</span> {tutor.location.city}, {tutor.location.address}
+                <span className="font-medium text-gray-600">Location: {tutor.location.city}, {tutor.location.address}</span>
               </p>
               {/* Organization Type */}
               <p className="flex items-center gap-2">
                 <FaBuilding className="text-gray-600" />
-                <span className="font-medium text-gray-600">Organization Type:</span> {tutor.organizationType}
+                <span className="font-medium text-gray-600">Organization Type: {tutor.organizationType}</span>
               </p>
               {/* Rating */}
               <p className="flex items-center gap-2">
                 <FaStar className="text-gray-500" />
-                <span className="font-medium text-gray-600">Rating:</span> {tutor.rating}
+                <span className="font-medium text-gray-600">Rating: {tutor.rating}</span>
               </p>
             </div>
 
@@ -264,10 +264,11 @@ const OrganizationFinder = () => {
 
             {/* View Button */}
             <div className="flex justify-end mt-4">
-              <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c6b] focus:outline-none">
-                View
-              </button>
-            </div>
+  <button className="hidden md:block bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c6b] focus:outline-none">
+    View
+  </button>
+</div>
+
           </div>
         </Link>
       </div>

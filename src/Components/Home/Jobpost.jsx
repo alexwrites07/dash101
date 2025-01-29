@@ -422,7 +422,7 @@ const JobPost = () => {
           <button
             type="button"
             onClick={applyFilters}
-            className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+            className="w-full bg-[#041F96] hidden md:block  text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
           >
             View
           </button>
@@ -443,7 +443,7 @@ const JobPost = () => {
     <h1 className="text-3xl font-bold text-[#041F96] mb-6">Available Jobs</h1>
     {filteredJobs.map((job, index) => (
       <div
-        className="shadow rounded-lg transition duration-300 hover:bg-gray-50 items-start md:ml-8 border-b border-gray-200 py-4 mb-4 hover:shadow-lg"
+        className="shadow rounded-lg text-xl transition  duration-300 hover:bg-gray-50 items-start md:ml-8 border-b border-gray-200 py-4 mb-4 hover:shadow-lg"
         key={index}
       >
         <Link to={`/getjobs/${job._id}`} className="block">
@@ -454,7 +454,8 @@ const JobPost = () => {
           </div>
 <br></br>
           {/* Job Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 text-sm text-gray-800">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 text-xs sm:text-sm md:text-base text-gray-800">
+
   {/* Location */}
   <div className="flex items-center gap-2 -my-1">
     <FaMapMarkerAlt className="text-black" />

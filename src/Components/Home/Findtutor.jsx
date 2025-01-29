@@ -387,12 +387,13 @@ const TutorFinder = () => {
       >
         {/* Image Section */}
         <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
-          <img
-            src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
-            alt=""
-            className="w-32 h-32 object-cover rounded-md mx-2"
-          />
-        </div>
+  <img
+    src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
+    alt=""
+    className="w-24 h-24 object-cover rounded-full mx-2"
+  />
+</div>
+
 
         <Link to={`/getTutor/${tutor._id}`} className="block w-full">
         <div className="flex flex-col w-full ml-2 relative">
@@ -427,7 +428,7 @@ const TutorFinder = () => {
 </div>
 
 
-    <div className="flex items-center gap-2 -mr-24 mt-2">
+    <div className="flex items-center gap-2 mt-2">
       <span className="text-sm text-gray-600">{tutor.description}</span>
     </div>
 
@@ -462,7 +463,7 @@ const TutorFinder = () => {
         <Link to={`/getTutor/${tutor._id}`} className="block w-full">
         {/* View Button Section */}
         <div className="flex justify-end mt-4 px-4">
-            <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
+            <button className="bg-[#041F96] hidden md:block text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
               View
             </button>
           </div>

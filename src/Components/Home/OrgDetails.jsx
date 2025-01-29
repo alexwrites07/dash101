@@ -249,7 +249,7 @@ const OrgDescription = () => {
       <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
         <div className="md:w-1/4 mb-4 md:mb-0">
           {job.logo ? (
-            <img src={`https://server.avyudha.com/org/download/logo/${job._id}`} alt={job.name} className="w-full h-56 object-cover rounded-md" />
+            <img src={`https://server.avyudha.com/org/download/logo/${job._id}`} alt={job.name} className="w-56 h-56 rounded-full  object-cover rounded" />
           ) : (
             <p>No logo available</p>
           )}

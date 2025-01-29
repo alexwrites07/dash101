@@ -317,7 +317,7 @@ const NeedDescription = () => {
 
   return (
     <div className="container mx-auto p-4">
-  <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-center mb-6">
+  <div className="bg-[#1967D212] p-6 rounded-lg shadow-lg text-black flex flex-col sm:flex-row md:justify-between items-left mb-6">
     
     <div className="md:w-1/2 mb-4 md:mb-0 ml-8">
       <h1 className="text-3xl font-bold mb-4">{job.requirement}</h1>
@@ -356,6 +356,7 @@ const NeedDescription = () => {
   <FaVenusMars className="text-black" />
   <strong>Gender Preference:</strong> {job.genderPreference}
 </p>
+<div>
         <button
         onClick={handleBookmarkToggle}
         className='text-blue-500 hover:text-blue-600 focus:outline-none ml-4'>
@@ -364,7 +365,7 @@ const NeedDescription = () => {
     ) : (
       <HiOutlineBookmark className="w-6 h-6" />
     )}
-  </button>
+  </button>&nbsp;&nbsp;
   {isContactUnlocked ? (
             <button onClick={handleViewContact} className="bg-[#6699CC] text-white font-bold py-2 px-4 rounded hover:bg-gray-800 transition duration-300">
               View Contact
@@ -398,6 +399,7 @@ const NeedDescription = () => {
           </p>
         )}
       </div>
+    </div>
     </div>
     <div className="md:w-1/4 flex flex-col items-end">
       {/* Additional content if needed */}
