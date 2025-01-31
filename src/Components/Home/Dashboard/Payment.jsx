@@ -1,87 +1,90 @@
-import axios from 'axios';
+import axios from "axios";
 
 class Payment {
   constructor(email, order, amount) {
     this.email = email;
     this.order = order;
-    this.amount = amount; // Keep the amount as is for now
+    this.amount = amount * 100; // Convert to paise
   }
 
-  openCheckout() {
-    const options = {
-      key: 'rzp_test_GpP5Z2LKkBWqPx',
-      amount: this.order.amount, // Razorpay expects this in paise (no modification here)
-      name: 'KridhaTutor',
-      currency: this.order.currency,
-      order_id: this.order.id,
-      description: 'Payment for adding money to wallet',
-      retry: { enabled: true, max_count: 1 },
-      prefill: { email: this.email },
-      handler: (response) => this.verifyPayment(response),
-      theme: { color: '#3399cc' },
-    };
+  async openCheckout() {
+    try {
+      // Load Razorpay SDK dynamically
+      await this.loadRazorpayScript();
 
+      const options = {
+        key: "rzp_live_WgKjXBh4toiJC0", // Replace with actual key_id
+        amount: this.amount, // Razorpay expects amount in paise
+        currency: this.order.currency,
+        name: "KridhaTutor",
+        description: "Payment for adding money to wallet",
+        order_id: this.order.id, // Razorpay Order ID
+        prefill: { email: this.email },
+        theme: { color: "#3399cc" },
+        handler: (response) => this.verifyPayment(response), // Handle payment success
+        retry: { enabled: true, max_count: 1 },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error("Razorpay SDK failed to load", error);
+      alert("Failed to initialize payment. Please try again.");
+    }
+  }
+
+  async loadRazorpayScript() {
     return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => {
-        const razorpay = new window.Razorpay(options);
-        razorpay.open();
-        resolve(true);
-      };
-      script.onerror = () => {
-        console.error('Failed to load Razorpay SDK');
-        reject(false);
-      };
+      if (window.Razorpay) {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = resolve;
+      script.onerror = reject;
       document.body.appendChild(script);
     });
   }
 
   async verifyPayment(response) {
     try {
-      console.log(response); // Log the entire response to inspect its structure
-  
-      const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response; // Destructure correctly
-      const { email, amount } = this;
-  
-      // Retrieve the token from localStorage
-      const token = localStorage.getItem('token');
-  
-      // Construct the payload
+      console.log("Payment Response:", response);
+
+      const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+      const token = localStorage.getItem("token");
+
       const payload = {
-        razorpay_order_id: razorpay_order_id,  // Ensure correct field names
-        razorpay_payment_id: razorpay_payment_id,
-        razorpay_signature: razorpay_signature,
-        email,
-        amount: amount / 100, // Divide by 100 to match expected format
+        razorpay_payment_id,
+        razorpay_order_id,
+        razorpay_signature,
+        email: this.email,
+        amount: this.amount / 100, // Convert back to rupees
       };
-  
-      console.log(payload);  // Log the payload before sending it
-  
-      // Send the payload to the server
+
+      console.log("Verifying Payment:", payload);
+
       const verificationResponse = await axios.post(
-        'https://server.avyudha.com/verifyPayment',
+        "https://server.avyudha.com/verifyPayment",
         payload,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-  
-      // Handle the server response
+
       if (verificationResponse.status === 200) {
-        alert('Payment verified successfully');
+        alert("Payment verified successfully!");
       } else {
-        alert(verificationResponse.data.message || 'Payment verification failed');
+        alert(verificationResponse.data.message || "Payment verification failed.");
       }
     } catch (error) {
-      console.error('Error verifying payment:', error);
-      alert('Error verifying payment');
+      console.error("Error verifying payment:", error);
+      alert("Payment verification failed. Please contact support.");
     }
   }
-  
 }
 
 export default Payment;

@@ -154,10 +154,10 @@ function AppContent() {
     || location.pathname === "/add-category"
     ||location.pathname==="/transactions"
     ||location.pathname==="/logout"
-    // ||location.pathname==="/login"
-    // ||location.pathname==="/signup"
+   
 
     || location.pathname === "/blogs-admin"
+    || location.pathname === "/conversation/:conversationId"
     || location.pathname === "/student-profiles"
     || location.pathname === "/tutor-profiles"
     || location.pathname === "/organization-profiles"

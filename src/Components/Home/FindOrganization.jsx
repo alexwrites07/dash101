@@ -8,6 +8,10 @@ import { FaMapMarkerAlt, FaBuilding, FaStar } from "react-icons/fa";
 
 const OrganizationFinder = () => {
   const [tutors, setTutors] = useState([]);
+
+
+  const toggleFilters = () => setShowFilters(!showFilters);
+
   const [org, setOrg] = useState([]);
   const [distance, setDistance] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
@@ -137,149 +141,239 @@ const OrganizationFinder = () => {
         console.error("No organizations found with the selected filters.");
         setOrg([]); // In case no valid data returned, set empty
       }
+      toggleFilters();
+     
   };
   
   return (
     <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
       <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
+        {/* Mobile Filter Button */}
         <div className="md:hidden w-full flex justify-end mb-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none"
+            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none shadow-md"
           >
-            <HiFilter className="w-4 h-4" />
+            <HiFilter className="w-5 h-5" />
           </button>
         </div>
-        <div
-          className={`md:block p-4 bg-gray-100 rounded-lg shadow-lg mb-6 ${showFilters ? '' : 'hidden'}`}
-          style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}
-        >
-          <form className="space-y-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">City</label>
-              <input
-                type="text"
-                name="city"
-                value={filters.city}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-              <button
-                type="button"
-                onClick={fetchUserCoordinates}
-                className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
-              >
-                Use My Location
-              </button>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distance">Distance (in km)</label>
-              <input
-                type="number"
-                name="distance"
-                id="distance"
-                placeholder="Enter distance in km"
-                value={filters.distance}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-          
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="organizationType">Organization Type</label>
-              <input
-                type="text"
-                name="organizationType"
-                value={filters.organizationType}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
+
+  
+  
+   <div>
+  {/* Mobile Filter Button */}
+  
+
+  {/* Filters Modal for Mobile */}
+  {showFilters && (
+    <div
+      className="fixed inset-0 bg-gray-800 bg-opacity-50 z-40 flex justify-center items-center"
+      onClick={toggleFilters}
+      aria-labelledby="filter-modal-title"
+      role="dialog"
+    >
+      <div
+        className="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm"
+        onClick={(e) => e.stopPropagation()} // Prevent click on modal from closing it
+      >
+        <h2 id="filter-modal-title" className="text-lg font-semibold mb-4">Filters</h2>
+        <form className="space-y-4">
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">City</label>
+            <input
+              type="text"
+              name="city"
+              value={filters.city}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
             <button
               type="button"
-              onClick={ApplyFilter}
-              className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+              onClick={fetchUserCoordinates}
+              className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
             >
-              Apply Filters
+              Use My Location
             </button>
-          </form>
-        </div>
-        <div className="flex flex-col items-start justify-start w-full">
-  <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">Organizations</div>
-  {org.length > 0 ? (
-    org.map((tutor, index) => (
-      <div
-        className="shadow rounded flex flex-col md:flex-row items-start border-b border-gray-200 py-4 mb-4 w-full md:ml-8 hover:shadow-lg transition duration-300"
-        key={index}
-      >
-        <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
-          {/* Section 1: Image */}
-          <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center lg:-mt-24 mb-4 md:mb-0">
-            <img
-              src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
-              alt={tutor.title}
-              className="w-24 h-24 object-cover rounded-full mx-2 "
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distance">Distance (in km)</label>
+            <input
+              type="number"
+              name="distance"
+              id="distance"
+              placeholder="Enter distance in km"
+              value={filters.distance}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
             />
           </div>
-
-          {/* Section 2: Details */}
-          <div className="flex-grow px-4 w-full md:w-4/6">
-            <h2 className="text-lg font-semibold text-gray-800">{tutor.name}</h2><br></br>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4  -ml-2 text-sm text-gray-800">
-              {/* Location */}
-              <p className="flex items-center gap-2">
-                <FaMapMarkerAlt className="text-gray-600" />
-                <span className="font-medium text-gray-600">Location: {tutor.location.city}, {tutor.location.address}</span>
-              </p>
-              {/* Organization Type */}
-              <p className="flex items-center gap-2">
-                <FaBuilding className="text-gray-600" />
-                <span className="font-medium text-gray-600">Organization Type: {tutor.organizationType}</span>
-              </p>
-              {/* Rating */}
-              <p className="flex items-center gap-2">
-                <FaStar className="text-gray-500" />
-                <span className="font-medium text-gray-600">Rating: {tutor.rating}</span>
-              </p>
-            </div>
-
-            {/* Description */}
-            <div className="mt-4">
-              <p className="text-sm text-gray-700">
-              <span className="">
-      Description: {tutor.description?.length > 100 
-        ? `${tutor.description.substring(0, 200)}...` 
-        : tutor.description}
-    </span> </p>
-            </div>
-
-            {/* Distance */}
-            {userCoords && tutor.location?.coordinates && (
-              <p className="text-gray-700 mt-4"><span className="text-sm text-gray-600">
-              Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-            </span>
-
-              </p>
-            )}
-
-            {/* View Button */}
-            <div className="flex justify-end mt-4">
-  <button className="hidden md:block bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c6b] focus:outline-none">
-    View
-  </button>
-</div>
-
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="organizationType">Organization Type</label>
+            <input
+              type="text"
+              name="organizationType"
+              value={filters.organizationType}
+              onChange={handleFilterChange}
+              className="w-full px-3 py-2 border rounded-lg"
+            />
           </div>
-        </Link>
+          <button
+            type="button"
+            onClick={ApplyFilter}
+            className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+          >
+            Apply Filters
+          </button>
+        </form>
       </div>
-    ))
-  ) : (
-    <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
+    </div>
   )}
 
+  {/* Desktop Filter - Show this only on desktop */}
+  <div
+    className={`hidden md:block p-4 bg-white rounded-lg shadow-lg mb-6 ${showFilters ? 'block' : 'hidden'}`}
+    style={{ width: '100%', maxWidth: '400px', height: 'fit-content' }}
+  >
+    <form className="space-y-4">
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">City</label>
+        <input
+          type="text"
+          name="city"
+          value={filters.city}
+          onChange={handleFilterChange}
+          className="w-full px-3 py-2 border rounded-lg"
+        />
+        <button
+          type="button"
+          onClick={fetchUserCoordinates}
+          className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+        >
+          Use My Location
+        </button>
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distance">Distance (in km)</label>
+        <input
+          type="number"
+          name="distance"
+          id="distance"
+          placeholder="Enter distance in km"
+          value={filters.distance}
+          onChange={handleFilterChange}
+          className="w-full px-3 py-2 border rounded-lg"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="organizationType">Organization Type</label>
+        <input
+          type="text"
+          name="organizationType"
+          value={filters.organizationType}
+          onChange={handleFilterChange}
+          className="w-full px-3 py-2 border rounded-lg"
+        />
+      </div>
+      <button
+        type="button"
+        onClick={ApplyFilter}
+        className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+      >
+        Apply Filters
+      </button>
+    </form>
+  </div>
+</div>
+
+  
+        {/* Organization List */}
+        <div className="flex flex-col items-start justify-start w-full">
+          <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">
+            Organizations
+          </div>
+  
+          {org.length > 0 ? (
+            org.map((tutor, index) => (
+              <div
+                className="shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4 border-l-1 border-[#041F96]"
+                key={index}
+              >
+                <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
+                  {/* Image Section */}
+                  <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+                    <img
+                      src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
+                      alt={tutor.title}
+                      className="w-24 h-24 object-cover rounded-full border-2 border-gray-300 shadow-sm"
+                    />
+                  </div>
+  
+                  {/* Details Section */}
+                  <div className="flex-grow px-4 w-full md:w-4/6">
+                    <h2 className="text-2xl font-semibold text-[#041F96] mb-4">{tutor.name}</h2>
+  
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800 mt-2">
+  <p className="flex items-center gap-2">
+    <span className="bg-gray-200 p-2 rounded-full">
+      <FaMapMarkerAlt className="text-gray-600" />
+    </span>
+    <span className="font-medium text-gray-600">
+      Location: {tutor.location.city}, {tutor.location.address}
+    </span>
+  </p>
+
+  <p className="flex items-center gap-2">
+    <span className="bg-gray-200 p-2 rounded-full">
+      <FaBuilding className="text-gray-600" />
+    </span>
+    <span className="font-medium text-gray-600">
+      Type: {tutor.organizationType}
+    </span>
+  </p>
+
+  <p className="flex items-center gap-2">
+    <span className="bg-gray-200 p-2 rounded-full">
+      <FaStar className="text-gray-500" />
+    </span>
+    <span className="font-medium text-gray-600">Rating: {tutor.rating}</span>
+  </p>
+</div>
+
+{/* Description */}
+<div className="mt-4">
+  <p className="text-sm text-gray-700">
+    <span>
+      {tutor.description?.length > 200
+        ? `${tutor.description.substring(0, 200)}...`
+        : tutor.description}
+    </span>
+  </p>
+</div>
+
+  
+                    {/* Distance */}
+                    {userCoords && tutor.location?.coordinates && (
+                      <p className="text-gray-700 mt-4 text-sm">
+                        Distance:{" "}
+                        {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+                      </p>
+                    )}
+  
+                    {/* View Button */}
+                    {/* <div className="flex justify-end mt-4">
+                      <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c6b] focus:outline-none shadow-md">
+                        View
+                      </button>
+                    </div> */}
+                  </div>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
+          )}
         </div>
       </div>
-      
     </div>
   );
 

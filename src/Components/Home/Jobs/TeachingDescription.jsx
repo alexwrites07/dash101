@@ -125,14 +125,14 @@ const TeachingDescription = () => {
 
   const handleFormSubmit = async () => {
     const payload = {
-      tutorId:Id,
-      meetingTitle:meetingTitle,
-      date: selectedDate.toISOString().split("T")[0],
+      tutorId: Id,
+      meetingTitle: meetingTitle,
+      date: new Date(selectedDate.setDate(selectedDate.getDate() + 1)).toISOString().split("T")[0],
       startTime: selectedSlot.startTime,
       endTime: selectedSlot.endTime,
       duration: parseInt(duration),
     };
-
+  
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("https://server.avyudha.com/meetings/student", {
@@ -143,20 +143,29 @@ const TeachingDescription = () => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       const result = await response.json();
-      if (response.ok) {
-        alert("Meeting scheduled successfully!");
+      alert(result);
+      
+      if (result.authUrl) {
+        // Append the token to the authUrl as a query parameter
+        const urlWithToken = `${result.authUrl}`;
+        
+        // Redirect to the Google authentication page
+        window.location.href = urlWithToken;
+        alert(result.authUrl);
       } else {
-        alert(`Error: ${result.message}`);
+        alert("Meeting scheduled successfully!");
       }
     } catch (error) {
       alert("An error occurred while scheduling the meeting.");
       console.error(error);
     }
-
+  
     setIsModalOpen1(false); // Close modal
   };
+  
+  
   const [message, setMessage] = useState(''); // To store the message content
   const [isSending, setIsSending] = useState(false); // To handle the loading state of the send button
 
@@ -463,53 +472,138 @@ const TeachingDescription = () => {
     <div className="flex space-x-4 justify-center sm:justify-start mt-4">
    
 
-      {job.classCost > 0 ? (
-        <button
-          onClick={() => setIsModalOpen1(true)}
-          className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300"
-        >
-          Book a Meet
-        </button>
-      ) : isContactUnlocked ? (
-        <div className="flex flex-col  items-left text-left space-y-2 sm:space-y-0 sm:space-x-4">
-  {/* Bookmark and View Contact (Same Row on Small Screens) */}
-  <div className="flex w-full mb-2 sm:w-auto justify-left sm:justify-start space-x-2">
-    <button onClick={handleBookmarkToggle} className="text-blue-500 hover:text-blue-600 focus:outline-none">
-      {isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
+    {job.classCost > 0 ? (
+  // Show "Book a Meet" button and open modal
+  <div>
+    <button
+      onClick={() => setIsModalOpen1(true)} // Open the modal when the button is clicked
+      className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300"
+    >
+      Book a Meet
     </button>
 
-    <button onClick={handleViewContact} className="bg-[#6699CC] w-32 sm:w-48 text-white font-bold py-2 px-2 sm:px-4 rounded hover:bg-gray-800 transition duration-300">
-      View Contact
-    </button>
+    {/* Modal for Booking a Meet */}
+    {isModalOpen1 && (
+    <Modal
+    isOpen={isModalOpen1}
+    onRequestClose={() => setShowModal1(false)}
+    className="bg-white p-6 rounded-lg shadow-lg z-50 max-w-lg mx-auto mt-10 max-h-[90vh] overflow-y-auto"
+    overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+  >
+        <h2 className="text-lg font-bold mb-4">Select a Date and Slot</h2>
+        
+        {/* Calendar Section */}
+        <Calendar
+          onChange={handleDateSelection}
+          value={selectedDate}
+          className="mb-6 border rounded-lg shadow-lg"
+        />
+
+        {/* Available Slots */}
+        <h3 className="text-lg font-semibold mb-4">Available Slots</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {availableSlots.length > 0 ? (
+                availableSlots.map((slot, index) => (
+                  <button
+                    key={index}
+                    className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+                    onClick={() => handleSlotSelection(slot)}
+                  >
+                    {slot.startTime} - {slot.endTime}
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500">No slots available for this day.</p>
+              )}
+            </div>
+
+        {/* Meeting Details */}
+        {selectedSlot && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold mb-4">Meeting Details</h3>
+            <div className="mb-4">
+              <label className="block font-medium mb-2">Meeting Title</label>
+              <input
+                type="text"
+                className="w-full p-2 border rounded-lg"
+                value={meetingTitle}
+                onChange={(e) => setMeetingTitle(e.target.value)}
+                placeholder="Enter meeting title"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-medium mb-2">Duration (minutes)</label>
+              <input
+                type="number"
+                className="w-full p-2 border rounded-lg"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="Enter duration"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                onClick={handleFormSubmit}
+              >
+                Submit
+              </button>
+              <button
+                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+                onClick={() => setIsModalOpen1(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+    )}
   </div>
+) :isContactUnlocked ? (
+  <div className="flex flex-col  items-left text-left space-y-2 sm:space-y-0 sm:space-x-4">
+{/* Bookmark and View Contact (Same Row on Small Screens) */}
+<div className="flex flex-row w-full mb-2 sm:w-auto justify-left sm:justify-start space-x-2">
+<button onClick={handleBookmarkToggle} className="text-blue-500 hover:text-blue-600 focus:outline-none">
+{isBookmarked ? <HiBookmark className="w-6 h-6" /> : <HiOutlineBookmark className="w-6 h-6" />}
+</button>
 
-  {/* Message Input (New Row on Small Screens) */}
-  <div className="w-full mt-2 flex  items-center space-y-2 sm:space-y-0 sm:space-x-4">
-    <textarea
-      className="w-full sm:w-auto p-2 border rounded-lg resize-none h-[40px] sm:h-[80px] min-w-[180px] sm:min-w-[300px] overflow-auto"
-      placeholder="Write your message..."
-      value={message}
-      onChange={(e) => setMessage(e.target.value)}
-      rows="2"
-    />
-
-    <button className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded hover:bg-blue-600" onClick={sendMessage} disabled={isSending}>
-      {isSending ? "Sending..." : "Send"}
-    </button>
-  </div>
+<button onClick={handleViewContact} className="bg-[#6699CC] w-32 sm:w-48 text-white font-bold py-2 px-2 sm:px-4 rounded hover:bg-gray-800 transition duration-300">
+View Contact
+</button>
 </div>
 
-      ) : (
-        <button
-          onClick={buyContact}
-          disabled={!job.contactCost || job.contactCost === 0}
-          className={`${
-            !job.contactCost || job.contactCost === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-[#041F96] hover:bg-gray-800"
-          } text-white font-bold py-2 px-4 rounded transition duration-300`}
-        >
-          {job.contactCost && job.contactCost > 0 ? `Buy Contact (${job.contactCost} coins)` : "Not Available to Buy"}
-        </button>
-      )}
+{/* Message Input (New Row on Small Screens) */}
+<div className="w-full mt-2 flex  items-center space-y-2 sm:space-y-0 sm:space-x-4">
+<textarea
+className="w-full sm:w-auto p-2 border rounded-lg resize-none h-[40px] sm:h-[80px] min-w-[180px] sm:min-w-[300px] overflow-auto"
+placeholder="Write your message..."
+value={message}
+onChange={(e) => setMessage(e.target.value)}
+rows="2"
+/>
+
+<button className="bg-blue-500 text-white px-3 sm:px-4 py-2 rounded hover:bg-blue-600" onClick={sendMessage} disabled={isSending}>
+{isSending ? "Sending..." : "Send"}
+</button>
+</div>
+</div>
+
+): (
+  <button
+    onClick={buyContact}
+    disabled={!job.contactCost || job.contactCost === 0}
+    className={`${
+      !job.contactCost || job.contactCost === 0
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-[#041F96] hover:bg-gray-800"
+    } text-white font-bold py-2 px-4 rounded transition duration-300`}
+  >
+    {job.contactCost && job.contactCost > 0
+      ? `Buy Contact (${job.contactCost} coins)`
+      : "Not Available to Buy"}
+  </button>
+)}
     </div>
   </div>
 

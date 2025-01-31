@@ -1,8 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Button } from 'flowbite-react';
-import {MdDelete} from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
+
 function AcademicDetails({ academic, setAcademic, isOpen, setIsOpen }) {
   const [editableAcademic, setEditableAcademic] = React.useState(academic);
+
+  // Fetching academic data from API
+  const loadData = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://server.avyudha.com/dashboard/Tutor", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch resume data");
+      }
+
+      const tutorData = await response.json();
+      // Set fetched academic data to state
+      setAcademic(tutorData.education || []);
+    } catch (error) {
+      console.error("Error fetching resume:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);  // Fetch data when the component mounts
 
   const handleChange = (index, field, value) => {
     const updatedAcademic = [...editableAcademic];
@@ -11,7 +46,7 @@ function AcademicDetails({ academic, setAcademic, isOpen, setIsOpen }) {
   };
 
   const handleAddRow = () => {
-    setEditableAcademic([...editableAcademic, { year: '', degree: '', institute: '', gpa: '' }]);
+    setEditableAcademic([...editableAcademic, { year: '', title: '', academy: '', description: '' }]);
   };
 
   const handleDeleteRow = (index) => {
@@ -44,29 +79,24 @@ function AcademicDetails({ academic, setAcademic, isOpen, setIsOpen }) {
               <input
                 type="text"
                 className="p-2 border border-gray-300 rounded"
-                value={item.degree}
-                onChange={(e) => handleChange(index, 'degree', e.target.value)}
+                value={item.title}
+                onChange={(e) => handleChange(index, 'title', e.target.value)}
                 placeholder="Degree / Board"
               />
               <input
                 type="text"
                 className="p-2 border border-gray-300 rounded"
-                value={item.institute}
-                onChange={(e) => handleChange(index, 'institute', e.target.value)}
+                value={item.academy}
+                onChange={(e) => handleChange(index, 'academy', e.target.value)}
                 placeholder="Institute"
               />
               <input
                 type="text"
                 className="p-2 border border-gray-300 rounded"
-                value={item.gpa}
-                onChange={(e) => handleChange(index, 'gpa', e.target.value)}
-                placeholder="GPA / Marks(%)"
+                value={item.description}
+                onChange={(e) => handleChange(index, 'description', e.target.value)}
+                placeholder="Description"
               />
-              {/* <button
-                onClick={() => handleDeleteRow(index)}
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                Delete
-              </button> */}
               <MdDelete onClick={() => handleDeleteRow(index)} className="text-red-500 cursor-pointer text-3xl" />
             </div>
           ))}

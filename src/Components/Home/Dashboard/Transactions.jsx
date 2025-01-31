@@ -98,9 +98,9 @@ const TransactionHistory = () => {
                     }`}
                   >
                     {transaction.type === "credit" ? (
-                      <FaArrowUp className="mr-2" />
-                    ) : (
                       <FaArrowDown className="mr-2" />
+                    ) : (
+                      <FaArrowUp className="mr-2" />
                     )}
                     {transaction.amount}
                   </td>

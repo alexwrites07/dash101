@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
+import { FaMapMarkerAlt, FaChalkboardTeacher, FaUsers, FaVenusMars, FaClock, FaRupeeSign, FaInfoCircle } from "react-icons/fa";
+
 import { Link } from 'react-router-dom';
-import { 
-  FaMapMarkerAlt, 
-  FaChalkboardTeacher, 
-  FaUsers, 
-  FaVenusMars, 
-  FaClock, 
-  FaRupeeSign, 
-  FaInfoCircle 
-} from "react-icons/fa"
+// import { 
+//   FaMapMarkerAlt, 
+//   FaChalkboardTeacher, 
+//   FaUsers, 
+//   FaVenusMars, 
+//   FaClock, 
+//   FaRupeeSign, 
+//   FaInfoCircle 
+// } from "react-icons/fa"
 import './Jobpost.css';
 import DistanceDisplay from '../Distance';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
@@ -60,6 +62,7 @@ const NeedsFinder = () => {
     }));
   };
 
+  const toggleFilters = () => setShowFilters(!showFilters);
   const fetchTutors = async () => {
     try {
      
@@ -78,6 +81,7 @@ const NeedsFinder = () => {
       console.error('Error fetching tutors:', error);
     }
   };
+
 
   const calculateDistance = (coords1, coords2) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
@@ -146,7 +150,7 @@ const NeedsFinder = () => {
     //   url += `&jobCategories=${skillAndExperience.join(',')}`;
     // }
     if (city) {
-      url += `location.city=${encodeURIComponent(city)}&`;
+      url += `location=${encodeURIComponent(city)}&`;
     }
    
     if (genderPreference) {
@@ -187,207 +191,201 @@ const NeedsFinder = () => {
 
   return (
     <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
-      <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
-        <div className="md:hidden w-full flex justify-end mb-6">
+      {/* Container */}
+      <div className="flex flex-col md:flex-row mx-auto w-4/5 gap-6">
+        
+        {/* Mobile Filter Button */}
+        <div className="md:hidden w-full flex justify-end">
           <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none"
+            onClick={() => setShowFilters(true)}
+            className="text-white px-4 py-2 rounded-lg bg-[#041F96] hover:bg-[#032c6b] transition flex items-center gap-2"
           >
-            <HiFilter className="w-4 h-4" />
+            <HiFilter className="w-5 h-5" /> Filters
           </button>
         </div>
+  
+        {/* Filter Sidebar (Mobile: Popup, Desktop: Sidebar) */}
         <div
-          className={`md:block p-4 bg-gray-100 rounded-lg shadow-lg mb-6 ${showFilters ? '' : 'hidden'}`}
-          style={{ width: '100%', maxWidth: '300px', height: 'fit-content' }}
+          className={`fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
+            showFilters ? "block" : "hidden"
+          } md:block`}
+          onClick={toggleFilters}
         >
-          <form className="space-y-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">City</label>
-              <input
-                type="text"
-                name="city"
-                value={filters.city}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative">
+            {/* Close Button for Mobile */}
+            <button
+              onClick={() => setShowFilters(false)}
+              className="absolute top-3 right-3 text-gray-600 md:hidden"
+            >
+              ✕
+            </button>
+  
+            <form className="space-y-6">
+              {/* City Input */}
+              <div>
+                <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="city">
+                  City
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={filters.city}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#041F96]"
+                />
+                <button
+                  type="button"
+                  onClick={fetchUserCoordinates}
+                  className="mt-3 bg-[#041F96] text-white w-full px-4 py-2 rounded-lg hover:bg-[#032c6b] transition"
+                >
+                  Use My Location
+                </button>
+              </div>
+  
+              {/* Distance & Gender Preference in One Row */}
+              <div className="grid grid-cols-1 gap-4">
+                {/* Distance Input */}
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="distance">
+                    Distance (km)
+                  </label>
+                  <input
+                    type="number"
+                    name="distance"
+                    id="distance"
+                    placeholder="Enter distance"
+                    value={filters.distance}
+                    onChange={handleFilterChange}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#041F96]"
+                  />
+                </div>
+  
+                {/* Gender Preference */}
+                <div>
+                  <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="genderPreference">
+                    Gender
+                  </label>
+                  <select
+                    name="genderPreference"
+                    value={filters.genderPreference}
+                    onChange={handleFilterChange}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#041F96]"
+                  >
+                    <option value="">All</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                  </select>
+                </div>
+              </div>
+  
+              {/* Requirements Input */}
+              <div>
+                <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="category">
+                  Requirements
+                </label>
+                <input
+                  type="text"
+                  placeholder="Search categories..."
+                  value={filters.category}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#041F96]"
+                />
+              </div>
+  
+              {/* Apply Filters Button */}
               <button
                 type="button"
-                onClick={fetchUserCoordinates}
-                className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+                onClick={() => {
+                  applyFilters();
+                  setShowFilters(false);
+                }}
+                className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#032c6b] transition"
               >
-                Use My Location
+                Apply Filters
               </button>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distance">Distance (in km)</label>
-              <input
-                type="number"
-                name="distance"
-                id="distance"
-                placeholder="Enter distance in km"
-                value={filters.distance}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border rounded-lg"
-              />
-            </div>
-          
-            <div className="mb-4 relative">
-  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
-    Requirements
-  </label>
-  <input
-    type="text"
-    placeholder="Start typing to search categories..."
-    value={inputText1}
-    onChange={handleCategoryInputChange}
-    className="border p-2 w-full rounded-lg"
-  />
-  
-  {/* Suggestions Dropdown */}
-  {suggestions1.length > 0 && (
-    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
-      {suggestions1.map((cat, idx) => (
-        <li
-          key={idx}
-          onClick={() => handleCategorySelect(cat)}
-          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-        >
-          {cat}
-        </li>
-      ))}
-    </ul>
-  )}
-
-  {/* Selected Categories */}
-  {filters.categories.length > 0 && (
-    <div className="mt-2 flex flex-wrap gap-2">
-      {filters.categories.map((category, idx) => (
-        <span
-          key={idx}
-          className="bg-blue-100 text-blue-800 text-sm  py-1 px-2 rounded-full flex items-center gap-1"
-        >
-          {category}
-          <button
-            onClick={() => handleCategoryRemove(category)}
-            className="text-blue-500 hover:text-blue-700 focus:outline-none"
-          >
-            &times;
-          </button>
-        </span>
-      ))}
-    </div>
-  )}
-</div>
-<div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="genderPreference">Gender</label>
-               
-            <select
-            name="genderPreference"
-            value={filters.genderPreference}
-            onChange={handleFilterChange}
- 
-  className="border rounded px-3 py-2"
->
- 
-  <option value="">All Gender</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-  <option value="Others">Others</option>
-</select>
-</div>
-            <button
-              type="button"
-              onClick={applyFilters}
-              className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
-            >
-              Apply Filters
-            </button>
-          </form>
-        </div>
-        <div className="flex flex-col items-start justify-start w-full">
-          <div className='text-3xl font-bold text-[#041F96] mb-6 ml-8'>Tuition Needs</div>
-          {filteredTutors?.length > 0 ? (
-            filteredTutors?.map((tutor, index) => (
-              <div className="shadow rounded flex flex-col md:flex-row items-start md:ml-8 border-b border-gray-200 py-4 mb-4 w-full" key={index}>
-                <div className="flex-shrink-0 mb-2 md:mb-0 md:mr-4 ml-4 h-16"></div>
-                <Link to={`/getNeed/${tutor._id}`} className="block w-full">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full ml-2">
-                    <div>
-                    <h2 className="text-lg  font-semibold">{tutor.requirement}</h2>    <span className="bg-blue-500 mb-8  text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600">{tutor.typeOfClass}</span><br></br>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4  -ml-2 text-sm text-gray-800">
-  {/* Location */}
-  <div className="flex items-center gap-2 w-full md:w-1/2 mt-4">
-    <FaMapMarkerAlt className="text-black" />
-    <span className="">{tutor.location.city}, {tutor.location.address}</span>
-  </div>
-
-  {/* Type of Class */}
-  <div className="flex items-center gap-2 w-full md:w-1/2 mr-24">
-  <FaChalkboardTeacher className="text-black" />
-  <span className="">{tutor.start}</span>
-  </div>
-
-  {/* Connected Tutors Count */}
-  <div className="flex items-center gap-2 w-full md:w-1/2 mr-48">
-    <FaUsers className="text-black" />
-    <span className="">{tutor.connectedTutorsCount} Tutors connected</span>
-  </div>
-
-  {/* Gender Preference */}
-  <div className="flex items-center gap-2 w-full md:w-1/2">
-    <FaVenusMars className="text-black" />
-    <span className="">{tutor.genderPreference}</span>
-  </div>
-
-  {/* Availability */}
-  <div className="flex items-center gap-2 w-full md:w-1/2">
-    <FaClock className="text-black" />
-    <span className="">{tutor.available}</span>
-  </div>
-
-  {/* Salary */}
-  <div className="flex items-center gap-2 w-full md:w-1/2">
-    <FaRupeeSign className="text-black" />
-    <span className="">Rs. {tutor.salary.max}</span>
-  </div>
-
-  {/* Distance */}
- 
-
-  {/* Description */}
-  <div className="flex items-center gap-2 w-full">
-    <FaInfoCircle className="text-black" />
-    <span className="">
-      {tutor.description?.length > 150 
-        ? `${tutor.description.substring(0, 150)}...` 
-        : tutor.description}
-    </span>
-  </div></div> {userCoords && tutor.location?.coordinates && (
-    <div className="flex mt-2 ml-2 items-center gap-2 w-full md:w-1/2">
-      <FaMapMarkerAlt className="text-black" />
-      Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-      </div>
-  )}
-</div>
-
-<div className="flex justify-end mt-4 px-4">
-            <button className="bg-[#041F96] hidden md:block  text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
-              View
-            </button>
+            </form>
           </div>
-                    
+        </div>
+  
+        {/* Main Content */}
+        <div className="flex flex-col w-full">
+          <h2 className="text-3xl font-bold text-[#041F96] mb-6">Tuition Needs</h2>
+  
+          {filteredTutors?.length > 0 ? (
+            filteredTutors.map((tutor, index) => (
+              
+              <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96]">
+                  <Link to={`/getNeed/${tutor._id}`} className="block w-full">
+                <h3 className="text-xl font-semibold text-[#041F96]">{tutor.requirement}</h3>
+                <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded-full mt-2">
+                  {tutor.typeOfClass}
+                </span>
+  
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-gray-700 text-sm ">
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaMapMarkerAlt />
+    </div> 
+    {tutor.location.city}, {tutor.location.address}, {tutor.location.landmark}
+  </div>
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaChalkboardTeacher />
+    </div>
+    {tutor.start}
+  </div>
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaUsers />
+    </div>
+    {tutor.connectedTutorsCount} Tutors connected
+  </div>
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaVenusMars />
+    </div>
+    {tutor.genderPreference}
+  </div>
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaClock />
+    </div>
+    {tutor.available}
+  </div>
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaRupeeSign />
+    </div>
+    Rs. {tutor.salary.max}
+  </div>
+  <div className="flex items-center gap-2">
+    <div className="bg-gray-200 p-2 rounded-full">
+      <FaInfoCircle />
+    </div>
+    {tutor.description.length > 150 ? `${tutor.description.substring(0, 150)}...` : tutor.description}
+  </div>
+</div>
+
+  
+                {/* Distance Calculation */}
+                {userCoords && tutor.location?.coordinates && (
+                  <div className="mt-2 text-gray-700">
+                    Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
                   </div>
-                </Link>
+                )}
+               </Link>
+        
               </div>
             ))
           ) : (
-            <p className="text-gray-700 ml-4">No Tuition Needs found matching your criteria.</p>
+            <p className="text-gray-700">No Tuition Needs found matching your criteria.</p>
           )}
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default NeedsFinder;

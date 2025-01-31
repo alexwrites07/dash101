@@ -1,94 +1,98 @@
-import {MdDelete} from 'react-icons/md';
-import { IoIosAddCircle } from "react-icons/io";
-import { FaCircleMinus } from "react-icons/fa6";
-import { useState } from 'react';
-function Section({ index, section, handleInputChange, handleSubheadingChange, handleBulletChange, addSubheading, addBullet, deleteSection, deleteSubheading, deleteBullet,addLine }) {
-  const [showDetails, setShowDetails] = useState(false); // State to manage visibility of section details
+import React, { useState } from 'react';
 
-  const toggleDetails = () => {
-    setShowDetails(!showDetails); // Toggle the display of the section details
-  };
-    return (
-      <div className="mb-4 border p-2">
-        <div className="flex justify-between items-center">
-          <input
-            type="text"
-            className="w-full p-2 mb-2 border border-gray-300 rounded-md"
-            placeholder="Section Title"
-            value={section.title}
-            onChange={(e) => handleInputChange(index, 'title', e.target.value)}
-          />
-        
-          {showDetails ?<FaCircleMinus onClick={()=> toggleDetails()} className="text-blue-500 cursor-pointer text-3xl"/>:<IoIosAddCircle onClick={()=> toggleDetails()} className="text-green-500 cursor-pointer text-3xl" />}
-        
-        </div>
-        
-    {
-    showDetails && (
-      <>
+function Section({
+  section,
+  handleInputChange,
+  handleSubheadingChange,
+  handleBulletChange,
+  addSubheading,
+  addBullet,
+  deleteSection,
+  deleteSubheading,
+  deleteBullet,
+}) {
+  const [subheadingInput, setSubheadingInput] = useState('');
+  const [bulletInput, setBulletInput] = useState('');
 
-        {section.subheadings.map((subheading, subheadingIndex) => (
-          <div key={subheadingIndex} className="mb-2">
-            <div className="flex justify-between items-center">
-              <input
-                type="text"
-                className="w-full p-2 mb-2 border border-gray-300 rounded-md"
-                placeholder="Subheading Title"
-                value={subheading.subtitle}
-                onChange={(e) => handleSubheadingChange(index, subheadingIndex, 'subtitle', e.target.value)}
-              />
-              <MdDelete onClick={() => deleteSubheading(index, subheadingIndex)} className="text-red-500 cursor-pointer text-3xl" />
-              
-            </div>
-            {subheading.bullets.map((bullet, bulletIndex) => (
-              <div key={bulletIndex} className="flex justify-between items-center">
-                <input
-                  type="text"
-                  className="w-full p-2 mb-2 border border-gray-300 rounded-md"
-                  placeholder="Bullet Point"
-                  value={bullet}
-                  onChange={(e) => handleBulletChange(index, subheadingIndex, bulletIndex, e.target.value)}
-                />
-                <MdDelete onClick={() => deleteBullet(index, subheadingIndex, bulletIndex)} className="text-red-500 cursor-pointer text-3xl" />
-                
-              </div>
-            ))}
-            <div className="flex justify-between">
-            <button
-              className="w-full mb-2 p-2 bg-[#041F96] text-white rounded-md"
-              onClick={() => addBullet(index, subheadingIndex)}
-            >
-              Add Bullet
-            </button>
-            <div className="w-2"></div>
-          
-            </div>
-
-          
-          </div>
-        ))}
-        <div className="flex justify-between">
-
+  return (
+    <div className="bg-gray-100 p-4 rounded-md mb-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-lg font-semibold">{section.title}</h2>
         <button
-          className="w-full mb-2 p-2 bg-[#041F96] text-white rounded-md"
-          onClick={() => addSubheading(index)}
-        >
-          Add Subheading
-        </button>
-      <div className="w-2"></div>
-        <button
-          className="w-full mb-2 p-2 bg-red-500 text-white rounded-md"
-          onClick={() =>  deleteSection(index)}
+          onClick={() => deleteSection(section.title)}
+          className="bg-red-500 text-white py-1 px-2 rounded-md text-xs"
         >
           Delete Section
         </button>
-        </div>
-      </>
-    )
-  }
       </div>
-    );
-  }
+      
+      <div className="mt-2">
+        {Array.isArray(section.content) ? (
+          section.content.map((content, index) => (
+            <div key={index} className="flex justify-between items-center space-x-2">
+              <input
+                type="text"
+                value={content}
+                onChange={(e) => handleInputChange(e, section.title, index)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <button
+                onClick={() => deleteBullet(index)}
+                className="bg-red-500 text-white py-1 px-2 rounded-md text-xs"
+              >
+                Delete
+              </button>
+            </div>
+          ))
+        ) : (
+          <input
+            type="text"
+            value={section.content}
+            onChange={(e) => handleInputChange(e, section.title)}
+            className="w-full p-2 border border-gray-300 rounded-md"
+          />
+        )}
 
-  export default Section;
+        <div className="flex justify-between items-center mt-4">
+          <input
+            type="text"
+            placeholder="Add subheading"
+            value={subheadingInput}
+            onChange={(e) => setSubheadingInput(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md w-full"
+          />
+          <button
+            onClick={() => {
+              addSubheading(section.title, subheadingInput);
+              setSubheadingInput('');
+            }}
+            className="ml-2 bg-blue-500 text-white py-1 px-2 rounded-md text-xs"
+          >
+            Add Subheading
+          </button>
+        </div>
 
+        <div className="mt-4">
+          <input
+            type="text"
+            placeholder="Add bullet point"
+            value={bulletInput}
+            onChange={(e) => setBulletInput(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md w-full"
+          />
+          <button
+            onClick={() => {
+              addBullet(section.title, bulletInput);
+              setBulletInput('');
+            }}
+            className="mt-2 bg-blue-500 text-white py-1 px-2 rounded-md text-xs"
+          >
+            Add Bullet
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Section;

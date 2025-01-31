@@ -56,6 +56,8 @@ const Messages = () => {
   const openModal = (contact) => {
     setSelectedContact(contact);
     setIsModalOpen(true);
+    localStorage.setItem("selectedContactName", contact.name);
+   
   };
 
   // Close modal
@@ -72,6 +74,7 @@ const Messages = () => {
 
   const handleConversationClick = (conversationId) => {
     navigate(`/conversation/${conversationId}`);
+
   };
 
   // Send a message
@@ -119,7 +122,7 @@ const Messages = () => {
       <Sidebar />
       <div className="flex-1">
         <Header />
-        <div className="mt-12 lg:ml-64 lg:mt-12 p-4 lg:p-28 flex flex-col lg:flex-row items-center lg:items-start h-full">
+        <div className="md:mt-12 mt-32 lg:ml-64 lg:mt-12 p-4 lg:p-28 flex flex-col lg:flex-row items-center lg:items-start h-full">
           <div className="flex-1 p-4 h-full">
             <h2 className="text-xl font-semibold mb-4 text-gray-900">Your Conversations</h2>
             <div className="bg-white p-4 rounded-lg h-full flex flex-col">
@@ -152,7 +155,7 @@ const Messages = () => {
           </div>
 
           {/* Select Contact Section */}
-          <div className="p-4 w-full lg:w-1/2 mt-8 lg:mt-0">
+          <div className="p-4 w-full lg:w-1/2  mt-8 lg:mt-0 ">
             <h3 className="text-xl font-semibold mb-4 text-gray-900">Select Contact</h3>
             <button
               onClick={fetchContacts}
