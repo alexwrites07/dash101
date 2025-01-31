@@ -138,7 +138,7 @@ const Messages = () => {
                     onClick={() => handleConversationClick(conversation._id)}
                   >
                     <h3 className="text-lg font-bold text-gray-700 mb-1">
-                      {conversation.participants.map((p) => p.name).join(", ")}
+                      {conversation.participantName}
                     </h3>
                     <p className="text-gray-600">
                       {conversation.lastMessage || "No messages yet"}
