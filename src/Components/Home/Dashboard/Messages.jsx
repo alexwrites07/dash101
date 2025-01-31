@@ -143,11 +143,7 @@ const Messages = () => {
                     <p className="text-gray-600">
                       {conversation.lastMessage || "No messages yet"}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      {conversation.lastMessageTimestamp
-                        ? formatDate(conversation.lastMessageTimestamp)
-                        : "N/A"}
-                    </p>
+                    
                   </div>
                 ))
               )}

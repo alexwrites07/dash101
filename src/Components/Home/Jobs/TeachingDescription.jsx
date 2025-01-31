@@ -455,18 +455,69 @@ const TeachingDescription = () => {
   {job.fullName}
 </h1>
 
-    <div className="grid grid-cols-1 text-left  sm:grid-cols-2 gap-2 sm:gap-4 sm:text-left">
-      <p><FaMapMarkerAlt className="inline-block mr-2 text-black" /><strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})</p>
-      <p><FaMoneyBillWave className="inline-block mr-2 text-black" /><strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}</p>
-      <p><FaClock className="inline-block mr-2 text-black" /><strong>Salary Period:</strong> {job.jobAlerts?.minExpectedSalary?.period}</p>
-      <p><FaBriefcase className="inline-block mr-2 text-black" /><strong>Experience:</strong> {job.totalExperience} years</p>
-      <p><FaGraduationCap className="inline-block mr-2 text-black" /><strong>Highest Qualification:</strong> {job.highestQualification}</p>
-      <p><FaGraduationCap className="inline-block mr-2 text-black" /><strong>Qualifications:</strong> {job.highestQualification}</p>
-      <p><FaLanguage className="inline-block mr-2 text-black" /><strong>Spoken Languages:</strong> {job.spokenLanguages}</p>
-      <p><FaLevelUpAlt className="inline-block mr-2 text-black" /><strong>Teaching Level:</strong> {job.teachingLevels}</p>
-      <p><FaStar className="inline-block mr-2 text-black" /><strong>Rating:</strong> {job.rating}</p>
-      <p><FaVenusMars className="inline-block mr-2 text-black" /><strong>Gender:</strong> {job.gender}</p>
-    </div>
+<div className="grid grid-cols-1 text-left sm:grid-cols-2 gap-2 sm:gap-4 sm:text-left">
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaMapMarkerAlt />
+    </span>
+    <strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaMoneyBillWave />
+    </span>
+    <strong>Salary:</strong> {job.jobAlerts?.minExpectedSalary?.value} - {job.jobAlerts?.maxExpectedSalary?.value}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaClock />
+    </span>
+    <strong>Salary Period:</strong> {job.jobAlerts?.minExpectedSalary?.period}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaBriefcase />
+    </span>
+    <strong>Experience:</strong> {job.totalExperience} years
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaGraduationCap />
+    </span>
+    <strong>Highest Qualification:</strong> {job.highestQualification}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaGraduationCap />
+    </span>
+    <strong>Qualifications:</strong> {job.highestQualification}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaLanguage />
+    </span>
+    <strong>Spoken Languages:</strong> {job.spokenLanguages}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaLevelUpAlt />
+    </span>
+    <strong>Teaching Level:</strong> {job.teachingLevels}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
+      <FaStar />
+    </span>
+    <strong>Rating:</strong> {job.rating}
+  </p>
+  <p>
+    <span className="inline-flex items-center justify-center w-6 h-6 bg-gray4400 rounded-full text-black mr-2">
+      <FaVenusMars />
+    </span>
+    <strong>Gender:</strong> {job.gender}
+  </p>
+</div>
+
 
     {/* Actions */}
     <div className="flex space-x-4 justify-center sm:justify-start mt-4">

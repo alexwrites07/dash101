@@ -16,6 +16,9 @@ const EditTutor = () => {
         video:'',
         highestQualification:'',
         gender:'',
+        identityVerified:false,
+        emailVerified:false,
+        contactNumberVerified:false,
         location: {
             type: '',
             coordinates: ["set location", "set location"],
@@ -159,6 +162,12 @@ const EditTutor = () => {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: name === 'tags' || name === 'categories'|| name==='teachingLevelss' ? value.split(',').map(tag => tag.trim()) : value,
+                [name]: name === 'identityVerified' || name === 'emailVerified' || name === 'contactNumberVerified' 
+                ? value === 'true' // Convert to boolean
+                : name === 'tags' || name === 'categories' || name === 'teachingLevels' 
+                ? value.split(',').map(tag => tag.trim()) // Handle multiple values for tags, categories, etc.
+                : value,
+
             }));
         }
     };
@@ -541,6 +550,87 @@ const removeAward = (index) => {
     className="border p-2 rounded-md w-full"
   />
    
+</div>
+<div className="mb-2">
+  <label className="block font-medium text-gray-700">Verify  tutor Identity</label>
+  <div className="flex items-center space-x-4">
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="identityVerified"
+        value="true"
+        checked={formData.identityVerified === true}  // Check if the value is true
+        onChange={handleChange}
+        className="mr-2"
+      />
+      Yes
+    </label>
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="identityVerified"
+        value="false"
+        checked={formData.identityVerified === false}  // Check if the value is false
+        onChange={handleChange}
+        className="mr-2"
+      />
+      No
+    </label>
+  </div>
+</div>
+<div className="mb-2">
+  <label className="block font-medium text-gray-700">Verify  tutor Email</label>
+  <div className="flex items-center space-x-4">
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="emailVerified"
+        value="true"
+        checked={formData.emailVerified === true}  // Check if the value is true
+        onChange={handleChange}
+        className="mr-2"
+      />
+      Yes
+    </label>
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="emailVerified"
+        value="false"
+        checked={formData.emailVerified === false}  // Check if the value is false
+        onChange={handleChange}
+        className="mr-2"
+      />
+      No
+    </label>
+  </div>
+</div>
+<div className="mb-2">
+  <label className="block font-medium text-gray-700">Verify  tutor Contact Number</label>
+  <div className="flex items-center space-x-4">
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="contactNumberVerified"
+        value="true"
+        checked={formData.contactNumberVerified === true}  // Check if the value is true
+        onChange={handleChange}
+        className="mr-2"
+      />
+      Yes
+    </label>
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="contactNumberVerified"
+        value="false"
+        checked={formData.contactNumberVerified === false}  // Check if the value is false
+        onChange={handleChange}
+        className="mr-2"
+      />
+      No
+    </label>
+  </div>
 </div>
 
 

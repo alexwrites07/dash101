@@ -220,7 +220,7 @@ const TutorFinder = () => {
     } catch (err) {
       console.error("An error occurred while fetching tutors.", err);
     }
-    toggleFilters();
+    
   };
   
   
@@ -248,8 +248,9 @@ const TutorFinder = () => {
 
   {/* Mobile Modal Pop-up */}
   {showFilters && (
-    <div     className="fixed inset-0  bg-white bg-opacity-50 z-40 flex justify-center items-center"
-    onClick={toggleFilters}>
+   <div
+   className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center  rounded-lg"
+  onClick={toggleFilters}>
       <div className="bg-white p-6 rounded-lg w-full max-w-sm">
        
         <form className="space-y-4 ">
@@ -396,7 +397,7 @@ const TutorFinder = () => {
     className={`hidden md:block p-4 bg-white rounded-lg shadow-lg mb-6 ${showFilters ? 'block' : 'hidden'}`}
     style={{ width: '100%', maxWidth: '400px', height: 'fit-content' }}
   >
-    <form className="space-y-4">
+    <form className="space-y-4 ">
       {/* Filter Fields (Same as before for desktop) */}
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="city">
@@ -542,11 +543,11 @@ const TutorFinder = () => {
   {tutors.length > 0 ? (
     tutors.map((tutor, index) => (
       <div
-        className="shadow rounded flex flex-col md:flex-row items-start py-4 mb-4 w-full hover:shadow-lg transition duration-300  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4 border-l-4 border-[#041F96]"
+        className="shadow rounded flex flex-col md:flex-row items-start py-4 mb-4 w-full transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4 border-l-4 border-[#041F96]"
         key={index}
       >
         {/* Image Section */}
-        <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+        <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0 ">
   <img
     src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
     alt=""
@@ -558,8 +559,25 @@ const TutorFinder = () => {
         <Link to={`/getTutor/${tutor._id}`} className="block w-full">
         <div className="flex flex-col w-full ml-2 relative">
   {/* Heading Section */}
-  <h2 className="text-lg font-semibold">{tutor.fullName}</h2>
-  <div className="text-gray-600">{tutor.title}</div>
+  <h2 className="text-xl font-bold flex items-center text-[#041F96]">
+  {tutor.fullName}
+  {tutor.verified && (
+  <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-4 h-4">
+    &#10003; {/* Unicode check mark */}
+  </span>
+)}
+
+</h2>
+
+<div
+  className={`text-gray-600 p-2 rounded ${
+    tutor.classCost > 0 ? "bg-green-300 text-black font-bold text-xs px-3 py-1 w-24 rounded-full hover:bg-green-400" : ""
+  }`}
+>
+  {tutor.classCost > 0 ? "Online Class" : ""}
+</div>
+
+
 
   {/* Details Section (Horizontal Layout) */}
   <div className="flex flex-col mt-2">
@@ -587,6 +605,7 @@ const TutorFinder = () => {
   </div>
   
 </span>
+
 
 
   </div>
@@ -625,11 +644,11 @@ const TutorFinder = () => {
 
   {/* Distance Section */}
   {userCoords && tutor.location?.coordinates && (
-    <div className="absolute mt-8 right-12 -mr-24 flex items-center gap-2">
+    <div className="  right-12 mt-4  flex items-center gap-2">
      
-      <span className="text-sm text-gray-600">
-        Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-      </span>
+      <span className="text-sm text-gray-600 ">
+       <strong> Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+       </strong></span>
     </div>
   )}
 

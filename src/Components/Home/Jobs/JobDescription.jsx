@@ -391,37 +391,54 @@ const JobDescription = () => {
   </button></h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <p>
-        <FaMapMarkerAlt className="inline-block mr-2 text-black" />
-        <strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}
-      </p>
-      <p>
-        <FaMoneyBillWave className="inline-block mr-2 text-black" />
-        <strong>Salary:</strong> {job.salary?.min} - {job.salary?.max} ({job.salary?.period})
-      </p>
-      <p>
-        <FaBriefcase className="inline-block mr-2 text-black" />
-        <strong>Experience:</strong> {job.experience} years
-      </p>
-      <p>
-        <FaGraduationCap className="inline-block mr-2 text-black" />
-        <strong>Qualification:</strong> {job.qualification}
-      </p>
-      <p>
-        <FaLevelUpAlt className="inline-block mr-2 text-black" />
-        <strong>Gender:</strong> {job.gender}
-      </p>
-      <p>
-        <FaUserClock className="inline-block mr-2 text-black" />
-        <strong>Commitment:</strong> {job.workDetails?.commitment}
-      </p>
-      <p>
-        <FaLaptop className="inline-block mr-2 text-black" />
-        <strong>Mode:</strong> {job.workDetails?.mode}
-      </p>
-      <p>
-        <FaCalendarAlt className="inline-block mr-2 text-black" />
-        <strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}
-      </p> 
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaMapMarkerAlt />
+  </span>
+  <strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaMoneyBillWave />
+  </span>
+  <strong>Salary:</strong> {job.salary?.min} - {job.salary?.max} ({job.salary?.period})
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaBriefcase />
+  </span>
+  <strong>Experience:</strong> {job.experience} years
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaGraduationCap />
+  </span>
+  <strong>Qualification:</strong> {job.qualification}
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaLevelUpAlt />
+  </span>
+  <strong>Gender:</strong> {job.gender}
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaUserClock />
+  </span>
+  <strong>Commitment:</strong> {job.workDetails?.commitment}
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaLaptop />
+  </span>
+  <strong>Mode:</strong> {job.workDetails?.mode}
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaCalendarAlt />
+  </span>
+  <strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}
+</p>
+
             {job.isClosed ? (
               <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
                 Closed
@@ -468,6 +485,14 @@ const JobDescription = () => {
             )}
           </div>
         </div>
+        <div className="md:w-2/5 ml-4 w-full ">
+  {job.location?.coordinates ? (
+    <Map coordinates={job.location.coordinates} />
+  ) : (
+    <p>Map location not available</p>
+  )}
+</div>
+
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -479,14 +504,7 @@ const JobDescription = () => {
            
           
           </div>
-          <div className="md:w-2/5">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Job Location</h2>
-            {job.location?.coordinates ? (
-              <Map coordinates={job.location.coordinates} />
-            ) : (
-              <p>Map location not available</p>
-            )}
-          </div>
+          
         </div>
       </div>
 

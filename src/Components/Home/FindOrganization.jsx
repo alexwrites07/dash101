@@ -141,7 +141,7 @@ const OrganizationFinder = () => {
         console.error("No organizations found with the selected filters.");
         setOrg([]); // In case no valid data returned, set empty
       }
-      toggleFilters();
+     
      
   };
   
@@ -167,7 +167,7 @@ const OrganizationFinder = () => {
   {/* Filters Modal for Mobile */}
   {showFilters && (
     <div
-      className="fixed inset-0 bg-gray-800 bg-opacity-50 z-40 flex justify-center items-center"
+      className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center"
       onClick={toggleFilters}
       aria-labelledby="filter-modal-title"
       role="dialog"
@@ -295,7 +295,7 @@ const OrganizationFinder = () => {
           {org.length > 0 ? (
             org.map((tutor, index) => (
               <div
-                className="shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4 border-l-1 border-[#041F96]"
+                className="shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4  border-[#041F96] bg-white shadow-md rounded-lg p-6 mb-4 border-l-1 border-[#041F96]"
                 key={index}
               >
                 <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">

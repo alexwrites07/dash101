@@ -4,7 +4,7 @@ import DistanceDisplay from '../Distance';
 import { Link } from 'react-router-dom';
 import categoriesList from './Dashboard/AdminPanel/categories.json'
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
-import { FaMapMarkerAlt, FaCalendarAlt, FaRupeeSign,FaClock,FaInfoCircle } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaCalendarAlt, FaRupeeSign,FaHandHoldingUsd,FaClock,FaInfoCircle } from 'react-icons/fa';
 import './Jobpost.css';
 
 const JobPost = () => {
@@ -303,7 +303,7 @@ const JobPost = () => {
 {/* Mobile Filter Modal */}
 {showFilters && (
   <div
-    className="fixed inset-0 bg-gray-800 bg-opacity-50 z-40 flex justify-center items-center"
+    className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center"
     onClick={toggleFilters}
     aria-labelledby="filter-modal-title"
     role="dialog"
@@ -553,7 +553,7 @@ const JobPost = () => {
     <h1 className="text-3xl font-bold text-[#041F96] mb-6 ml-4">Available Jobs</h1>
     {filteredJobs.map((job, index) => (
       <div
-        className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-12 text-xl transition  duration-300 hover:bg-gray-50 items-start    py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
+        className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-12 text-xl transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50 items-start    py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
         key={index}
       >
         <Link to={`/getjobs/${job._id}`} className="block">
@@ -581,13 +581,18 @@ const JobPost = () => {
   </div>
   <span className="">{job.workDetails.commitment}</span>
 </div>
-
+<div className="flex items-center gap-2 -my-1">
+  <div className="p-2 bg-gray-200 rounded-full">
+    <FaHandHoldingUsd className="text-black" />
+  </div>
+  <span>{job.timesPurchased} tutors Connected</span>
+</div>
 {/* Job Created */}
 <div className="flex items-center gap-2 -my-1">
   <div className="p-2 bg-gray-200 rounded-full">
     <FaCalendarAlt className="text-black" />
   </div>
-  <span className="">Deadline:
+  <span className="">Job Created:
     {new Date(job.jobCreated)
       .toLocaleDateString('en-GB')
       .replace(/\//g, '/')}
@@ -596,10 +601,10 @@ const JobPost = () => {
 
 {/* Salary */}
 <div className="flex items-center gap-2 -my-1">
-  <div className="p-2 bg-gray-200 rounded-full">
+  <div className="p-2 bg-green-200 rounded-full">
     <FaRupeeSign className="text-black" />
   </div>
-  <span className="">Rs.{job.salary.min} {job.salary.period}</span>
+  <strong><span className="">Rs.{job.salary.min} {job.salary.period}</span></strong>
 </div>
 
 {/* Details (Full Width) */}
@@ -617,8 +622,8 @@ const JobPost = () => {
 {userCoords && job.location?.coordinates && (
   <div className="flex items-center gap-2 -my-1">
     
-    <span className="">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</span>
-  </div>
+   <strong> <span className="">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</span>
+   </strong></div>
 )}
 </div>
 

@@ -267,19 +267,26 @@ const OrgDescription = () => {
   </button>&nbsp; &nbsp;&nbsp;&nbsp;</h1>
           {/* <p><strong>Category:</strong> {job.category}</p> */}
           <p className="flex items-center gap-2">
-  <FaBuilding className="text-black" />
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white">
+    <FaBuilding />
+  </span>
   <strong>Organization Type:</strong> {job.organizationType}
 </p>
 
-<p className="flex items-center gap-2">
-  <FaMapMarkerAlt className="text-black" />
+<p className="flex items-center gap-2 mt-2">
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white">
+    <FaMapMarkerAlt />
+  </span>
   <strong>Location:</strong> {job.location.city}, {job.location?.state}
 </p>
 
-<p className="flex items-center gap-2">
-  <FaStar className="text-black" />
+<p className="flex items-center gap-2 mt-2">
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white">
+    <FaStar />
+  </span>
   <strong>Rating:</strong> {job.rating}
 </p>
+
           {/* <p><strong>Location:</strong> {job.profileViews.count}</p> */}
           <br></br>
           {/* <button onClick={handleBookmarkToggle} className="text-blue-500  hover:text-blue-600 focus:outline-none ">

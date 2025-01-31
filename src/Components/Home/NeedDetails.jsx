@@ -401,8 +401,13 @@ const NeedDescription = () => {
       </div>
     </div>
     </div>
-    <div className="md:w-1/4 flex flex-col items-end">
-      {/* Additional content if needed */}
+    <div className="md:w-2/5 ml-2 -mt-6">
+      
+      {job.location?.coordinates ? (
+        <Map coordinates={job.location.coordinates} />
+      ) : (
+        <p>Map location not available</p>
+      )}
     </div>
   </div>
 
@@ -413,10 +418,7 @@ const NeedDescription = () => {
         <p className="text-black mb-4">{job.description}</p>
 
         {/* Display Email and Phone */}
-        
-        <p><strong>Board:</strong> {job.board}</p>
-    
-        <p><strong>Requirements:</strong> {job.requirement}</p>
+     
 
       
          
@@ -430,14 +432,7 @@ const NeedDescription = () => {
             className="ml-4 text-gray-500 hover:text-gray-700 focus:outline-none">
             <HiBookmark className="w-6 h-6" />
           </button> */}
-    <div className="bg-white p-6 rounded-lg md:w-2/5 md:ml-4 mt-4 md:mt-0">
-      <h2 className="text-xl font-semibold mb-4">Map Location</h2>
-      {job.location?.coordinates ? (
-        <Map coordinates={job.location.coordinates} />
-      ) : (
-        <p>Map location not available</p>
-      )}
-    </div>
+    
   </div>
 </div>
 

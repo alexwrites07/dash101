@@ -206,7 +206,7 @@ const NeedsFinder = () => {
   
         {/* Filter Sidebar (Mobile: Popup, Desktop: Sidebar) */}
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
+          className={`fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
             showFilters ? "block" : "hidden"
           } md:block`}
           onClick={toggleFilters}
@@ -280,18 +280,53 @@ const NeedsFinder = () => {
               </div>
   
               {/* Requirements Input */}
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="category">
-                  Requirements
-                </label>
-                <input
-                  type="text"
-                  placeholder="Search categories..."
-                  value={filters.category}
-                  onChange={handleFilterChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#041F96]"
-                />
-              </div>
+              <div className="mb-4 relative">
+  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
+    Requirements
+  </label>
+  <input
+    type="text"
+    placeholder="Start typing to search categories..."
+    value={inputText1}
+    onChange={handleCategoryInputChange}
+    className="border p-2 w-full rounded-lg"
+  />
+
+  {/* Suggestions Dropdown */}
+  {suggestions1.length > 0 && (
+    <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+      {suggestions1.map((cat, idx) => (
+        <li
+          key={idx}
+          onClick={() => handleCategorySelect(cat)}
+          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+        >
+          {cat}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {/* Selected Categories */}
+  {filters.categories.length > 0 && (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {filters.categories.map((category, idx) => (
+        <span
+          key={idx}
+          className="bg-blue-100 text-blue-800 text-sm  py-1 px-2 rounded-full flex items-center gap-1"
+        >
+          {category}
+          <button
+            onClick={() => handleCategoryRemove(category)}
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+          >
+            &times;
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
+</div>
   
               {/* Apply Filters Button */}
               <button
@@ -315,7 +350,7 @@ const NeedsFinder = () => {
           {filteredTutors?.length > 0 ? (
             filteredTutors.map((tutor, index) => (
               
-              <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96]">
+              <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96] transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4  border-[#041F96] bg-white shadow-md rounded-lg p-6 mb-4 ">
                   <Link to={`/getNeed/${tutor._id}`} className="block w-full">
                 <h3 className="text-xl font-semibold text-[#041F96]">{tutor.requirement}</h3>
                 <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded-full mt-2">
