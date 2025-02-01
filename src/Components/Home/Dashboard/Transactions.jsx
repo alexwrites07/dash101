@@ -44,9 +44,19 @@ const TransactionHistory = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  const formatDate = (utcDate) => {
-    return dayjs(utcDate).format("DD MMM YYYY");
+  const formatDate = (timestamp) => {
+    // Slice the date to get the required part (yyyy-mm-dd)
+    const date = timestamp.slice(0, 10); // "2025-01-29"
+  
+    // Split the date into parts (year, month, day)
+    const [year, month, day] = date.split('-');
+  
+    // Return it in the ddmmyyyy format
+    return `${day}/${month}/${year}`;
   };
+  
+  
+
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;

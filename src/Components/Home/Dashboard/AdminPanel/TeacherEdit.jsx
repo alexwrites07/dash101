@@ -55,7 +55,7 @@ const EditTutor = () => {
         
         // Filter categories based on input text
         const filteredSuggestions = categoriesList.filter((category) =>
-            category.toLowerCase().includes(input.toLowerCase()) && !formData.categories.includes(category)
+            category.toLowerCase().includes(input.toLowerCase()) && !formData?.categories.includes(category)
         );
         setSuggestions1(filteredSuggestions);
     };
@@ -63,7 +63,7 @@ const EditTutor = () => {
     const handleCategorySelect = (category) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            categories: [...prevFormData.categories, category],
+            categories: [...prevformData?.categories, category],
         }));
         setInputText1(''); // Clear input text after selecting a category
         setSuggestions1([]); // Clear suggestions after selecting a category
@@ -72,7 +72,7 @@ const EditTutor = () => {
     const handleCategoryRemove = (categoryToRemove) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            categories: prevFormData.categories.filter(category => category !== categoryToRemove),
+            categories: prevformData?.categories.filter(category => category !== categoryToRemove),
         }));
     };
   
@@ -81,7 +81,7 @@ const EditTutor = () => {
       setInputText(input); // Update input text
       // Filter tags based on input
       const filteredSuggestions = allTags.filter(tag => 
-        tag.toLowerCase().includes(input.toLowerCase()) && !formData.tags.includes(tag)
+        tag.toLowerCase().includes(input.toLowerCase()) && !formData?.tags.includes(tag)
       );
       setSuggestions(filteredSuggestions);
     };
@@ -89,7 +89,7 @@ const EditTutor = () => {
     const handleTagSelect = (tag) => {
       setFormData(prevFormData => ({
         ...prevFormData,
-        tags: [...prevFormData.tags, tag],
+        tags: [...prevformData?.tags, tag],
       }));
       setInputText(''); // Clear input text after selecting a tag
       setSuggestions([]); // Clear suggestions after selecting a tag
@@ -97,7 +97,7 @@ const EditTutor = () => {
     const handleTagRemove = (tagToRemove) => {
         setFormData(prevFormData => ({
           ...prevFormData,
-          tags: prevFormData.tags.filter(tag => tag !== tagToRemove),
+          tags: prevformData?.tags.filter(tag => tag !== tagToRemove),
         }));
       };
       console.log(coordinates);
@@ -174,7 +174,7 @@ const EditTutor = () => {
     
     const handleLocationChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, location: { ...formData.location, [name]: value } });
+        setFormData({ ...formData, location: { ...formData?.location, [name]: value } });
     };
     const handleMapChange = (updatedCoordinates) => {
         setCoordinates(updatedCoordinates);  
@@ -187,9 +187,9 @@ const EditTutor = () => {
         }));
       };
     const handleCoordinatesChange = (index, value) => {
-        const newCoordinates = [...formData.location.coordinates];
+        const newCoordinates = [...formData?.location.coordinates];
         newCoordinates[index] = value;
-        setFormData({ ...formData, location: { ...formData.location, coordinates: newCoordinates } });
+        setFormData({ ...formData, location: { ...formData?.location, coordinates: newCoordinates } });
         setCoordinates(updatedCoordinates); 
     };
 // Education State Management
@@ -206,7 +206,7 @@ const handleEducationChange = (index, e) => {
 
 const addEducation = () => {
     const updatedEducation = [
-        ...formData.education,
+        ...formData?.education,
         { title: '', year: '', academy: '', description: '' },
     ];
     setFormData({ ...formData, education: updatedEducation });
@@ -214,7 +214,7 @@ const addEducation = () => {
 
 // Remove an education entry by index
 const removeEducation = (index) => {
-    const updatedEducation = formData.education.filter((_, i) => i !== index);
+    const updatedEducation = formData?.education.filter((_, i) => i !== index);
     setFormData({ ...formData, education: updatedEducation });
 };
 
@@ -230,14 +230,14 @@ const handleExperienceChange = (index, e) => {
 
 const addExperience = () => {
     const updatedExperiences = [
-        ...formData.pastExperiences,
+        ...formData?.pastExperiences,
         { title: '', start_date: '', end_date: '', company: '', description: '' },
     ];
     setFormData({ ...formData, pastExperiences: updatedExperiences });
 };
 
 const removeExperience = (index) => {
-    const updatedExperiences = formData.pastExperiences.filter((_, i) => i !== index);
+    const updatedExperiences = formData?.pastExperiences.filter((_, i) => i !== index);
     setFormData({ ...formData, pastExperiences: updatedExperiences });
 };
 
@@ -252,12 +252,12 @@ const handleQualificationChange = (index, e) => {
 };
 
 const addQualification = () => {
-    const updatedQualifications = [...formData.qualifications, ''];
+    const updatedQualifications = [...formData?.qualifications, ''];
     setFormData({ ...formData, qualifications: updatedQualifications });
 };
 
 const removeQualification = (index) => {
-    const updatedQualifications = formData.qualifications.filter((_, i) => i !== index);
+    const updatedQualifications = formData?.qualifications.filter((_, i) => i !== index);
     setFormData({ ...formData, qualifications: updatedQualifications });
 };
 
@@ -273,14 +273,14 @@ const handleAwardChange = (index, e) => {
 
 const addAward = () => {
     const updatedAwards = [
-        ...formData.awards,
+        ...formData?.awards,
         { title: '', year: '', description: '' },
     ];
     setFormData({ ...formData, awards: updatedAwards });
 };
 
 const removeAward = (index) => {
-    const updatedAwards = formData.awards.filter((_, i) => i !== index);
+    const updatedAwards = formData?.awards.filter((_, i) => i !== index);
     setFormData({ ...formData, awards: updatedAwards });
 };
 
@@ -335,7 +335,7 @@ const removeAward = (index) => {
                     type="text"
                     id="fullName"
                     name="fullName"
-                    value={formData.fullName}
+                    value={formData?.fullName}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -347,7 +347,7 @@ const removeAward = (index) => {
                     type="email"
                     id="email"
                     name="email"
-                    value={formData.email}
+                    value={formData?.email}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -359,7 +359,7 @@ const removeAward = (index) => {
                     type="text"
                     id="contactNumber"
                     name="contactNumber"
-                    value={formData.contactNumber}
+                    value={formData?.contactNumber}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -373,7 +373,7 @@ const removeAward = (index) => {
                     type="text"
                     id="username"
                     name="username"
-                    value={formData.username}
+                    value={formData?.username}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -385,7 +385,7 @@ const removeAward = (index) => {
                     type="text"
                     id="contactCost"
                     name="contactCost"
-                    value={formData.contactCost}
+                    value={formData?.contactCost}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -397,7 +397,7 @@ const removeAward = (index) => {
                     type="text"
                     id="video"
                     name="video"
-                    value={formData.video}
+                    value={formData?.video}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -407,7 +407,7 @@ const removeAward = (index) => {
                     type="text"
                     id="highestQualification"
                     name="highestQualification"
-                    value={formData.highestQualification}
+                    value={formData?.highestQualification}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -420,7 +420,7 @@ const removeAward = (index) => {
                     type="text"
                     id="rating"
                     name="rating"
-                    value={formData.rating}
+                    value={formData?.rating}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -434,7 +434,7 @@ const removeAward = (index) => {
                     type="text"
                     id="location.type"
                     name="location.type"
-                    value={formData.location.type}
+                    value={formData?.location.type}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -444,9 +444,9 @@ const removeAward = (index) => {
                 <input
                     type="text"
                     
-                    value={formData.location.coordinates[0]}
+                    value={formData?.location.coordinates[0]}
                     onChange={(e) => {
-                        const newCoordinates = [...formData.location.coordinates];
+                        const newCoordinates = [...formData?.location.coordinates];
                         newCoordinates[0] = e.target.value;
                         setFormData((prevData) => ({
                             ...prevData,
@@ -461,9 +461,9 @@ const removeAward = (index) => {
                 <input
                     type="text"
                    
-                    value={formData.location.coordinates[1]}
+                    value={formData?.location.coordinates[1]}
                     onChange={(e) => {
-                        const newCoordinates = [...formData.location.coordinates];
+                        const newCoordinates = [...formData?.location.coordinates];
                         newCoordinates[1] = e.target.value;
                         setFormData((prevData) => ({
                             ...prevData,
@@ -483,7 +483,7 @@ const removeAward = (index) => {
                     type="text"
                     id="location.address"
                     name="location.address"
-                    value={formData.location.address}
+                    value={formData?.location.address}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -494,7 +494,7 @@ const removeAward = (index) => {
                     type="text"
                     id="location.city"
                     name="location.city"
-                    value={formData.location.city}
+                    value={formData?.location.city}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -505,7 +505,7 @@ const removeAward = (index) => {
                     type="text"
                     id="location.state"
                     name="location.state"
-                    value={formData.location.state}
+                    value={formData?.location.state}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -516,7 +516,7 @@ const removeAward = (index) => {
                     type="text"
                     id="location.pinCode"
                     name="location.pinCode"
-                    value={formData.location.pinCode}
+                    value={formData?.location.pinCode}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -531,7 +531,7 @@ const removeAward = (index) => {
   <label className="block font-medium text-gray-700">Gender Preference</label>
   <select
     name="gender"  
-    value={formData.gender}  
+    value={formData?.gender}  
     onChange={handleChange}  
     className="border p-2 rounded-md w-full"
   >
@@ -545,7 +545,7 @@ const removeAward = (index) => {
   <label className="block font-medium text-gray-700">Class Cost</label>
   <input
     name="classCost"  
-    value={formData.classCost}  
+    value={formData?.classCost}  
     onChange={handleChange}  
     className="border p-2 rounded-md w-full"
   />
@@ -559,7 +559,7 @@ const removeAward = (index) => {
         type="radio"
         name="identityVerified"
         value="true"
-        checked={formData.identityVerified === true}  // Check if the value is true
+        checked={formData?.identityVerified === true}  // Check if the value is true
         onChange={handleChange}
         className="mr-2"
       />
@@ -570,7 +570,7 @@ const removeAward = (index) => {
         type="radio"
         name="identityVerified"
         value="false"
-        checked={formData.identityVerified === false}  // Check if the value is false
+        checked={formData?.identityVerified === false}  // Check if the value is false
         onChange={handleChange}
         className="mr-2"
       />
@@ -586,7 +586,7 @@ const removeAward = (index) => {
         type="radio"
         name="emailVerified"
         value="true"
-        checked={formData.emailVerified === true}  // Check if the value is true
+        checked={formData?.emailVerified === true}  // Check if the value is true
         onChange={handleChange}
         className="mr-2"
       />
@@ -597,7 +597,7 @@ const removeAward = (index) => {
         type="radio"
         name="emailVerified"
         value="false"
-        checked={formData.emailVerified === false}  // Check if the value is false
+        checked={formData?.emailVerified === false}  // Check if the value is false
         onChange={handleChange}
         className="mr-2"
       />
@@ -613,7 +613,7 @@ const removeAward = (index) => {
         type="radio"
         name="contactNumberVerified"
         value="true"
-        checked={formData.contactNumberVerified === true}  // Check if the value is true
+        checked={formData?.contactNumberVerified === true}  // Check if the value is true
         onChange={handleChange}
         className="mr-2"
       />
@@ -624,7 +624,7 @@ const removeAward = (index) => {
         type="radio"
         name="contactNumberVerified"
         value="false"
-        checked={formData.contactNumberVerified === false}  // Check if the value is false
+        checked={formData?.contactNumberVerified === false}  // Check if the value is false
         onChange={handleChange}
         className="mr-2"
       />
@@ -640,14 +640,14 @@ const removeAward = (index) => {
         type="number"
         id="jobAlerts.minExpectedSalary.value"
         name="jobAlerts.minExpectedSalary.value"
-        value={formData.jobAlerts.minExpectedSalary.value}
+        value={formData?.jobAlerts?.minExpectedSalary?.value}
         onChange={handleChange}
         className="border p-2 w-full"
         placeholder="Enter min salary"
     />
     <select
         name="jobAlerts.minExpectedSalary.period"
-        value={formData.jobAlerts.minExpectedSalary.period}
+        value={formData?.jobAlerts?.minExpectedSalary?.period}
         onChange={handleChange}
         className="border p-2 w-full mt-2"
     >
@@ -663,14 +663,14 @@ const removeAward = (index) => {
         type="number"
         id="jobAlerts.maxExpectedSalary.value"
         name="jobAlerts.maxExpectedSalary.value"
-        value={formData.jobAlerts.maxExpectedSalary.value}
+        value={formData?.jobAlerts?.maxExpectedSalary?.value}
         onChange={handleChange}
         className="border p-2 w-full"
         placeholder="Enter max salary"
     />
     <select
         name="jobAlerts.maxExpectedSalary.period"
-        value={formData.jobAlerts.maxExpectedSalary.period}
+        value={formData?.jobAlerts?.maxExpectedSalary?.period}
         onChange={handleChange}
         className="border p-2 w-full mt-2"
     >
@@ -684,14 +684,14 @@ const removeAward = (index) => {
                     type="text"
                     id="teachingLevels"
                     name="teachingLevels"
-                    value={formData.teachingLevels}
+                    value={formData?.teachingLevels}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
             </div>
             {/* Past Experiences */}
             <h2 className="text-lg font-bold">Past Experiences</h2>
-            {formData.pastExperiences.map((exp, index) => (
+            {formData?.pastExperiences.map((exp, index) => (
                 <div key={index} className="mb-4 border p-4">
                     <div className="mb-2">
                         <label htmlFor={`experience-title-${index}`} className="block">Job Title:</label>
@@ -762,7 +762,7 @@ const removeAward = (index) => {
 
             {/* Dynamic inputs for awards */}
             <h2 className="text-lg font-bold">Awards</h2>
-            {formData.awards.map((award, index) => (
+            {formData?.awards.map((award, index) => (
                 <div key={index} className="mb-4 border p-4">
                     <div className="mb-2">
                         <label htmlFor={`award-title-${index}`} className="block">Award Title:</label>
@@ -814,8 +814,8 @@ const removeAward = (index) => {
       <h2 className="text-lg font-bold">Qualifications</h2>
 
       {/* Map through qualifications and render input fields */}
-      {(formData.qualifications && Array.isArray(formData.qualifications) && formData.qualifications.length > 0) ? (
-        formData.qualifications.map((award, index) => (
+      {(formData?.qualifications && Array.isArray(formData?.qualifications) && formData?.qualifications.length > 0) ? (
+        formData?.qualifications.map((award, index) => (
           <div key={index} className="mb-4 border p-4">
             <div className="mb-2">
               <input
@@ -856,7 +856,7 @@ const removeAward = (index) => {
 
               {/* Dynamic inputs for awards */}
               <h2 className="text-lg font-bold">Education</h2>
-            {formData.education.map((award, index) => (
+            {formData?.education.map((award, index) => (
                 <div key={index} className="mb-4 border p-4">
                     <div className="mb-2">
                         <label htmlFor={`award-title-${index}`} className="block">Title:</label>
@@ -941,7 +941,7 @@ const removeAward = (index) => {
 
       {/* Selected Tags Display */}
       <div className="flex flex-wrap mt-2">
-        {formData.tags.map((tag, index) => (
+        {formData?.tags.map((tag, index) => (
           <span
             key={index}
             className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
@@ -963,7 +963,7 @@ const removeAward = (index) => {
                     type="date"
                     id="dob"
                     name="dob"
-                    value={formData.dob?.split('T')[0]}
+                    value={formData?.dob?.split('T')[0]}
                     onChange={handleChange}
                     className="border p-2 w-full"
                 />
@@ -995,7 +995,7 @@ const removeAward = (index) => {
                 )}
                 {/* Selected Categories Display */}
                 <div className="flex flex-wrap mt-2">
-                    {formData.categories.map((category, index) => (
+                    {formData?.categories.map((category, index) => (
                         <span
                             key={index}
                             className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full mr-2 mb-2 flex items-center"

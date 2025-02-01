@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { FiSend } from "react-icons/fi"; // Send icon
@@ -13,6 +13,8 @@ const Conversation = () => {
   const [messageInput, setMessageInput] = useState("");
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
+
+  const prevDateRef = useRef(null); // Store the previous date
 
   const token = localStorage.getItem("token");
   const type = localStorage.getItem("type");
@@ -86,15 +88,22 @@ const Conversation = () => {
       });
   };
 
+  // Format date to dd/mm/yyyy
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center space-x-3">
-          
           <h3 className="text-xl font-semibold text-gray-800">{name || "Chat"}</h3>
         </div>
-       
       </div>
 
       {/* Messages Area */}
@@ -106,22 +115,36 @@ const Conversation = () => {
         ) : messages.length === 0 ? (
           <p className="text-gray-500 text-center">No messages yet.</p>
         ) : (
-          messages.map((message) => (
-            <div
-              key={message._id}
-              className={`max-w-xs px-4 py-3 rounded-lg shadow-md ${
-                message.sender === userId ? "bg-blue-500 text-white ml-auto" : "bg-white text-gray-900"
-              }`}
-            >
-              <p className="text-sm">{message.message}</p>
-              <span className="text-xs text-gray-400 block mt-1 text-right">
-                {new Date(message.timestamp).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-            </div>
-          ))
+          messages.map((message) => {
+            const currentMessageDate = formatDate(message.timestamp);
+            const showDate = currentMessageDate !== prevDateRef.current;
+
+            if (showDate) {
+              prevDateRef.current = currentMessageDate; // Update ref for previous date
+            }
+
+            return (
+              <div key={message._id} className="space-y-2">
+                {showDate && (
+                  <div className="text-center text-gray-500 text-xs mt-2">
+                    <div className="inline-block px-4 py-2 rounded-full bg-gray-200 text-sm font-medium">
+                      {currentMessageDate}
+                    </div>
+                  </div>
+                )}
+                <div
+                  className={`max-w-xs px-4 py-3 rounded-lg shadow-md ${
+                    message.sender === userId ? "bg-blue-500 text-white ml-auto" : "bg-white text-gray-900"
+                  }`}
+                >
+                  <p className="text-sm">{message.message}</p>
+                  <span className="text-xs text-white-400 block mt-1 text-right">
+                    {new Date(message.timestamp).toISOString().slice(11, 16)} {/* Time only */}
+                  </span>
+                </div>
+              </div>
+            );
+          })
         )}
       </div>
 
