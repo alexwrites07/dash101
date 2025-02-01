@@ -11,6 +11,11 @@ function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [dpUrl, setDpUrl] = useState(''); const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+ 
+  const [activeDropdown, setActiveDropdown] = useState(null); // New state to manage active dropdown
+
+  
+
 
   useEffect(() => {
     // Check if token exists in local storage to determine authentication
@@ -99,12 +104,17 @@ function Navbar() {
   };
 
   const toggleJobCornerDropdown = () => {
+    // Open the job corner dropdown and close the auth dropdown
     setIsJobCornerOpen(!isJobCornerOpen);
+    setIsAuthDropdownOpen(false); // Close the auth dropdown
   };
-
+  
   const toggleAuthDropdown = () => {
+    // Open the auth dropdown and close the job corner dropdown
     setIsAuthDropdownOpen(!isAuthDropdownOpen);
+    setIsJobCornerOpen(false); // Close the job corner dropdown
   };
+  
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -354,7 +364,7 @@ function Navbar() {
                             onClick={toggleAuthDropdown}
                             className="text-gray-700 hover:bg-gray-50 md:hover:text-[#041F96] md:border-0 py-1 font-medium flex items-center"
                           >
-                            Authentication
+                            Login
                             <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
                               <path
                                 fillRule="evenodd"

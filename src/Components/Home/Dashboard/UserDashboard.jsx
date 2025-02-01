@@ -3,7 +3,7 @@ import axios from "axios";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ContactDashboard from "../ContactDashboard";
-import { HiUser, HiStar, HiEye, HiBriefcase, HiBookmark, HiCheck } from "react-icons/hi";  // Use HiCheck instead of HiCheckCircle
+import { HiUser, HiStar, HiEye, HiBriefcase, HiBookmark, HiCheck } from "react-icons/hi";
 
 const UserDashboard = () => {
   const [profileViews, setProfileViews] = useState([]);
@@ -17,46 +17,30 @@ const UserDashboard = () => {
 
     const fetchDashboardData = async () => {
       try {
-        let url = "";
-        let response;
+        let url = `https://server.avyudha.com/dashboard/${type}`;
+        const response = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         if (type === "student") {
-          url = "https://server.avyudha.com/dashboard/Student";
-          response = await axios.get(url, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
           setDashboardData({
             learningNeedsCount: response.data.learningNeeds?.length || 0,
             ratingCount: response.data.ratingCount || 0,
-            profileViewsCount: response.data.profileViews.count  || 0,
+            profileViewsCount: response.data.profileViews?.count || 0,
           });
         } else if (type === "tutor") {
-          url = "https://server.avyudha.com/dashboard/Tutor";
-          response = await axios.get(url, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
           setDashboardData({
             appliedJobsCount: response.data.appliedJobs?.length || 0,
             ratingCount: response.data.ratingCount || 0,
             shortlistedJobsCount: response.data.shortlistedJobs?.length || 0,
-            profileViewsCount: response.data.profileViews.count || 0,
+            profileViewsCount: response.data.profileViews?.count || 0,
           });
         } else if (type === "organization") {
-          url = "https://server.avyudha.com/dashboard/Organization";
-          response = await axios.get(url, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
           setDashboardData({
             jobPostingsCount: response.data.jobPostings?.length || 0,
             ratingCount: response.data.ratingCount || 0,
             bookmarkedEmployeesCount: response.data.bookmarkedEmployees?.length || 0,
-            profileViewsCount: response.data.profileViews.count  || 0,
+            profileViewsCount: response.data.profileViews?.count || 0,
           });
         }
       } catch (error) {
@@ -65,49 +49,32 @@ const UserDashboard = () => {
     };
 
     const fetchNotifications = async () => {
-      if (token) {
-        try {
-          const response = await axios.get("https://server.avyudha.com/notifications", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setNotifications(response.data || []);
-        } catch (error) {
-          console.error("Error fetching notifications:", error);
-        }
+      try {
+        const response = await axios.get("https://server.avyudha.com/notifications", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNotifications(response.data || []);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    const fetchProfileViews = async () => {
+      try {
+        const response = await axios.get(
+          `https://server.avyudha.com/${type}s/whoViewedMyProfile`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setProfileViews(response.data.map((item) => item.name || item.fullName || "Unknown"));
+      } catch (error) {
+        console.error("Error fetching profile views:", error);
       }
     };
 
     fetchDashboardData();
     fetchNotifications();
-    fetchProfileViews(); // Fetch profile views data
+    fetchProfileViews();
   }, [type, token]);
-
-  const fetchProfileViews = async () => {
-    const token = localStorage.getItem("token");
-    let type = localStorage.getItem("type");
-
-    if (type && token) {
-      const endpointType = type + "s"; // Append 's' to the type
-      try {
-        const response = await axios.get(
-          `https://server.avyudha.com/${endpointType}/whoViewedMyProfile`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const viewsData = response.data.map((item) => {
-          return item.name || item.fullName || "Unknown";
-        });
-        setProfileViews(viewsData);
-      } catch (error) {
-        console.error("Error fetching profile views:", error);
-      }
-    }
-  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -115,153 +82,98 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="wallet-page min-h-screen lg:flex min-h-screen max-w-3xl lg:ml-64 py-8 px-4">
+    <div className="min-h-screen flex  from-gray-100 max-w-5xl mt-12 lg:ml-64 ">
       <Sidebar />
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <Header />
-        <div className="mt-24 lg:ml-24 lg:mt-28 p-6 lg:p-10">
-          <div className="flex flex-col lg:flex-col lg:space-x-8">
-            {/* Dashboard Stats Section */}
-            <div className="flex-1 bg-gradient-to-r mb-12 ml-8 from-blue-500 to-indigo-500 text-white p-8 rounded-lg mb-6 lg:mb-0 shadow-lg">
-              <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
-              {type === "student" && (
-                <>
-                  <div className="flex items-center mb-6">
-                    <HiUser className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Learning Needs</span>
-                      <span className="block text-xl">{dashboardData.learningNeedsCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiStar className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Rating</span>
-                      <span className="block text-xl">{dashboardData.ratingCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiEye className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Profile Views</span>
-                      <span className="block text-xl">{dashboardData.profileViewsCount}</span>
-                    </div>
-                  </div>
-                </>
-              )}
-              {type === "tutor" && (
-                <>
-                  <div className="flex items-center mb-6">
-                    <HiBriefcase className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Applied Jobs</span>
-                      <span className="block text-xl">{dashboardData.appliedJobsCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiStar className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Rating</span>
-                      <span className="block text-xl">{dashboardData.ratingCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiCheck className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Shortlisted Jobs</span>
-                      <span className="block text-xl">{dashboardData.shortlistedJobsCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiEye className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Profile Views</span>
-                      <span className="block text-xl">{dashboardData.profileViewsCount}</span>
-                    </div>
-                  </div>
-                </>
-              )}
-              {type === "organization" && (
-                <>
-                  <div className="flex items-center mb-6">
-                    <HiBriefcase className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Job Postings</span>
-                      <span className="block text-xl">{dashboardData.jobPostingsCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiStar className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Rating</span>
-                      <span className="block text-xl">{dashboardData.ratingCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiBookmark className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Bookmarked Employees</span>
-                      <span className="block text-xl">{dashboardData.bookmarkedEmployeesCount}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center mb-6">
-                    <HiEye className="text-3xl mr-4" />
-                    <div>
-                      <span className="text-lg font-semibold">Profile Views</span>
-                      <span className="block text-xl">{dashboardData.profileViewsCount}</span>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+        <div className="mt-24 p-8 lg:p-12 text-black">
+          <h1 className="text-3xl font-semibold mb-6">Welcome to Your Dashboard</h1>
 
-            {/* Profile Views Section */}
-            <div className="flex-1 bg-gradient-to-r mt-12 from-yellow-400 to-orange-500 text-white p-8 rounded-lg mb-6 lg:mb-0 shadow-lg h-full">
-              <h2 className="text-2xl font-bold mb-6">Who Viewed My Profile ({profileViews.length})</h2>
-              {profileViews.length > 0 ? (
-                <ul className="space-y-4">
-                  {profileViews.map((view, index) => (
-                    <li key={index} className="bg-white text-gray-800 p-4 rounded-lg shadow-md">
-                      {view}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No one has viewed your profile yet.</p>
-              )}
-            </div>
-
-            {/* Notifications Section */}
-            <div className="flex-1 bg-gradient-to-r mt-12 from-green-400 to-teal-500 text-white p-8 rounded-lg shadow-lg">
-  <h2 className="text-2xl font-bold mb-6">Notifications ({notifications.length})</h2>
-  {notifications.length > 0 ? (
-    <ul>
-      {notifications
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by latest date
-        .slice(0, 10) // Take the top 10 notifications
-        .map((notif, index) => (
-          <li
-            key={index}
-            className="bg-white text-gray-800 p-4 rounded-lg shadow-md mb-4"
-          >
-            <p>{notif.message}</p>
-            <p className="text-sm text-gray-500">{formatDate(notif?.createdAt)}</p>
-          </li>
-        ))}
-    </ul>
-  ) : (
-    <p>No notifications at the moment.</p>
+          {/* Stats Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {type === "student" && (
+    <>
+      <DashboardCard icon={<HiUser />} title="Learning Needs" count={dashboardData.learningNeedsCount} />
+      <DashboardCard icon={<HiStar />} title="Rating" count={dashboardData.ratingCount} />
+      <DashboardCard icon={<HiEye />} title="Profile Views" count={dashboardData.profileViewsCount} />
+    </>
+  )}
+  {type === "tutor" && (
+    <>
+      <DashboardCard icon={<HiBriefcase />} title="Applied Jobs" count={dashboardData.appliedJobsCount} />
+      <DashboardCard icon={<HiStar />} title="Rating" count={dashboardData.ratingCount} />
+      <DashboardCard icon={<HiCheck />} title="Shortlisted Jobs" count={dashboardData.shortlistedJobsCount} />
+      <DashboardCard icon={<HiEye />} title="Profile Views" count={dashboardData.profileViewsCount} />
+    </>
+  )}
+  {type === "organization" && (
+    <>
+      <DashboardCard icon={<HiBriefcase />} title="Job Postings" count={dashboardData.jobPostingsCount} />
+      <DashboardCard icon={<HiStar />} title="Rating" count={dashboardData.ratingCount} />
+      <DashboardCard icon={<HiBookmark />} title="Bookmarked Employees" count={dashboardData.bookmarkedEmployeesCount} />
+      <DashboardCard icon={<HiEye />} title="Profile Views" count={dashboardData.profileViewsCount} />
+    </>
   )}
 </div>
 
+
+          {/* Profile Views Section */}
+          <DashboardSection title={`Who Viewed My Profile (${profileViews.length})`}bgColor="bg-blue-100" >
+            {profileViews.length > 0 ? (
+              <ul className="space-y-4">
+                {profileViews.map((view, index) => (
+                  <li key={index} className="bg-white text-gray-800 p-4 rounded-lg shadow-md">{view}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>No one has viewed your profile yet.</p>
+            )}
+          </DashboardSection>
+
+          {/* Notifications Section */}
+          <DashboardSection title={`Notifications (${notifications.length})`} bgColor="bg-blue-100">
+            {notifications.length > 0 ? (
+              <ul>
+                {notifications.slice(0, 10).map((notif, index) => (
+                  <li key={index} className="bg-white text-gray-800 p-4 rounded-lg shadow-md mb-4">
+                    <p>{notif.message}</p>
+                    <p className="text-sm text-gray-500">{formatDate(notif.createdAt)}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No notifications at the moment.</p>
+            )}
+          </DashboardSection>
+
+          {/* Help & Support */}
+          <div className="mt-12">
+            <h2 className="text-2xl font-semibold mb-4">Help and Support</h2>
+            <ContactDashboard />
           </div>
         </div>
-        <div className="ml-36 my-4">
-          <p className="text-2xl mb-6">Help and Support</p>
-          <ContactDashboard/></div>
       </div>
     </div>
   );
 };
+
+// Reusable Components for Dashboard UI
+const DashboardCard = ({ icon, title, count }) => (
+  <div className="bg-blue-100 p-6 rounded-lg shadow-md flex items-center border border-blue-300">
+    <div className="text-4xl text-blue-700 mr-4">{icon}</div>
+    <div>
+      <h3 className="text-lg font-semibold text-blue-900">{title}</h3>
+      <p className="text-2xl font-bold text-blue-800">{count}</p>
+    </div>
+  </div>
+);
+
+
+const DashboardSection = ({ title, children, bgColor }) => (
+  <div className={`mt-12 p-8 rounded-lg shadow-lg ${bgColor}`}>
+    <h2 className="text-2xl font-bold mb-6">{title}</h2>
+    {children}
+  </div>
+);
 
 export default UserDashboard;

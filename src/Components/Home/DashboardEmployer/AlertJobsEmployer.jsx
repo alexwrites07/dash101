@@ -292,14 +292,14 @@ const AlertJobs = () => {
   };
   return (
     <div className="p-4">
-      <div className="flex flex-col lg:ml-64 lg:flex-row">
+      <div className="flex flex-col lg:ml-64 lg:flex-row max-w-5xl">
         <Sidebar />
-        <div className="flex-1 lg:ml-24">
+        <div className="flex-1 lg:ml-24 ">
           <Header />
-          <div className="lg:ml-64 lg:mt-18 p-4 mt-36 lg:p-28 flex flex-col items-center lg:items-start w-full">
-            <h3 className="font-semibold">Set Candidate Alerts</h3>
+          <div className=" lg:mt-12  p-4 mt-36 lg:p-28 flex flex-col items-center lg:items-start w-full">
+            <h3 className="text-3xl font-semibold mx-auto">Set Candidate Alerts</h3>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 shadow-md p-12 bg-gray-50 rounded-md">
             <div>
               <label className="block">City:</label>
               <input
@@ -474,7 +474,8 @@ const AlertJobs = () => {
             {alerts.length > 0 ? (
               <ul className="space-y-4 mt-4">
                 {alerts.map((alert) => (
-                  <li key={alert._id} className="border p-4 rounded">
+                 <li key={alert._id} className="p-5 bg-gray-100 border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition duration-300">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-gray-700">
                     {/* <div><strong>Tags:</strong> {alert.filter.tags?.join(', ')}</div> */}
                     <div><strong>City:</strong> {alert.filter.location.city}</div>
                     <div><strong>Categories:</strong> {alert.filter.categories?.join(', ')}</div>
@@ -485,6 +486,7 @@ const AlertJobs = () => {
                    
                     {/* <div><strong>Highest Qualification:</strong> {alert.filter.highestQualification}</div>
                  */}
+                 </div>
                   </li>
                 ))}
               </ul>

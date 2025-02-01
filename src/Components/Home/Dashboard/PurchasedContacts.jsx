@@ -114,8 +114,8 @@ const PurchasedContacts = () => {
     <div className="min-h-screen bg-gray-100">
       <Sidebar />
       <Header />
-      <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 bg-gray-100 lg:space-x-8 mt-24">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+      <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 bg-gray-100 lg:space-x-8 ">
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 mt-36">
           <h2 className="text-2xl font-bold mb-4 text-gray-800">Purchased Contacts</h2>
           <input
             type="text"

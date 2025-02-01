@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { FiSend } from "react-icons/fi"; // Send icon
+import { BiArrowBack } from "react-icons/bi"; // Back button
 
 const Conversation = () => {
   const { conversationId } = useParams();
   const [userId, setUserId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [name,setName]=useState([]);
+  const [name, setName] = useState([]);
   const [recipientId, setRecipientId] = useState(null);
   const [messageInput, setMessageInput] = useState("");
   const [loadingMessages, setLoadingMessages] = useState(true);
@@ -14,7 +16,7 @@ const Conversation = () => {
 
   const token = localStorage.getItem("token");
   const type = localStorage.getItem("type");
-  const contactName = localStorage.getItem('selectedContactName');
+
   // Fetch user ID
   useEffect(() => {
     axios
@@ -31,7 +33,7 @@ const Conversation = () => {
       });
   }, [type, token]);
 
-  // Function to fetch messages
+  // Fetch messages
   const fetchMessages = () => {
     if (!userId || !conversationId) return;
     setLoadingMessages(true);
@@ -48,7 +50,6 @@ const Conversation = () => {
           const nonMatchingRecipientId = firstMessage.recipients.find((id) => id !== userId);
           setRecipientId(nonMatchingRecipientId || firstMessage.sender);
         }
-
         setLoadingMessages(false);
       })
       .catch((error) => {
@@ -57,14 +58,13 @@ const Conversation = () => {
       });
   };
 
-  // Fetch messages when userId is available
   useEffect(() => {
     if (userId) {
       fetchMessages();
     }
   }, [userId, conversationId]);
 
-  // Handle sending a message
+  // Handle sending message
   const handleSendMessage = () => {
     if (!messageInput.trim() || !recipientId) return;
 
@@ -87,49 +87,58 @@ const Conversation = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100 p-4">
-      {loadingUser ? (
-        <p className="text-gray-500">Fetching user information...</p>
-      ) : loadingMessages ? (
-        <p className="text-gray-500">Loading messages...</p>
-      ) : messages.length === 0 ? (
-        <p className="text-gray-500">No messages found.</p>
-      ) : (
-
-        <div className="flex-1 overflow-y-auto mb-4">
-            <div className="bg-white p-4 shadow-md">
-        <h3 className="text-xl font-bold text-gray-700">{name || 'No contact selected'}</h3> {/* Show contact's name */}
+    <div className="flex flex-col h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-10">
+        <div className="flex items-center space-x-3">
+          
+          <h3 className="text-xl font-semibold text-gray-800">{name || "Chat"}</h3>
+        </div>
+       
       </div>
-          {messages.map((message) => (
+
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {loadingUser ? (
+          <p className="text-gray-500 text-center">Fetching user information...</p>
+        ) : loadingMessages ? (
+          <p className="text-gray-500 text-center">Loading messages...</p>
+        ) : messages.length === 0 ? (
+          <p className="text-gray-500 text-center">No messages yet.</p>
+        ) : (
+          messages.map((message) => (
             <div
               key={message._id}
-              className={`p-2 my-2 max-w-xs rounded-lg ${
-                message.sender === userId ? "bg-green-500 text-white ml-auto" : "bg-gray-300 text-black mr-auto"
+              className={`max-w-xs px-4 py-3 rounded-lg shadow-md ${
+                message.sender === userId ? "bg-blue-500 text-white ml-auto" : "bg-white text-gray-900"
               }`}
             >
-              <p>{message.message}</p>
-              <span className="text-xs text-black-500">
-                {new Date(message.timestamp).toLocaleString()}
+              <p className="text-sm">{message.message}</p>
+              <span className="text-xs text-gray-400 block mt-1 text-right">
+                {new Date(message.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </span>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
 
-      {/* Input Box and Send Button */}
-      <div className="flex items-center">
+      {/* Input Box */}
+      <div className="bg-white p-4 flex items-center space-x-2 border-t shadow-md sticky bottom-0">
         <input
           type="text"
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="flex-1 p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           placeholder="Type a message..."
           value={messageInput}
           onChange={(e) => setMessageInput(e.target.value)}
         />
         <button
-          className="ml-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+          className="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
           onClick={handleSendMessage}
         >
-          Send
+          <FiSend className="text-lg" />
         </button>
       </div>
     </div>

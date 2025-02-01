@@ -64,11 +64,11 @@ const ShortlistJobs = () => {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen  ml-96">
+    <div className="flex flex-col lg:flex-row min-h-screen mt-6 lg:ml-96">
       <Sidebar />
       <div className="flex-1">
         <Header />
-        <main className="mt-24 lg:mt-28 -ml-72 p-6 lg:p-10">
+        <main className="mt-24 lg:mt-28 lg:-ml-72 p-6 lg:p-10">
           <div className="max-w-3xl mx-auto">
             <h1 className="text-2xl font-bold text-gray-900 mb-8">
               Shortlisted Jobs & Tuitions

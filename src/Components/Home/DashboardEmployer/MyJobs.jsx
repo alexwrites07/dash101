@@ -221,9 +221,9 @@ const ManageJobs = (JobId) => {
   return (
     <div className="flex flex-col lg:flex-row">
       <Sidebar />
-      <div className="flex-1 bg-gray-100">
+      <div className="flex-1 mt-12 ">
         <Header />
-        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full">
+        <div className="lg:ml-64 lg:mt-18 p-4 lg:p-28 flex flex-col items-center lg:items-start w-full mt-36 lg:mt-8">
           <h1 className="text-3xl font-bold mb-2 text-gray-900">Manage Jobs</h1>
           <p className="text-lg mb-12 text-gray-700">Manage and track your job listings.</p>
 

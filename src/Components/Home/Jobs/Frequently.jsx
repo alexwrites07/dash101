@@ -67,7 +67,7 @@ const FrequentlyHiringCompanies = () => {
           &lt;
         </button>
         <div
-          className="flex overflow-x-auto space-x-4 mt-12 mb-8 ml-4 mr-4"
+          className="flex overflow-x-auto space-x-4 mt-12 font-bold mb-8 ml-4 mr-4"
           ref={containerRef}
         >
           {companies.map((company, index) => (
@@ -112,7 +112,7 @@ const FrequentlyHiringCompanies = () => {
         </div>
         <button
           onClick={scrollRight}
-          className="bg-gray-400 -mr-2 text-white p-2 rounded-full shadow-lg"
+          className="bg-gray-400 -mr-2 text-white p-2 font-bold rounded-full shadow-lg"
         >
           &gt;
         </button>

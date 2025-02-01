@@ -76,7 +76,7 @@ const Sidebar = ({ activeTab }) => {
     >
       <ul className="space-y-2 font-medium">
         <li className="text-black mb-2 ml-2">
-          <p>Welcome User</p> {/* Replace with user email */}
+          <p>Welcome </p> {/* Replace with user email */}
         </li>
         {links.map((link) => (
           <li key={link.to}>

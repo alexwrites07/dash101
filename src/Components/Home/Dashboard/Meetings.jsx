@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createMeeting, deleteMeeting, editMeeting, getPurchasedContacts } from "./MeetingServices.jsx";
 import "./Meeting.css"; // Import the CSS file
 import Sidebar from "./Sidebar";
+import { FiEdit, FiTrash2, FiExternalLink } from "react-icons/fi";
 import Header from "./Header";
 
 const Meetings = () => {
@@ -170,50 +171,88 @@ const Meetings = () => {
           </button>
         </div>
 
-        {/* Meetings List */}
-        <div className="meetings bg-gray-50 p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-6">Meetings</h2>
-          <ul>
-            {meetings.length > 0 ? (
-              meetings.map((meeting) => (
-                <li key={meeting._id} className="p-6 border-b border-gray-200 hover:bg-gray-100">
-                  <div className="font-semibold text-lg">{meeting.meetingTitle}</div>
-                  <div className="text-gray-600 text-sm">{new Date(meeting.date).toLocaleDateString()}</div>
-                  <div className="text-gray-600 text-sm">{meeting.time}</div>
-                  <div className="text-gray-600 text-sm">{meeting.duration} mins</div>
-                  <div className="text-gray-600 text-sm">
-  <a 
-    href={meeting.meetingLink} 
-    target="_blank" 
-    rel="noopener noreferrer" 
-    className="text-blue-600 hover:underline"
-  >
-    {meeting.meetingLink}
-  </a>
-</div>
+        <div className="meetings bg-white p-6 rounded-xl shadow-lg">
+      {/* Heading */}
+      <h2 className="text-3xl font-semibold text-gray-800 mb-6">Meetings</h2>
 
-                  <div className="text-gray-600 text-sm">{meeting.status} </div>
-                  <div className="flex gap-4 mt-4">
-                    <button
-                      onClick={() => handleEditButtonClick(meeting)}
-                      className="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteMeeting(meeting._id)}
-                      className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <p className="text-gray-500 mt-4">No meetings found. Please create a new meeting.</p>
-            )}
-          </ul>
-        </div>
+      {/* Meeting List */}
+      <ul className="space-y-4">
+        {meetings.length > 0 ? (
+          meetings.map((meeting) => (
+            <li
+              key={meeting._id}
+              className="p-6 border border-gray-200 rounded-lg bg-gray-50 hover:shadow-md transition duration-200"
+            >
+              {/* Meeting Header */}
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold text-xl text-gray-800">
+                  {meeting.meetingTitle}
+                </h3>
+                {/* Status Indicator */}
+                <span
+                  className={`text-sm font-medium px-3 py-1 rounded-full ${
+                    meeting.status === "Scheduled"
+                      ? "bg-green-100 text-green-600"
+                      : meeting.status === "Completed"
+                      ? "bg-blue-100 text-blue-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {meeting.status}
+                </span>
+              </div>
+
+              {/* Meeting Details */}
+              <div className="text-gray-600 text-sm space-y-1">
+                <p>
+                  📅 Date:{" "}
+                  <span className="font-medium">
+                    {new Date(meeting.date).toLocaleDateString()}
+                  </span>
+                </p>
+                <p>⏰ Time: {meeting.time}</p>
+                <p>⏳ Duration: {meeting.duration} mins</p>
+
+                {/* Meeting Link */}
+                <p>
+                  🔗 Link:{" "}
+                  <a
+                    href={meeting.meetingLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 font-medium hover:underline flex items-center"
+                  >
+                    {meeting.meetingLink} <FiExternalLink className="ml-1" />
+                  </a>
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4 mt-4">
+                <button
+                  onClick={() => handleEditButtonClick(meeting)}
+                  className="flex items-center gap-2 px-5 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition"
+                >
+                  <FiEdit />
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteMeeting(meeting._id)}
+                  className="flex items-center gap-2 px-5 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                >
+                  <FiTrash2 />
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))
+        ) : (
+          <p className="text-gray-500 text-center mt-4">
+            No meetings found. Please create a new meeting.
+          </p>
+        )}
+      </ul>
+    </div>
 
         {/* Edit Meeting Modal */}
         {editMeetingData && (

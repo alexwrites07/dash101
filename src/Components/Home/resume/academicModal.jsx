@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'flowbite-react';
 import { MdDelete } from 'react-icons/md';
 
 function AcademicDetails({ academic, setAcademic, isOpen, setIsOpen }) {
-  const [editableAcademic, setEditableAcademic] = React.useState(academic);
-
+  const [editableAcademic, setEditableAcademic] = useState([]);
   // Fetching academic data from API
   const loadData = async () => {
     const token = localStorage.getItem("token");
@@ -28,8 +27,13 @@ function AcademicDetails({ academic, setAcademic, isOpen, setIsOpen }) {
       }
 
       const tutorData = await response.json();
+      setEditableAcademic(tutorData.education || []);
       // Set fetched academic data to state
-      setAcademic(tutorData.education || []);
+      const formattedEducation = tutorData.education.map(item => ({
+        ...item,
+        year: new Date(item.year).toLocaleDateString()  // Format the year
+      }));
+      setAcademic(formattedEducation || []);
     } catch (error) {
       console.error("Error fetching resume:", error);
     }
@@ -67,7 +71,7 @@ function AcademicDetails({ academic, setAcademic, isOpen, setIsOpen }) {
       </Modal.Header>
       <Modal.Body>
         <div className="space-y-4">
-          {editableAcademic.map((item, index) => (
+          {editableAcademic?.map((item, index) => (
             <div key={index} className="grid grid-cols-5 gap-3 items-center">
               <input
                 type="text"

@@ -166,6 +166,7 @@ function AppContent() {
     || location.pathname === "/widgets/featured-jobs"
     || location.pathname === "/widgets/featured-category"
     || location.pathname === "/widgets/footer"
+    || location.pathname === "/schedule-slot"
     || location.pathname === "/purchasedcontacts"
     || location.pathname === "/widgets/headers" 
      || location.pathname === "/my-jobs-employer"

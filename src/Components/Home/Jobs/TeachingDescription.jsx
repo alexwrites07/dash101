@@ -33,7 +33,15 @@ const TeachingDescription = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(`https://server.avyudha.com/getTutor/${Id}`);
+        const response = await axios.get(
+          `https://server.avyudha.com/getTutor/${Id}`,  // ✅ Fixed URL formatting
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         setJob(response.data);
       } catch (error) {
         console.error('Error fetching job details:', error);

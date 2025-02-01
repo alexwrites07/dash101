@@ -67,9 +67,7 @@ const LearningNeeds = () => {
                 </h3>
                 c
                 <p className="text-sm text-gray-500 mt-1">{learningNeed.description}</p>
-                <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-                  Book a Demo
-                </button>
+            
               </div>
             ))}
           </div>

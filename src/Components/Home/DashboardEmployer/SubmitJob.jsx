@@ -412,19 +412,19 @@ const SubmitJobPost = () => {
   };
   
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row max-w-5xl lg:ml-24">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 bg-gray-100">
+      <div className="flex-1 ">
         {/* Header */}
         <Header />
-      <div className="lg:mt-12 lg:ml-64 p-6 mt-12 lg:p-12 flex flex-col justify-center lg:justify-start mt-36">
-          <h1 className="text-xl font-bold mb-6">Submit a Job Post</h1>
+      <div className="lg:mt-24 lg:ml-64 bg-gray-100 p-6 mt-12 lg:p-12  flex flex-col justify-center lg:justify-start mt-36">
+          <h1 className="text-3xl font-bold mb-6">Submit a Job Post</h1>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="mb-4">
-              <label className="block text-gray-700">Job Title</label>
+              <label className="block text-gray-700 ">Job Title</label>
               <input
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
