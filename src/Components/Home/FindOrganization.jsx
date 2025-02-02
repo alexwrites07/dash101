@@ -13,6 +13,7 @@ const OrganizationFinder = () => {
   const toggleFilters = () => setShowFilters(!showFilters);
 
   const [org, setOrg] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [distance, setDistance] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
@@ -39,6 +40,12 @@ const OrganizationFinder = () => {
       if (response.data && response.data.organizations && Array.isArray(response.data.organizations)) {
         setOrg(response.data.organizations);
         setFilteredTutors(response.data.organizations);
+        setTimeout(() => {
+           // Set the initial filtered tutors
+           setOrg(response.data.organizations);
+           setFilteredTutors(response.data.organizations);
+          setIsLoading(false); // Stop loading animation
+        }, 1000);
       } else {
         console.error('Invalid data format received:', response.data);
       }
@@ -141,7 +148,7 @@ const OrganizationFinder = () => {
         console.error("No organizations found with the selected filters.");
         setOrg([]); // In case no valid data returned, set empty
       }
-     
+      setShowFilters(false); 
      
   };
   
@@ -287,92 +294,127 @@ const OrganizationFinder = () => {
 
   
         {/* Organization List */}
-        <div className="flex flex-col items-start justify-start w-full">
-          <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">
-            Organizations
+        <div className="flex flex-col items-start justify-start w-full ml-8">
+  <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">
+    Organizations
+  </div>
+
+  {isLoading ? (
+    Array(3)
+      .fill(0)
+      .map((_, index) => (
+        <div
+          key={index}
+          className="animate-pulse shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row"
+        >
+          {/* Image Placeholder */}
+          <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+            <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
           </div>
-  
-          {org.length > 0 ? (
-            org.map((tutor, index) => (
-              <div
-                className="shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4  border-[#041F96] bg-white shadow-md rounded-lg p-6 mb-4 border-l-1 border-[#041F96]"
-                key={index}
-              >
-                <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
-                  {/* Image Section */}
-                  <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
-                    <img
-                      src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
-                      alt={tutor.title}
-                      className="w-24 h-24 object-cover rounded-full border-2 border-gray-300 shadow-sm"
-                    />
-                  </div>
-  
-                  {/* Details Section */}
-                  <div className="flex-grow px-4 w-full md:w-4/6">
-                    <h2 className="text-2xl font-semibold text-[#041F96] mb-4">{tutor.name}</h2>
-  
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800 mt-2">
-  <p className="flex items-center gap-2">
-    <span className="bg-gray-200 p-2 rounded-full">
-      <FaMapMarkerAlt className="text-gray-600" />
-    </span>
-    <span className="font-medium text-gray-600">
-      Location: {tutor.location.city}, {tutor.location.address}
-    </span>
-  </p>
 
-  <p className="flex items-center gap-2">
-    <span className="bg-gray-200 p-2 rounded-full">
-      <FaBuilding className="text-gray-600" />
-    </span>
-    <span className="font-medium text-gray-600">
-      Type: {tutor.organizationType}
-    </span>
-  </p>
+          {/* Text Placeholders */}
+          <div className="flex-grow px-4 w-full md:w-4/6 space-y-3">
+            <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-2/4"></div>
 
-  <p className="flex items-center gap-2">
-    <span className="bg-gray-200 p-2 rounded-full">
-      <FaStar className="text-gray-500" />
-    </span>
-    <span className="font-medium text-gray-600">Rating: {tutor.rating}</span>
-  </p>
-</div>
-
-{/* Description */}
-<div className="mt-4">
-  <p className="text-sm text-gray-700">
-    <span>
-      {tutor.description?.length > 200
-        ? `${tutor.description.substring(0, 200)}...`
-        : tutor.description}
-    </span>
-  </p>
-</div>
-
-  
-                    {/* Distance */}
-                    {userCoords && tutor.location?.coordinates && (
-                      <p className="text-gray-700 mt-4 text-sm">
-                        Distance:{" "}
-                        {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-                      </p>
-                    )}
-  
-                    {/* View Button */}
-                    {/* <div className="flex justify-end mt-4">
-                      <button className="bg-[#041F96] text-white px-6 py-2 rounded-lg hover:bg-[#032c6b] focus:outline-none shadow-md">
-                        View
-                      </button>
-                    </div> */}
-                  </div>
-                </Link>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gray-300 rounded-full w-6 h-6"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
-          )}
+
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gray-300 rounded-full w-6 h-6"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gray-300 rounded-full w-6 h-6"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+              </div>
+            </div>
+
+            <div className="h-4 bg-gray-300 rounded w-full"></div>
+            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-300 rounded w-2/4"></div>
+
+            <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+          </div>
         </div>
+      ))
+  ) : org.length > 0 ? (
+    org.map((tutor, index) => (
+      <div
+        key={index}
+        className="shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row hover:shadow-xl transition transform hover:scale-105 duration-300 hover:bg-gray-50"
+      >
+        <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
+          {/* Image Section */}
+          <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+            <img
+              src={`https://server.avyudha.com/org/download/logo/${tutor._id}`}
+              alt={tutor.title}
+              className="w-24 h-24 object-cover rounded-full border-2 border-gray-300 shadow-sm"
+            />
+          </div>
+
+          {/* Details Section */}
+          <div className="flex-grow px-4 w-full md:w-4/6">
+            <h2 className="text-2xl font-semibold text-[#041F96] mb-4">{tutor.name}</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800 mt-2">
+              <p className="flex items-center gap-2">
+                <span className="bg-gray-200 p-2 rounded-full">
+                  <FaMapMarkerAlt className="text-gray-600" />
+                </span>
+                <span className="font-medium text-gray-600">
+                  Location: {tutor.location.city}, {tutor.location.address}
+                </span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <span className="bg-gray-200 p-2 rounded-full">
+                  <FaBuilding className="text-gray-600" />
+                </span>
+                <span className="font-medium text-gray-600">
+                  Type: {tutor.organizationType}
+                </span>
+              </p>
+
+              <p className="flex items-center gap-2">
+                <span className="bg-gray-200 p-2 rounded-full">
+                  <FaStar className="text-gray-500" />
+                </span>
+                <span className="font-medium text-gray-600">Rating: {tutor.rating}</span>
+              </p>
+            </div>
+
+            {/* Description */}
+            <div className="mt-4">
+              <p className="text-sm text-gray-700">
+                <span>
+                  {tutor.description?.length > 200
+                    ? `${tutor.description.substring(0, 200)}...`
+                    : tutor.description}
+                </span>
+              </p>
+            </div>
+
+            {/* Distance */}
+            {userCoords && tutor.location?.coordinates && (
+              <p className="text-gray-700 mt-4 text-sm">
+                Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+              </p>
+            )}
+          </div>
+        </Link>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
+  )}
+</div>
+
       </div>
     </div>
   );

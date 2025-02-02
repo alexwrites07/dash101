@@ -25,6 +25,7 @@ const NeedsFinder = () => {
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [filters, setFilters] = useState({
     genderPreference: '',
@@ -72,8 +73,13 @@ const NeedsFinder = () => {
       });
 
       if (response.data?.learningNeeds && Array.isArray(response.data.learningNeeds)) {
-        setTutors(response.data.learningNeeds);
-        setFilteredTutors(response.data.learningNeeds);
+
+        setTimeout(() => {
+          // Set the initial filtered tutors
+          setTutors(response.data.learningNeeds);
+          setFilteredTutors(response.data.learningNeeds);
+          setLoading(false); // Stop loading animation
+        }, 1000); // Delay for 1 second
       } else {
         console.error('Invalid data format received:', response.data);
       }
@@ -211,7 +217,8 @@ const NeedsFinder = () => {
           } md:block`}
           onClick={toggleFilters}
         >
-          <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative"
+           onClick={(e) => e.stopPropagation()}>
             {/* Close Button for Mobile */}
             <button
               onClick={() => setShowFilters(false)}
@@ -219,6 +226,7 @@ const NeedsFinder = () => {
             >
               ✕
             </button>
+            
   
             <form className="space-y-6">
               {/* City Input */}
@@ -347,75 +355,107 @@ const NeedsFinder = () => {
         <div className="flex flex-col w-full">
           <h2 className="text-3xl font-bold text-[#041F96] mb-6">Tuition Needs</h2>
   
-          {filteredTutors?.length > 0 ? (
-            filteredTutors.map((tutor, index) => (
-              
-              <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96] transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4  border-[#041F96] bg-white shadow-md rounded-lg p-6 mb-4 ">
-                  <Link to={`/getNeed/${tutor._id}`} className="block w-full">
+          {loading ? (
+        // ✅ Loading Animation (Skeleton Cards)
+        <div className="space-y-6">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="animate-pulse shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row">
+            {/* Image Placeholder */}
+            <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+              <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
+            </div>
+
+            {/* Text Placeholders */}
+            <div className="flex flex-col w-full ml-2 space-y-3">
+              <div className="h-6 bg-gray-300 rounded w-2/3"></div>
+              <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+              </div>
+
+              <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-300 rounded w-2/4"></div>
+
+              <div className="flex flex-wrap gap-2">
+                <div className="h-6 w-16 bg-gray-300 rounded-full"></div>
+                <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+          ))}
+        </div>
+      ) : (
+        // ✅ Show Actual Cards If Not Loading
+        filteredTutors.length > 0 ? (
+          filteredTutors.map((tutor, index) => (
+            <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96] transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50">
+              <Link to={`/getNeed/${tutor._id}`} className="block w-full">
                 <h3 className="text-xl font-semibold text-[#041F96]">{tutor.requirement}</h3>
                 <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded-full mt-2">
                   {tutor.typeOfClass}
                 </span>
-  
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-gray-700 text-sm ">
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaMapMarkerAlt />
-    </div> 
-    {tutor.location.city}, {tutor.location.address}, {tutor.location.landmark}
-  </div>
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaChalkboardTeacher />
-    </div>
-    {tutor.start}
-  </div>
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaUsers />
-    </div>
-    {tutor.connectedTutorsCount} Tutors connected
-  </div>
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaVenusMars />
-    </div>
-    {tutor.genderPreference}
-  </div>
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaClock />
-    </div>
-    {tutor.available}
-  </div>
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaRupeeSign />
-    </div>
-    Rs. {tutor.salary.max}
-  </div>
-  <div className="flex items-center gap-2">
-    <div className="bg-gray-200 p-2 rounded-full">
-      <FaInfoCircle />
-    </div>
-    {tutor.description.length > 150 ? `${tutor.description.substring(0, 150)}...` : tutor.description}
-  </div>
-</div>
 
-  
-                {/* Distance Calculation */}
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-gray-700 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaMapMarkerAlt />
+                    </div>
+                    {tutor.location.city}, {tutor.location.address}, {tutor.location.landmark}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaChalkboardTeacher />
+                    </div>
+                    {tutor.start}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaUsers />
+                    </div>
+                    {tutor.connectedTutorsCount} Tutors connected
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaVenusMars />
+                    </div>
+                    {tutor.genderPreference}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaClock />
+                    </div>
+                    {tutor.available}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaRupeeSign />
+                    </div>
+                    Rs. {tutor.salary.max}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaInfoCircle />
+                    </div>
+                    {tutor.description.length > 150 ? `${tutor.description.substring(0, 150)}...` : tutor.description}
+                  </div>
+                </div>
+
+                {/* ✅ Distance Calculation */}
                 {userCoords && tutor.location?.coordinates && (
                   <div className="mt-2 text-gray-700">
                     Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
                   </div>
                 )}
-               </Link>
-        
-              </div>
-            ))
-          ) : (
+              </Link>
+            </div>
+          ))
+        ) : (
+          // ✅ Show Skeleton Cards If No Data
+          
             <p className="text-gray-700">No Tuition Needs found matching your criteria.</p>
-          )}
+          ))}
         </div>
       </div>
     </div>

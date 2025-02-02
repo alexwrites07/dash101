@@ -71,15 +71,28 @@ export default function SignUp() {
         setIsLoading(true);
         setError(null);
         setSuccessMessage("");
-
+    
+        const otpRoutes = {
+            Teacher: "https://server.avyudha.com/register/tutor/verify",
+            Institution: "https://server.avyudha.com/register/organization/verify",
+            Students: "https://server.avyudha.com/register/student/verify",
+        };
+    
+        if (currentRole === "Admin") {
+            setError("Admin signup is not allowed.");
+            setIsLoading(false);
+            return;
+        }
+    
         try {
             const payload = {
+                email: email,
                 otp: otp,
-                username: username,
             };
-
-            const response = await axios.post("https://server.avyudha.com/verify-otp", payload);
+    
+            const response = await axios.post(otpRoutes[currentRole], payload);
             setSuccessMessage("Signup successful! Redirecting...");
+    
             setTimeout(() => navigate("/login"), 2000);
         } catch (err) {
             setError("Invalid OTP. Please try again.");
@@ -87,162 +100,9 @@ export default function SignUp() {
             setIsLoading(false);
         }
     }
+    
 
-    // return (
-    //     <>
-    //         {isLoading ? (
-    //             <div>
-    //                 <LoadingSpinner />
-    //             </div>
-    //         ) : (
-    //             <div
-    //                 className="w-screen h-screen bg-cover bg-center flex flex-col items-center justify-center"
-    //                 style={{ backgroundImage: `url(${homeImgSrc})` }}
-    //             >
-    //                 <div className="bg-white opacity-95 p-6 rounded-lg shadow-lg w-full max-w-md">
-    //                     <div className="flex justify-around mb-4">
-    //                         {roles.map((role, index) => (
-    //                             <div
-    //                                 key={index}
-    //                                 className={`cursor-pointer px-4 py-2 rounded-lg ${
-    //                                     currentIndex === index
-    //                                         ? "bg-blue-500 text-white"
-    //                                         : "bg-gray-200 text-black"
-    //                                 }`}
-    //                                 onClick={() => setCurrentIndex(index)}
-    //                             >
-    //                                 {role}
-    //                             </div>
-    //                         ))}
-    //                     </div>
-    //                     <h1 className="text-2xl font-bold text-center text-[#041F96] mb-4">
-    //                         {isOtpSent ? "Enter OTP" : `${currentRole} Sign Up`}
-    //                     </h1>
-    //                     {!isOtpSent ? (
-    //                         <form className="space-y-4" onSubmit={handleSubmit}>
-    //                             <div>
-    //                                 <label
-    //                                     htmlFor="name"
-    //                                     className="block mb-1 text-sm font-medium text-blue-500"
-    //                                 >
-    //                                     Your Name
-    //                                 </label>
-    //                                 <input
-    //                                     type="text"
-    //                                     id="name"
-    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
-    //                                     placeholder="Your Full Name"
-    //                                     required
-    //                                     onChange={(e) => setName(e.target.value)}
-    //                                 />
-    //                             </div>
-    //                             <div>
-    //                                 <label
-    //                                     htmlFor="username"
-    //                                     className="block mb-1 text-sm font-medium text-blue-500"
-    //                                 >
-    //                                     Username
-    //                                 </label>
-    //                                 <input
-    //                                     type="text"
-    //                                     id="username"
-    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
-    //                                     placeholder="Username"
-    //                                     required
-    //                                     onChange={(e) => setUsername(e.target.value)}
-    //                                 />
-    //                             </div>
-    //                             <div>
-    //                                 <label
-    //                                     htmlFor="email"
-    //                                     className="block mb-1 text-sm font-medium text-blue-500"
-    //                                 >
-    //                                     Email
-    //                                 </label>
-    //                                 <input
-    //                                     type="email"
-    //                                     id="email"
-    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
-    //                                     placeholder="name@domain.com"
-    //                                     required
-    //                                     onChange={(e) => setEmail(e.target.value)}
-    //                                 />
-    //                             </div>
-    //                             <div>
-    //                                 <label
-    //                                     htmlFor="password"
-    //                                     className="block mb-1 text-sm font-medium text-blue-500"
-    //                                 >
-    //                                     Password
-    //                                 </label>
-    //                                 <input
-    //                                     type="password"
-    //                                     id="password"
-    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
-    //                                     placeholder="••••••••"
-    //                                     required
-    //                                     onChange={(e) => setPassword(e.target.value)}
-    //                                 />
-    //                             </div>
-    //                             <div>
-    //                                 <label
-    //                                     htmlFor="phone"
-    //                                     className="block mb-1 text-sm font-medium text-blue-500"
-    //                                 >
-    //                                     Phone Number
-    //                                 </label>
-    //                                 <input
-    //                                     type="tel"
-    //                                     id="phone"
-    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
-    //                                     placeholder="+91XXXXXXXX"
-    //                                     required
-    //                                     onChange={(e) => setPhone(e.target.value)}
-    //                                 />
-    //                             </div>
-    //                             <button
-    //                                 type="submit"
-    //                                 className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
-    //                             >
-    //                                 Sign Up
-    //                             </button>
-    //                             {error && <p className="text-red-500">{error}</p>}
-    //                         </form>
-    //                     ) : (
-    //                         <form className="space-y-4" onSubmit={handleOtpSubmit}>
-    //                             <div>
-    //                                 <label
-    //                                     htmlFor="otp"
-    //                                     className="block mb-1 text-sm font-medium text-blue-500"
-    //                                 >
-    //                                     Enter OTP
-    //                                 </label>
-    //                                 <input
-    //                                     type="text"
-    //                                     id="otp"
-    //                                     className="w-full p-2 border border-blue-300 rounded-lg focus:ring focus:ring-blue-500"
-    //                                     placeholder="Enter OTP"
-    //                                     required
-    //                                     onChange={(e) => setOtp(e.target.value)}
-    //                                 />
-    //                             </div>
-    //                             <button
-    //                                 type="submit"
-    //                                 className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
-    //                             >
-    //                                 Verify OTP
-    //                             </button>
-    //                             {error && <p className="text-red-500">{error}</p>}
-    //                             {successMessage && (
-    //                                 <p className="text-green-500">{successMessage}</p>
-    //                             )}
-    //                         </form>
-    //                     )}
-    //                 </div>
-    //             </div>
-    //         )}
-    //     </>
-    // );
+ 
     return (
         <>
           {isLoading ? (

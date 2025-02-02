@@ -188,7 +188,7 @@ const TeachingDescription = () => {
       setIsSending(true); // Start the loading state
 
       const payload = {
-        recipientId: contactDetails?.id, // Assuming `id` is the unique identifier for the recipient
+        recipientId: Id, // Assuming `id` is the unique identifier for the recipient
         message: message.trim(), // Use the trimmed message
       };
 
@@ -439,8 +439,24 @@ const TeachingDescription = () => {
   }
 
   if (!job) {
-    return <p>Loading...</p>;
+    return (
+      <div className="animate-pulse p-6">
+        {/* Profile Image Placeholder */}
+        <div className="bg-gray-300 h-24 w-24 sm:h-32 sm:w-32 rounded-full mx-auto sm:mx-0"></div>
+  
+        {/* Name Placeholder */}
+        <div className="h-6 w-48 bg-gray-300 rounded mt-4 mx-auto sm:mx-0"></div>
+  
+        {/* Content Placeholder */}
+        <div className="mt-4 space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+          <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto"></div>
+          <div className="h-4 bg-gray-300 rounded w-5/6 mx-auto"></div>
+        </div>
+      </div>
+    );
   }
+  
 
   const statusTag = job.tags?.find(tag => tag.name === "open");
   const isActive = statusTag && statusTag.active;

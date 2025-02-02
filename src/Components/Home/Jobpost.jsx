@@ -12,7 +12,7 @@ const JobPost = () => {
   const [inputText, setInputText] = useState('');
   const [inputText1, setInputText1] = useState(''); // Separate state for input text
   const [suggestions, setSuggestions] = useState([]);
-  const [suggestions1, setSuggestions1] = useState([]);
+  const [suggestions1, setSuggestions1] = useState([]);const [isLoading, setIsLoading] = useState(true);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState('date');
@@ -46,8 +46,12 @@ const JobPost = () => {
           ...job,
           isBookmarked: false
         }));
-        setJobs(jobsWithBookmarks);
-        setFilteredJobs(jobsWithBookmarks); // Initialize filtered jobs with all jobs
+        // Initialize filtered jobs with all jobs
+        setTimeout(() => {
+          setJobs(jobsWithBookmarks);
+        setFilteredJobs(jobsWithBookmarks); // Set the initial filtered tutors
+          setIsLoading(false); // Stop loading animation
+        }, 1000); 
       } else {
         console.error('Invalid data format received:', response.data);
       }
@@ -542,107 +546,142 @@ const JobPost = () => {
 
       <div className="w-full ">
         {/* Jobs header */}
-        <div className="flex items-center justify-between mb-4 ">
+        <div className=" ">
         
-        <div className="w-full -mx-6 sm:mx-0 sm:mr-6">
-       
-       
-        
-          {filteredJobs.length > 0 ? (
+        {isLoading ? (
+  Array(3)
+    .fill(0)
+    .map((_, index) => (
+      <div
+        key={index}
+        className="animate-pulse shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row"
+      >
+        {/* Image Placeholder */}
+        <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+          <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
+        </div>
+
+        {/* Text Placeholders */}
+        <div className="flex flex-col w-full ml-2 space-y-3">
+          <div className="h-6 bg-gray-300 rounded w-2/3"></div>
+          <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+          </div>
+
+          <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+          <div className="h-4 bg-gray-300 rounded w-2/4"></div>
+
+          <div className="flex flex-wrap gap-2">
+            <div className="h-6 w-16 bg-gray-300 rounded-full"></div>
+            <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    ))
+) : filteredJobs.length > 0 ? (
   <div>
-    <h1 className="text-3xl font-bold text-[#041F96] mb-6 ml-4">Available Jobs</h1>
+    <h1 className="text-3xl font-bold text-[#041F96] mb-6 ml-4">
+      Available Jobs
+    </h1>
     {filteredJobs.map((job, index) => (
       <div
-        className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-12 text-xl transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50 items-start    py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
         key={index}
+        className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-12 text-xl transition-transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50 items-start py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
       >
         <Link to={`/getjobs/${job._id}`} className="block">
           {/* Job Heading */}
           <div className="mb-2 px-4 sm:-mx-6">
-            <h3 className="text-gray-700 font-semibold text-lg">{job.companyName}</h3>
-            <p className="text-2xl font-semibold text-[#041F96] -mx-6 md:mx-0">{job.title}</p>
+            <h3 className="text-gray-700 font-semibold text-lg">
+              {job.companyName}
+            </h3>
+            <p className="text-2xl font-semibold text-[#041F96] -mx-6 md:mx-0">
+              {job.title}
+            </p>
           </div>
-<br></br>
+
+          <br />
+
           {/* Job Details */}
           <div className="grid grid-cols-1 -mx-6 md:grid-cols-2 gap-4 px-4 text-xs sm:text-sm md:text-base text-gray-800">
+            {/* Location */}
+            <div className="flex items-center gap-2 -my-1">
+              <div className="p-2 bg-gray-200 rounded-full">
+                <FaMapMarkerAlt className="text-black" />
+              </div>
+              <span>
+                {job.location?.city}, {job.location?.address}, {job.location?.landmark}
+              </span>
+            </div>
 
-  {/* Location */}
-  <div className="flex items-center gap-2 -my-1">
-  <div className="p-2 bg-gray-200 rounded-full">
-    <FaMapMarkerAlt className="text-black" />
-  </div>
-  <span className="">{job.location?.city}, {job.location?.address},{job.location?.landmark}</span>
-</div>
+            {/* Commitment */}
+            <div className="flex items-center gap-2 -my-1">
+              <div className="p-2 bg-gray-200 rounded-full">
+                <FaClock className="text-black" />
+              </div>
+              <span>{job.workDetails.commitment}</span>
+            </div>
 
-{/* Commitment */}
-<div className="flex items-center gap-2 -my-1">
-  <div className="p-2 bg-gray-200 rounded-full">
-    <FaClock className="text-black" />
-  </div>
-  <span className="">{job.workDetails.commitment}</span>
-</div>
-<div className="flex items-center gap-2 -my-1">
-  <div className="p-2 bg-gray-200 rounded-full">
-    <FaHandHoldingUsd className="text-black" />
-  </div>
-  <span>{job.timesPurchased} tutors Connected</span>
-</div>
-{/* Job Created */}
-<div className="flex items-center gap-2 -my-1">
-  <div className="p-2 bg-gray-200 rounded-full">
-    <FaCalendarAlt className="text-black" />
-  </div>
-  <span className="">Job Created:
-    {new Date(job.jobCreated)
-      .toLocaleDateString('en-GB')
-      .replace(/\//g, '/')}
-  </span>
-</div>
+            {/* Connected Tutors */}
+            <div className="flex items-center gap-2 -my-1">
+              <div className="p-2 bg-gray-200 rounded-full">
+                <FaHandHoldingUsd className="text-black" />
+              </div>
+              <span>{job.timesPurchased} tutors Connected</span>
+            </div>
 
-{/* Salary */}
-<div className="flex items-center gap-2 -my-1">
-  <div className="p-2 bg-green-200 rounded-full">
-    <FaRupeeSign className="text-black" />
-  </div>
-  <strong><span className="">Rs.{job.salary.min} {job.salary.period}</span></strong>
-</div>
+            {/* Job Created */}
+            <div className="flex items-center gap-2 -my-1">
+              <div className="p-2 bg-gray-200 rounded-full">
+                <FaCalendarAlt className="text-black" />
+              </div>
+              <span>
+                Job Created:{" "}
+                {new Date(job.jobCreated).toLocaleDateString("en-GB")}
+              </span>
+            </div>
 
-{/* Details (Full Width) */}
-<div className="flex items-center gap-2 -my-1 col-span-2">
-  <div className="p-2 bg-gray-200 rounded-full">
-    <FaInfoCircle className="text-black" />
-  </div>
-  <span className="">{job.description?.length > 100 
-    ? `${job.description.substring(0, 100)}...` 
-    : job.description}
-  </span>
-</div>
+            {/* Salary */}
+            <div className="flex items-center gap-2 -my-1">
+              <div className="p-2 bg-green-200 rounded-full">
+                <FaRupeeSign className="text-black" />
+              </div>
+              <strong>
+                <span>Rs. {job.salary.min} {job.salary.period}</span>
+              </strong>
+            </div>
 
-{/* Distance */}
-{userCoords && job.location?.coordinates && (
-  <div className="flex items-center gap-2 -my-1">
-    
-   <strong> <span className="">Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km</span>
-   </strong></div>
-)}
-</div>
+            {/* Details */}
+            <div className="flex items-center gap-2 -my-1 col-span-2">
+              <div className="p-2 bg-gray-200 rounded-full">
+                <FaInfoCircle className="text-black" />
+              </div>
+              <span>
+                {job.description?.length > 100
+                  ? `${job.description.substring(0, 100)}...`
+                  : job.description}
+              </span>
+            </div>
 
-
-
-
-          {/* View Button */}
-          {/* <div className="flex justify-end -mt-4 px-4">
-            <button className="bg-[#041F96] text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
-              View
-            </button>
-          </div> */}
+            {/* Distance */}
+            {userCoords && job.location?.coordinates && (
+              <div className="flex items-center gap-2 -my-1">
+                <strong>
+                  <span>
+                    Distance: {calculateDistance(userCoords, job.location.coordinates).toFixed(2)} km
+                  </span>
+                </strong>
+              </div>
+            )}
+          </div>
         </Link>
       </div>
     ))}
   </div>
-) : (
-  <p className="text-gray-700 ml-4">No jobs found.</p>
-)}
+) : null}
+
 
 
 {isModalOpen && (
@@ -677,8 +716,7 @@ const JobPost = () => {
         <br></br>
       </div>
     </div>
-   
-    </div>
+  
   );
 
 

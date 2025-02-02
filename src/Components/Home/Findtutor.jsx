@@ -16,13 +16,12 @@ const TutorFinder = () => {
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [rating, setRating] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [inputText, setInputText] = useState('');
   const [inputText1, setInputText1] = useState(''); // Separate state for input text
   const [suggestions, setSuggestions] = useState([]);
   const [suggestions1, setSuggestions1] = useState([]);
-
   const jobsPerPage = 15;
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -56,6 +55,7 @@ const TutorFinder = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    
   }, [showFilters]);
   const categorySuggestions = [
     "Spoken English",
@@ -100,17 +100,26 @@ const TutorFinder = () => {
   };
   const fetchTutors = async () => {
     try {
+      setIsLoading(true); // Start loading animation
+  
       const response = await axios.get('https://server.avyudha.com/getTutors');
+  
       if (response.data && response.data.tutors && Array.isArray(response.data.tutors)) {
-        setTutors(response.data.tutors);
-        setFilteredTutors(response.data.tutors); // Set the initial filtered tutors
+        setTimeout(() => {
+          setTutors(response.data.tutors);
+          setFilteredTutors(response.data.tutors); // Set the initial filtered tutors
+          setIsLoading(false); // Stop loading animation
+        }, 1000); // Delay for 1 second
       } else {
         console.error('Invalid data format received:', response.data);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error('Error fetching tutors:', error);
+      setIsLoading(false);
     }
   };
+  
 
   const calculateDistance = (coords1, coords2) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
@@ -220,7 +229,8 @@ const TutorFinder = () => {
     } catch (err) {
       console.error("An error occurred while fetching tutors.", err);
     }
-    
+    setShowFilters(false); 
+     
   };
   
   
@@ -248,10 +258,16 @@ const TutorFinder = () => {
 
   {/* Mobile Modal Pop-up */}
   {showFilters && (
-   <div
-   className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center  rounded-lg"
-  onClick={toggleFilters}>
-      <div className="bg-white p-6 rounded-lg w-full max-w-sm">
+  <div
+  className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center"
+  onClick={toggleFilters}
+  aria-labelledby="filter-modal-title"
+  role="dialog"
+>
+  <div
+    className="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm"
+    onClick={(e) => e.stopPropagation()} // Prevent click on modal from closing it
+  >
        
         <form className="space-y-4 ">
           <div className="mb-4">
@@ -268,8 +284,8 @@ const TutorFinder = () => {
             <button
               type="button"
               onClick={fetchUserCoordinates}
-              className="mt-4 bg-[#3A506B] text-white px-5 py-2 rounded-full hover:bg-[#1E3D58] transition duration-300"
-            >
+              className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+              >
               Use My Location
             </button>
           </div>
@@ -413,8 +429,8 @@ const TutorFinder = () => {
         <button
           type="button"
           onClick={fetchUserCoordinates}
-          className="mt-4 bg-[#3A506B] text-white px-5 py-2 rounded-full hover:bg-[#1E3D58] transition duration-300"
-        >
+          className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+          >
           Use My Location
         </button>
       </div>
@@ -538,146 +554,145 @@ const TutorFinder = () => {
 
 
     
-        <div className="flex flex-col items-start justify-start w-full sm:ml-0 lg:ml-8">
-  <div className="text-3xl font-bold text-[#041F96] mb-6">Tutors</div>
-  {tutors.length > 0 ? (
-    tutors.map((tutor, index) => (
-      <div
-        className="shadow rounded flex flex-col md:flex-row items-start py-4 mb-4 w-full transition transition-transform transform hover:scale-105 hover:shadow-2x  duration-300 hover:bg-gray-50  shadow-lg rounded-lg flex flex-col md:flex-row items-start border border-gray-200 py-6 px-4 mb-6 w-full md:ml-8 hover:shadow-xl transition duration-300 bg-white shadow-md rounded-lg p-6 mb-4 border-l-4 border-[#041F96]"
-        key={index}
-      >
-        {/* Image Section */}
-        <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0 ">
-  <img
-    src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
-    alt=""
-    className="w-24 h-24 object-cover rounded-full mx-2"
-  />
-</div>
-
-
-        <Link to={`/getTutor/${tutor._id}`} className="block w-full">
-        <div className="flex flex-col w-full ml-2 relative">
-  {/* Heading Section */}
-  <h2 className="text-xl font-bold flex items-center text-[#041F96]">
-  {tutor.fullName}
-  {tutor.verified && (
-  <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-4 h-4">
-    &#10003; {/* Unicode check mark */}
-  </span>
-)}
-
-</h2>
-
-<div
-  className={`text-gray-600 p-2 rounded ${
-    tutor.classCost > 0 ? "bg-green-300 text-black font-bold text-xs px-3 py-1 w-24 rounded-full hover:bg-green-400" : ""
-  }`}
->
-  {tutor.classCost > 0 ? "Online Class" : ""}
-</div>
-
-
-
-  {/* Details Section (Horizontal Layout) */}
-  <div className="flex flex-col mt-2">
-  <div className="flex justify-between items-center">
-    <div className="flex items-center gap-2">
-      <div className="bg-[#F0F4FF] p-2 rounded-full">
-        <FaMapMarkerAlt className="text-[#041F96]" />
-      </div>
-      <span className="text-sm text-gray-600">
-        {tutor.location?.city}, {tutor.location?.address},{tutor.location?.landmark}
-      </span>
-    </div>
-    
-    <span className="flex items-center text-sm text-gray-600 lg:-mr-24 mr-12 font-semibold gap-1">
-  <div className=" p-2 rounded-full flex">
-    <div className="bg-[#F0F4FF] p-2 rounded-full">
-        <FaStar className="text-[#041F96]" />
-      </div>&nbsp;&nbsp;
-    {Array.from({ length: 5 }, (_, index) => (
-      <FaStar
-        key={index}
-        className={`text-2xs mt-2 sm:text-2xs ${index < tutor.rating ? 'text-[#FFD700]' : 'text-gray-300'}`}
-      />
-    ))}
-  </div>
-  
-</span>
-
-
-
-  </div>
-
-  <div className="flex items-center gap-2 my-1">
-    <div className="bg-[#F0F4FF] p-2 rounded-full">
-      <FaGraduationCap className="text-[#041F96]" />
-    </div>
-    <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
-  </div>
-
-  <div className="flex items-center gap-2">
-    <div className="bg-[#F0F4FF] p-2 rounded-full">
-      <FaBriefcase className="text-[#041F96]" />
-    </div>
-    <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
-  </div>
-
-  <div className="flex items-center gap-2 sm:-mr-4 md:-mr-24  mt-2">
-    <span className="text-sm text-gray-600">{tutor.description?.length > 200
-        ? `${tutor.description.substring(0, 200)}...`
-        : tutor.description}</span>
-  </div>
-
-  {/* Categories */}
-  <div className="flex flex-wrap lg:-mr-24 gap-2 mt-2">
-    {tutor.categories?.slice(0, 5).map((skill, index) => (
-      <span
-        key={index}
-        className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600"
-      >
-        {skill}
-      </span>
-    ))}
-  </div>
-
-  {/* Distance Section */}
-  {userCoords && tutor.location?.coordinates && (
-    <div className="  right-12 mt-4  flex items-center gap-2">
-     
-      <span className="text-sm text-gray-600 ">
-       <strong> Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-       </strong></span>
-    </div>
-  )}
-
-  {/* View Button */}
-</div>
-
-</div>
-
-        </Link>
-        <Link to={`/getTutor/${tutor._id}`} className="block w-full">
-        {/* View Button Section */}
-        <div className="flex justify-end mt-4 px-4">
-            <button className=" hidden md:block text-white px-4 py-2 rounded-lg focus:outline-none hover:bg-[#032c6b]">
-              
-            </button>
-          </div>
-          </Link>
-      </div>
-    ))
-  ) : (
-    <div>No tutors match your criteria.</div>
-  )}
-
-
-
-
-
+<div className="flex flex-col items-start justify-start w-full sm:ml-0 lg:ml-8">
+      <div className="text-3xl font-bold text-[#041F96] mb-6">Tutors</div>
       
-        </div>
+      {/* Show Skeleton Loader while loading */}
+      {isLoading ? (
+        Array(3).fill(0).map((_, index) => (
+          <div key={index} className="animate-pulse shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row">
+            {/* Image Placeholder */}
+            <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+              <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
+            </div>
+
+            {/* Text Placeholders */}
+            <div className="flex flex-col w-full ml-2 space-y-3">
+              <div className="h-6 bg-gray-300 rounded w-2/3"></div>
+              <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+                <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+              </div>
+
+              <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-300 rounded w-2/4"></div>
+
+              <div className="flex flex-wrap gap-2">
+                <div className="h-6 w-16 bg-gray-300 rounded-full"></div>
+                <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        tutors.length > 0 ? (
+          tutors.map((tutor, index) => (
+            <div
+              className="shadow-lg rounded-lg border border-blue-400 p-6 mb-4 w-full flex flex-col md:flex-row transition-transform transform hover:scale-105 hover:shadow-xl duration-300 bg-white"
+              key={index}
+            >
+              {/* Image Section */}
+              <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
+                <img
+                  src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
+                  alt=""
+                  className="w-24 h-24 object-cover rounded-full mx-2"
+                />
+              </div>
+
+              <Link to={`/getTutor/${tutor._id}`} className="block w-full">
+                <div className="flex flex-col w-full ml-2 relative">
+                  <h2 className="text-xl font-bold flex items-center text-[#041F96]">
+                    {tutor.fullName}
+                    {tutor.verified && (
+                      <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-4 h-4">
+                        &#10003;
+                      </span>
+                    )}
+                  </h2>
+
+                  {tutor.classCost > 0 && (
+                    <div className="bg-green-300 text-black font-bold text-xs px-3 py-1 w-24 rounded-full hover:bg-green-400">
+                      Online Class
+                    </div>
+                  )}
+
+                  <div className="flex flex-col mt-2">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="bg-[#F0F4FF] p-2 rounded-full">
+                          <FaMapMarkerAlt className="text-[#041F96]" />
+                        </div>
+                        <span className="text-sm text-gray-600">
+                          {tutor.location?.city}, {tutor.location?.address}, {tutor.location?.landmark}
+                        </span>
+                      </div>
+
+                      <span className="flex items-center text-sm text-gray-600 font-semibold gap-1">
+                        <div className="p-2 rounded-full flex">
+                          <div className="bg-[#F0F4FF] p-2 rounded-full">
+                            <FaStar className="text-[#041F96]" />
+                          </div>
+                          &nbsp;&nbsp;
+                          {Array.from({ length: 5 }, (_, index) => (
+                            <FaStar
+                              key={index}
+                              className={`text-2xs mt-2 ${index < tutor.rating ? 'text-[#FFD700]' : 'text-gray-300'}`}
+                            />
+                          ))}
+                        </div>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 my-1">
+                      <div className="bg-[#F0F4FF] p-2 rounded-full">
+                        <FaGraduationCap className="text-[#041F96]" />
+                      </div>
+                      <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <div className="bg-[#F0F4FF] p-2 rounded-full">
+                        <FaBriefcase className="text-[#041F96]" />
+                      </div>
+                      <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-sm text-gray-600">
+                        {tutor.description?.length > 200
+                          ? `${tutor.description.substring(0, 200)}...`
+                          : tutor.description}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {tutor.categories?.slice(0, 5).map((skill, index) => (
+                        <span key={index} className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+
+                    {userCoords && tutor.location?.coordinates && (
+                      <div className="right-12 mt-4 flex items-center gap-2">
+                        <span className="text-sm text-gray-600">
+                          <strong>Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km</strong>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </div>
+          ))
+        ) : (
+          <div>No tutors match your criteria.</div>
+        )
+      )}
+    </div>
         
         
       </div>

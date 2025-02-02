@@ -242,7 +242,24 @@ const OrgDescription = () => {
     
   };
   if (error) return <p>{error}</p>;
-  if (!job) return <p>Loading...</p>;
+  if (!job) {
+    return (
+      <div className="animate-pulse p-6">
+        {/* Profile Image Placeholder */}
+        <div className="bg-gray-300 h-24 w-24 sm:h-32 sm:w-32 rounded-full mx-auto sm:mx-0"></div>
+  
+        {/* Name Placeholder */}
+        <div className="h-6 w-48 bg-gray-300 rounded mt-4 mx-auto sm:mx-0"></div>
+  
+        {/* Content Placeholder */}
+        <div className="mt-4 space-y-2">
+          <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto"></div>
+          <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto"></div>
+          <div className="h-4 bg-gray-300 rounded w-5/6 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">

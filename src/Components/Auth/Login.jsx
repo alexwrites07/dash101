@@ -6,6 +6,11 @@ import './Login.css';
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState("");
+    const [showOtpModal, setShowOtpModal] = useState(false);
+    const [otp, setOtp] = useState("");
+    const [newPassword, setNewPassword] = useState("");
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -127,6 +132,51 @@ export default function Login() {
     //         )}
     //     </>
     // );
+    const handleForgotPassword = async () => {
+        try {
+            const response = await fetch('https://server.avyudha.com/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: forgotEmail }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setShowForgotPassword(false);
+                setShowOtpModal(true);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert("Failed to send reset request. Please try again.");
+        }
+    };
+
+    const handleResetPassword = async () => {
+        try {
+            const response = await fetch('https://server.avyudha.com/verifyNewPassword', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: forgotEmail,
+                    newPassword,
+                    otp
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Password reset successful! Please login with your new password.");
+                setShowOtpModal(false);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert("Failed to reset password. Please try again.");
+        }
+    };
     return (
         <>
             {isLoading ? (
@@ -202,7 +252,48 @@ export default function Login() {
                                     Sign up
                                 </a>
                             </p>
+                            <p className="text-sm text-blue-600 text-center cursor-pointer hover:underline" onClick={() => setShowForgotPassword(true)}>
+                                Forgot Password?
+                            </p>
                         </form>
+                    </div>
+                </div>
+            )}
+             {showForgotPassword && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">Reset Password</h2>
+                        <input
+                            type="email"
+                            placeholder="Enter your email"
+                            className="border border-gray-300 rounded-lg w-full p-2 mb-4"
+                            onChange={(e) => setForgotEmail(e.target.value)}
+                        />
+                        <button onClick={handleForgotPassword} className="w-full bg-blue-600 text-white rounded-lg p-2">Send OTP</button>
+                        <button onClick={() => setShowForgotPassword(false)} className="w-full mt-2 bg-gray-300 rounded-lg p-2">Cancel</button>
+                    </div>
+                </div>
+            )}
+
+            {/* OTP and New Password Modal */}
+            {showOtpModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">Enter OTP & New Password</h2>
+                        <input
+                            type="text"
+                            placeholder="Enter OTP"
+                            className="border border-gray-300 rounded-lg w-full p-2 mb-2"
+                            onChange={(e) => setOtp(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Enter new password"
+                            className="border border-gray-300 rounded-lg w-full p-2 mb-4"
+                            onChange={(e) => setNewPassword(e.target.value)}
+                        />
+                        <button onClick={handleResetPassword} className="w-full bg-blue-600 text-white rounded-lg p-2">Reset Password</button>
+                        <button onClick={() => setShowOtpModal(false)} className="w-full mt-2 bg-gray-300 rounded-lg p-2">Cancel</button>
                     </div>
                 </div>
             )}
