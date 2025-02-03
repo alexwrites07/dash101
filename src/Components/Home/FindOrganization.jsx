@@ -360,7 +360,15 @@ const OrganizationFinder = () => {
 
           {/* Details Section */}
           <div className="flex-grow px-4 w-full md:w-4/6">
-            <h2 className="text-2xl font-semibold text-[#041F96] mb-4">{tutor.name}</h2>
+          <h2 className="text-2xl font-semibold text-[#041F96] flex items-center">
+  {tutor.name}
+  {tutor.identityVerified && (
+    <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
+      ✔
+    </span>
+  )}
+</h2>
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800 mt-2">
               <p className="flex items-center gap-2">

@@ -175,6 +175,33 @@ const EditEmployerProfile = () => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />
         </label>
+        <label className="block font-medium text-gray-700">Identity Verify:</label>
+<div className="flex items-center space-x-4 mt-1">
+  <label className="flex items-center">
+    <input
+      type="radio"
+      name="identityVerified"
+      value="true"
+      checked={employerData.identityVerified === "true"}
+      onChange={handleChange}
+      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+    />
+    <span className="ml-2">True</span>
+  </label>
+
+  <label className="flex items-center">
+    <input
+      type="radio"
+      name="identityVerified"
+      value="false"
+      checked={employerData.identityVerified === "false"}
+      onChange={handleChange}
+      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+    />
+    <span className="ml-2">False</span>
+  </label>
+</div>
+
 
         <label htmlFor="categories" className="block">
           Categories:

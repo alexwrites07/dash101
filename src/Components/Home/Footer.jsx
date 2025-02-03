@@ -45,7 +45,7 @@ const Footer = () => {
               <li><a href="/demoform" className="text-blue-400 hover:underline">Book your tuition tutor</a></li>
               <li><a href="/findtutor" className="text-blue-400 hover:underline">Find tutor</a></li>
               <li><a href="/organizationpost" className="text-blue-400 hover:underline">Find organisation</a></li>
-              <li><a href="/signup" className="text-blue-400 hover:underline">Signup as student/ paren</a></li>
+              <li><a href="/signup" className="text-blue-400 hover:underline">Signup as student/ parent</a></li>
             </ul>
           </div>
           <div className="w-full md:w-1/5 mb-6">
@@ -73,7 +73,8 @@ const Footer = () => {
         </div>
 
         <div className="text-center mt-8">
-          <p>© 2021 Kridha-Tutor. All Rights Reserved.</p>
+        <p>© 2025 Avyudha Consultancy Services Pvt Ltd. All rights reserved.</p>
+
         </div>
       </div>
     </footer>

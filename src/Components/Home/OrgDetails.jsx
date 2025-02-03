@@ -25,8 +25,16 @@ const OrgDescription = () => {
 
   useEffect(() => {
     const fetchJobDetails = async () => {
+      const token = localStorage.getItem('token');
       try {
-        const response = await axios.get(`https://server.avyudha.com/getOrg/${iid}`);
+        const response = await axios.get(`https://server.avyudha.com/getOrg/${iid}`,  // ✅ Fixed URL formatting
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         setJob(response.data);
       } catch (error) {
         console.error('Error fetching job details:', error);

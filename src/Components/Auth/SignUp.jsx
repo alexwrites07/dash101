@@ -36,18 +36,18 @@ export default function SignUp() {
         setIsLoading(true);
         setError(null);
         setSuccessMessage("");
-
+    
         const apiRoutes = {
             Teacher: "https://server.avyudha.com/register/tutor",
             Institution: "https://server.avyudha.com/register/organization",
             Students: "https://server.avyudha.com/register/student",
         };
-
+    
         if (currentRole === "Admin") {
             navigate("/404");
             return;
         }
-
+    
         try {
             const payload = {
                 fullName: name,
@@ -56,15 +56,21 @@ export default function SignUp() {
                 password: password,
                 phone: phone,
             };
-
+    
             const response = await axios.post(apiRoutes[currentRole], payload);
             setIsOtpSent(true);
         } catch (err) {
-            setError("Signup failed. Please try again.");
+            // ✅ Extract API error message properly
+            if (err.response && err.response.data) {
+                setError(err.response.data.message || "An error occurred. Please try again.");
+            } else {
+                setError("Network error. Please check your connection.");
+            }
         } finally {
             setIsLoading(false);
         }
     }
+    
 
     async function handleOtpSubmit(e) {
         e.preventDefault();

@@ -607,9 +607,9 @@ const TutorFinder = () => {
                   <h2 className="text-xl font-bold flex items-center text-[#041F96]">
                     {tutor.fullName}
                     {tutor.verified && (
-                      <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-4 h-4">
-                        &#10003;
-                      </span>
+                      <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
+                      ✔
+                    </span>
                     )}
                   </h2>
 
