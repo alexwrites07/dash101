@@ -33,21 +33,29 @@ const TeachingDescription = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
+        const headers = {
+          "Content-Type": "application/json",
+        };
+    
+        // Conditionally add Authorization header if token exists
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+    
         const response = await axios.get(
-          `https://server.avyudha.com/getTutor/${Id}`,  // ✅ Fixed URL formatting
+          `https://server.avyudha.com/getTutor/${Id}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
+            headers: headers,
           }
         );
+        
         setJob(response.data);
       } catch (error) {
         console.error('Error fetching job details:', error);
         setError('Failed to fetch job details. Please try again later.');
       }
     };
+    
 
     const fetchUnlockedContacts = async () => {
       console.log (Id);

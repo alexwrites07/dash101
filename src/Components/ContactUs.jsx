@@ -1,63 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineOfficeBuilding } from "react-icons/hi";
 import ContactUsForm from "./Home/ContactUsForm";
-import { useNavigate } from "react-router-dom";
+
 import axios from 'axios';
-const navigate = useNavigate();
+
 const apiKey = "AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw";
 
-useEffect(() => {
-  const detectDevTools = () => {
-    const threshold = 160; // DevTools width/height threshold
-    if (
-      window.outerWidth - window.innerWidth > threshold || 
-      window.outerHeight - window.innerHeight > threshold
-    ) {
-      navigate("/error"); // Redirect if DevTools is open
-    }
-  };
 
-  const interval = setInterval(detectDevTools, 1000); // Check every second
-
-  window.addEventListener("resize", detectDevTools);
-
-  return () => {
-    clearInterval(interval);
-    window.removeEventListener("resize", detectDevTools);
-  };
-}, [navigate]);
 export default function ContactUs() {
-  const apiKey = ''; // Use the API key from .env file
+  // Use the API key from .env file
  // This should display all available environment variables
 
   
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col mt-6 items-center mx-auto">
       <div className="lg:p-10 p-2 -mt-8 lg:mt-8 md:h-[500px] h-[200px] w-full">
-      <div
-  className="h-full w-full"
-  onContextMenu={(e) => e.preventDefault()} // Disable right-click
-  onCopy={(e) => e.preventDefault()} // Prevent copying
-  onCut={(e) => e.preventDefault()}
-  onPaste={(e) => e.preventDefault()}
-  onKeyDown={(e) => {
-    if (
-      e.key === "F12" ||
-      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C"))
-    ) {
-      e.preventDefault();
-    }
-  }}
->
+  
   <iframe
     className="h-full w-full rounded-lg shadow-2xl max-w-7xl mx-auto"
     src={`https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=25.610273,85.134448`}
     allowFullScreen
     referrerPolicy="no-referrer-when-downgrade"
-    onContextMenu={(e) => e.preventDefault()}
+    
     sandbox="allow-scripts allow-same-origin"
   />
-</div>
+
 
       </div>
       <title>24x7 Support for Your Machines | Contact Us</title>
