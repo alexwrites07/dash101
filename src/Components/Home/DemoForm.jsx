@@ -603,7 +603,7 @@ const DemoForm = () => {
       {isSubmitted ? (
        <div className="text-center">
        {/* <h2 className="text-xl font-semibold">Thank you!</h2> */}
-       <p className="mt-8">An OTP has been sent to your email. Please verify it below.</p>
+       <p className="mt-8">An OTP has been sent to your email (Check inbox/Spam Folder). Please verify it below.</p>
        {isOtpSent && (
          <form className="mt-8 border p-4 rounded-lg shadow-md">
            <input

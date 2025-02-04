@@ -55,6 +55,7 @@ export default function SignUp() {
                 email: email,
                 password: password,
                 phone: phone,
+                username:username,
                 ...(currentRole === "Institution"
                     ? { name }
                     : { fullName: name || fullName }) // Ensures fullName is set correctly for Admin
@@ -113,6 +114,7 @@ export default function SignUp() {
 
     const response = await axios.post(otpRoutes[currentRole], payload);
     setSuccessMessage("Signup successful! Redirecting...");
+    navigate('/login');
 } catch (error) {
     console.error("Error:", error.response?.data || error.message);
     alert(error.response?.data?.message || "Something went wrong.");
@@ -279,6 +281,7 @@ export default function SignUp() {
                     {/* OTP for Normal Users */}
                     {currentRole !== "Admin" && (
                         <div>
+                             <h5 className="text-xs font-bold mb-4">Check Inbox/ Spam folder </h5>
                             <label htmlFor="otp" className="block mb-1 text-xs font-medium text-[#041F96]">
                                 Enter OTP
                             </label>
@@ -346,7 +349,5 @@ export default function SignUp() {
           )}
         </>
       );
-      
-    
     
 }
