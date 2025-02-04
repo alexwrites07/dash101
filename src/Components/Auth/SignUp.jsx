@@ -14,6 +14,9 @@ export default function SignUp() {
     const [isLoading, setIsLoading] = useState(false);
     const [isOtpSent, setIsOtpSent] = useState(false);
     const [otp, setOtp] = useState("");
+    const [adminOtp, setAdminOtp]=useState("");
+    const [ownerOtp, setOwnerOtp]=useState("");
+
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
@@ -41,22 +44,28 @@ export default function SignUp() {
             Teacher: "https://server.avyudha.com/register/tutor",
             Institution: "https://server.avyudha.com/register/organization",
             Students: "https://server.avyudha.com/register/student",
+            Admin:"https://server.avyudha.com/register/admin"
         };
     
-        if (currentRole === "Admin") {
-            navigate("/404");
-            return;
-        }
+       
     
         try {
             // Adjust payload dynamically
             const payload = {
-                username: username,
                 email: email,
                 password: password,
                 phone: phone,
-                ...(currentRole === "Institution" ? { name } : { fullName: name }),
+                ...(currentRole === "Institution"
+                    ? { name }
+                    : { fullName: name || fullName }) // Ensures fullName is set correctly for Admin
             };
+            
+            // If role is Admin, remove phone since it's not needed
+            if (currentRole === "Admin") {
+                delete payload.phone;
+            }
+     
+            
     
             const response = await axios.post(apiRoutes[currentRole], payload);
             setIsOtpSent(true);
@@ -84,27 +93,33 @@ export default function SignUp() {
             Teacher: "https://server.avyudha.com/register/tutor/verify",
             Institution: "https://server.avyudha.com/register/organization/verify",
             Students: "https://server.avyudha.com/register/student/verify",
+            Admin: "https://server.avyudha.com/register/admin/verify"
         };
     
-        if (currentRole === "Admin") {
-            setError("Admin signup is not allowed.");
-            setIsLoading(false);
-            return;
-        }
+       
+    try {
+    let payload = {
+        email: email,
+        otp: otp,
+    };
+
+    if (currentRole === "Admin") {
+        payload = {
+            email: email,
+            adminOtp: adminOtp,  // Assuming `otp` is the admin OTP
+            ownerOtp: ownerOtp // Ensure `ownerOtp` is provided in state/input
+        };
+    }
+
+    const response = await axios.post(otpRoutes[currentRole], payload);
+    setSuccessMessage("Signup successful! Redirecting...");
+} catch (error) {
+    console.error("Error:", error.response?.data || error.message);
+    alert(error.response?.data?.message || "Something went wrong.");
+}
+
     
-        try {
-            const payload = {
-                email: email,
-                otp: otp,
-            };
-    
-            const response = await axios.post(otpRoutes[currentRole], payload);
-            setSuccessMessage("Signup successful! Redirecting...");
-    
-            setTimeout(() => navigate("/login"), 2000);
-        } catch (err) {
-            setError("Invalid OTP. Please try again.");
-        } finally {
+        finally {
             setIsLoading(false);
         }
     }
@@ -244,34 +259,87 @@ export default function SignUp() {
                         </button>
                         {error && <p className="text-xs text-red-500">{error}</p>}
                     </form>
-                    ) : (
-                    <form className="space-y-2" onSubmit={handleOtpSubmit}>
-                        <div>
-                        <label
-                            htmlFor="otp"
-                            className="block mb-1 text-xs font-medium text-[#041F96]"
-                        >
-                            Enter OTP
+                    ) : <form className="space-y-2" onSubmit={handleOtpSubmit}>
+                    {/* Email Field (Required for All Users) */}
+                    <div>
+                        <label htmlFor="email" className="block mb-1 text-xs font-medium text-[#041F96]">
+                            Email
                         </label>
                         <input
-                            type="text"
-                            id="otp"
+                            type="email"
+                            id="email"
                             className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
-                            placeholder="Enter OTP"
+                            placeholder="Enter your email"
                             required
-                            onChange={(e) => setOtp(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
+                    </div>
+                
+                    {/* OTP for Normal Users */}
+                    {currentRole !== "Admin" && (
+                        <div>
+                            <label htmlFor="otp" className="block mb-1 text-xs font-medium text-[#041F96]">
+                                Enter OTP
+                            </label>
+                            <input
+                                type="text"
+                                id="otp"
+                                className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                                placeholder="Enter OTP"
+                                required
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                            />
                         </div>
-                        <button
+                    )}
+                
+                    {/* Admin OTP & Owner OTP for Admin Users */}
+                    {currentRole === "Admin" && (
+                        <>
+                            <div>
+                                <label htmlFor="adminOtp" className="block mb-1 text-xs font-medium text-[#041F96]">
+                                    Admin OTP
+                                </label>
+                                <input
+                                    type="text"
+                                    id="adminOtp"
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                                    placeholder="Enter Admin OTP"
+                                    required
+                                    value={adminOtp}
+                                    onChange={(e) => setAdminOtp(e.target.value)}
+                                />
+                            </div>
+                
+                            <div>
+                                <label htmlFor="ownerOtp" className="block mb-1 text-xs font-medium text-[#041F96]">
+                                    Owner OTP
+                                </label>
+                                <input
+                                    type="text"
+                                    id="ownerOtp"
+                                    className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
+                                    placeholder="Enter Owner OTP"
+                                    required
+                                    value={ownerOtp}
+                                    onChange={(e) => setOwnerOtp(e.target.value)}
+                                />
+                            </div>
+                        </>
+                    )}
+                
+                    <button
                         type="submit"
                         className="w-full bg-[#041F96] text-white text-sm p-2 rounded-lg hover:bg-blue-700 transition"
-                        >
+                    >
                         Verify OTP
-                        </button>
-                        {error && <p className="text-xs text-red-500">{error}</p>}
-                        {successMessage && <p className="text-xs text-green-500">{successMessage}</p>}
-                    </form>
-                    )}
+                    </button>
+                
+                    {error && <p className="text-xs text-red-500">{error}</p>}
+                    {successMessage && <p className="text-xs text-green-500">{successMessage}</p>}
+                </form>
+                }
                 </div>
                 </div>
 

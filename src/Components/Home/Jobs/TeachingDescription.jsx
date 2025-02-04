@@ -248,7 +248,7 @@ const TeachingDescription = () => {
       );
       
       console.log('Contact purchase successful:', response.data);
-      alert("Contact Bought");
+      alert("Contact Bought. Please refresh.");
   
     } catch (error) {
       // Check if the error has a response and handle it

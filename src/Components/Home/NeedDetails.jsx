@@ -272,7 +272,7 @@ const NeedDescription = () => {
       );
   
       console.log('Contact purchase successful:', response.data);
-      alert('Contact bought successfully!');
+      alert('Contact bought successfully. Please refresh.');
     } catch (error) {
       if (error.response) {
         console.error('Error purchasing contact:', error.response.data);

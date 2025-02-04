@@ -136,6 +136,7 @@ const JobDescription = () => {
   
             {/* Displaying Email */}
             <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
+            <p><strong>Name:</strong> {contactDetails?.name || 'Name not available'}</p>
   
             {/* Close Button */}
             <button 
@@ -232,7 +233,7 @@ const JobDescription = () => {
         );
   
         console.log("Contact purchase successful:", purchaseResponse.data);
-        alert("Contact Bought");
+        alert("Contact Bought. Please refresh.");
       }
     } catch (error) {
       // Log the full error object for debugging

@@ -173,6 +173,7 @@ const OrgDescription = () => {
   
             {/* Displaying Email */}
             <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
+            <p><strong>Name:</strong> {contactDetails?.name || 'Name not available'}</p>
   
             {/* Close Button */}
             <button 
@@ -206,7 +207,7 @@ const OrgDescription = () => {
         }
       );
       console.log('Contact purchase successful:', response.data);
-      alert ("Contact Bought");
+      alert ("Contact Bought. Please refresh.");
     } catch (error) {
       console.error('Error purchasing contact:', error);
       alert ("Only Tutor to be able to view contact/You have already bought the contact")
