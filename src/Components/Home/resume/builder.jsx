@@ -4,6 +4,7 @@ import AcademicDetails from "./academicModal.jsx";
 import ExperienceModal from "./ExperienceModal.jsx";
 import AwardsModal from "./AwardsModal.jsx";
 import html2pdf from "html2pdf.js";
+import watermarkImage from "../../../assets/ad.png.jpeg";
 
 function ResumeBuilder() {
   const [name, setName] = useState("XYZ");
@@ -53,24 +54,41 @@ function ResumeBuilder() {
 
   const renderPDF = () => {
     const element = document.getElementById("resume");
-
+  
     html2pdf()
-      .from(element)
       .set({
-        margin: [15, 10, 25, 10], // Increased bottom margin to 20
+        margin: [15, 10, 25, 10], 
         filename: "resume.pdf",
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, letterRendering: true }, // Ensures better rendering
+        html2canvas: { scale: 2, letterRendering: true, useCORS: true },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["avoid-all", "css", "legacy"], before: ".section" }, // Moves sections to the next page properly
+        pagebreak: { mode: ["avoid-all", "css", "legacy"], before: ".section" }
       })
+      .from(element)
       .toPdf()
       .get("pdf")
-      .then(function (pdf) {
+      .then((pdf) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+        const watermarkImageWidth = 100; // Adjust as needed
+        const watermarkImageHeight = 100; // Adjust as needed
+  
+        // for (let i = 1; i <= totalPages; i++) {
+        //   pdf.setPage(i);
+        //   pdf.addImage(
+        //     watermarkImage,
+        //     "JPEG",
+        //     (pdf.internal.pageSize.getWidth() - watermarkImageWidth) / 100, // Centering the watermark
+        //     (pdf.internal.pageSize.getHeight() - watermarkImageHeight) / 100,
+        //     watermarkImageWidth,
+        //     watermarkImageHeight
+        //   );
+        // }
+  
         window.open(pdf.output("bloburl"));
-      })
-      .save();
-};
+        pdf.save();
+      });
+  };
+  
 
 
   return (
@@ -133,7 +151,7 @@ function ResumeBuilder() {
 
           {/* Desktop Preview */}
           <div className="hidden md:block flex-grow border-l border-gray-300 pl-8">
-            <Resume name={name} profileImage={profileImage} academics={academic} experiences={experiences} awards={awards} renderPDF={renderPDF} />
+            <Resume name={name} academics={academic} experiences={experiences} awards={awards} watermark={watermarkImage} renderPDF={renderPDF} />
           </div>
         </div>
       </div>
@@ -142,11 +160,18 @@ function ResumeBuilder() {
       {showPreview && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-auto shadow-lg relative">
-            <button className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full" onClick={() => setShowPreview(false)}>
+            <button className="absolute top-2 z-50 right-2 bg-red-500 text-white px-3 py-1 rounded-full" onClick={() => setShowPreview(false)}>
               ✕
             </button>
-            <Resume name={name} profileImage={profileImage} academics={academic} experiences={experiences} awards={awards} renderPDF={renderPDF} />
-          </div>
+            <Resume
+      name="John Doe"
+      
+      academics={academic}
+      experiences={experiences}
+      awards={awards}
+      renderPDF={renderPDF}
+      watermark={watermarkImage} // Pass watermark
+    /></div>
         </div>
       )}
     </div>

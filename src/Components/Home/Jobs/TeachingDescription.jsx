@@ -687,6 +687,11 @@ rows="2"
       : "Not Available to Buy"}
   </button>
 )}
+   <ContactModal 
+        contactDetails={contactDetails} 
+        isContactModalOpen={isContactModalOpen} 
+        setIsContactModalOpen={setIsContactModalOpen}
+      />
     </div>
   </div>
 

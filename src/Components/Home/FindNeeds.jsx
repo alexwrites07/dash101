@@ -206,7 +206,7 @@ const NeedsFinder = () => {
             onClick={() => setShowFilters(true)}
             className="text-white px-4 py-2 rounded-lg bg-[#041F96] hover:bg-[#032c6b] transition flex items-center gap-2"
           >
-            <HiFilter className="w-5 h-5" /> Filters
+             <HiFilter className="w-5 h-5" />
           </button>
         </div>
   

@@ -589,7 +589,7 @@ const JobPost = () => {
     {filteredJobs.map((job, index) => (
       <div
         key={index}
-        className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-12 text-xl transition-transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50 items-start py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
+        className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-8 text-xl transition-transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50 items-start py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
       >
         <Link to={`/getjobs/${job._id}`} className="block">
           {/* Job Heading */}

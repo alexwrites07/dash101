@@ -153,7 +153,7 @@ const OrganizationFinder = () => {
   };
   
   return (
-    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
+    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4 -ml-8">
       <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
         {/* Mobile Filter Button */}
         <div className="md:hidden w-full flex justify-end mb-6">
@@ -305,7 +305,7 @@ const OrganizationFinder = () => {
       .map((_, index) => (
         <div
           key={index}
-          className="animate-pulse shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row"
+          className="animate-pulse shadow-lg rounded-lg  border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row"
         >
           {/* Image Placeholder */}
           <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">

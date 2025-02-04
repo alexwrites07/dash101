@@ -12,6 +12,7 @@ import { HiOutlineLocationMarker, HiOutlineClock, HiOutlineAcademicCap } from "r
 
 const TutorFinder = () => {
   const [tutors, setTutors] = useState([]);
+  const [tutorType, setTutorType] = useState("All");
   const [distance, setdistance] = useState('');
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
@@ -36,6 +37,7 @@ const TutorFinder = () => {
     maxExpectedSalary: '',
     tags: '',
     categories:'',
+    tutorType:''
   });
 
   useEffect(() => {
@@ -198,29 +200,29 @@ const TutorFinder = () => {
   };
 
   const handleApplyFilter = async () => {
-    setTutors([]);  // Clear current tutors
-  
+    setTutors([]); // Clear current tutors
+
     try {
-      
-      const { city,totalExperience,  distance, qualifications, gender, categories } = filters;
-  
+      const { city, totalExperience, distance, qualifications, gender, categories } = filters;
+
       let queryString = `location.city=${city}&totalExperience=${totalExperience}&qualifications=${qualifications}&gender=${gender}`;
-      
+
       if (distance && userCoords) {
-        const reversedCoords = [...userCoords].reverse(); 
-        // Add distance condition to the query string if user coordinates are available
-        queryString += `&maxDistance=${distance}`;
-        queryString += `&coordinates=${reversedCoords}`;
+        const reversedCoords = [...userCoords].reverse();
+        queryString += `&maxDistance=${distance}&coordinates=${reversedCoords}`;
       }
-  
+
       if (categories.length > 0) {
-        queryString += `&categories=${categories.join(',')}`;
+        queryString += `&categories=${categories.join(",")}`;
       }
-  
+
+      if (tutorType === "Online") {
+        queryString += `&tutorType=online`;
+      }
+
       const url = `https://server.avyudha.com/getTutors?${queryString}`;
-  
       const response = await axios.get(url);
-  
+
       if (response.data && response.data.tutors) {
         setTutors(response.data.tutors);
       } else {
@@ -229,8 +231,6 @@ const TutorFinder = () => {
     } catch (err) {
       console.error("An error occurred while fetching tutors.", err);
     }
-    setShowFilters(false); 
-     
   };
   
   
@@ -270,6 +270,18 @@ const TutorFinder = () => {
   >
        
         <form className="space-y-4 ">
+        <div className=" rounded-md bg-white ">
+          <label className="block text-sm font-medium font-bold text-gray-700 mb-1"><strong>Tutor Type</strong></label>
+      <select
+        value={tutorType}
+        onChange={(e) => setTutorType(e.target.value)}
+        className="w-full p-2 border border-gray-300 rounded-md"
+      >
+        <option value="All">All</option>
+        <option value="Online">Online</option>
+      </select>
+
+    </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="city">
              <strong>City</strong> 
@@ -304,7 +316,7 @@ const TutorFinder = () => {
               className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
             />
           </div>
-
+       
           <div className="mb-4 relative">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
               <strong>Categories</strong>
@@ -415,6 +427,19 @@ const TutorFinder = () => {
   >
     <form className="space-y-4 ">
       {/* Filter Fields (Same as before for desktop) */}
+      <div className=" rounded-md bg-white ">
+      <label className="block text-sm font-medium font-bold text-gray-700 mb-1"><strong>Tutor Type</strong></label>
+      <select
+        value={tutorType}
+        onChange={(e) => setTutorType(e.target.value)}
+        className="w-full p-2 border border-gray-300 rounded-md"
+      >
+        <option value="All">All</option>
+        <option value="Online">Online</option>
+      </select>
+
+     
+    </div>
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="city">
         <strong>City</strong> 
@@ -449,7 +474,7 @@ const TutorFinder = () => {
           className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
         />
       </div>
-
+      
       <div className="mb-4 relative">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
         <strong>Categories</strong>
