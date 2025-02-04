@@ -268,11 +268,10 @@ const SubmitJobPost = () => {
       location: {
         type: "Point",
         coordinates: [latitude, longitude],
-        
         address: address,
-        city:city,
-      state:state,
-      pincode:pincode,
+        city: city,
+        state: state,
+        pincode: pincode,
       },
       salary: {
         min: parseInt(minSalary, 10),
@@ -285,19 +284,15 @@ const SubmitJobPost = () => {
       },
       experience,
       gender,
-      qualification:selectedQualifications,
+      qualification: selectedQualifications,
       careerLevel,
       description: jobDescription,
-     jobCategories:categories,
-      
-     
+      jobCategories: categories,
       maxApplicants,
       lastDateToApply: applicationDeadline,
-      
-      
       country,
     };
-
+  
     const token = localStorage.getItem("token");
     try {
       const response = await axios.post(
@@ -314,9 +309,23 @@ const SubmitJobPost = () => {
       console.log("Response:", response.data);
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to submit job post.");
+  
+      // Handle different error response structures
+      let errorMessage = "An error occurred. Please try again.";
+      if (error.response) {
+        if (error.response.data && error.response.data.message) {
+          errorMessage = error.response.data.message; // Standard API error message
+        } else if (error.response.data && typeof error.response.data === "string") {
+          errorMessage = error.response.data; // If API returns a plain text message
+        }
+      } else if (error.message) {
+        errorMessage = error.message; // Network or general errors
+      }
+  
+      alert(errorMessage);
     }
   };
+  
 
  
   const handleCategoryInputChange = (e) => {
@@ -424,43 +433,47 @@ const SubmitJobPost = () => {
           <h1 className="text-3xl font-bold mb-6">Submit a Job Post</h1>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="mb-4">
-              <label className="block text-gray-700 ">Job Title</label>
+              <label className="block text-gray-700 ">Job Title *</label>
               <input
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
+                
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-gray-700">Job Description</label>
+              <label className="block text-gray-700">Job Description *</label>
               <textarea
                 className="w-full p-2 border border-gray-300 rounded"
                 rows="4"
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
+                
               />
             </div>
 
 
             <div className="mb-4 grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700">Salary (Min)</label>
+                <label className="block text-gray-700">Salary (Min) *</label>
                 <input
                   type="number"
                   className="w-full p-2 border border-gray-300 rounded"
                   value={minSalary}
                   onChange={(e) => setMinSalary(e.target.value)}
+                  
                 />
               </div>
               <div>
-                <label className="block text-gray-700">Salary (Max)</label>
+                <label className="block text-gray-700">Salary (Max) *</label>
                 <input
                   type="number"
                   className="w-full p-2 border border-gray-300 rounded"
                   value={maxSalary}
                   onChange={(e) => setMaxSalary(e.target.value)}
+                  
                 />
               </div>
             </div>
@@ -471,6 +484,7 @@ const SubmitJobPost = () => {
                 className="w-full p-2 border border-gray-300 rounded"
                 value={salaryPeriod}
                 onChange={(e) => setSalaryPeriod(e.target.value)}
+                
               >
                 <option value="monthly">Monthly</option>
                 <option value="hourly">Hourly</option>
@@ -487,6 +501,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={careerLevel}
                   onChange={(e) => setCareerLevel(e.target.value)}
+                  
                 />
               </div>
               <div>
@@ -496,6 +511,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={experience}
                   onChange={(e) => setExperience(e.target.value)}
+                  
                 />
               </div>
             </div>
@@ -510,6 +526,7 @@ const SubmitJobPost = () => {
         className="w-full p-2 border border-gray-300 rounded-lg mb-4"
         value={qualificationInput}
         onChange={handleInputChange1}
+        
         placeholder="Type to search qualifications..."
       />
 
@@ -534,7 +551,7 @@ const SubmitJobPost = () => {
       {/* Selected Qualification */}
       {selectedQualifications&& (
         <div className="mb-4">
-          <h2 className="text-md mb-2">Selected Qualification:</h2>
+          <h2 className="text-md mb-2">Selected Qualification *:</h2>
           {/* <input
             type="text"
             value={selectedQualifications}
@@ -551,7 +568,7 @@ const SubmitJobPost = () => {
         </div>
       )}
     </div>
-    /</div>
+    </div>
 
             <div className="mb-4 grid grid-cols-2 gap-4">
               <div>
@@ -560,6 +577,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={workCommitment}
                   onChange={(e) => setWorkCommitment(e.target.value)}
+                  
                 >
                   <option value="Full-time">Full-time</option>
                   <option value="Part-time">Part-time</option>
@@ -572,6 +590,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={workMode}
                   onChange={(e) => setWorkMode(e.target.value)}
+                  
                 >
                   <option value="In-person">In-person</option>
                   <option value="Remote">Remote</option>
@@ -585,6 +604,7 @@ const SubmitJobPost = () => {
                 className="w-full p-2 border border-gray-300 rounded"
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
+                
               >
                 
                 <option value="Male">Male</option>
@@ -610,16 +630,18 @@ const SubmitJobPost = () => {
                 className="w-full p-2 border border-gray-300 rounded"
                 value={applicationDeadline}
                 onChange={(e) => setApplicationDeadline(e.target.value)}
+                
               />
             </div>
 
             <div className="mb-4">
-            <label htmlFor="categories" className="block ">Categories:</label>
+            <label htmlFor="categories" className="block ">Categories *:</label>
             <div className="mb-4 ">
         <input
           type="text"
           value={inputText1}
           onChange={handleCategoryInputChange}
+          
           placeholder="Type to search categories..."
           className="w-full p-2 border border-gray-300 rounded-lg"
         />
@@ -631,6 +653,7 @@ const SubmitJobPost = () => {
               <li
                 key={index}
                 onClick={() => handleCategorySelect(category)}
+                
                 className="cursor-pointer p-2 hover:bg-gray-100"
               >
                 {category}
@@ -653,6 +676,7 @@ const SubmitJobPost = () => {
                 {category}
                 <button
                   onClick={() => handleCategoryRemove(category)}
+                  
                   className="ml-2 text-red-500 hover:text-red-700"
                 >
                   ×
@@ -669,6 +693,7 @@ const SubmitJobPost = () => {
         type="text"
         value={tagName}
         onChange={(e) => setTagName(e.target.value)}
+        
         placeholder="Enter tag name"
         className="w-full p-2 border border-gray-300 rounded mb-2"
       />
@@ -676,7 +701,7 @@ const SubmitJobPost = () => {
         onClick={handleAddTag}
         className="px-4 py-2 bg-blue-500 text-white rounded mb-4"
       >
-        Add Tag
+        Add Tag *
       </button>
 
       {/* Display tags */}
@@ -705,6 +730,7 @@ const SubmitJobPost = () => {
                 className="w-full p-2 border border-gray-300 rounded"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                
               />
             </div>
 
@@ -716,6 +742,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  
                 />
               </div>
               <div>
@@ -725,6 +752,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={state}
                   onChange={(e) => setState(e.target.value)}
+                  
                 />
               </div>
             </div>
@@ -737,6 +765,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={pincode}
                   onChange={(e) => setPincode(e.target.value)}
+                  
                 />
               </div>
               <div>
@@ -746,6 +775,7 @@ const SubmitJobPost = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
+                  
                 />
               </div>
               </div>

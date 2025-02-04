@@ -49,12 +49,13 @@ export default function SignUp() {
         }
     
         try {
+            // Adjust payload dynamically
             const payload = {
-                fullName: name,
                 username: username,
                 email: email,
                 password: password,
                 phone: phone,
+                ...(currentRole === "Institution" ? { name } : { fullName: name }),
             };
     
             const response = await axios.post(apiRoutes[currentRole], payload);
@@ -70,6 +71,7 @@ export default function SignUp() {
             setIsLoading(false);
         }
     }
+    
     
 
     async function handleOtpSubmit(e) {

@@ -69,15 +69,15 @@ const [insta, setInsta] = useState('');
 const [website, setWebsite] = useState('');
 const [name, setName] = useState('');
 const [userName, setUserName] = useState('');
-const [fullName, setFullName] = useState('');
+const [fullNames, setFullnames] = useState('');
 const [schoolName, setSchoolName] = useState('');
 const [selectedLanguages, setSelectedLanguages] = useState([]); // State to track selected languages
 
 
 const [parentName, setParentName] = useState('');
-const [classes, setclasses] = useState('X');
-const [tags, setTags] = useState('X');
-const [rating, setRating] = useState('X');
+const [classes, setclasses] = useState('');
+const [tags, setTags] = useState('');
+const [rating, setRating] = useState('');
 const [formData, setFormData] = useState({ categories: [] });
 const [gender, setGender] = useState('');
 const [video, setVideo] = useState('');
@@ -97,7 +97,7 @@ const [experienceTime, setExperienceTime] = useState('');
 const [languages, setLanguages] = useState([]);
 const [salaryType, setSalaryType] = useState(0);
 const [salary1, setSalary1] = useState(0);
-const [salaryPeriod, setSalaryPeriod] = useState(0);
+const [salaryPeriod, setSalaryPeriod] = useState('monthly');
 
 const [salary, setSalary] = useState(0);
 const [categories, setCategories] = useState([]);
@@ -119,11 +119,12 @@ const [introductionVideo, setIntroductionVideo] = useState('');
 const [image, setImage] = useState('');
 const [organizationType, setOrganizationType] = useState('');
 
-const [latitude, setLatitude] = useState('');
-const [longitude, setLongitude] = useState('');
+const [latitude, setLatitude] = useState(0);
+const [longitude, setLongitude] = useState(0);
 const [error, setError] = useState(null); // To handle errors if geolocation fails
 const [endpoint, setEndpoint] = useState('tutor'); // Default to 'tutor'
-const [coordinates, setCoordinates] = useState(["Set to your Location","Set to your Location"]);
+const [coordinates, setCoordinates] = useState([0, 0]);
+
 const [inputText, setInputText] = useState("");
 
 const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -202,94 +203,89 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
             'Content-Type': 'application/json',
           },
         });
-
+    
         if (response.ok) {
           const data = await response.json();
-          console.log(data);
-
-          // Update state with fetched data
+    
+          // Extract location details
+          const address = data.location?.address || '';
+          const landmark = data.location?.landMark || '';
+          const country = data.location?.country || '';
+          const city = data.location?.city || '';
+          const pinCode = data.location?.pinCode || '';
+          const coordinates=data.location?.coordinates ||'';
+    
+          // Check if any location field is missing and show an alert once
+          if (!address || !landmark || !country || !city || !pinCode || (coordinates[0] === 0 && coordinates[1] === 0)) {
+            if (!window.locationAlertShown) {
+                if (coordinates[0] === 0 && coordinates[1] === 0) {
+                    alert("Enter your map location.");
+                } 
+                window.locationAlertShown = true; // Set flag to prevent multiple alerts
+            }
+        }
         
-          setName(data.name ||'');
-          setWebsite(data.website ||'');
-          setfaceBook(data.facebookId||'');
-          // setInsta(data.linkedinId || '');
+    
+          // Update state with fetched data
+          setContactAddress(address);
+          setLandmark(landmark);
+          setCountry(country);
+          setLocation(city);
+          setPin(pinCode);
+          setCoordinates(data.location?.coordinates || [0, 0]);
+    
+          // Other state updates
+          setName(data.name || '');
+          setWebsite(data.website || '');
+          setfaceBook(data.facebookId || '');
           setLinkedin(data.linkedinId || '');
           setUserName(data.username || '');
           setclasses(data.class || '');
-          setEmail (data.email);
-          setOrganizationType(data.organizationType);
-          setBoard (data.boardOfEducation);
-          setHighestQualification(data.highestQualification);
+          setEmail(data.email || '');
+          setOrganizationType(data.organizationType || '');
+          setBoard(data.boardOfEducation || '');
+          setHighestQualification(data.highestQualification || '');
           setGender(data.gender || '');
           setEducation(data.education || '');
           setContactNumber(data.contactNumber || '');
           setAge(data.age || '');
-          setEmail(data.email || '');
-          setHighestQualification(data.highestQualification || '');
           setExperienceTime(data.totalExperience || '');
           setSelectedLanguages(data.spokenLanguages || []);
-          setId(data._id||'');
-          setSalaryType(data.jobAlerts?.maxExpectedSalary.value || '');
-          setSalaryPeriod(data.jobAlerts?.maxExpectedSalary.period || '');
-          setSalary1(data.jobAlerts?.minExpectedSalary.value || '');
+          setId(data._id || '');
+          setSalaryType(data.jobAlerts?.maxExpectedSalary?.value || 0);
+          setSalaryPeriod(data.jobAlerts?.maxExpectedSalary?.period || 'monthly');
+          setSalary1(data.jobAlerts?.minExpectedSalary?.value || 0);
           setDescription(data.description || '');
-          setparentPhone (data.parentPhone || '');
-          setPhone (data.phone || '');
-          setCountry (data.location.country || '');
-          setLandmark (data.location.landMark || '');
-          setState (data.location.state || '');
-          setPin (data.location.pinCode || '');
-          setSchoolName(data.schoolName||'');
-          setParentName(data.parentName||'');
+          setparentPhone(data.parentPhone || '');
+          setPhone(data.phone || '');
+          setSchoolName(data.schoolName || '');
+          setParentName(data.parentName || '');
           setSelectedLevels(data.teachingLevels || '');
-          setLocation(data.location?.city || '');
-          setRating (data.rating || '');
+          setRating(data.rating || '');
           setCategories(data.categories || []);
           setTags(data.tags || '');
-          setAwards(data.awards||'');
-        setPastExperiences(data.pastExperiences || '');
-        setSocial(data.socialMediaLinks || '');
-          setContactAddress(data.location?.address || '');
+          setAwards(data.awards || '');
+          setPastExperiences(data.pastExperiences || '');
+          setSocial(data.socialMediaLinks || '');
           setContactAddress1(data.contactNumber || '');
-          setVideo(data.video|| '');
-          
+          setVideo(data.video || '');
           setMapsLocation(data.mapsLocation || '');
           setImage(data.image || '');
-          // setImage(data.profileImageURL || '');
-          setCoordinates(data.location?.coordinates || '');
-
-
-
-
-
-          setFullName(data.fullName);
-          setEmail(data.email);
-          const date = new Date(data.dob);
-          const day = String(date.getDate()).padStart(2, '0');  // Ensure day is two digits
-          const month = String(date.getMonth() + 1).padStart(2, '0');  // Month is zero-based, so add 1
-          const year = date.getFullYear();
-          
-          const formattedDOB = `${day}/${month}/${year}`;
-          setDOB(formattedDOB);
-          
-
-
-          setGender(data.gender);
-          setSelectedQualifications(data.qualifications);
-          setExperienceTime(data.totalExperience);
-         
+          setFullnames(data.fullName || '');
+    
+          if (data.dob) {
+            const date = new Date(data.dob);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            setDOB(`${day}/${month}/${year}`);
+          }
+    
+          setSelectedQualifications(data.qualifications || '');
           setSalary(data.salary || '');
-          // setCategories(data.tags || []);
-          setDescription(data.description);
-          setContactAddress(data.location.address);
-          setLocation(data.location.city);
-          setMapsLocation(data.location.address);
-          setLatitude(data.location.coordinates[0]);
-          setLongitude(data.location.coordinates[1]);
-          
-          // setImage(data.image || '');
-          
-          
+          setLatitude(data.location?.coordinates?.[0] || 0);
+          setLongitude(data.location?.coordinates?.[1] || 0);
+    
         } else {
           console.error('Failed to fetch data');
         }
@@ -297,8 +293,10 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
         console.error('Error fetching data:', error);
       }
     };
-
+    
+    // Call fetchData
     fetchData();
+    
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -377,45 +375,35 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
   };
   const fetchCurrentLocation = () => {
     if (navigator.geolocation) {
-      const options = {
-        enableHighAccuracy: true, // Request high accuracy
-        timeout: 10000, // Timeout after 10 seconds
-        maximumAge: 0, // Do not use cached position
-      };
-  
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
-          setCoordinates([latitude, longitude]);
-          setResponses((prev) => ({
-            ...prev,
-            location: {
-              ...prev.location,
-              coordinates: [latitude, longitude],
-            },
-          }));
+          const newCoordinates = [position.coords.latitude, position.coords.longitude];
+         
+          setCoordinates(newCoordinates);
+          setLatitude(newCoordinates[0]);
+    setLongitude(newCoordinates[1]);
         },
         (error) => {
           console.error("Error fetching location:", error);
-          alert("Unable to retrieve your location.");
-        },
-        options
+          alert("Unable to fetch location. Please enable location services.");
+        }
       );
     } else {
-      alert("Geolocation is not supported by this browser.");
+      alert("Geolocation is not supported by your browser.");
     }
   };
   // Format a date string in dd/mm/yyyy to yyyy-mm-dd format for the input
-const formatDateToInput = (dob) => {
-  const [day, month, year] = dob.split('/');
-  return `${year}-${month}-${day}`;
-};
-
-// Convert the date from yyyy-mm-dd (input value) to dd/mm/yyyy
-const formatInputToDate = (value) => {
-  const [year, month, day] = value.split('-');
-  return `${month}/${day}/${year}`;
-};
+  const formatDateToInput = (dob) => {
+    if (!dob) return ''; // Handle undefined/null case
+    const [day, month, year] = dob.split('/');
+    return `${year}-${month}-${day}`; // Convert dd/mm/yyyy to yyyy-MM-dd for input[type=date]
+  };
+  
+  const formatInputToDate = (value) => {
+    if (!value) return ''; // Handle undefined/null case
+    const [year, month, day] = value.split('-');
+    return `${day}/${month}/${year}`; // Convert yyyy-MM-dd to dd/mm/yyyy for storage
+  };
 
 
   const handleShowMap = () => {
@@ -983,7 +971,7 @@ const editimage = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // fullName,
+         
          contactNumber,
          dob,
 
@@ -1398,13 +1386,13 @@ const editimage = async () => {
         Save uploaded picture
       </button>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
+              <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    value={fullNames}
+                    onChange={(e) => setFullnames(e.target.value)}
                   />
                 </div>
                 <div>
@@ -1431,8 +1419,8 @@ const editimage = async () => {
   <input
     type="date"
     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-    value={dob ? formatDateToInput(dob)?.split('T')[0] : ''}
-    onChange={(e) => setDOB(formatInputToDate(e.target.value))}
+    value={dob ? formatDateToInput(dob) : ''} // Properly formatted for <input type="date">
+    onChange={(e) => setDOB(formatInputToDate(e.target.value))} // Convert back to dd/mm/yyyy
   />
 </div>
 
@@ -2170,8 +2158,8 @@ const editimage = async () => {
                   <input
                     type="text"
                     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    value={fullNames}
+                    onChange={(e) => setFullnames(e.target.value)}
                   />
                 </div>
                 <div>
@@ -2198,8 +2186,8 @@ const editimage = async () => {
   <input
     type="date"
     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-    value={dob ? formatDateToInput(dob)?.split('T')[0] : ''}
-    onChange={(e) => setDOB(formatInputToDate(e.target.value))}
+    value={dob ? formatDateToInput(dob) : ''} // Properly formatted for <input type="date">
+    onChange={(e) => setDOB(formatInputToDate(e.target.value))} // Convert back to dd/mm/yyyy
   />
 </div>
 
