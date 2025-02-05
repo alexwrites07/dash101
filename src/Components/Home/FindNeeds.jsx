@@ -89,7 +89,7 @@ const NeedsFinder = () => {
   };
 
 
-  const calculateDistance = (coords1, coords2) => {
+  const calculateDistance = (coords2, coords1) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
     const R = 6371;
 
@@ -397,7 +397,7 @@ const NeedsFinder = () => {
                   {tutor.typeOfClass}
                 </span>
 
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-gray-700 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-gray-700 text-2xs">
                   <div className="flex items-center gap-2">
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaMapMarkerAlt />
@@ -429,11 +429,19 @@ const NeedsFinder = () => {
                     {tutor.available}
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="bg-gray-200 p-2 rounded-full">
-                      <FaRupeeSign />
-                    </div>
-                    Rs. {tutor.salary.max}
-                  </div>
+  <div className="p-2 bg-green-200 rounded-full">
+    <FaRupeeSign className="text-black" />
+  </div>
+
+  {tutor.salary.period === "Not sure, will discuss with tutor and decide" ? (
+    <span>{tutor.salary.period}</span>
+  ) : (
+    <span>
+      Rs. {tutor.salary.max} / {tutor.salary.period}
+    </span>
+  )}
+</div>
+
                   <div className="flex items-center gap-2">
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaInfoCircle />

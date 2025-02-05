@@ -321,7 +321,7 @@ const DemoForm = () => {
                 </option>
               </select>
       
-              {['monthly', 'hourly', 'daily', 'yearly'].includes(responses.salary.period) && (
+              {['monthly', 'hourly', 'daily', 'yearly','Not sure, will discuss with tutor and decide'].includes(responses.salary.period) && (
                 <input
                   type="text"
                   name="max"

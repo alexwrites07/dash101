@@ -57,7 +57,7 @@ const FrequentlyHiringCompanies = () => {
   return (
     <div className="max-w-full mx-auto mb-4" style={{ margin: "6% 4% 4% 4%" }}>
       <h2 className="text-3xl text-[#041F96] font-bold mb-4">
-        Our Partnered Institutes / Organisation
+        Our Featured Institutes / Organisation
       </h2>
       <div className="flex items-center">
         <button
@@ -82,30 +82,33 @@ const FrequentlyHiringCompanies = () => {
                 <img
                   src={`https://server.avyudha.com/org/download/logo/${company._id}`}
                   alt={`${company.name} Logo`}
-                  className="w-36 h-36 object-contain mx-auto mb-4"
+                  className="w-36 h-36 object-contain mx-auto mb-6"
                 />
-                <h3 className="text-xl font-semibold text-[#041F96] mb-2">
-                  {company.name}
-                </h3>
-                <p className="text-sm text-gray-600 flex items-center mb-1">
-                  <FaMapMarkerAlt className="w-5 h-5 text-gray-500 mr-2" />
-                  {company.location}
-                </p>
-                <p className="text-sm text-gray-600 flex items-center">
-                  <FaIndustry className="w-5 h-5 text-gray-500 mr-2" />
-                  {company.organizationType}
-                </p>
-                <div className="flex items-center mb-4">
-        {[...Array(5)].map((_, index) => (
-          <FaStar
-            key={index}
-            className={`${
-              index < company.rating ? "text-yellow-500" : "text-gray-300"
-            } w-5 h-5`}
-          />
-        ))}
-        <span className="ml-2 text-sm text-gray-600">({company.rating || 0}/5)</span>
-      </div>
+                  <h3 className="text-xl font-semibold text-[#041F96] mb-2 text-center">
+            {company.name}
+          </h3>
+          <p className="text-sm text-gray-600 mb-4 flex items-center justify-center text-center">
+  <FaMapMarkerAlt className="w-5 h-5 text-gray-500 mr-2" />
+  {company.location}
+</p>
+
+<p className="text-sm text-gray-600 flex items-center justify-center text-center mb-4">
+  <FaIndustry className="w-5 h-5 text-gray-500 mr-2" />
+  {company.organizationType}
+</p>
+
+<div className="flex items-center justify-center mb-4">
+  {[...Array(5)].map((_, index) => (
+    <FaStar
+      key={index}
+      className={`${
+        index < company.rating ? "text-yellow-500" : "text-gray-300"
+      } w-5 h-5`}
+    />
+  ))}
+  <span className="ml-2 text-sm text-gray-600">({company.rating || 0}/5)</span>
+</div>
+
               </Link>
             </div>
           ))}

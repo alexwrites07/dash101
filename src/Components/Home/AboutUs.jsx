@@ -124,7 +124,7 @@ const AboutUs = () => {
             <h2 className="text-4xl font-bold">
               <CountUp end={500} duration={2} />
             </h2>
-            <p>500+ Cities Served</p>
+            <p>100 Organization Postings</p>
           </div>
         </div>
       </div>

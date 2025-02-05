@@ -123,7 +123,7 @@ const TutorFinder = () => {
   };
   
 
-  const calculateDistance = (coords1, coords2) => {
+  const calculateDistance = (coords2, coords1) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
     const R = 6371;
 
@@ -145,9 +145,7 @@ const TutorFinder = () => {
       Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(rLat1) * Math.cos(rLat2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    const distance = R * c;
-
-    return distance;
+    return R * c;
   };
 
   const filterByDistance = (job) => {
@@ -209,7 +207,7 @@ const TutorFinder = () => {
 
       if (distance && userCoords) {
         const reversedCoords = [...userCoords].reverse();
-        queryString += `&maxDistance=${distance}&coordinates=${reversedCoords}`;
+        queryString += `&maxDistance=${distance}&coordinates=${reversedCoords.join(",")}&`;
       }
 
       if (categories.length > 0) {
@@ -231,6 +229,7 @@ const TutorFinder = () => {
     } catch (err) {
       console.error("An error occurred while fetching tutors.", err);
     }
+    setShowFilters(false); 
   };
   
   

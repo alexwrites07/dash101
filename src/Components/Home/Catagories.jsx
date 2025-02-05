@@ -78,8 +78,8 @@ const Categories = () => {
       <div className="text-3xl font-bold text-gray-800 mb-4 text-center">Popular Teachers</div>
       <div className="text-lg text-center">Choose your favourite Tutor</div>
   
-      <div className="mt-12  flex items-center relative mb-4">
-        <button onClick={scrollLeft} className="absolute font-bold left-6 -mt-12 mb-4 bg-gray-400 text-white p-3 rounded-full shadow-lg hover:bg-gray-500 transition">
+      <div className="mt-12  flex items-center relative mb-4 -mx-8">
+        <button onClick={scrollLeft} className="absolute font-bold left-8 -mt-12 mb-4 bg-gray-400 text-white p-3 rounded-full shadow-lg hover:bg-gray-500 transition">
           &lt;
         </button>
         <div
@@ -157,7 +157,7 @@ const Categories = () => {
             </div>
           ))}
         </div>
-        <button onClick={scrollRight} className="absolute right-6 font- bold -mt-12 bg-gray-400 text-white p-3 rounded-full shadow-lg hover:bg-gray-500 transition">
+        <button onClick={scrollRight} className="absolute right-8 font- bold -mt-12 bg-gray-400 text-white p-3 rounded-full shadow-lg hover:bg-gray-500 transition">
           &gt;
         </button>
       </div>

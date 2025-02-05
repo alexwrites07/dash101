@@ -166,7 +166,7 @@ const JobPost = () => {
       skillAndExperience: prev.skillAndExperience.filter((skillAndExperience) => skillAndExperience !== skillAndExperienceToRemove),
     }));
   };
-  const calculateDistance = (coords1, coords2) => {
+  const calculateDistance = (coords2, coords1) => {
     const toRadians = (degrees) => (degrees * Math.PI) / 180;
     const R = 6371;
 
