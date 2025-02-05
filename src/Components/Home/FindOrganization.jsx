@@ -425,8 +425,8 @@ const OrganizationFinder = () => {
             {/* Distance */}
             {userCoords && tutor.location?.coordinates && (
               <p className="text-gray-700 mt-4 text-sm">
-                Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-              </p>
+                <strong>Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+                </strong> </p>
             )}
           </div>
         </Link>

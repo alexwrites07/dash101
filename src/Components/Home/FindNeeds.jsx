@@ -453,8 +453,8 @@ const NeedsFinder = () => {
                 {/* ✅ Distance Calculation */}
                 {userCoords && tutor.location?.coordinates && (
                   <div className="mt-2 text-gray-700">
-                    Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
-                  </div>
+                   <strong>Distance: {calculateDistance(userCoords, tutor.location.coordinates).toFixed(2)} km
+                   </strong> </div>
                 )}
               </Link>
             </div>
