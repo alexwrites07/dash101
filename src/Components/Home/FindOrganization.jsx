@@ -390,11 +390,25 @@ const OrganizationFinder = () => {
               </p>
 
               <p className="flex items-center gap-2">
-                <span className="bg-gray-200 p-2 rounded-full">
-                  <FaStar className="text-gray-500" />
-                </span>
-                <span className="font-medium text-gray-600">Rating: {tutor.rating}</span>
-              </p>
+ 
+
+  <span className="flex items-center text-sm text-gray-600 font-semibold gap-1">
+    <div className="p-2 rounded-full flex items-center -ml-2">
+      <div className="bg-[#F0F4FF] p-2 rounded-full flex items-center justify-center">
+        <FaStar className="bg-gray-200" />
+      </div>
+      <div className="flex ml-2">
+        {Array.from({ length: 5 }, (_, index) => (
+          <FaStar
+            key={index}
+            className={`text-xs ${index < tutor.rating ? "text-[#FFD700]" : "text-gray-300"}`}
+          />
+        ))}
+      </div>
+    </div>
+  </span>
+</p>
+
             </div>
 
             {/* Description */}
