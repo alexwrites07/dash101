@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import "./Login.css"; 
 import LoadingSpinner from "../Loading/Loading";
 import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [error, setError] = useState(null);
@@ -215,22 +219,21 @@ export default function SignUp() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         </div>
-                        <div>
-                        <label
-                            htmlFor="password"
-                            className="block mb-1 text-xs font-medium text-blue-600"
-                        >
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
-                            placeholder="••••••••"
-                            required
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        </div>
+                        <div className="relative w-full">
+            <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter new password"
+                className="border border-gray-300 rounded-lg w-full p-2 pr-10 mb-4"
+                onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-gray-600 -mt-2"
+                onClick={() => setShowPassword((prev) => !prev)}
+            >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+            </button>
+        </div>
                         <div>
                         <label
                             htmlFor="phone"

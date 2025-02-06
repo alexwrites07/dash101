@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../Loading/Loading";
 import './Login.css';
+import { FaEye, FaEyeSlash } from "react-icons/fa"; 
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("");
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [otp, setOtp] = useState("");
-    const [newPassword, setNewPassword] = useState("");
+
+    
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -222,15 +226,21 @@ export default function Login() {
                                 >
                                     Password
                                 </label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    placeholder="••••••••"
-                                    className="border border-gray-300 text-sm rounded-lg block w-full p-2 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                                    required
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
+                                <div className="relative w-full">
+            <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter new password"
+                className="border border-gray-300 rounded-lg w-full p-2 pr-10 mb-4"
+                onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-gray-600 -mt-2"
+                onClick={() => setShowPassword((prev) => !prev)}
+            >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+            </button>
+        </div>
                             </div>
                             <button
                                 type="submit"
@@ -288,12 +298,21 @@ export default function Login() {
                             className="border border-gray-300 rounded-lg w-full p-2 mb-2"
                             onChange={(e) => setOtp(e.target.value)}
                         />
-                        <input
-                            type="password"
-                            placeholder="Enter new password"
-                            className="border border-gray-300 rounded-lg w-full p-2 mb-4"
-                            onChange={(e) => setNewPassword(e.target.value)}
-                        />
+                         <div className="relative w-full">
+            <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter new password"
+                className="border border-gray-300 rounded-lg w-full p-2 pr-10 mb-4"
+                onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-gray-600 -mt-2"
+                onClick={() => setShowPassword((prev) => !prev)}
+            >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+            </button>
+        </div>
                         <button onClick={handleResetPassword} className="w-full bg-blue-600 text-white rounded-lg p-2">Reset Password</button>
                         <button onClick={() => setShowOtpModal(false)} className="w-full mt-2 bg-gray-300 rounded-lg p-2">Cancel</button>
                     </div>

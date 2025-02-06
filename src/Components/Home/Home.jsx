@@ -17,7 +17,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function HomePage() {
-  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
+  const [margin, setMargin] = useState({ margin: '2% 1% 0.5% 4%' });
   const navigate = useNavigate();
 
   const handleRedirect = () => {
