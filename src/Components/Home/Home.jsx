@@ -17,7 +17,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function HomePage() {
-  const [margin, setMargin] = useState({ margin: '2% 1% 0.5% 4%' });
+  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 4%' });
   const navigate = useNavigate();
 
   const handleRedirect = () => {
@@ -28,9 +28,11 @@ function HomePage() {
     const handleResize = () => {
       if (window.innerWidth >= 1600) {
         setMargin({ margin: '2% 12% 0.5% 12%' });
-      } else {
+      } else if (window.innerWidth >= 760) {
         setMargin({ margin: '2% 4% 0.5% 4%' });
       }
+      else
+      setMargin({margin: '2% 3% 0.5% 12% '});
     };
 
     window.addEventListener('resize', handleResize);
@@ -48,10 +50,10 @@ function HomePage() {
   }, []);
 
   return (
-    <div className="mt-12 px-4 md:px-8 lg:px-16 max-w-full mb-2" style={margin}>
+    <div className="mt-12 px-4 md:px-8 lg:px-16 max-w-full mb-2 mx-4" >
       <div
         className="flex flex-col md:flex-row items-center home2 max-w-full mb-2"
-        style={{ margin: '2% 4% 0.5% 4%' }}
+     
         data-aos="fade-up"
       >
         <div

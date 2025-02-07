@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 const apiKey = "AIzaSyAK5qSOh-x80wTOpdKP_KkoDomw0C8s4Dw"; 
 import { useParams } from 'react-router-dom';
-import { FaMapMarkerAlt, FaDollarSign, FaClipboard, FaCalendarAlt, FaCalendarDay, FaChalkboardTeacher, FaVenusMars } from "react-icons/fa";
+import { FaMapMarkerAlt, FaDollarSign,FaMoneyBillWave, FaClipboard, FaRegClock, FaCalendarAlt, FaCalendarDay, FaChalkboardTeacher, FaVenusMars } from "react-icons/fa";
 
 import axios from 'axios';
 import Map from './Jobs/Map';
@@ -343,13 +343,16 @@ const NeedDescription = () => {
 </p>
 
 <p className="flex items-center gap-2">
-  <FaDollarSign className="text-black" />
+  <FaMoneyBillWave className="text-black" />
   <strong>Salary:</strong> Up to {job.salary?.max} {job.salary?.period}
 </p>
 
-<p className="flex items-center gap-2">
-  <FaClipboard className="text-black" />
-  <strong>Requirement:</strong> {job.requirement}
+
+
+<p className="flex items-center gap-2"> 
+  <FaRegClock  className="text-black"/>
+  
+  <strong> Created:</strong> {new Date(job.createdAt).toLocaleDateString("en-GB")}
 </p>
 
 <p className="flex items-center gap-2">

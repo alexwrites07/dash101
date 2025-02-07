@@ -75,7 +75,7 @@ const DemoForm = () => {
       address: '',
       landmark: '',
       city: '',
-      pinCode: '110001',
+      pinCode: '',
       state: '',
     },
     available:'',
@@ -302,45 +302,46 @@ const DemoForm = () => {
     switch (question.type) {
       case 'salary':
         return (
-          <div className="mt-8 mb-6">
-            <div className="flex items-center">
-              <select
-                name="period"
-                value={responses.salary.period}
-                onChange={handlesalaryChange}
-                className="shadow appearance-none border rounded mr-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              >
-                <option value="">Select an option</option>
-                <option value="monthly">Monthly</option>
-                <option value="hourly">Hourly</option>
-                <option value="daily">Daily</option>
-                <option value="yearly">Yearly</option>
-                <option value="Not sure, will discuss with tutor and decide">
-                  Not sure, will discuss with tutor and decide
-                </option>
-              </select>
-      
-              {['monthly', 'hourly', 'daily', 'yearly','Not sure, will discuss with tutor and decide'].includes(responses.salary.period) && (
-                <input
-                  type="text"
-                  name="max"
-                  placeholder="Enter your maximum budget"
-                  value={responses.salary.max}
-                  onChange={(e) =>
-                    setResponses((prev) => ({
-                      ...prev,
-                      salary: {
-                        ...prev.salary,
-                        max: e.target.value,
-                      },
-                    }))
-                  }
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              )}
-            </div>
+          <div className="mt-8 mb-6 ">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+  <select
+    name="period"
+    value={responses.salary.period}
+    onChange={handlesalaryChange}
+    className="shadow appearance-none border rounded px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+    required
+  >
+    <option value="">Select an option</option>
+    <option value="monthly">Monthly</option>
+    <option value="hourly">Hourly</option>
+    <option value="daily">Daily</option>
+    <option value="yearly">Yearly</option>
+    <option value="Not sure, will discuss with tutor and decide">
+      Not sure, will discuss with tutor and decide
+    </option>
+  </select>
+
+  {['monthly', 'hourly', 'daily', 'yearly', 'Not sure, will discuss with tutor and decide'].includes(responses.salary.period) && (
+    <input
+      type="text"
+      name="max"
+      placeholder="Enter your maximum budget"
+      value={responses.salary.max}
+      onChange={(e) =>
+        setResponses((prev) => ({
+          ...prev,
+          salary: {
+            ...prev.salary,
+            max: e.target.value,
+          },
+        }))
+      }
+      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+      required
+    />
+  )}
+</div>
+
       
             {['monthly', 'hourly', 'daily', 'yearly'].includes(responses.salary.period) && (
         <div className="mt-4">
@@ -520,8 +521,8 @@ const DemoForm = () => {
         <input
           type="text"
           placeholder="PinCode"
-          value={responses.location.pincode}
-          onChange={(e) => handleLocationChange(e, 'pincode')}
+          value={responses.location.pinCode}
+          onChange={(e) => handleLocationChange(e, 'pinCode')}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
               required
         />
@@ -530,7 +531,7 @@ const DemoForm = () => {
       {!isLocationCorrect && (
         <>
           <Map
-            pincode={responses.location.pincode}
+            pincode={responses.location.pinCode}
             onCoordinatesChange={handleMapChange}
           />
           <div>

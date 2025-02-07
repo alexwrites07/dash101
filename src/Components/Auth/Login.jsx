@@ -231,7 +231,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter new password"
                 className="border border-gray-300 rounded-lg w-full p-2 pr-10 mb-4"
-                onChange={(e) => setNewPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
             />
             <button
                 type="button"

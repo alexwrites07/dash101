@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HiFilter, HiBookmark, HiOutlineBookmark } from 'react-icons/hi';
-import { FaMapMarkerAlt, FaChalkboardTeacher, FaUsers, FaVenusMars, FaClock, FaRupeeSign, FaInfoCircle } from "react-icons/fa";
+import { FaMapMarkerAlt, FaChalkboardTeacher,FaRegClock, FaUsers, FaVenusMars, FaClock, FaRupeeSign, FaInfoCircle } from "react-icons/fa";
 
 import { Link } from 'react-router-dom';
 // import { 
@@ -441,14 +441,24 @@ const NeedsFinder = () => {
     </span>
   )}
 </div>
-
                   <div className="flex items-center gap-2">
+                    <div className="bg-gray-200 p-2 rounded-full">
+                      <FaRegClock />
+                    </div>
+ 
+  
+  <strong> Created:</strong> {new Date(tutor.createdAt).toLocaleDateString("en-GB")}
+</div>
+
+                
+</div>
+                  <div className="flex items-center gap-2 mt-4">
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaInfoCircle />
                     </div>
                     {tutor.description.length > 150 ? `${tutor.description.substring(0, 150)}...` : tutor.description}
                   </div>
-                </div>
+               
 
                 {/* ✅ Distance Calculation */}
                 {userCoords && tutor.location?.coordinates && (

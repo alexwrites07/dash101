@@ -220,11 +220,16 @@ export default function SignUp() {
                         />
                         </div>
                         <div className="relative w-full">
-            <input
+           <label
+                            htmlFor="email"
+                            className="block mb-1 text-xs font-medium text-blue-600"
+                        >
+                            Password
+                        </label> <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter new password"
                 className="border border-gray-300 rounded-lg w-full p-2 pr-10 mb-4"
-                onChange={(e) => setNewPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
             />
             <button
                 type="button"

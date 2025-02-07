@@ -5,7 +5,7 @@ import Map from './Map';
 import { HiBookmark, HiOutlineBookmark} from 'react-icons/hi';
 import StarRating from './StarRating';
 import '../Home.css';
-import { FaMapMarkerAlt, FaMoneyBillWave, FaBriefcase, FaGraduationCap, FaLevelUpAlt, FaCalendarAlt, FaUserClock, FaLaptop } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaMoneyBillWave, FaRegClock, FaBriefcase, FaGraduationCap, FaLevelUpAlt, FaCalendarAlt, FaUserClock, FaLaptop } from 'react-icons/fa';
 
 
 const JobDescription = () => {
@@ -438,12 +438,12 @@ const JobDescription = () => {
   </span>
   <strong>Gender:</strong> {job.gender}
 </p>
-<p>
+{/* <p>
   <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
     <FaUserClock />
   </span>
   <strong>Commitment:</strong> {job.workDetails?.commitment}
-</p>
+</p> */}
 <p>
   <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
     <FaLaptop />
@@ -455,6 +455,12 @@ const JobDescription = () => {
     <FaCalendarAlt />
   </span>
   <strong>Application Deadline:</strong> {new Date(job.lastDateToApply).toLocaleDateString()}
+</p>
+<p>
+  <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
+    <FaRegClock />
+  </span>
+  <strong>Job Created:</strong> {new Date(job.jobCreated).toLocaleDateString("en-GB")}
 </p>
 
             {job.isClosed ? (

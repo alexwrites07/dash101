@@ -19,9 +19,27 @@ import k3 from '../../assets/image-abt/k1 (3).jpeg';
 const AboutUs = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const [margin, setMargin] = useState({ margin: '2% 4% 0.5% 12%' });
 
   useEffect(() => {
-    AOS.init({ duration: 1000 }); // Initialize AOS with a default animation duration
+    AOS.init({ duration: 1000 });
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1600) {
+        setMargin({ margin: '2% 12% 0.5% 12%' });
+      } else if (window.innerWidth >= 760) {
+        setMargin({ margin: '2% 4% 0.5% 4%' });
+      } else {
+        setMargin({ margin: '2% 4% 0.5% 12%' });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const testimonials = [
@@ -50,7 +68,8 @@ const AboutUs = () => {
   };
 
   return (
-    <div className="bg-white py-10 max-w-7xl mx-auto">
+    <div className="bg-white py-10 max-w-7xl mx-auto" style={margin}>
+
       {/* About Us Section */}
       <div data-aos="fade-up" className="bg-white p-10 rounded-lg mb-10 text-center max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold mb-5">About Us</h1>
