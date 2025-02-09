@@ -631,7 +631,7 @@ const JobPost = () => {
                 <FaMapMarkerAlt className="text-black" />
               </div>
               <span>
-                {job.location?.city}, {job.location?.address}, {job.location?.landmark}
+              {job.location?.address}, {job.location?.city},{job.location?.state},{job.location?.pinCode} 
               </span>
             </div>
 

@@ -45,48 +45,52 @@ const NeedDescription = () => {
       }
     };
     const fetchUnlockedContacts = async () => {
-      console.log (IId);
+      console.log(IId);
       try {
-        const token = localStorage.getItem('token');
-        const type = localStorage.getItem('type');
-        // Replace with the actual Id you're comparing against, make sure it's a string or ObjectId
-        console.log("Comparing Job ID:", IId);
-        if (!token || !type) return;
+        const token = localStorage.getItem("token");
+        const type = localStorage.getItem("type");
     
-        const response = await axios.get('https://server.avyudha.com/purchasedNeeds', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        // Debugging: Log the IId and response to ensure correctness
+        // Check if user type is not 'tutor'
+        if (type !== "tutor") {
+          alert("Only tutors can buy contacts.");
+          return; // Stop execution if the user is not a tutor
+        }
+    
+        if (!token) return;
+    
+        console.log("Comparing Job:", IId);
+    
+        const response = await axios.get(
+          "https://server.avyudha.com/purchasedNeeds",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+    
         console.log("Comparing Job ID:", IId);
         console.log("Response Data:", response.data);
-        
-        // Find the purchased contact that matches the provided IId
-        const purchasedContact = response.data?.find(
-          (item) => item.learningNeed._id.toString() === IId.toString() // Convert both to strings for comparison
-        ) || null;
-        
-        // Debugging: Log the purchased contact details
+    
+        const purchasedContact =
+          response.data?.find(
+            (item) => item.learningNeed._id.toString() === IId.toString()
+          ) || null;
+    
         console.log("Purchased Contact:", purchasedContact);
-        
+    
         if (purchasedContact) {
-          // Log the contactInfo if a match is found
           console.log("Contact Info:", purchasedContact._id);
-        } else {
-          console.log("No matching job found for the given IId.");
-        }
-        
-        // Set unlockedContacts status based on whether the contact is found
-        if (purchasedContact) {
           setIsContactUnlocked(true);
         } else {
+          console.log("No matching job found for the given IId.");
           setIsContactUnlocked(false);
         }
-        console.log (isContactUnlocked);
+    
+        console.log(isContactUnlocked);
       } catch (error) {
-        console.error('Error fetching unlocked contacts:', error);
+        console.error("Error fetching unlocked contacts:", error);
       }
     };
+    
     const type = localStorage.getItem('type');
     const fetchBookmarkStatus = async () => {
       try {
@@ -352,7 +356,18 @@ const NeedDescription = () => {
 <p className="flex items-center gap-2"> 
   <FaRegClock  className="text-black"/>
   
-  <strong> Created:</strong> {new Date(job.createdAt).toLocaleDateString("en-GB")}
+  <strong> Created:</strong> {" "}
+      {(() => {
+        const dateObj = new Date(job?.createdAt);
+        const hours = dateObj.getHours() % 12 || 12;
+        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+        const amPm = dateObj.getHours() >= 12 ? "PM" : "AM";
+        const day = dateObj.getDate().toString().padStart(2, "0");
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+        const year = dateObj.getFullYear();
+
+        return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
+      })()}
 </p>
 
 <p className="flex items-center gap-2">

@@ -425,7 +425,7 @@ const NeedsFinder = () => {
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaMapMarkerAlt />
                     </div>
-                    {tutor.location.city}, {tutor.location.address}, {tutor.location.landmark}
+                    {tutor.location.address}, {tutor.location.city},  {tutor.location.state},{tutor.location.pinCode}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-gray-200 p-2 rounded-full">
@@ -464,14 +464,14 @@ const NeedsFinder = () => {
     </span>
   )}
 </div>
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaRegClock />
                     </div>
  
   
   <strong> Created:</strong> {new Date(tutor.createdAt).toLocaleDateString("en-GB")}
-</div>
+</div> */}
 
                 
 </div>

@@ -460,7 +460,18 @@ const JobDescription = () => {
   <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
     <FaRegClock />
   </span>
-  <strong>Job Created:</strong> {new Date(job.jobCreated).toLocaleDateString("en-GB")}
+  <strong>Job Created:</strong>   Created:{" "}
+      {(() => {
+        const dateObj = new Date(job.jobCreated);
+        const hours = dateObj.getHours() % 12 || 12;
+        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+        const amPm = dateObj.getHours() >= 12 ? "PM" : "AM";
+        const day = dateObj.getDate().toString().padStart(2, "0");
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+        const year = dateObj.getFullYear();
+
+        return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
+      })()}
 </p>
 
             {job.isClosed ? (

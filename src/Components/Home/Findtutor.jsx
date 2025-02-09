@@ -650,7 +650,7 @@ const TutorFinder = () => {
                           <FaMapMarkerAlt className="text-[#041F96]" />
                         </div>
                         <span className="text-sm text-gray-600">
-                          {tutor.location?.city}, {tutor.location?.address}, {tutor.location?.landmark}
+                        {tutor.location?.address},{tutor.location?.city},  {tutor.location?.state},{tutor.location?.pinCode}
                         </span>
                       </div>
 

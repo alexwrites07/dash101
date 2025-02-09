@@ -153,8 +153,8 @@ const OrganizationFinder = () => {
   };
   
   return (
-    <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4 -ml-8">
-      <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] w-4/5">
+    <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
+      <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] w-4/5">
         {/* Mobile Filter Button */}
         <div className="md:hidden w-full flex justify-end mb-6">
           <button
@@ -294,7 +294,7 @@ const OrganizationFinder = () => {
 
   
         {/* Organization List */}
-        <div className="flex flex-col items-start justify-start w-full ml-8">
+        <div className="flex flex-col items-start justify-start w-full ml-8" >
   <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">
     Organizations
   </div>
@@ -377,7 +377,7 @@ const OrganizationFinder = () => {
                   <FaMapMarkerAlt className="text-gray-600" />
                 </span>
                 <span className="font-medium text-gray-600">
-                  Location: {tutor.location.city}, {tutor.location.address}
+                  Location: {tutor.location.address} ,{tutor.location.city}, {tutor.location.state}, {tutor.location.pinCode}
                 </span>
               </p>
 

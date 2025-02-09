@@ -118,7 +118,18 @@ const TransactionHistory = () => {
                     {transaction.description}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
-                    {formatDate(transaction.date)}
+                  {" "}
+      {(() => {
+        const dateObj = new Date(transaction.date);
+        const hours = dateObj.getHours() % 12 || 12;
+        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+        const amPm = dateObj.getHours() >= 12 ? "PM" : "AM";
+        const day = dateObj.getDate().toString().padStart(2, "0");
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+        const year = dateObj.getFullYear();
+
+        return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
+      })()}
                   </td>
                 </tr>
               ))}
