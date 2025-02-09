@@ -520,7 +520,7 @@ const JobDescription = () => {
             )}
           </div>
         </div>
-        <div className="md:w-2/5 ml-4 w-full ">
+        <div className="md:w-2/5 ml-4 w-full -z-40">
   {job.location?.coordinates ? (
     <Map coordinates={job.location.coordinates} />
   ) : (

@@ -118,18 +118,20 @@ const TransactionHistory = () => {
                     {transaction.description}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
-                  {" "}
-      {(() => {
-        const dateObj = new Date(transaction.date);
-        const hours = dateObj.getHours() % 12 || 12;
-        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
-        const amPm = dateObj.getHours() >= 12 ? "PM" : "AM";
-        const day = dateObj.getDate().toString().padStart(2, "0");
-        const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-        const year = dateObj.getFullYear();
+                  {(() => {
+  const dateObj = new Date(transaction.date);
 
-        return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
-      })()}
+  // Extract UTC hours and minutes
+  const hours = dateObj.getUTCHours() % 12 || 12;
+  const minutes = dateObj.getUTCMinutes().toString().padStart(2, "0");
+  const amPm = dateObj.getUTCHours() >= 12 ? "PM" : "AM";
+  const day = dateObj.getUTCDate().toString().padStart(2, "0");
+  const month = (dateObj.getUTCMonth() + 1).toString().padStart(2, "0");
+  const year = dateObj.getUTCFullYear();
+
+  return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
+})()}
+
                   </td>
                 </tr>
               ))}

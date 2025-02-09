@@ -315,13 +315,13 @@ const DemoForm = () => {
     <option value="monthly">Monthly</option>
     <option value="hourly">Hourly</option>
     <option value="daily">Daily</option>
-    <option value="yearly">Yearly</option>
+    <option value="annually">Annually</option>
     <option value="Not sure, will discuss with tutor and decide">
       Not sure, will discuss with tutor and decide
     </option>
   </select>
 
-  {['monthly', 'hourly', 'daily', 'yearly', 'Not sure, will discuss with tutor and decide'].includes(responses.salary.period) && (
+  {['monthly', 'hourly', 'daily', 'annually', 'Not sure, will discuss with tutor and decide'].includes(responses.salary.period) && (
     <input
       type="text"
       name="max"
@@ -343,55 +343,47 @@ const DemoForm = () => {
 </div>
 
       
-{['monthly', 'hourly', 'daily', 'yearly'].includes(responses.salary.period) && (
-  <div className="mt-4">
-    <input
-      type="range"
-      min={responses.salary.period === 'yearly' ? 2 : 0}
-      max={responses.salary.period === 'yearly' ? 40 : 20000}
-      step={responses.salary.period === 'yearly' ? 0.5 : 100}
-      value={
-        responses.salary.period === 'yearly'
-          ? (responses.salary.max || 2) / 100000
-          : responses.salary.max || 0
-      }
-      onChange={(e) => {
-        const newValue = responses.salary.period === 'yearly' 
-          ? e.target.value * 100000 
-          : e.target.value;
-
-        setResponses((prev) => ({
-          ...prev,
-          salary: { ...prev.salary, max: newValue },
-        }));
-      }}
-      className="slider w-full appearance-none h-2 bg-gray-400 rounded-lg focus:outline-none"
-    />
-    <style jsx>{`
-      .slider::-webkit-slider-thumb {
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: black;
-        cursor: pointer;
-      }
-      .slider::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: black;
-        cursor: pointer;
-      }
-    `}</style>
-    <p className="text-black text-sm mt-2">
-      Selected Value: 
-      {responses.salary.period === 'yearly' 
-        ? `${(responses.salary.max || 200000) / 100000} LPA` 
-        : responses.salary.max}
-    </p>
-  </div>
-)}
+{['monthly', 'hourly', 'daily', 'annually'].includes(responses.salary.period) && (
+        <div className="mt-4">
+          <input
+            type="range"
+            min="0"
+            max="20000"
+            step="100"
+            value={responses.salary.max || 0}
+            onChange={(e) =>
+              setResponses((prev) => ({
+                ...prev,
+                salary: { ...prev.salary, max: e.target.value },
+              }))
+            }
+            className="slider w-full appearance-none h-2 bg-gray-400 rounded-lg focus:outline-none"
+            style={{
+              appearance: 'black',
+            }}
+          />
+          <style jsx>{`
+            .slider::-webkit-slider-thumb {
+              appearance: none;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: black;
+              cursor: pointer;
+            }
+            .slider::-moz-range-thumb {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: black;
+              cursor: pointer;
+            }
+          `}</style>
+          <p className="text-black text-sm mt-2">
+            Selected Value: {responses.salary.max || 0}
+          </p>
+        </div>
+      )}
 
           </div>
         );

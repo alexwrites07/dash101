@@ -51,15 +51,12 @@ const NeedDescription = () => {
         const type = localStorage.getItem("type");
     
         // Check if user type is not 'tutor'
-        if (type !== "tutor") {
-          alert("Only tutors can buy contacts.");
-          return; // Stop execution if the user is not a tutor
-        }
+       
     
         if (!token) return;
     
         console.log("Comparing Job:", IId);
-    
+      
         const response = await axios.get(
           "https://server.avyudha.com/purchasedNeeds",
           {
@@ -159,7 +156,7 @@ const NeedDescription = () => {
       
       // Set unlockedContacts status based on whether the contact is found
       if (purchasedContact) {
-        setIsContactUnlocked(true);
+        setIsContactUnlocked(true);setContactDetails(purchasedContact.contactInfo); setIsContactModalOpen(true);
       } else {
         setIsContactUnlocked(false);
       }
@@ -187,7 +184,7 @@ const NeedDescription = () => {
   
             {/* Displaying Email */}
             <p><strong>Email:</strong> {contactDetails?.email || 'Email not available'}</p>
-            <p><strong>Name:</strong> {contactDetails?.name || 'Nmae not available'}</p>
+            <p><strong>Name:</strong> {contactDetails?.name || 'Name not available'}</p>
   
             {/* Close Button */}
             <button 
@@ -250,9 +247,15 @@ const NeedDescription = () => {
   };
   
   const buyContact = async () => {
+    
     if (!IId) {
       console.error('Tuition Need ID not available.');
       return;
+    }
+    const type = localStorage.getItem('type');
+    if (type !== "tutor") {
+      alert("Only tutors can buy contacts.");
+      return; // Stop execution if the user is not a tutor
     }
   
     const token = localStorage.getItem('token');
@@ -434,7 +437,8 @@ const NeedDescription = () => {
       </div>
     </div>
     </div>
-    <div className="md:w-2/5 ml-2 -mt-6">
+    <div className="md:w-2/5 md:ml-4 mt-4 md:mt-0 -z-40">
+ 
       
       {job.location?.coordinates ? (
         <Map coordinates={job.location.coordinates} />
