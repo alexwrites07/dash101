@@ -1061,7 +1061,7 @@ const editimage = async () => {
          gender,
          highestQualification,
          qualifications:selectedQualifications,
-         experienceTime,
+         totalExperience:experienceTime,
          spokenLanguages:selectedLanguages,
          jobAlerts: {
           minExpectedSalary: { value: salary1, period: salaryPeriod },
@@ -1483,7 +1483,7 @@ const editimage = async () => {
     type="date"
     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
     value={dob ? formatDateToInput(dob) : ''} // Properly formatted for <input type="date">
-    onChange={(e) => setDOB(formatInputToDate(e.target.value))} // Convert back to dd/mm/yyyy
+    onChange={(e) => setDOB((e.target.value))} // Convert back to dd/mm/yyyy
   />
 </div>
 
@@ -2274,7 +2274,7 @@ const editimage = async () => {
     type="date"
     className="w-full p-2 border border-gray-300 rounded-lg mb-4"
     value={dob ? formatDateToInput(dob) : ''} // Properly formatted for <input type="date">
-    onChange={(e) => setDOB(formatInputToDate(e.target.value))} // Convert back to dd/mm/yyyy
+    onChange={(e) => setDOB((e.target.value))} // Convert back to dd/mm/yyyy
   />
 </div>
 
