@@ -370,6 +370,7 @@ const OrganizationFinder = () => {
 </h2>
 
 
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-800 mt-2">
               <p className="flex items-center gap-2">
                 <span className="bg-gray-200 p-2 rounded-full">

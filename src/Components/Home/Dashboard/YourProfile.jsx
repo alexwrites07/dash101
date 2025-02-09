@@ -182,6 +182,9 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
       navigate("/error");
     }
     setEndpoint(type);
+    if (experienceData && !Array.isArray(experienceData)) {
+      setExperienceData([experienceData]); // Convert single object to an array
+    }
   const handleClickOutside = (event) => {
       if (
         suggestionsRef.current &&
@@ -274,12 +277,24 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
           setFullnames(data.fullName || '');
     
           if (data.dob) {
-            const date = new Date(data.dob);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            setDOB(`${day}/${month}/${year}`);
+            let date;
+          
+            if (typeof data.dob === 'string' && data.dob.includes('/')) {
+              // Parse dd/mm/yyyy format correctly
+              const [day, month, year] = data.dob.split('/');
+              date = new Date(`${year}-${month}-${day}`);
+            } else {
+              date = new Date(data.dob);
+            }
+          
+            if (!isNaN(date.getTime())) {
+              setDOB(`${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`);
+            } else {
+              console.error("Invalid date received:", data.dob);
+              setDOB('');
+            }
           }
+          
     
           setSelectedQualifications(data.qualifications || '');
           setSalary(data.salary || '');
@@ -394,17 +409,42 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
   };
   // Format a date string in dd/mm/yyyy to yyyy-mm-dd format for the input
   const formatDateToInput = (dob) => {
-    if (!dob) return ''; // Handle undefined/null case
-    const [day, month, year] = dob.split('/');
-    return `${year}-${month}-${day}`; // Convert dd/mm/yyyy to yyyy-MM-dd for input[type=date]
+    if (!dob) return ''; 
+  
+    // Handle both string and Date object cases
+    let date;
+    if (typeof dob === 'string' && dob.includes('/')) {
+      const [day, month, year] = dob.split('/');
+      date = new Date(`${year}-${month}-${day}`); // Convert to valid Date format
+    } else {
+      date = new Date(dob); // Handle ISO format or Date object
+    }
+  
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date format:", dob);
+      return ''; // Prevent errors from crashing UI
+    }
+  
+    return date.toISOString().split('T')[0]; // Convert to YYYY-MM-DD
   };
   
   const formatInputToDate = (value) => {
-    if (!value) return ''; // Handle undefined/null case
-    const [year, month, day] = value.split('-');
-    return `${day}/${month}/${year}`; // Convert yyyy-MM-dd to dd/mm/yyyy for storage
+    if (!value) return '';
+    const date = new Date(value); // `value` is in YYYY-MM-DD from input[type="date"]
+    
+    if (isNaN(date.getTime())) {
+      console.error("Invalid input date:", value);
+      return '';
+    }
+  
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+  
+    return `${day}/${month}/${year}`; // Store as dd/mm/yyyy
   };
-
+  
+  
 
   const handleShowMap = () => {
     setShowMap(true);
@@ -529,9 +569,32 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
 
 
 // const removeExperience = (index) => {
-//     const updatedExperiences = pastExperiences.filter((_, i) => i !== index);
-//     setPastExperiences(updatedExperiences);
+//   if (!Array.isArray(experienceData)) {
+//     console.error("Error: experienceData is not an array", experienceData);
+//     return;
+//   }
+
+//   setExperienceData(experienceData.filter((_, i) => i !== index));
 // };
+const removeExperience = (index) => {
+  setPastExperiences((prevExperiences) =>
+    prevExperiences.filter((_, i) => i !== index) // Remove experience at index
+  );
+};
+
+const removeAwards = (index) => {
+  setAwards((awards) =>
+    awards.filter((_, i) => i !== index) // Remove experience at index
+  );
+};
+
+
+const removeEducation = (index) => {
+  setEducation((education) =>
+    education.filter((_, i) => i !== index) // Remove experience at index
+  );
+};
+
 
 
  // Handler to update latitude state based on user input
@@ -751,13 +814,7 @@ const [showExperienceModal, setShowExperienceModal] = useState(false);
 const [showAwardModal, setShowAwardModal] = useState(false);
 const [showEducationModal, setShowEducationModal] = useState(false);
 
-const [experienceData, setExperienceData] = useState({
-  title: '',
-  start_date: '',
-  end_date: '',
-  company: '',
-  description: '',
-});
+
 const [awardData, setAwardData] = useState({
   title: '',
   year: '',
@@ -769,7 +826,13 @@ const [educationData, setEducationData] = useState({
   academy: '',
   description: '',
 });
-
+const [experienceData, setExperienceData] = useState({
+  title: '',
+  start_date: '',
+  end_date: '',
+  company: '',
+  description: '',
+});
 const handleExperienceChange = (e, field) => {
   setExperienceData({ ...experienceData, [field]: e.target.value });
 };
@@ -1523,7 +1586,7 @@ const editimage = async () => {
       {filteredQualifications.length > 0 && (
         <ul
           ref={suggestionsRef}
-          className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
+         className="absolute w-64 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10 shadow-lg"
         >
           {filteredQualifications.map((qualification, index) => (
             <li
@@ -1575,7 +1638,10 @@ const editimage = async () => {
 
         {/* Suggestions Dropdown */}
         {filteredLang.length > 0 && (
-          <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
+           <ul
+           ref={suggestionsRef}
+          className="absolute w-64 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10 shadow-lg"
+         >
             {filteredLang.map((lang, index) => (
               <li
                 key={index}
@@ -1721,7 +1787,7 @@ const editimage = async () => {
       {filteredLvl.length > 0 && (
         <ul
           ref={suggestionsRef}
-          className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10"
+         className="absolute w-64 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10 shadow-lg"
         >
           {filteredLvl.map((level, index) => (
             <li
@@ -1787,8 +1853,10 @@ const editimage = async () => {
 
         {/* Suggestions Dropdown */}
         {suggestions1.length > 0 && (
-          <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
-            {suggestions1.map((category, index) => (
+           <ul
+           ref={suggestionsRef}
+          className="absolute w-64 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10 shadow-lg"
+         > {suggestions1.map((category, index) => (
               <li
                 key={index}
                 onClick={() => handleCategorySelect(category)}
@@ -1941,14 +2009,15 @@ const editimage = async () => {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => removeExperience(index)}
-                  className="bg-red-500 text-white p-2 rounded"
-                >
-                  Remove Experience
-                </button>
-              </div>
+  <button
+    type="button"
+    onClick={() => removeExperience(index)}
+    className="bg-red-500 text-white p-2 rounded"
+  >
+    Remove Experience
+  </button>
+</div>
+
             </div>
           )}
         </div>
@@ -2009,6 +2078,15 @@ const editimage = async () => {
                   className="border p-2 w-full"
                 />
               </div>
+              <div className="flex items-center gap-2">
+  <button
+    type="button"
+    onClick={() => removeAwards(index)}
+    className="bg-red-500 text-white p-2 rounded"
+  >
+    Remove Awards
+  </button>
+</div>
             </div>
           )}
         </div>
@@ -2075,6 +2153,15 @@ const editimage = async () => {
                   className="border p-2 w-full"
                 />
               </div>
+              <div className="flex items-center gap-2">
+  <button
+    type="button"
+    onClick={() => removeEducation(index)}
+    className="bg-red-500 text-white p-2 rounded"
+  >
+    Remove Education
+  </button>
+</div>
             </div>
           )}
         </div>

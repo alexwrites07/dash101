@@ -593,14 +593,33 @@ const JobPost = () => {
       >
         <Link to={`/getjobs/${job._id}`} className="block">
           {/* Job Heading */}
-          <div className="mb-2 px-4 sm:-mx-6">
-            <h3 className="text-gray-700 font-semibold text-lg">
-              {job.companyName}
-            </h3>
-            <p className="text-2xl font-semibold text-[#041F96] -mx-6 md:mx-0">
-              {job.title}
-            </p>
-          </div>
+          <div className="mb-2 px-4 sm:-mx-6 flex flex-wrap items-center justify-between gap-4">
+  {/* Company Name & Job Title */}
+  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+    <h3 className="text-gray-700 font-semibold text-lg">{job.companyName}</h3>
+    <p className="text-2xl font-semibold text-[#041F96]">{job.title}</p>
+  </div>
+
+  {/* Job Created Date */}
+  <div className="flex items-center text-green-700 gap-2">
+    
+  <span className="text-sm sm:text-base">
+     Created:{" "}
+      {(() => {
+        const dateObj = new Date(job.jobCreated);
+        const hours = dateObj.getHours() % 12 || 12;
+        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+        const amPm = dateObj.getHours() >= 12 ? "PM" : "AM";
+        const day = dateObj.getDate().toString().padStart(2, "0");
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+        const year = dateObj.getFullYear();
+
+        return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
+      })()}
+    </span>
+  </div>
+</div>
+
 
           <br />
 
@@ -633,15 +652,7 @@ const JobPost = () => {
             </div>
 
             {/* Job Created */}
-            <div className="flex items-center gap-2 -my-1">
-              <div className="p-2 bg-gray-200 rounded-full">
-                <FaCalendarAlt className="text-black" />
-              </div>
-              <span>
-                Job Created:{" "}
-                {new Date(job.jobCreated).toLocaleDateString("en-GB")}
-              </span>
-            </div>
+            
 
             {/* Salary */}
             <div className="flex items-center gap-2 -my-1">

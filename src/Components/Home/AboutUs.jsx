@@ -103,7 +103,7 @@ const AboutUs = () => {
       </div>
 
       {/* Quality Assurance and Testimonials */}
-      <div data-aos="fade-left" className="flex flex-wrap md:flex-nowrap space-y-5 md:space-y-0 md:space-x-5 max-w-7xl mx-auto">
+      <div  className="flex flex-wrap md:flex-nowrap space-y-5 md:space-y-0 md:space-x-1 max-w-7xl mx-auto">
         <div className="bg-white p-10 rounded-lg flex-1">
           <h2 className="text-3xl font-bold mb-5">Quality Assurance</h2>
           <p>

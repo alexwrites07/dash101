@@ -492,7 +492,7 @@ const TeachingDescription = () => {
     <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
       <FaMapMarkerAlt />
     </span>
-    <strong>Location:</strong> {job.location?.city}, {job.location?.state} ({job.location?.pinCode})
+    <strong>Location:</strong> {job.location?.address},{job.location?.city}, {job.location?.state} ({job.location?.pinCode})
   </p>
   <p>
     <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
@@ -522,7 +522,7 @@ const TeachingDescription = () => {
     <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">
       <FaGraduationCap />
     </span>
-    <strong>Qualifications:</strong> {job.highestQualification}
+    <strong>Qualifications:</strong> {job.qualifications}
   </p>
   <p>
     <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-black mr-2">

@@ -392,10 +392,33 @@ const NeedsFinder = () => {
           filteredTutors.map((tutor, index) => (
             <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96] transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50">
               <Link to={`/getNeed/${tutor._id}`} className="block w-full">
-                <h3 className="text-xl font-semibold text-[#041F96]">{tutor.requirement}</h3>
-                <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded-full mt-2">
-                  {tutor.typeOfClass}
-                </span>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+  {/* Title & Created Date */}
+  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+    <h3 className="text-xl font-semibold text-[#041F96]">{tutor.requirement}</h3>
+    <span className="inline-block bg-blue-500 text-white text-sm px-3 py-1 rounded-full sm:mt-0 mt-2">
+    {tutor.typeOfClass}
+  </span>
+   
+  </div>
+
+  {/* Type of Class */}
+  <span className="text-sm sm:text-base text-green-700">
+      Created:{" "}
+      {(() => {
+        const dateObj = new Date(tutor.createdAt);
+        const hours = dateObj.getHours() % 12 || 12;
+        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+        const amPm = dateObj.getHours() >= 12 ? "PM" : "AM";
+        const day = dateObj.getDate().toString().padStart(2, "0");
+        const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+        const year = dateObj.getFullYear();
+
+        return `${hours}:${minutes} ${amPm} ${day}/${month}/${year}`;
+      })()}
+    </span>
+</div>
+
 
                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 text-gray-700 text-2xs">
                   <div className="flex items-center gap-2">

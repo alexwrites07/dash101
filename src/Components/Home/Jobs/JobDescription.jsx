@@ -412,7 +412,7 @@ const JobDescription = () => {
   <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">
     <FaMapMarkerAlt />
   </span>
-  <strong>Location:</strong> {job.location ? `${job.location.city}, ${job.location.state} (${job.location.pinCode})` : 'Location information not available'}
+  <strong>Location:</strong> {job.location ? `${job.location.address},${job.location.city}, ${job.location.state} (${job.location?.pinCode})` : 'Location information not available'}
 </p>
 <p>
   <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white mr-2">

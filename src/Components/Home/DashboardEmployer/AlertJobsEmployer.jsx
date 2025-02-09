@@ -346,8 +346,10 @@ const AlertJobs = () => {
 
         {/* Suggestions Dropdown */}
         {suggestions1.length > 0 && (
-          <ul className="absolute left-0 right-0 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10">
-            {suggestions1.map((category, index) => (
+         <ul
+         ref={suggestionsRef}
+        className="absolute w-64 bg-white border border-gray-300 rounded-lg max-h-60 overflow-y-auto z-10 shadow-lg"
+       >{suggestions1.map((category, index) => (
               <li
                 key={index}
                 onClick={() => handleCategorySelect(category)}
