@@ -346,7 +346,7 @@ const NeedDescription = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <p className="flex items-center gap-2">
   <FaMapMarkerAlt className="text-black" />
-  <strong>Location:</strong>{job.location?.address}, {job.location?.city}, {job.location?.state} ({job.location?.pinCode})
+  <strong>Location:</strong>{job.location?.address}, &nbsp;{job.location?.city},&nbsp; {job.location?.state} ({job.location?.pinCode})
 </p>
 
 <p className="flex items-center gap-2">

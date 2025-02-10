@@ -309,7 +309,7 @@ const OrgDescription = () => {
   <span className="inline-flex items-center justify-center w-6 h-6 bg-gray-400 rounded-full text-white">
     <FaMapMarkerAlt />
   </span>
-  <strong>Location:</strong> {job.location.address},{job.location.city}, {job.location?.state},{job.location?.pinCode}
+  <strong>Location:</strong> {job.location.address},&nbsp;{job.location.city}, &nbsp;{job.location?.state},&nbsp;{job.location?.pinCode}
 </p>
 
 <p className="flex items-center gap-2 mt-2">

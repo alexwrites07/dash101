@@ -604,7 +604,7 @@ const JobPost = () => {
   <div className="flex items-center text-green-700 gap-2">
     
   <span className="text-sm sm:text-base">
-     Created:{" "}
+  
       {(() => {
         const dateObj = new Date(job.jobCreated);
         const hours = dateObj.getHours() % 12 || 12;
@@ -631,7 +631,7 @@ const JobPost = () => {
                 <FaMapMarkerAlt className="text-black" />
               </div>
               <span>
-              {job.location?.address}, {job.location?.city},{job.location?.state},{job.location?.pinCode} 
+              {job.location?.address},&nbsp;{job.location?.city},&nbsp;{job.location?.state},&nbsp;{job.location?.pinCode} 
               </span>
             </div>
 

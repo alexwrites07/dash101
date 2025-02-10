@@ -404,7 +404,7 @@ const NeedsFinder = () => {
 
   {/* Type of Class */}
   <span className="text-sm sm:text-base text-green-700">
-      Created:{" "}
+     
       {(() => {
         const dateObj = new Date(tutor.createdAt);
         const hours = dateObj.getHours() % 12 || 12;
@@ -425,7 +425,7 @@ const NeedsFinder = () => {
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaMapMarkerAlt />
                     </div>
-                    {tutor.location.address}, {tutor.location.city},  {tutor.location.state},{tutor.location.pinCode}
+                    {tutor.location.address}, &nbsp;{tutor.location.city},  &nbsp;{tutor.location.state},&nbsp;{tutor.location.pinCode}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-gray-200 p-2 rounded-full">

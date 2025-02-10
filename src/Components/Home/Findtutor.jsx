@@ -267,6 +267,13 @@ const TutorFinder = () => {
     className="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm"
     onClick={(e) => e.stopPropagation()} // Prevent click on modal from closing it
   >
+    <button
+        onClick={toggleFilters}
+        className=" top-2 right-4 text-red-600 hover:text-red-600 text-2xl font-bold"
+        aria-label="Close"
+      >
+        &times;
+      </button>
        
         <form className="space-y-4 ">
         <div className=" rounded-md bg-white ">
@@ -650,7 +657,7 @@ const TutorFinder = () => {
                           <FaMapMarkerAlt className="text-[#041F96]" />
                         </div>
                         <span className="text-sm text-gray-600">
-                        {tutor.location?.address},{tutor.location?.city},  {tutor.location?.state},{tutor.location?.pinCode}
+                        {tutor.location?.address}, &nbsp;{tutor.location?.city}, &nbsp; {tutor.location?.state}, &nbsp;{tutor.location?.pinCode}
                         </span>
                       </div>
 

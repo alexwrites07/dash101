@@ -377,7 +377,7 @@ const OrganizationFinder = () => {
                   <FaMapMarkerAlt className="text-gray-600" />
                 </span>
                 <span className="font-medium text-gray-600">
-                  Location: {tutor.location.address} ,{tutor.location.city}, {tutor.location.state}, {tutor.location.pinCode}
+                  Location: {tutor.location.address} ,&nbsp;{tutor.location.city}, &nbsp;{tutor.location.state},&nbsp; {tutor.location.pinCode}
                 </span>
               </p>
 
