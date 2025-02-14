@@ -15,7 +15,7 @@ const Footer = () => {
             
       {/* Download App Section */}
       <div className="flex  mt-12 mb-6">
-        <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">
+        <a href="https://play.google.com/store/apps/details?id=com.avyudha.app" target="_blank" rel="noopener noreferrer">
           <img
             src={PlayStoreImage}
             alt="Download our app from Play Store"

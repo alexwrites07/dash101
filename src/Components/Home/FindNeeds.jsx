@@ -425,7 +425,7 @@ const NeedsFinder = () => {
                     <div className="bg-gray-200 p-2 rounded-full">
                       <FaMapMarkerAlt />
                     </div>
-                    {tutor.location.address}, &nbsp;{tutor.location.city},  &nbsp;{tutor.location.state},&nbsp;{tutor.location.pinCode}
+                    {tutor.location.landmark}, &nbsp;{tutor.location.city},  &nbsp;{tutor.location.state},&nbsp;{tutor.location.pinCode}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="bg-gray-200 p-2 rounded-full">

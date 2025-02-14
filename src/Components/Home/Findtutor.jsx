@@ -661,8 +661,26 @@ const TutorFinder = () => {
                         </span>
                       </div>
 
-                      <span className="flex items-center text-sm text-gray-600 font-semibold gap-1">
-                        <div className="p-2 rounded-full flex">
+                      
+                    </div>
+
+                    <div className="flex items-center gap-2 my-1">
+                      <div className="bg-[#F0F4FF] p-2 rounded-full">
+                        <FaGraduationCap className="text-[#041F96]" />
+                      </div>
+                      <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
+                    </div>
+                    <span className="flex items-center text-sm text-gray-600 font-semibold gap-1">
+                      <div className="bg-[#F0F4FF] p-2 rounded-full">
+                        <FaBriefcase className="text-[#041F96]" />
+                      </div>
+                      <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
+                        
+                        
+                      
+                      </span>
+                    <div className="flex items-center gap-2">
+                    <div className="mt-1 rounded-full flex">
                           <div className="bg-[#F0F4FF] p-2 rounded-full">
                             <FaStar className="text-[#041F96]" />
                           </div>
@@ -674,21 +692,6 @@ const TutorFinder = () => {
                             />
                           ))}
                         </div>
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2 my-1">
-                      <div className="bg-[#F0F4FF] p-2 rounded-full">
-                        <FaGraduationCap className="text-[#041F96]" />
-                      </div>
-                      <span className="text-sm text-gray-600">{tutor.highestQualification}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <div className="bg-[#F0F4FF] p-2 rounded-full">
-                        <FaBriefcase className="text-[#041F96]" />
-                      </div>
-                      <span className="text-sm text-gray-600">{tutor.totalExperience} years</span>
                     </div>
 
                     <div className="flex items-center gap-2 mt-2">
