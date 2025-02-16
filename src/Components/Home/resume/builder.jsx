@@ -8,6 +8,7 @@ import watermarkImage from "../../../assets/ad.png.jpeg";
 
 function ResumeBuilder() {
   const [name, setName] = useState("XYZ");
+  const [address, setAddress] = useState("XYZ");
   const [profileImage, setProfileImage] = useState("/economist.png");
   const [openAcademic, setOpenAcademic] = useState(false);
   const [openExperience, setOpenExperience] = useState(false);
@@ -40,7 +41,10 @@ function ResumeBuilder() {
 
       const tutorData = await response.json();
       setName(tutorData.fullName);
-      setAcademic(tutorData.education || []);
+      setAddress(
+        `${tutorData.location.address}, ${tutorData.location.city}, ${tutorData.location.state} - ${tutorData.location.pinCode}, ${tutorData.location.country || ''}`
+      );
+       setAcademic(tutorData.education || []);
       setExperiences(tutorData.pastExperiences || []);
       setAwards(tutorData.awards || []);
     } catch (error) {
@@ -123,6 +127,13 @@ function ResumeBuilder() {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded-md"
+              placeholder="Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
             <button className="w-64 ml-6 mb-2 p-2 bg-[#041F96] text-white rounded-md" onClick={() => setOpenAcademic(true)}>
               Edit Academic Details
             </button>
@@ -151,7 +162,7 @@ function ResumeBuilder() {
 
           {/* Desktop Preview */}
           <div className="hidden md:block flex-grow border-l border-gray-300 pl-8">
-            <Resume name={name} academics={academic} experiences={experiences} awards={awards} watermark={watermarkImage} renderPDF={renderPDF} />
+            <Resume name={name} address={address} academics={academic} experiences={experiences} awards={awards} watermark={watermarkImage} renderPDF={renderPDF} />
           </div>
         </div>
       </div>
@@ -167,6 +178,7 @@ function ResumeBuilder() {
       name="John Doe"
       
       academics={academic}
+      address={address}
       experiences={experiences}
       awards={awards}
       renderPDF={renderPDF}

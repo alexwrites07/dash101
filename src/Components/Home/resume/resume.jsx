@@ -1,7 +1,7 @@
 import React from "react";
 import watermarkImage from "../../../assets/ad.png.jpeg";
 
-const Resume = ({ name,  academics, experiences, awards, renderPDF, watermark }) => {
+const Resume = ({ name, address, academics, experiences, awards, renderPDF, watermark }) => {
   const formatText = (text) => text; // Format text if needed
 
   return (
@@ -28,7 +28,8 @@ const Resume = ({ name,  academics, experiences, awards, renderPDF, watermark })
 
       {/* Name Section */}
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-blue-800">{name.toUpperCase()}</h1><br></br>
+        <h1 className="text-3xl font-bold text-blue-800 mb-2">{name.toUpperCase()}</h1>
+        <h3 className="text-2xs  text-gray-800">{address}</h3><br></br>
         <div className="w-24 h-2 bg-blue-800 mx-auto mt-0"></div>
       </div>
 

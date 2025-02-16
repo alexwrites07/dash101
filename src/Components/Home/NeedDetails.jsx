@@ -175,7 +175,7 @@ const NeedDescription = () => {
   const ContactModal = ({ contactDetails, isContactModalOpen, setIsContactModalOpen }) => {
     return (
       isContactModalOpen && contactDetails && (
-        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-40">
           <div className="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">Contact Details</h2>
             
@@ -437,7 +437,7 @@ const NeedDescription = () => {
       </div>
     </div>
     </div>
-    <div className="md:w-2/5 md:ml-4 mt-4 md:mt-0 -z-40">
+    <div className="md:w-2/5 md:ml-4 mt-4 md:mt-0 ">
  
       
       {job.location?.coordinates ? (

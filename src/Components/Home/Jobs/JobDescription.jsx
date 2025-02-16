@@ -127,7 +127,7 @@ const JobDescription = () => {
   const ContactModal = ({ contactDetails, isContactModalOpen, setIsContactModalOpen }) => {
     return (
       isContactModalOpen && contactDetails && (
-        <div className="modal fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+        <div className="modal fixed inset-0 bg-gray-500 z-40 bg-opacity-50 flex justify-center items-center">
           <div className="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-xl font-bold mb-4">Contact Details</h2>
             
