@@ -605,8 +605,7 @@ const DemoForm = () => {
       {isSubmitted ? (
        <div className="text-center">
        {/* <h2 className="text-xl font-semibold">Thank you!</h2> */}
-       <p className="mt-8">An OTP has been sent to your email (Check inbox/Spam Folder). Please verify it below.</p>
-       {isOtpSent && (
+        {isOtpSent && (
          <form className="mt-8 border p-4 rounded-lg shadow-md">
            <input
              type="text"
@@ -615,6 +614,15 @@ const DemoForm = () => {
              placeholder="Enter OTP"
              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
            />
+                            <div className="flex items-start gap-2 mb-4">
+  <input type="checkbox" id="terms" className="mt-1" required />
+  <label htmlFor="terms" className="text-sm text-gray-700">
+    Your information will be used solely for the purpose of processing your request and will not be shared with any third parties without your explicit consent.  
+    <a href="/terms" className="text-blue-600 underline ml-1">
+      Terms and Conditions
+    </a>
+  </label>
+</div>
            <button
              onClick={handleOtpSubmit}
              type="submit"

@@ -104,7 +104,7 @@ export default function SignUp() {
        
     try {
     let payload = {
-        email: email,
+        phone: phone,
         otp: otp,
     };
 
@@ -247,9 +247,9 @@ export default function SignUp() {
                             Phone Number
                         </label>
                         <div className="flex items-center">
-                            <span className="px-2 py-1 bg-gray-200 border border-gray-300 rounded-l-lg text-sm">
-                            +91
-                            </span>
+                            {/* <span className="px-2 py-1 bg-gray-200 border border-gray-300 rounded-l-lg text-sm">
+                            
+                            </span> */}
                             <input
                             type="tel"
                             id="phone"
@@ -257,25 +257,36 @@ export default function SignUp() {
                             placeholder="XXXXXXXXXX"
                             pattern="[0-9]{10}"
                             required
-                            onChange={(e) => setPhone(`+91${e.target.value}`)}
+                            onChange={(e) => setPhone(`${e.target.value}`)}
                             />
                         </div>
                         </div>
-                        <button
-                        type="submit"
-                        className="w-full bg-[#041F96] text-white text-sm p-2 rounded-lg hover:bg-blue-700 transition"
-                        >
-                        Sign Up
-                        </button>
+                        <div className="flex items-start gap-2 mb-4">
+  <input type="checkbox" id="terms" className="mt-1" required />
+  <label htmlFor="terms" className="text-sm text-gray-700">
+    Your information will be used solely for the purpose of processing your request and will not be shared with any third parties without your explicit consent.  
+    <a href="/terms" className="text-blue-600 underline ml-1">
+      Terms and Conditions
+    </a>
+  </label>
+</div>
+
+<button
+  type="submit"
+  className="w-full bg-[#041F96] text-white text-sm p-2 rounded-lg hover:bg-blue-700 transition"
+>
+  Sign Up
+</button>
+
                         {error && <p className="text-xs text-red-500">{error}</p>}
                     </form>
                     ) : <form className="space-y-2" onSubmit={handleOtpSubmit}>
                     {/* Email Field (Required for All Users) */}
                     <div>
                         <label htmlFor="email" className="block mb-1 text-xs font-medium text-[#041F96]">
-                            Email
+                            Phone No.
                         </label>
-                        <input
+                        {/* <input
                             type="email"
                             id="email"
                             className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-black"
@@ -283,13 +294,23 @@ export default function SignUp() {
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                        />
+                        /> */}
+                        <input
+                            type="tel"
+                            id="phone"
+                            className="w-full p-2 border border-gray-300 rounded-r-lg text-sm focus:ring-black"
+                            placeholder="XXXXXXXXXX"
+                            pattern="[0-9]{10}"
+                            required
+                            value={phone}
+                            onChange={(e) => setPhone(`${e.target.value}`)}
+                            />
                     </div>
                 
                     {/* OTP for Normal Users */}
                     {currentRole !== "Admin" && (
                         <div>
-                             <h5 className="text-xs font-bold mb-4">Check Inbox/ Spam folder </h5>
+                            
                             <label htmlFor="otp" className="block mb-1 text-xs font-medium text-[#041F96]">
                                 Enter OTP
                             </label>
