@@ -11,6 +11,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("");
+    const [forgotPhone, setForgotPhone] = useState("");
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [otp, setOtp] = useState("");
 
@@ -141,7 +142,7 @@ export default function Login() {
             const response = await fetch('https://server.avyudha.com/forgot-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: forgotEmail }),
+                body: JSON.stringify({ phone: forgotPhone }),
             });
 
             const data = await response.json();
@@ -163,7 +164,7 @@ export default function Login() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    email: forgotEmail,
+                    phone: forgotPhone,
                     newPassword,
                     otp
                 }),
@@ -274,11 +275,23 @@ export default function Login() {
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                         <h2 className="text-xl font-bold mb-4">Reset Password</h2>
                         <input
-                            type="email"
-                            placeholder="Enter your email"
-                            className="border border-gray-300 rounded-lg w-full p-2 mb-4"
-                            onChange={(e) => setForgotEmail(e.target.value)}
-                        />
+    type="text"
+    placeholder="Enter your phone number"
+    className="border border-gray-300 rounded-lg w-full p-2 mb-4"
+    maxLength={10}
+    onChange={(e) => {
+        const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+        if (value.length <= 10) {
+            setForgotPhone(value);
+        }
+    }}
+    onBlur={(e) => {
+        if (e.target.value.length !== 10) {
+            alert("Phone number must be exactly 10 digits.");
+        }
+    }}
+/>
+
                         <button onClick={handleForgotPassword} className="w-full bg-blue-600 text-white rounded-lg p-2">Send OTP</button>
                         <button onClick={() => setShowForgotPassword(false)} className="w-full mt-2 bg-gray-300 rounded-lg p-2">Cancel</button>
                     </div>
@@ -287,7 +300,7 @@ export default function Login() {
 
             {/* OTP and New Password Modal */}
             {showOtpModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                         <h2 className="text-xl font-bold mb-4">Enter OTP & New Password </h2>
                     

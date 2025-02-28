@@ -26,6 +26,23 @@ const NeedsFinder = () => {
   const [userCoords, setUserCoords] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+const [itemsPerPage] = useState(10); // Adjust based on your preference
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentTutors = filteredTutors.slice(indexOfFirstItem, indexOfLastItem);
+const nextPage = () => {
+  if (currentPage < Math.ceil(filteredTutors.length / itemsPerPage)) {
+    setCurrentPage((prev) => prev + 1);
+  }
+};
+
+const prevPage = () => {
+  if (currentPage > 1) {
+    setCurrentPage((prev) => prev - 1);
+  }
+};
+
 
   const [filters, setFilters] = useState({
     genderPreference: '',
@@ -141,6 +158,7 @@ const NeedsFinder = () => {
 
   const applyFilters = async () => {
     // Build the query parameters based on available filters
+    let filteredResults = tutors; 
     const {city,distance, genderPreference,categories } = filters;
     
     // Start with the base URL
@@ -183,7 +201,11 @@ const NeedsFinder = () => {
     } catch (error) {
       console.error('Error fetching jobs:', error);
     }
-  
+ 
+      setCurrentPage(1);
+    
+    
+ 
     setShowFilters(false); // Optionally hide the filters after applying
     
   };
@@ -194,6 +216,7 @@ const NeedsFinder = () => {
     const distance = calculateDistance(userCoords, jobCoords);
     return distance <= distanceFilter;
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row mx-auto max-w-[1800px] p-4">
@@ -388,8 +411,8 @@ const NeedsFinder = () => {
         </div>
       ) : (
         // ✅ Show Actual Cards If Not Loading
-        filteredTutors.length > 0 ? (
-          filteredTutors.map((tutor, index) => (
+        currentTutors.length > 0 ? (
+          currentTutors.map((tutor, index) => (
             <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96] transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50">
               <Link to={`/getNeed/${tutor._id}`} className="block w-full">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -497,7 +520,30 @@ const NeedsFinder = () => {
           
             <p className="text-gray-700">No Tuition Needs found matching your criteria.</p>
           ))}
+          <div className="flex justify-center gap-4 mt-6">
+  <button
+    onClick={prevPage}
+    disabled={currentPage === 1}
+    className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Previous
+  </button>
+  
+  <span className="px-4 py-2 text-gray-700">
+    Page {currentPage} of {Math.ceil(filteredTutors.length / itemsPerPage)}
+  </span>
+
+  <button
+    onClick={nextPage}
+    disabled={currentPage === Math.ceil(filteredTutors.length / itemsPerPage)}
+    className={`px-4 py-2 rounded-lg ${currentPage === Math.ceil(filteredTutors.length / itemsPerPage) ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Next
+  </button>
+</div>
+
         </div>
+        
       </div>
     </div>
   );

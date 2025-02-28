@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Map from './MappinDemo'; // Import your Map component
 import categories from '../Home/Dashboard/AdminPanel/categories.json';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { Navigate } from 'react-router-dom';
 
 const questions = [
 
@@ -65,6 +67,7 @@ const questions = [
 ];
 
 const DemoForm = () => {
+  const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({
     requirement: '',
@@ -272,7 +275,7 @@ const DemoForm = () => {
   const handleOtpSubmit = async (event) => {
     event.preventDefault();
     const payload = {
-      email: responses.email,
+      phone: responses.phone,
       otp: otp,
     };
 
@@ -293,6 +296,7 @@ const DemoForm = () => {
 
       const data = await response.json();
       alert('Submitted Successfully');
+      navigate('/');
     } catch (error) {
       alert('Error verifying OTP:', error);
     }
@@ -551,7 +555,7 @@ const DemoForm = () => {
             onChange={() => setIsLocationCorrect(!isLocationCorrect)}
             required
           />
-          Click the checkbox if the location on the map is correct (the map will disappear)
+          <spacer></spacer>&nbsp;Click the checkbox if the location on the map is correct (the map will disappear)
         </label>
       </div>
             {/* <button
@@ -580,17 +584,24 @@ const DemoForm = () => {
 />
 
 <input
-  type="tel"
-  name="phone"
-  placeholder="+91XXXXXXXXXX"
-  value={responses.phone}
-  onChange={(e) => handleChange(e, 'phone')}
-  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
-  required
-  pattern="^\+91[0-9]{10}$"
-  title="Enter a valid phone number in the format +91XXXXXXXXXX"
-/>
-
+                type="tel"
+                name="phone"
+                placeholder="Enter 10-digit phone number"
+                value={responses.phone}
+                onChange={(e) => handleChange(e, 'phone')}
+                
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+            />
+<div className="flex items-start gap-2 my-4">
+  <input type="checkbox" id="terms" className="mt-1" required />
+  <label htmlFor="terms" className="text-sm text-gray-700">
+    Your information will be used solely for the purpose of processing your request and will not be shared with any third parties without your explicit consent.  
+    <a href="/terms" className="text-blue-600 underline ml-1">
+      Terms and Conditions
+    </a>
+  </label>
+</div>
 
 
           </div>
@@ -614,15 +625,7 @@ const DemoForm = () => {
              placeholder="Enter OTP"
              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
            />
-                            <div className="flex items-start gap-2 mb-4">
-  <input type="checkbox" id="terms" className="mt-1" required />
-  <label htmlFor="terms" className="text-sm text-gray-700">
-    Your information will be used solely for the purpose of processing your request and will not be shared with any third parties without your explicit consent.  
-    <a href="/terms" className="text-blue-600 underline ml-1">
-      Terms and Conditions
-    </a>
-  </label>
-</div>
+     
            <button
              onClick={handleOtpSubmit}
              type="submit"

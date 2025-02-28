@@ -11,7 +11,8 @@ const OrganizationFinder = () => {
 
 
   const toggleFilters = () => setShowFilters(!showFilters);
-
+  const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 5;
   const [org, setOrg] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [distance, setDistance] = useState('');
@@ -22,6 +23,20 @@ const OrganizationFinder = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [suggestions1, setSuggestions1] = useState([]);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTutors = org.slice(indexOfFirstItem, indexOfLastItem);
+  const nextPage = () => {
+    if (currentPage < Math.ceil(filteredTutors.length / itemsPerPage)) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+  
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     organizationType: '',
@@ -117,6 +132,33 @@ const OrganizationFinder = () => {
     const distance = calculateDistance(userCoords, jobCoords);
     return distance <= distance;
   };
+  const [filteredOrganizations, setFilteredOrganizations] = useState([]);
+
+
+useEffect(() => {
+  setFilteredOrganizations(org); // Use filtered organizations
+  setCurrentPage(1); // Reset to first page when filters are applied
+}, [org]); // Updated whenever org changes
+
+const totalPages = Math.ceil(filteredOrganizations.length / itemsPerPage);
+
+// Ensure currentPage is within valid range
+useEffect(() => {
+  if (currentPage > totalPages) {
+    setCurrentPage(totalPages);
+  }
+}, [totalPages, currentPage]);
+
+const paginatedData = filteredOrganizations.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
+
+const handlePageChange = (newPage) => {
+  if (newPage >= 1 && newPage <= totalPages) {
+    setCurrentPage(newPage);
+  }
+};
 
   const ApplyFilter = async () => {
 
@@ -149,6 +191,7 @@ const OrganizationFinder = () => {
         setOrg([]); // In case no valid data returned, set empty
       }
       setShowFilters(false); 
+      setCurrentPage(1);
      
   };
   
@@ -342,8 +385,8 @@ const OrganizationFinder = () => {
           </div>
         </div>
       ))
-  ) : org.length > 0 ? (
-    org.map((tutor, index) => (
+  ) : currentTutors.length > 0 ? (
+    currentTutors.map((tutor, index) => (
       <div
         key={index}
         className="shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row hover:shadow-xl transition transform hover:scale-105 duration-300 hover:bg-gray-50"
@@ -436,6 +479,27 @@ const OrganizationFinder = () => {
   ) : (
     <p className="text-gray-700 ml-4">No organizations found matching your criteria.</p>
   )}
+  <div className="flex justify-center gap-4 mt-6 mx-auto">
+  <button
+    onClick={prevPage}
+    disabled={currentPage === 1}
+    className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Previous
+  </button>
+  
+  <span className="px-4 py-2 text-gray-700">
+    Page {currentPage} of {Math.ceil(filteredTutors.length / itemsPerPage)}
+  </span>
+
+  <button
+    onClick={nextPage}
+    disabled={currentPage === Math.ceil(filteredTutors.length / itemsPerPage)}
+    className={`px-4 py-2 rounded-lg ${currentPage === Math.ceil(filteredTutors.length / itemsPerPage) ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Next
+  </button>
+</div>
 </div>
 
       </div>

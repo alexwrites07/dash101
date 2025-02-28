@@ -19,6 +19,23 @@ const TutorFinder = () => {
   const [rating, setRating] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 5;
+  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTutors = tutors.slice(indexOfFirstItem, indexOfLastItem);
+  const nextPage = () => {
+    if (currentPage < Math.ceil(filteredTutors.length / itemsPerPage)) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+  
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
   const [inputText, setInputText] = useState('');
   const [inputText1, setInputText1] = useState(''); // Separate state for input text
   const [suggestions, setSuggestions] = useState([]);
@@ -223,13 +240,19 @@ const TutorFinder = () => {
 
       if (response.data && response.data.tutors) {
         setTutors(response.data.tutors);
+        setFilteredTutors(response.data.tutors);
       } else {
         console.error("No tutors found with the selected filters.");
       }
     } catch (err) {
       console.error("An error occurred while fetching tutors.", err);
     }
+    setCurrentPage(1);
+    
+    
+ 
     setShowFilters(false); 
+   
   };
   
   
@@ -618,8 +641,8 @@ const TutorFinder = () => {
           </div>
         ))
       ) : (
-        tutors.length > 0 ? (
-          tutors.map((tutor, index) => (
+        currentTutors.length > 0 ? (
+          currentTutors.map((tutor, index) => (
             <div
               className="shadow-lg rounded-lg border border-blue-400 p-6 mb-4 w-full flex flex-col md:flex-row transition-transform transform hover:scale-105 hover:shadow-xl duration-300 bg-white"
               key={index}
@@ -726,6 +749,27 @@ const TutorFinder = () => {
           <div>No tutors match your criteria.</div>
         )
       )}
+        <div className="flex justify-center gap-4 mt-6 mx-auto">
+  <button
+    onClick={prevPage}
+    disabled={currentPage === 1}
+    className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Previous
+  </button>
+  
+  <span className="px-4 py-2 text-gray-700">
+    Page {currentPage} of {Math.ceil(filteredTutors.length / itemsPerPage)}
+  </span>
+
+  <button
+    onClick={nextPage}
+    disabled={currentPage === Math.ceil(filteredTutors.length / itemsPerPage)}
+    className={`px-4 py-2 rounded-lg ${currentPage === Math.ceil(filteredTutors.length / itemsPerPage) ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Next
+  </button>
+</div>
     </div>
         
         

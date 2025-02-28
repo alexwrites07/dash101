@@ -28,6 +28,23 @@ const JobPost = () => {
     
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(3); // Adjust based on your preference
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTutors = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
+  const nextPage = () => {
+    if (currentPage < Math.ceil(filteredJobs.length / itemsPerPage)) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+  
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+  
+  
   const [showFilters, setShowFilters] = useState(false);
   const jobsPerPage = 15;
   const [userCoords, setUserCoords] = useState(null);
@@ -236,7 +253,7 @@ const JobPost = () => {
   
       // If the request was successful, update the state with the filtered jobs
       if (response.ok) {
-        
+      
         setFilteredJobs(data.jobs); // Assuming the API returns the filtered list of jobs
         console.log("after",filteredJobs);
       } else {
@@ -245,7 +262,7 @@ const JobPost = () => {
     } catch (error) {
       console.error('Error fetching jobs:', error);
     }
-  
+    setCurrentPage(1);
     setShowFilters(false); // Optionally hide the filters after applying
     
   };
@@ -421,7 +438,7 @@ const JobPost = () => {
           onClick={applyFilters}
           className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
         >
-          View
+          Apply Filter
         </button>
       </form>
     </div>
@@ -537,7 +554,7 @@ const JobPost = () => {
       onClick={applyFilters}
       className="w-full bg-[#041F96] hidden md:block text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
     >
-      View
+      Apply Filter
     </button>
   </form>
 </div>
@@ -586,7 +603,7 @@ const JobPost = () => {
     <h1 className="text-3xl font-bold text-[#041F96] mb-6 ml-4">
       Available Jobs
     </h1>
-    {filteredJobs.map((job, index) => (
+    {currentTutors.map((job, index) => (
       <div
         key={index}
         className="shadow sm:-mx-6 md:mx-0 rounded-lg md:ml-6 md:-mr-8 -mr-8 text-xl transition-transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50 items-start py-4 mb-4 hover:shadow-lg bg-white shadow-md rounded-lg p-6 border-l-4 border-[#041F96]"
@@ -690,6 +707,27 @@ const JobPost = () => {
         </Link>
       </div>
     ))}
+       <div className="flex justify-center gap-4 mt-6">
+  <button
+    onClick={prevPage}
+    disabled={currentPage === 1}
+    className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Previous
+  </button>
+  
+  <span className="px-4 py-2 text-gray-700">
+    Page {currentPage} of {Math.ceil(filteredJobs.length / itemsPerPage)}
+  </span>
+
+  <button
+    onClick={nextPage}
+    disabled={currentPage === Math.ceil(filteredJobs.length / itemsPerPage)}
+    className={`px-4 py-2 rounded-lg ${currentPage === Math.ceil(filteredJobs.length / itemsPerPage) ? 'bg-gray-300' : 'bg-blue-600 text-white hover:bg-blue-800'}`}
+  >
+    Next
+  </button>
+</div>
   </div>
 ) : null}
 

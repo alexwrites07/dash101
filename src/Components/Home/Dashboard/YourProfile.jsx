@@ -2849,7 +2849,4 @@ const editimage = async () => {
   );
 };
 
-              {/* Save Buttons */}
-  
-
 export default YourProfile;

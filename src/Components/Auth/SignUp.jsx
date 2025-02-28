@@ -170,7 +170,8 @@ export default function SignUp() {
                     </div>
 
                     {!isOtpSent ? (
-                    <form className="space-y-2" onSubmit={handleSubmit}>
+                    <form className="space-y-2 " onSubmit={handleSubmit}>
+
                         <div>
                         <label
                             htmlFor="name"
