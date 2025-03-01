@@ -8,11 +8,10 @@ import { useNavigate } from "react-router-dom";
 const StudentProfileView = () => {
   const [allStudents, setAllStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [otp, setOtp] = useState("");
   const [isOtpModalVisible, setIsOtpModalVisible] = useState(false);
-
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("type");
   const navigate = useNavigate();
@@ -21,36 +20,58 @@ const StudentProfileView = () => {
     if (userType === "admin") {
       const fetchAllData = async () => {
         try {
-          const headers = {
-            Authorization: `Bearer ${token}`,
-          };
-          const studentsRes = await axios.get(
+          const headers = { Authorization: `Bearer ${token}` };
+          const { data } = await axios.get(
             "https://server.avyudha.com/admin/getStudents",
             { headers }
           );
-          setAllStudents(studentsRes.data.students);
+          setAllStudents(data.students);
+          setFilteredStudents(data.students); // Initially, show all students
         } catch (error) {
-          console.error("Error fetching data", error);
+          console.error("Error fetching students:", error);
         }
       };
       fetchAllData();
     }
   }, [token, userType]);
 
-  const handleEditClick = (studentId) => {
-    navigate(`/edit-student/${studentId}`);
-  };
+  // Debounced search effect
+  useEffect(() => {
+    const fetchStudents = async () => {
+      if (!searchQuery.trim()) {
+        setFilteredStudents(allStudents);
+        return;
+      }
+
+      try {
+        const headers = { Authorization: `Bearer ${token}` };
+        const { data } = await axios.get(
+          `https://server.avyudha.com/admin/students/search?query=${searchQuery}`,
+          { headers }
+        );
+
+        setFilteredStudents(data || []); // Ensure correct response handling
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setFilteredStudents([]); // Clear list if API call fails
+      }
+    };
+
+    // Add debounce to reduce API calls on every keystroke
+    const delaySearch = setTimeout(() => {
+      fetchStudents();
+    }, 500);
+
+    return () => clearTimeout(delaySearch); // Cleanup function to avoid multiple calls
+  }, [searchQuery, allStudents, token]);
+
+  const handleEditClick = (studentId) => navigate(`/edit-student/${studentId}`);
 
   const handleDeleteClick = async (studentId) => {
     setSelectedStudentId(studentId);
     try {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      const payload = {
-        entityType: "Student",
-        entityId: studentId,
-      };
+      const headers = { Authorization: `Bearer ${token}` };
+      const payload = { entityType: "Student", entityId: studentId };
 
       await axios.post(
         "https://server.avyudha.com/admin/hardDeleteEntity",
@@ -66,9 +87,7 @@ const StudentProfileView = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+      const headers = { Authorization: `Bearer ${token}` };
       const payload = {
         entityType: "Student",
         entityId: selectedStudentId,
@@ -81,42 +100,23 @@ const StudentProfileView = () => {
         { headers }
       );
       alert("Student profile deleted successfully");
-      setAllStudents((prevStudents) =>
-        prevStudents.filter((student) => student._id !== selectedStudentId)
-      );
+      setAllStudents((prev) => prev.filter((s) => s._id !== selectedStudentId));
+      setFilteredStudents((prev) => prev.filter((s) => s._id !== selectedStudentId));
       setIsOtpModalVisible(false);
     } catch (error) {
       console.error("Error verifying OTP and deleting:", error);
     }
   };
 
-  const filteredStudents = allStudents.filter(
-    (student) =>
-      student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.parentphone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student._id?.toLowerCase().includes(searchQuery.toLowerCase())
-
-  );
-
   return (
-    <div className="">
+    <div>
       <div className="flex flex-col items-center p-6 space-y-6 mt-24">
         <Header />
-
         <div className="flex justify-between w-full space-x-4 mb-6">
           <div className="md:w-1/4">
-          <Sidebar />
+            <Sidebar />
           </div>
           <div className="md:w-3/4 w-full flex flex-col md:flex-row justify-start gap-4">
-            {/* <button
-              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-              className="flex items-center justify-center space-x-2 bg-[#285196] text-white px-4 py-2 rounded-md"
-            >
-              <HiSortAscending className="w-6 h-6" />
-              <span>Sort</span>
-            </button> */}
             <input
               type="text"
               value={searchQuery}
@@ -133,48 +133,26 @@ const StudentProfileView = () => {
               <table className="table-auto w-full border-collapse border border-gray-200">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-4 py-2 text-left">
-                      Full Name
-                    </th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">
-                      Email
-                    </th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">
-                      Student ID
-                    </th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">
-                      Parent Phone
-                    </th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">
-                      Student Phone
-                    </th>
-                    <th className="border border-gray-300 px-4 py-2 text-center">
-                      Actions
-                    </th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Full Name</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Email</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Student ID</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Parent Phone</th>
+                    <th className="border border-gray-300 px-4 py-2 text-left">Student Phone</th>
+                    <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredStudents.map((student) => (
                     <tr key={student._id} className="hover:bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-2">
-                        {student.fullName}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {student.email}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {student._id}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {student.parentPhone}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {student.phone}
-                      </td>
+                      <td className="border border-gray-300 px-4 py-2">{student.fullName}</td>
+                      <td className="border border-gray-300 px-4 py-2">{student.email}</td>
+                      <td className="border border-gray-300 px-4 py-2">{student._id}</td>
+                      <td className="border border-gray-300 px-4 py-2">{student.parentPhone}</td>
+                      <td className="border border-gray-300 px-4 py-2">{student.phone}</td>
                       <td className="border border-gray-300 px-4 py-2 text-center flex gap-2 justify-center">
                         <button
                           onClick={() => handleEditClick(student._id)}
-                          className="text-white bg-[#285196] px-3 py-2 rounded-md mr-2"
+                          className="text-white bg-[#285196] px-3 py-2 rounded-md"
                         >
                           Edit
                         </button>
@@ -194,37 +172,6 @@ const StudentProfileView = () => {
             )}
           </div>
         </div>
-
-        {isOtpModalVisible && (
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-md shadow-md">
-              <h2 className="text-lg font-semibold mb-4">
-                Enter OTP to confirm deletion
-              </h2>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                placeholder="Enter OTP"
-                className="px-4 py-2 border border-gray-300 rounded-md w-full mb-4"
-              />
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={() => setIsOtpModalVisible(false)}
-                  className="bg-gray-300 px-4 py-2 rounded-md"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleConfirmDelete}
-                  className="bg-red-500 text-white px-4 py-2 rounded-md"
-                >
-                  Confirm Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
