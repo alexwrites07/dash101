@@ -3,15 +3,15 @@ import PlayStoreImage from '../../assets/playstore.png'; // Add your play store 
 
 const Footer = () => {
   return (
-    <footer className="bg-[#041F96] text-white py-8 max-w-[1850px] mx-auto">
+    <footer className="bg-[#041F96] text-white py-8 max-w-[1850px] mx-auto ">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap">
           {/* Contact Information */}
-          <div className="w-full md:w-1/5 mb-6 ">
-            <h2 className="text-xl font-bold mb-4">Contact Us</h2>
-            <p className='text-2xs'>Avyudha Consultacy Services </p>
-            <p>B HUB, 5th floor, Block A, Maurya Lok Complex</p>
-            <p>PATNA, Bihar,India – 800001</p>
+          <div className="w-full md:w-1/5 mb-4 p-2">
+            <h2 className="text-xl font-bold mb-4 -ml-4">Contact Us</h2>
+            <p className='text-2xs -ml-4 '>Avyudha Consultacy Services Pvt Ltd.</p>
+            <p className='text-2xs -ml-4 mr-4'>B HUB, 5th floor, Block A, Maurya Lok Complex</p>
+            <p className='text-2xs -ml-4'>PATNA, Bihar,India – 800001</p>
             
       {/* Download App Section */}
       <div className="flex  mt-12 mb-6">
