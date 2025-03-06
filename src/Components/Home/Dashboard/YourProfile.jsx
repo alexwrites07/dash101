@@ -1027,6 +1027,7 @@ const editimage = async () => {
     try {
       setIsSaving(true);
       const token = localStorage.getItem('token');
+  
       const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
         method: 'PUT',
         headers: {
@@ -1034,73 +1035,91 @@ const editimage = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-         
-         contactNumber,
-         dob,
-
-          
-         
-          // gender,
-          // age,
-          // email,
-          // highestQualification,
-          // totalExperience:experienceTime,
-          // languages,
-          // jobAlerts: {
-          //   minExpectedSalary: {
-          //       value: salary,
-                
-          //   },
-          //   maxExpectedSalary: {
-          //     value: maxExpectedSalary,
-              
-
-
-          // },
-          // },
-         gender,
-         highestQualification,
-         qualifications:selectedQualifications,
-         totalExperience:experienceTime,
-         spokenLanguages:selectedLanguages,
-         jobAlerts: {
-          minExpectedSalary: { value: salary1, period: salaryPeriod },
-          maxExpectedSalary: { value: salaryType, period: salaryPeriod },
-          
-         
-        },
-         teachingLevels:selectedLevels,
-         video,
-         categories,
-         description,
-         pastExperiences,
-         awards,
-         education,
-
-        
-          // categories,
-          // description:description,
+          dob,
+          gender,
+          highestQualification,
+          qualifications: selectedQualifications,
+          totalExperience: experienceTime,
+          spokenLanguages: selectedLanguages,
+          jobAlerts: {
+            minExpectedSalary: { value: salary1, period: salaryPeriod },
+            maxExpectedSalary: { value: salaryType, period: salaryPeriod },
+            jobs: [],
+          },
+          teachingLevels: selectedLevels,
+          video,
+          categories,
+          description,
+          pastExperiences,
+          awards,
+          education,
           location: {
-            
             address: contactAddress,
             city: location,
-            coordinates:
-            [latitude,longitude]
+            coordinates: [latitude, longitude],
           },
-          
-          
-        
         }),
       });
-      console.log (response);
+  
+      console.log(response);
       console.log(coordinates);
       console.log(token);
       setIsSaving(false);
+  
       if (response.ok) {
         alert('Profile information saved successfully!');
       } else {
-        alert('Failed to save profile information.');
-        console.log(response);
+        const errorData = await response.json(); // Extract error response JSON
+        alert(`Error: ${errorData.message || 'Failed to save profile information.'}`);
+        console.error(errorData);
+      }
+    } catch (error) {
+      console.error('Error saving profile information:', error);
+      alert(`An error occurred: ${error.message || 'Something went wrong.'}`);
+      setIsSaving(false);
+    }
+  };
+  
+  const savePersonalInfo2 = async () => {
+    try {
+      setIsSaving(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          class: classes,
+          schoolName,
+          parentName,
+          board,
+          dob,
+          location: {
+            address: contactAddress,
+            city: location,
+            pinCode: pin,
+            state: state,
+            coordinates: [latitude, longitude],
+          },
+          image,
+        }),
+      });
+  
+      console.log(response);
+      console.log(coordinates);
+      console.log(token);
+  
+      setIsSaving(false);
+  
+      if (response.ok) {
+        alert('Profile information saved successfully!');
+      } else {
+        const errorData = await response.json(); // Extract response JSON
+        alert(`Error: ${errorData.message || 'Failed to save profile information.'}`);
+        console.log(errorData);
       }
     } catch (error) {
       console.error('Error saving profile information:', error);
@@ -1108,78 +1127,7 @@ const editimage = async () => {
       setIsSaving(false);
     }
   };
-  const savePersonalInfo2 = async () => {
-    try {
-      setIsSaving(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch(`https://server.avyudha.com/dashboard/${endpoint}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          // fullName,
-          class: classes,
-          
-         
-          // gender,
-          // age,
-          // email,
-          // highestQualification,
-          // totalExperience:experienceTime,
-          // languages,
-          // jobAlerts: {
-          //   minExpectedSalary: {
-          //       value: salary,
-                
-          //   },
-          //   maxExpectedSalary: {
-          //     value: maxExpectedSalary,
-              
-
-
-          // },
-          // },
-          parentPhone,
-          schoolName,
-          parentName,
-          board,
-          dob,
-          phone,
-
-        
-          // categories,
-          // description:description,
-          location: {
-            
-            address: contactAddress,
-            city: location,
-            pinCode:pin,
-            state:state,
-            coordinates:
-            [latitude,longitude],
-          },
-          
-          
-          image,
-          
-        }),
-      });
-      console.log (response);
-      console.log(coordinates);
-      console.log(token); setIsSaving(false);
-      if (response.ok) {
-        alert('Profile information saved successfully!');
-      } else {
-        alert('Failed to save profile information.');
-        console.log(response);
-      }
-    } catch (error) {
-      console.error('Error saving profile information:', error);
-      alert('An error occurred while saving your profile information.'); setIsSaving(false);
-    }
-  };
+  
   const savePersonalOrg = async () => {
     try {
       setIsSaving(true);
@@ -1191,73 +1139,35 @@ const editimage = async () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // fullName,
-          
-          
-          contactNumber,
           website,
           description,
           organizationType,
           facebook,
           linkedin,
           video
-         
-         
-          // gender,
-          // age,
-          // email,
-          // highestQualification,
-          // totalExperience:experienceTime,
-          // languages,
-          // jobAlerts: {
-          //   minExpectedSalary: {
-          //       value: salary,
-                
-          //   },
-          //   maxExpectedSalary: {
-          //     value: maxExpectedSalary,
-              
-
-
-          // },
-          // },
-          // parentPhone,
-          // schoolName,
-          // parentName,
-          // board,
-          // dob,
-          // phone,
-
-        
-          // categories,
-          // description:description,
-          // location: {
-            
-          //   address: contactAddress,
-          //   city: location,
-          //   coordinates:
-          //   [latitude,longitude]
-          // },
-          
-          
-         
-          
         }),
       });
-      console.log (response);
+  
+      console.log(response);
       console.log(coordinates);
-      console.log(token); setIsSaving(false);
+      console.log(token);
+      
+      setIsSaving(false);
+  
       if (response.ok) {
         alert('Profile information saved successfully!');
       } else {
-        alert('Failed to save profile information.');
-        console.log(response);
+        const errorData = await response.json(); // Get error details
+        alert(`Failed to save profile information: ${errorData.message || 'Unknown error'}`);
+        console.error('Server error:', errorData);
       }
     } catch (error) {
       console.error('Error saving profile information:', error);
-      alert('An error occurred while saving your profile information.'); setIsSaving(false);
+      alert(`An error occurred: ${error.message}`);
+      setIsSaving(false);
     }
   };
+  
   const savePersonalInfoLoc = async () => {
     setIsSaving(true);
       try {
@@ -1450,32 +1360,35 @@ const editimage = async () => {
       </button>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={fullNames}
-                    onChange={(e) => setFullnames(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Phone No.</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={contactNumber}
-                    onChange={(e) => setContactNumber(e.target.value)}
-                  />
-                </div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={fullNames}
+    readOnly
+  />
+</div>
+
+<div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={userName}
+    readOnly
+  />
+</div>
+
+<div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Phone No.</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={contactNumber}
+    readOnly
+  />
+</div>
+
     
                 <div>
   <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
@@ -1535,7 +1448,7 @@ const editimage = async () => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
                   <input
                     type="email"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -1554,7 +1467,7 @@ const editimage = async () => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">Ratings</label>
                   <input
                     type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
                     value={rating}
                     
                   />
@@ -2240,34 +2153,36 @@ const editimage = async () => {
       </button>
              
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={fullNames}
-                    onChange={(e) => setFullnames(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-                </div>
+              <div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={fullNames}
+    readOnly
+  />
+</div>
 
-                <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
+<div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={userName}
+    readOnly
+  />
+</div>
+
+<div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={email}
+    readOnly
+  />
+</div>
+
                 <div>
   <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
   <input
@@ -2340,14 +2255,17 @@ const editimage = async () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Student Phone No</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={phone}
-                    onChange={(e) => setPhone (e.target.value)}
-                  />
-                </div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">
+    Student Phone No
+  </label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={phone}
+    readOnly
+  />
+</div>
+
                 <div>
                   <label className="block text-gray-700 text-sm font-bold mb-2">Parent Name</label>
                   <input
@@ -2418,24 +2336,30 @@ const editimage = async () => {
         Save uploaded picture
       </button>
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                   <div>
-                     <label className="block text-gray-700 text-sm font-bold mb-2">Organisation Name</label>
-                     <input
-                       type="text"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                       value={name}
-                       onChange={(e) => setName(e.target.value)}
-                     />
-                   </div>
-                   <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                  <input
-                    type="text"
-                    className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                  />
-                </div>
+                 <div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">
+    Organisation Name
+  </label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={name}
+    readOnly
+  />
+</div>
+
+<div>
+  <label className="block text-gray-700 text-sm font-bold mb-2">
+    Username
+  </label>
+  <input
+    type="text"
+    className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
+    value={userName}
+    readOnly
+  />
+</div>
+
        
                    {/* <div>
                      <label className="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
@@ -2464,7 +2388,7 @@ const editimage = async () => {
                      <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
                      <input
                        type="email"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
                        value={email}
                        onChange={(e) => setEmail(e.target.value)}
                      />
@@ -2474,7 +2398,7 @@ const editimage = async () => {
                      <label className="block text-gray-700 text-sm font-bold mb-2">Phone No.</label>
                      <input
                        type="email"
-                       className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+                       className="w-full p-2 border border-gray-300 rounded-lg mb-4 bg-gray-100 cursor-not-allowed"
                        value={contactNumber}
                        onChange={(e) => setContactNumber(e.target.value)}
                      />

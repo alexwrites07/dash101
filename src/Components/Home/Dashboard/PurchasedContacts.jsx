@@ -150,14 +150,15 @@ const PurchasedContacts = () => {
                   <p className="text-gray-700">
                     Contact Number: {contact.contactInfo?.contactNumber || "N/A"}
                   </p>
-                  {contact.contactType === "Tutor" && (
-                    <button
-                      onClick={() => downloadResume(contact.contactInfo?.id)}
-                      className="mt-2 text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
-                    >
-                      Download Resume
-                    </button>
-                  )}
+                  {contact.contactType === "Tutor" && contact.contactInfo?.resume && (
+  <button
+    onClick={() => downloadResume(contact.contactInfo?.id)}
+    className="mt-2 text-white bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
+  >
+    Download Resume
+  </button>
+)}
+
                 </div>
               </div>
             ))

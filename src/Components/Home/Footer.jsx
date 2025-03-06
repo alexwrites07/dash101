@@ -7,9 +7,9 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap">
           {/* Contact Information */}
-          <div className="w-full md:w-1/5 mb-6">
+          <div className="w-full md:w-1/5 mb-6 ">
             <h2 className="text-xl font-bold mb-4">Contact Us</h2>
-            <p>ACS pvt ltd.</p>
+            <p className='text-2xs'>Avyudha Consultacy Services </p>
             <p>B HUB, 5th floor, Block A, Maurya Lok Complex</p>
             <p>PATNA, Bihar,India – 800001</p>
             

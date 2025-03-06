@@ -571,7 +571,7 @@ const TeachingDescription = () => {
     <Modal
     isOpen={isModalOpen1}
     onRequestClose={() => setShowModal1(false)}
-    className="bg-white p-6 rounded-lg shadow-lg z-50 max-w-lg mx-auto mt-10 max-h-[90vh] overflow-y-auto"
+    className="bg-white p-6 rounded-lg shadow-lg z-40 max-w-lg mx-auto mt-10 max-h-[90vh] overflow-y-auto"
     overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
   >
         <h2 className="text-lg font-bold mb-4">Select a Date and Slot</h2>

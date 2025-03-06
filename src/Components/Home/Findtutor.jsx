@@ -667,11 +667,12 @@ const TutorFinder = () => {
                     )}
                   </h2>
 
-                  {tutor.classCost > 0 && (
-                    <div className="bg-green-300 text-black font-bold text-xs px-3 py-1 w-24 rounded-full hover:bg-green-400">
-                      Online Class
-                    </div>
-                  )}
+                  {tutor.classCost !== null && tutor.classCost !== undefined && tutor.classCost > 0 && (
+  <div className="bg-green-300 text-black font-bold text-xs px-3 py-1 w-24 rounded-full hover:bg-green-400">
+    Online Class
+  </div>
+)}
+
 
                   <div className="flex flex-col mt-2">
                     <div className="flex justify-between items-center">
