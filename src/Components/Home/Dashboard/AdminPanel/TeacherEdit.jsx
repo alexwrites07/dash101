@@ -4,6 +4,7 @@ import categoriesList from './categories.json'
 import Map from '../../MapDemo';
 const EditTutor = () => {
     const {id}=useParams();
+    const [saving, setSaving] = useState(false); // New saving state
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -299,6 +300,7 @@ const removeAward = (index) => {
     };
 
     const handleSubmit = async (e) => {
+        setSaving(true);
         e.preventDefault();
         const token = localStorage.getItem('token');
         const url = `https://server.avyudha.com/editUserProfile/${id}/Tutor`;
@@ -319,6 +321,7 @@ const removeAward = (index) => {
 
             const result = await response.json();
             console.log('Profile updated successfully:', result);
+            setSaving(false);
             alert("Profile Changed");
             // Handle success (e.g., redirect or show a success message)
         } catch (error) {
@@ -1013,7 +1016,15 @@ const removeAward = (index) => {
                 </div>
             </div>
 
-            <button type="submit" className="bg-blue-500 text-white p-2">Save Changes</button>
+            <button type="submit"
+            onClick={handleSubmit}
+            className={`bg-blue-500 text-white px-4 py-2 rounded-md ${
+            saving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-600'
+          }`}
+          disabled={saving}
+        >
+          {saving ? 'Saving...' : 'Save'}
+        </button>
         </form>
     );
 };

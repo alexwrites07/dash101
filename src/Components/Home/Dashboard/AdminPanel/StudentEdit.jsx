@@ -6,6 +6,7 @@ import Map from '../../MapDemo';
 const StudentEdit = () => {
   const { studentId } = useParams();
 
+  const [saving, setSaving] = useState(false); // New saving state
   const [studentData, setStudentData] = useState({
     fullName: '',
     class: '',
@@ -125,6 +126,7 @@ const StudentEdit = () => {
   };
 
   const handleSave = async () => {
+    setSaving(true);
     try {
       await axios.put(
         `https://server.avyudha.com/editUserProfile/${studentId}/Student`,
@@ -137,6 +139,7 @@ const StudentEdit = () => {
         }
       );
       alert('Profile updated successfully');
+      setSaving(false);
     } catch (error) {
       console.error('Error saving changes', error);
     }
@@ -294,9 +297,12 @@ const StudentEdit = () => {
         
         <button
           onClick={handleSave}
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+          className={`bg-blue-500 text-white px-4 py-2 rounded-md ${
+            saving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-600'
+          }`}
+          disabled={saving}
         >
-          Save Changes
+          {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
     </div>

@@ -8,7 +8,7 @@ const EditEmployerProfile = () => {
   const { id } = useParams();
   const [employerData, setEmployerData] = useState({});
   const [loading, setLoading] = useState(true);
-  
+  const [saving, setSaving] = useState(false); // New saving state
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
@@ -72,6 +72,7 @@ const EditEmployerProfile = () => {
         setError('Error fetching organization data');
       } finally {
         setLoading(false);
+        setSaving(false);
       }
     };
 
@@ -108,6 +109,7 @@ const EditEmployerProfile = () => {
     }));
   };
   const handleSave = async () => {
+    setSaving(true);
     const url = `https://server.avyudha.com/editUserProfile/${id}/Organization`;
 
     const updatedData = {
@@ -128,6 +130,7 @@ const EditEmployerProfile = () => {
         },
       });
       console.log('Updated organization profile:', response.data);
+      setSaving(false);
       window.alert('organization profile updated successfully!');
     } catch (error) {
       console.error('Error saving organization data:', error);
@@ -370,9 +373,12 @@ const EditEmployerProfile = () => {
         <Map coordinates={coordinates} onCoordinatesChange={handleMapChange} />
         <button
           onClick={handleSave}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          className={`bg-blue-500 text-white px-4 py-2 rounded-md ${
+            saving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-600'
+          }`}
+          disabled={saving}
         >
-          Save
+          {saving ? 'Saving...' : 'Save'}
         </button>
       </div>
     </div>

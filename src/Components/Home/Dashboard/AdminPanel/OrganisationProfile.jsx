@@ -55,7 +55,8 @@ const OrgProfileView = () => {
   };
 
   const handleEdit = (org) => {
-    navigate(`/edit-org/${org._id}`);
+    navigate(`/edit-employer/${org}`);
+   
   };
 
   const handleDeleteClick = async (orgId) => {
@@ -131,7 +132,7 @@ const OrgProfileView = () => {
                       <td className="border border-gray-300 px-4 py-2">{org.contactNumber}</td>
                       <td className="border border-gray-300 px-4 py-2 text-center flex gap-2 justify-center">
                         <button
-                          onClick={() => handleEdit(org)}
+                          onClick={() => handleEdit(org._id)}
                           className="text-white bg-[#285196] px-3 py-2 rounded-md"
                         >
                           Edit
