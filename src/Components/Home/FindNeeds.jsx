@@ -20,14 +20,14 @@ import categoriesList from './Dashboard/AdminPanel/categories.json'
 const NeedsFinder = () => {
   const [tutors, setTutors] = useState([]);
   const [distanceFilter, setDistanceFilter] = useState('');
-  const [inputText1, setInputText1] = useState('');
+  const [inputText1, setInputText1] = useState(''); const [itemsPerPage, setItemsPerPage] = useState(10); 
   const [suggestions1, setSuggestions1] = useState([]);
   const [filteredTutors, setFilteredTutors] = useState([]);
   const [userCoords, setUserCoords] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-const [itemsPerPage] = useState(10); // Adjust based on your preference
+// Adjust based on your preference
 const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 const currentTutors = filteredTutors.slice(indexOfFirstItem, indexOfLastItem);
@@ -35,6 +35,12 @@ const nextPage = () => {
   if (currentPage < Math.ceil(filteredTutors.length / itemsPerPage)) {
     setCurrentPage((prev) => prev + 1);
   }
+};
+ // Default value
+
+const handleItemsPerPageChange = (e) => {
+  setItemsPerPage(Number(e.target.value));
+  setCurrentPage(1); // Reset to first page when items per page changes
 };
 
 const prevPage = () => {
@@ -376,8 +382,27 @@ const prevPage = () => {
   
         {/* Main Content */}
         <div className="flex flex-col w-full">
-          <h2 className="text-3xl font-bold text-[#041F96] mb-6">Tuition Needs</h2>
-  
+        <div className="flex items-center justify-between mb-6">
+  <h2 className="text-3xl font-bold text-[#041F96]">Tuition Needs</h2>
+
+  <div className="flex items-center gap-2">
+    <label htmlFor="itemsPerPage" className="text-gray-700">
+      Items per page:
+    </label>
+    <select
+      id="itemsPerPage"
+      value={itemsPerPage}
+      onChange={handleItemsPerPageChange}
+      className="border border-gray-300 rounded-lg px-2 py-1"
+    >
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+</div>
+
           {loading ? (
         // ✅ Loading Animation (Skeleton Cards)
         <div className="space-y-6">
@@ -410,6 +435,7 @@ const prevPage = () => {
           ))}
         </div>
       ) : (
+        
         // ✅ Show Actual Cards If Not Loading
         currentTutors.length > 0 ? (
           currentTutors.map((tutor, index) => (
@@ -521,6 +547,9 @@ const prevPage = () => {
             <p className="text-gray-700">No Tuition Needs found matching your criteria.</p>
           ))}
           <div className="flex justify-center gap-4 mt-6">
+  {/* Items per Page Dropdown */}
+ 
+
   <button
     onClick={prevPage}
     disabled={currentPage === 1}
@@ -541,6 +570,7 @@ const prevPage = () => {
     Next
   </button>
 </div>
+
 
         </div>
         

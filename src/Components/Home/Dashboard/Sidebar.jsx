@@ -55,7 +55,7 @@ const Sidebar = ({ activeTab }) => {
       { to: '/dashboard', icon: <HiBell className="w-6 h-6" />, label: 'User Dashboard' },
       { to: '/your-profile', icon: <HiUser className="w-6 h-6" />, label: 'Profile' },
       { to: '/findtutor', icon: <HiClipboard className="w-6 h-6" />, label: 'Tutors' },
-      { to: '/my-jobs-employer', icon: <HiBriefcase className="w-6 h-6" />, label: 'My Jobs' },
+      { to: '/my-jobs-employer', icon: <HiBriefcase className="w-6 h-6" />, label: 'My Jobs/Tuitions' },
       { to: '/upload-resume-employer', icon: <HiUpload className="w-6 h-6" />, label: 'Submit Job' },
       { to: '/shortlist-jobs-employer', icon: <HiBookmark className="w-6 h-6" />, label: 'Shortlist Candidates' },
       { to: '/alerts-jobs-employer', icon: <HiBell className="w-6 h-6" />, label: 'Candidate Alert' },

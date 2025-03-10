@@ -19,8 +19,11 @@ const TutorFinder = () => {
   const [rating, setRating] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(10); 
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when items per page changes
+  };
   
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -608,8 +611,27 @@ const TutorFinder = () => {
 
 
     
-<div className="flex flex-col items-start justify-start w-full sm:ml-0 lg:ml-8">
-      <div className="text-3xl font-bold text-[#041F96] mb-6">Tutors</div>
+<div className=" w-full sm:ml-0 lg:ml-8">
+<div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+  <h2 className="text-3xl font-bold text-[#041F96] min-w-0">Tutors</h2>
+
+  <div className="flex items-center gap-2 min-w-0">
+    <label htmlFor="itemsPerPage" className="text-gray-700 whitespace-nowrap">
+      Items per page:
+    </label>
+    <select
+      id="itemsPerPage"
+      value={itemsPerPage}
+      onChange={handleItemsPerPageChange}
+      className="border border-gray-300 rounded-lg px-2 py-1"
+    >
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+</div>
       
       {/* Show Skeleton Loader while loading */}
       {isLoading ? (

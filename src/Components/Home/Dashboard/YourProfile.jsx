@@ -10,17 +10,27 @@ const Modal = ({ isOpen, onClose, onSave, type, data, handleChange }) => {
     <div className="fixed mt-24 inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h3 className="text-xl font-semibold mb-4">{`Add ${type}`}</h3>
-        {Object.keys(data).map((key) => (
-          <div key={key} className="mb-4">
-            <label className="block">{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
-            <input
-              type={key === 'year' || key.includes('date') ? 'date' : 'text'}
-              className="border p-2 w-full"
-              value={data[key]}
-              onChange={(e) => handleChange(e, key)}
-            />
-          </div>
-        ))}
+        {data && Object.keys(data).length > 0 ? (
+  Object.keys(data)
+    .filter((key) => typeof data[key] === 'string' || typeof data[key] === 'number') // Only map valid values
+    .map((key) => (
+      <div key={key} className="mb-4">
+        <label className="block">
+          {key.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())}:
+        </label>
+        <input
+          type={key.toLowerCase().includes('year') || key.toLowerCase().includes('date') ? 'date' : 'text'}
+          className="border p-2 w-full"
+          value={data[key] || ''}
+          onChange={(e) => handleChange(e, key)}
+        />
+      </div>
+    ))
+) : (
+  <p>No data available</p>
+)}
+
+
         <div className="flex justify-between">
           <button
             type="button"
@@ -182,9 +192,7 @@ const suggestions = ["Male", "Female", "No Preference"].filter((option) => optio
       navigate("/error");
     }
     setEndpoint(type);
-    if (experienceData && !Array.isArray(experienceData)) {
-      setExperienceData([experienceData]); // Convert single object to an array
-    }
+    
   const handleClickOutside = (event) => {
       if (
         suggestionsRef.current &&

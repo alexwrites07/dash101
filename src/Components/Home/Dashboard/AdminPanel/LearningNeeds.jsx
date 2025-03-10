@@ -99,7 +99,7 @@ const LearningNeedsView = () => {
         const response = await axios.get('https://server.avyudha.com/admin/learning-needs', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const fetchedNeeds = response.data.map((need) => ({
+        const fetchedNeeds = response.data.learningNeeds.map((need) => ({
           id: need._id,
           name: need.email,
           need: need.requirement,

@@ -430,7 +430,7 @@ const NeedDescription = () => {
         {!job.fulfilled ? (
           <div></div>
         ) : (
-          <p className="bg-red-200 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto -ml-1">
+          <p className="bg-red-200 mt-6 w-24 mt-4 text-red-800 py-1 px-3 rounded-full text-sm font-semibold mx-auto ">
             Closed
           </p>
         )}

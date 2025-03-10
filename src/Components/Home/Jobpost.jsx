@@ -10,6 +10,11 @@ import './Jobpost.css';
 const JobPost = () => {
   const [jobs, setJobs] = useState([]);
   const [inputText, setInputText] = useState('');
+  const [itemsPerPage, setItemsPerPage] = useState(10); 
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when items per page changes
+  };
   const [inputText1, setInputText1] = useState(''); // Separate state for input text
   const [suggestions, setSuggestions] = useState([]);
   const [suggestions1, setSuggestions1] = useState([]);const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +33,7 @@ const JobPost = () => {
     
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3); // Adjust based on your preference
+ // Adjust based on your preference
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTutors = filteredJobs.slice(indexOfFirstItem, indexOfLastItem);
@@ -600,9 +605,26 @@ const JobPost = () => {
     ))
 ) : filteredJobs.length > 0 ? (
   <div>
-    <h1 className="text-3xl font-bold text-[#041F96] mb-6 ml-4">
-      Available Jobs
-    </h1>
+       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+  <h2 className="text-3xl font-bold text-[#041F96] min-w-0">Available Jobs</h2>
+
+  <div className="flex items-center gap-2 min-w-0">
+    <label htmlFor="itemsPerPage" className="text-gray-700 whitespace-nowrap">
+      Items per page:
+    </label>
+    <select
+      id="itemsPerPage"
+      value={itemsPerPage}
+      onChange={handleItemsPerPageChange}
+      className="border border-gray-300 rounded-lg px-2 py-1"
+    >
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+</div>
     {currentTutors.map((job, index) => (
       <div
         key={index}

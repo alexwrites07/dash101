@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import './App.css';
+import EmailRedirect from './Components/Home/Dashboard/AdminPanel/OnlineTutor.jsx';
 import AdminProfile from './Components/Home/Dashboard/AdminPanel/AdminProfile.jsx';
 import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
 import TestimonialPage from './Components/Home/Dashboard/AdminPanel/FeaturedTestinomials.jsx';
@@ -191,6 +192,7 @@ function AppContent() {
         <Route path="/privacy" element={<PrivacyPolicy/>} />
         <Route path="/terms" element={<TermsAndConditions/>} />
         <Route path='/resume' element={<ResumeBuilder/>}/>
+        <Route path='/onlinetutor' element={<EmailRedirect/>}/>
         {/* <Route path='/resume' element={<ResumeBuilder/>}/> */}
         <Route path="/demo-form" element={<DemoForm />} />
         <Route path="/organizationpost" element={<OrganizationFinder />} />

@@ -141,13 +141,13 @@ const TeachingDescription = () => {
 
   const handleFormSubmit = async () => {
     const payload = {
-      tutorId: Id,
+      tutorId: Id,  // Assuming Id is coming from state or props
       meetingTitle: meetingTitle,
-      date: new Date(selectedDate.setDate(selectedDate.getDate() + 1)).toISOString().split("T")[0],
-      startTime: selectedSlot.startTime,
-      endTime: selectedSlot.endTime,
-      duration: parseInt(duration),
+      date: selectedDate.toISOString().split("T")[0], // Ensures correct date format
+      time: selectedSlot?.startTime || "00:00", // Default if selectedSlot is missing
+      duration: parseInt(duration) || 60, // Ensures it's a number
     };
+    
   
     try {
       const token = localStorage.getItem("token");
@@ -159,21 +159,21 @@ const TeachingDescription = () => {
         },
         body: JSON.stringify(payload),
       });
-  
+    
       const result = await response.json();
-      alert(result);
-      
+    
       if (result.authUrl) {
         // Append the token to the authUrl as a query parameter
         const urlWithToken = `${result.authUrl}`;
-        
+    
         // Redirect to the Google authentication page
         window.location.href = urlWithToken;
-        alert(result.authUrl);
       } else {
-        alert("Meeting scheduled successfully!");
+        // Show the response message in an alert
+        alert(result.message || "An unexpected error occurred.");
       }
-    } catch (error) {
+    } 
+     catch (error) {
       alert("An error occurred while scheduling the meeting.");
       console.error(error);
     }
@@ -603,44 +603,64 @@ const TeachingDescription = () => {
 
         {/* Meeting Details */}
         {selectedSlot && (
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-4">Meeting Details</h3>
-            <div className="mb-4">
-              <label className="block font-medium mb-2">Meeting Title</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded-lg"
-                value={meetingTitle}
-                onChange={(e) => setMeetingTitle(e.target.value)}
-                placeholder="Enter meeting title"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium mb-2">Duration (minutes)</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded-lg"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                placeholder="Enter duration"
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-                onClick={handleFormSubmit}
-              >
-                Submit
-              </button>
-              <button
-                className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
-                onClick={() => setIsModalOpen1(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+  <div className="mt-6">
+    <h3 className="text-lg font-semibold mb-4">Meeting Details</h3>
+
+    <div className="mb-4">
+  <label className="block font-medium mb-2">Tutor ID</label>
+  <input
+    type="text"
+    className="w-full p-2 border rounded-lg cursor-not-allowed bg-gray-200"
+    value={Id}
+    onChange={(e) => setTutorId(e.target.value)}
+    placeholder="Enter Tutor ID"
+    readOnly
+  />
+</div>
+
+
+    <div className="mb-4">
+      <label className="block font-medium mb-2">Meeting Title</label>
+      <input
+        type="text"
+        className="w-full p-2 border rounded-lg"
+        value={meetingTitle}
+        onChange={(e) => setMeetingTitle(e.target.value)}
+        placeholder="Enter meeting title"
+      />
+    </div>
+
+
+    
+
+    <div className="mb-4">
+      <label className="block font-medium mb-2">Duration (minutes)</label>
+      <input
+        type="number"
+        className="w-full p-2 border rounded-lg"
+        value={duration}
+        onChange={(e) => setDuration(e.target.value)}
+        placeholder="Enter duration"
+      />
+    </div>
+
+    <div className="flex items-center justify-between">
+      <button
+        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+        onClick={handleFormSubmit}
+      >
+        Submit
+      </button>
+      <button
+        className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+        onClick={() => setIsModalOpen1(false)}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+
       </Modal>
     )}
   </div>

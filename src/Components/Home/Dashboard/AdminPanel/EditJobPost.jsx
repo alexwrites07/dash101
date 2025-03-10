@@ -65,7 +65,7 @@ const JobsView = () => {
         const response = await axios.get('https://server.avyudha.com/admin/jobs', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const fetchedJobs = response.data.map((job) => ({
+        const fetchedJobs = response.data.jobs.map((job) => ({
           id: job._id,
           name: job.title,
           company: job.location.city,

@@ -8,11 +8,11 @@ import { FaMapMarkerAlt, FaBuilding, FaStar } from "react-icons/fa";
 
 const OrganizationFinder = () => {
   const [tutors, setTutors] = useState([]);
-
+  const [itemsPerPage, setItemsPerPage] = useState(10); 
 
   const toggleFilters = () => setShowFilters(!showFilters);
   const [currentPage, setCurrentPage] = useState(1);
-const itemsPerPage = 5;
+
   const [org, setOrg] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [distance, setDistance] = useState('');
@@ -31,7 +31,11 @@ const itemsPerPage = 5;
       setCurrentPage((prev) => prev + 1);
     }
   };
-  
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1); // Reset to first page when items per page changes
+  };
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
@@ -337,10 +341,28 @@ const handlePageChange = (newPage) => {
 
   
         {/* Organization List */}
-        <div className="flex flex-col items-start justify-start w-full ml-8" >
-  <div className="text-3xl font-bold text-[#041F96] mb-6 ml-8">
-    Organizations
+        <div className="w-full ml-8" >
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+  <h2 className="text-3xl font-bold text-[#041F96] min-w-0">Organisations</h2>
+
+  <div className="flex items-center gap-2 min-w-0">
+    <label htmlFor="itemsPerPage" className="text-gray-700 whitespace-nowrap">
+      Items per page:
+    </label>
+    <select
+      id="itemsPerPage"
+      value={itemsPerPage}
+      onChange={handleItemsPerPageChange}
+      className="border border-gray-300 rounded-lg px-2 py-1"
+    >
+      <option value="10">10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
   </div>
+</div>
+
 
   {isLoading ? (
     Array(3)

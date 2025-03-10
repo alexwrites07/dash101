@@ -7,6 +7,10 @@ import axios from 'axios';
 
 const ManageJobs = (JobId) => {
   const [jobs, setJobs] = useState([]);
+  const [learningNeeds, setLearningNeeds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState(null);
+  const [closingReason, setClosingReason] = useState("");
   const [applicants, setApplicants] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('default');
@@ -31,6 +35,25 @@ const ManageJobs = (JobId) => {
 
   // Fetch posted jobs from API
   useEffect(() => {
+    const fetchLearningNeeds = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("https://server.avyudha.com/my-learning-needs",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        setLearningNeeds(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch learning needs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLearningNeeds();
     const fetchJobs = async () => {
       try {
         const response = await axios.get('https://server.avyudha.com/postedJobs', {
@@ -51,29 +74,67 @@ const ManageJobs = (JobId) => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
+  const handleDeleteNeed = async () => {
+    const email = "akshaybhandari020@gmail.com";
 
-
-  // Fetch applicants function
-  const fetchApplicants = async (jobId) => {
     try {
-      const response = await axios.get(`https://server.avyudha.com/jobs/${jobId}`, {
+      await axios.post("https://server.avyudha.com/close-need", {
+        id: deleteId,
+        email,
+        closingReason
+      }, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
-  
-      // No need for `response.json()` as `axios` already parses the JSON response
-      const data = response.data;
-  
-      setApplicants((prevData) => ({
-        ...prevData,
-        [jobId]: data.applicants, // Store applicants under the specific job ID
-      }));
+      setLearningNeeds((prevNeeds) => prevNeeds.filter((need) => need._id !== deleteId));
+      alert("Learning need deleted successfully.");
+      setDeleteId(null);
+      setClosingReason("");
     } catch (error) {
-      console.error("Error fetching applicants:", error);
-      alert("Failed to fetch applicants. Please try again.");
+      console.error("Error deleting learning need:", error);
+      alert("Failed to delete learning need. Please try again.");
     }
   };
+
+  // Fetch applicants function
+  const [visibleApplicants, setVisibleApplicants] = useState({});
+
+  const fetchApplicants = async (jobId) => {
+      if (visibleApplicants[jobId]) {
+          // Toggle off
+          setVisibleApplicants((prevState) => ({
+              ...prevState,
+              [jobId]: false
+          }));
+          return;
+      }
+  
+      try {
+          const response = await axios.get(`https://server.avyudha.com/jobs/${jobId}`, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+  
+          const data = response.data;
+  
+          setApplicants((prevData) => ({
+              ...prevData,
+              [jobId]: data.applicants
+          }));
+  
+          setVisibleApplicants((prevState) => ({
+              ...prevState,
+              [jobId]: true
+          }));
+      } catch (error) {
+          console.error("Error fetching applicants:", error);
+          alert("Failed to fetch applicants. Please try again.");
+      }
+  };
+  
   
   // Delete applicant function
   const deleteApplicant = async (applicantId,jobIdToEdit) => {
@@ -274,39 +335,36 @@ const ManageJobs = (JobId) => {
                       </td>
                       <td className="py-2 px-4 border-b">{job.totalApplicants} Applicant(s)</td>
                       <td className="py-2 px-4 border-b">
-              <button
-                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-lg"
-                onClick={() => fetchApplicants(job.job._id)}
-              >
-                View Applicants
-              </button>
+                      <button
+    className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-lg"
+    onClick={() => fetchApplicants(job.job._id)}
+>
+    {visibleApplicants[job.job._id] ? 'Hide Applicants' : 'View Applicants'}
+</button>
 
-              {applicants[job.job._id] && applicants[job.job._id].length > 0 && (
-                <div className="mt-4 bg-gray-100 border rounded-lg p-4">
-                  <h3 className="text-lg font-semibold mb-2">Applicants</h3>
-                  <ul className="space-y-2">
-                    {applicants[job.job._id].map((applicant, ind) => (
-                      <li key={ind}>
-                        <p>
-                        
+{visibleApplicants[job.job._id] && applicants[job.job._id]?.length > 0 && (
+    <div className="mt-4 bg-gray-100 border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-2">Applicants</h3>
+        <ul className="space-y-2">
+            {applicants[job.job._id].map((applicant, ind) => (
+                <li key={ind}>
+                    <p>
                         <Link to={`/getTutor/${applicant._id}`} className="block w-full text-blue-600">
-                           {applicant.fullName}
-                          </Link>
-                        </p>
-                        <button
-                className="mt-2 bg-red-500 hover:bg-blue-600 text-white py-1 px-3 rounded-lg"
-                onClick={() => deleteApplicant(applicant._id,job.job._id)}
-              >
-                Reject Applicant
-              </button>
-                        {/* <p>
-                          <strong>Description:</strong> {applicant.description}
-                        </p> */}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                            {applicant.fullName}
+                        </Link>
+                    </p>
+                    <button
+                        className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-lg"
+                        onClick={() => deleteApplicant(applicant._id, job.job._id)}
+                    >
+                        Reject Applicant
+                    </button>
+                </li>
+            ))}
+        </ul>
+    </div>
+)}
+
             </td>
 
                       <td className="py-2 px-4 border-b">{job.job.isClosed ? 'Closed' : 'Open'}</td>
@@ -342,6 +400,80 @@ const ManageJobs = (JobId) => {
             )}
           </section>
         </div>
+        <div className="lg:ml-64  p-4 lg:p-28 lg:-mt-48 lg:space-x-8">
+        <div className="bg-white  p-6 mb-6">
+          <h2 className="text-xl font-semibold text-gray-800"> Your Tuitions</h2>
+          <p className="text-gray-600 mt-2">Connect with experienced tutors to fulfill your Tuitions.</p>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="spinner border-blue-600"></div>
+          </div>
+        ) : learningNeeds.length === 0 ? (
+          <div className="flex items-center justify-center h-64">
+            <p className="text-gray-600 text-lg mt-4">No Tuitions found.</p>
+          </div>
+        ) : (
+          <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {learningNeeds.map((learningNeed, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
+              >
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {learningNeed.requirement}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">{learningNeed.description}</p>
+                <div className="flex justify-between mt-4">
+  <Link to={`/getNeed/${learningNeed._id}`} className="text-blue-500 hover:underline">
+    View Details
+  </Link>
+  {learningNeed.fulfilled ? (
+    <span className="text-gray-500">Closed</span>
+  ) : (
+    <button
+      onClick={() => setDeleteId(learningNeed._id)}
+      className="text-red-500 hover:underline"
+    >
+      Close
+    </button>
+  )}
+</div>
+
+              </div>
+            ))}
+          </div>
+        )}
+
+        {deleteId && (
+          <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold text-gray-800">Confirm Deletion</h3>
+            <textarea
+              value={closingReason}
+              onChange={(e) => setClosingReason(e.target.value)}
+              placeholder="Enter closing reason..."
+              className="w-full p-2 border border-gray-300 rounded-lg mt-2"
+            />
+            <div className="flex gap-4 mt-4">
+              <button
+                onClick={handleDeleteNeed}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg"
+              >
+                Confirm Close
+              </button>
+              <button
+                onClick={() => setDeleteId(null)}
+                className="bg-gray-400 text-white px-4 py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+
       </div>
     </div>
   );

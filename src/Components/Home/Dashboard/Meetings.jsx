@@ -53,10 +53,11 @@ const Meetings = () => {
         date: newMeeting.date,
         time: newMeeting.time,
         duration: newMeeting.duration,
+        meetingLink: newMeeting.meetingLink,
         
       };
       await createMeeting(body);
-      console.log("Meeting created successfully");
+      alert("Meeting created successfully");
       setNewMeeting({
         meetingTitle: "",
         participantsEmail: [],
@@ -155,13 +156,13 @@ const Meetings = () => {
               onChange={(e) => setNewMeeting({ ...newMeeting, duration: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            {/* <input
+            <input
               type="text"
               value={newMeeting.meetingLink}
               onChange={(e) => setNewMeeting({ ...newMeeting, meetingLink: e.target.value })}
               placeholder="Meeting Link"
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-            /> */}
+            />
           </div>
           <button
             onClick={handleCreateMeeting}
