@@ -74,7 +74,7 @@ const DemoForm = () => {
     description: '',
     board: '',
     location: {
-      coordinates: [28.6139, 77.2090],
+      coordinates: [0, 0],
       address: '',
       landmark: '',
       city: '',

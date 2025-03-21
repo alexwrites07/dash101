@@ -328,16 +328,14 @@ const JobPost = () => {
 
 {/* Mobile Filter Modal */}
 {showFilters && (
-  <div
-    className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center"
-    onClick={toggleFilters}
-    aria-labelledby="filter-modal-title"
-    role="dialog"
-  >
-    <div
-      className="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm"
-      onClick={(e) => e.stopPropagation()} // Prevent click on modal from closing it
-    >
+ <div
+ className={`fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
+   showFilters ? "block" : "hidden"
+ } md:block`}
+ onClick={toggleFilters}
+>
+ <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative"
+  onClick={(e) => e.stopPropagation()}>
       <h2 id="filter-modal-title" className="text-lg font-semibold mb-4">Filters</h2>
       <form className="space-y-4">
         {/* Location Filter */}

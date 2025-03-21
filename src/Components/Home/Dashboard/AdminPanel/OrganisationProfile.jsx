@@ -10,6 +10,9 @@ const OrgProfileView = () => {
   const [selectedOrgId, setSelectedOrgId] = useState(null);
   const [otp, setOtp] = useState("");
   const [isOtpModalVisible, setIsOtpModalVisible] = useState(false);
+  const [startDate, setStartDate] = useState(""); // New state for start date
+  const [endDate, setEndDate] = useState(""); // New state for end date
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -23,12 +26,16 @@ const OrgProfileView = () => {
     }, 300);
 
     return () => clearTimeout(debounceTimer);
-  }, [searchQuery]);
+  }, [searchQuery, startDate, endDate]);
 
   const fetchOrganizations = async () => {
     try {
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append("startDate", startDate);
+      if (endDate) queryParams.append("endDate", endDate);
+
       const response = await axios.get(
-        "https://server.avyudha.com/admin/getOrgs",
+        `https://server.avyudha.com/admin/getOrgs?${queryParams.toString()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setOrganizations(response.data.organizations || []);
@@ -38,14 +45,14 @@ const OrgProfileView = () => {
   };
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      fetchOrganizations();
-      return;
-    }
+    const queryParams = new URLSearchParams();
+    if (searchQuery.trim()) queryParams.append("query", searchQuery);
+    if (startDate) queryParams.append("startDate", startDate);
+    if (endDate) queryParams.append("endDate", endDate);
 
     try {
       const response = await axios.get(
-        `https://server.avyudha.com/admin/organizations/search?query=${searchQuery}`,
+        `https://server.avyudha.com/admin/organizations/search?${queryParams.toString()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setOrganizations(response.data || []);
@@ -56,7 +63,6 @@ const OrgProfileView = () => {
 
   const handleEdit = (org) => {
     navigate(`/edit-employer/${org}`);
-   
   };
 
   const handleDeleteClick = async (orgId) => {
@@ -107,6 +113,18 @@ const OrgProfileView = () => {
                 className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
         </div>
 

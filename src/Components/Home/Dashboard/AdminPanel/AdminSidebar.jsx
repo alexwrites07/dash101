@@ -36,6 +36,7 @@ const Sidebar = ({ activeTab }) => {
     { to: '/reviews-rating', icon: <HiHeart className="w-6 h-6" />, label: 'Reviews & Rating' },
     { to: '/blogs-admin', icon: <HiChat className="w-6 h-6" />, label: 'Blogs' },
     { to: '/onlinetutor', icon: <HiChat className="w-6 h-6" />, label: 'Online Tutor' },
+    { to: '/meetings-admin', icon: <HiChat className="w-6 h-6" />, label: 'Meetings' },
     { to: '/wallet-admin', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Wallet' },
     { to: '/edit-job-post', icon: <HiArrowSmRight className="w-6 h-6" />, label: 'Edit-Job' },
     {

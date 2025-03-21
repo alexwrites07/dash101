@@ -141,7 +141,7 @@ const Messages = () => {
                     onClick={() => handleConversationClick(conversation._id)}
                   >
                     <div>
-                      <h3 className="text-lg font-bold text-gray-700">{conversation.participantName}</h3>
+                      <h3 className="text-lg font-bold text-gray-700">{conversation.receiverName}</h3>
                       <p className="text-gray-600 text-sm">
                         {conversation.lastMessage || "No messages yet"}
                       </p>

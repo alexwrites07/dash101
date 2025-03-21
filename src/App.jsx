@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import './App.css';
+
 import EmailRedirect from './Components/Home/Dashboard/AdminPanel/OnlineTutor.jsx';
 import AdminProfile from './Components/Home/Dashboard/AdminPanel/AdminProfile.jsx';
 import Reviewsq from './Components/Home/Dashboard/AdminPanel/Reviews.jsx';
@@ -100,6 +101,7 @@ import EditJob from './Components/Home/Dashboard/AdminPanel/Editjobs.jsx';
 import DpEditDelete from './Components/Home/Dashboard/AdminPanel/DP.jsx';
 import Doc from './Components/Home/Dashboard/AdminPanel/DocVerify.jsx';
 import PrivacyPolicy from './Components/Home/Privacy.jsx';
+import MeetingsDashboard from './Components/Home/Dashboard/AdminPanel/Meetingdashboard.jsx';
 
 function AdminRoute({ element: Component, ...rest }) {
   const userType = localStorage.getItem('type'); // Get userType from localStorage
@@ -169,6 +171,7 @@ function AppContent() {
     || location.pathname === "/widgets/featured-category"
     || location.pathname === "/widgets/footer"
     || location.pathname === "/schedule-slot"
+    || location.pathname === "/meetings-admin"
     || location.pathname === "/purchasedcontacts"
     || location.pathname === "/widgets/headers" 
      || location.pathname === "/my-jobs-employer"
@@ -185,6 +188,7 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/meetings-admin" element={<MeetingsDashboard />} />
         <Route path="/edit-tags/:id" element={<EditTags />} />
         <Route path="/learningneeds" element={<LearningNeeds />} />
         <Route path="/myclasses" element={<MyClasses/>} />
@@ -214,7 +218,10 @@ function AppContent() {
         <Route path="/getjobs/:jobId" element={<JobDescription/>} />
         <Route path="/getOrg/:iid" element={<OrgDescription/>} />
         <Route path="/conversation/:conversationId" element={<Conversation />} />
-        <Route path="/getNeed/:IId" element={<NeedDescription/>} />
+        <Route
+  path="/getNeed/:IId"
+  element={<NeedDescription/>}
+/>
         <Route path="/about" element={<AboutUs />} />
         <Route path="/purchasedcontacts" element={<PurchasedContacts />} />
         <Route path="/admin-profile" element={<AdminProfile />} />

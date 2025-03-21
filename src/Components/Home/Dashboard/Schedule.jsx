@@ -69,25 +69,32 @@ const Meeti = () => {
   };
 
   const handleDeleteSlot = async (day, slotId) => {
+    if (!freeSlots[day]) return; // Prevent errors if the day doesn't exist
+  
     const updatedSlots = {
       ...freeSlots,
       [day]: freeSlots[day].filter((slot) => slot._id !== slotId),
     };
-
+  
     try {
       setIsSaving1(true);
+  
       await axios.put(
         "https://server.avyudha.com/dashboard/Tutor",
         { freeSlots: updatedSlots },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+  
       setFreeSlots(updatedSlots);
-      setIsSaving1(false);
       alert("Schedule Updated");
     } catch (error) {
       console.error("Error deleting slot:", error);
+      alert("Failed to update schedule. Please try again.");
+    } finally {
+      setIsSaving1(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100 mt-12 sm:mt-24 ">

@@ -253,40 +253,43 @@ function Navbar() {
                         </svg>
                       </button>
                       <div
-                        className={`${
-                          isJobCornerOpen ? 'absolute right-0 mt-2 bg-white z-10 w-36 shadow-md' : 'hidden'
-                        }`}
-                      >
-                        <ul className="py-1 space-y-0">
-                          <li className="ml-4 md:ml-0">
-                            <Link
-                              to="/jobpost"
-                              className="text-sm hover:bg-gray-100 block px-3 py-1"
-                              onClick={closeAllMenus}
-                            >
-                              Find Job
-                            </Link>
-                          </li>
-                          <li className="ml-4 md:ml-0">
-                            <Link
-                              to="/organizationpost"
-                              className="text-sm hover:bg-gray-100 block px-3 py-1"
-                              onClick={closeAllMenus}
-                            >
-                              Find Organization
-                            </Link>
-                          </li>
-                          <li className="ml-4 md:ml-0">
-                            <Link
-                              to="/needpost"
-                              className="text-sm hover:bg-gray-100 block px-3 py-1"
-                              onClick={closeAllMenus}
-                            >
-                              Find Tuitions
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
+  className={`${
+    isJobCornerOpen
+      ? 'relative bg-white z-10 w-full shadow-md md:absolute md:right-0 md:w-36 md:mt-2'
+      : 'hidden'
+  }`}
+>
+  <ul className="py-1 space-y-0">
+    <li>
+      <Link
+        to="/jobpost"
+        className="text-sm hover:bg-gray-100 block px-3 py-1"
+        onClick={closeAllMenus}
+      >
+        Find Job
+      </Link>
+    </li>
+    <li>
+      <Link
+        to="/organizationpost"
+        className="text-sm hover:bg-gray-100 block px-3 py-1"
+        onClick={closeAllMenus}
+      >
+        Find Organization
+      </Link>
+    </li>
+    <li>
+      <Link
+        to="/needpost"
+        className="text-sm hover:bg-gray-100 block px-3 py-1"
+        onClick={closeAllMenus}
+      >
+        Find Tuitions
+      </Link>
+    </li>
+  </ul>
+</div>
+
                     </li>
                     <li className="ml-4 md:ml-0">
                       <Link
@@ -332,7 +335,8 @@ function Navbar() {
                           </button>
                           <div
                             className={`${
-                              isAuthDropdownOpen ? 'absolute right-0 mt-2 bg-white z-10 w-36 shadow-md' : 'hidden'
+                              isAuthDropdownOpen ? 'relative bg-white z-10 w-full shadow-md md:absolute md:right-0 md:w-36 md:mt-2'
+      : 'hidden'
                             }`}
                           >
                             <ul className="py-1 space-y-1">

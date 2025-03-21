@@ -249,12 +249,12 @@ const prevPage = () => {
           <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative"
            onClick={(e) => e.stopPropagation()}>
             {/* Close Button for Mobile */}
-            <button
+            {/* <button
               onClick={() => setShowFilters(false)}
               className="absolute top-3 right-3 text-gray-600 md:hidden"
             >
               ✕
-            </button>
+            </button> */}
             
   
             <form className="space-y-6">
@@ -440,7 +440,16 @@ const prevPage = () => {
         currentTutors.length > 0 ? (
           currentTutors.map((tutor, index) => (
             <div key={index} className="bg-white shadow-md rounded-lg sm:-mx-4 md:-mx-0 p-6 mb-4 border-l-4 border-[#041F96] transition-transform transform hover:scale-105 hover:shadow-2xl duration-300 hover:bg-gray-50">
-              <Link to={`/getNeed/${tutor._id}`} className="block w-full">
+<Link
+  to={`/getNeed/${tutor._id}`}
+  target="_blank"
+  className=" w-full cursor-pointer"
+>
+
+
+
+
+
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
   {/* Title & Created Date */}
   <div className="flex flex-col sm:flex-row sm:items-center gap-2">

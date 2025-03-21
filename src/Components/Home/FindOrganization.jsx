@@ -203,7 +203,7 @@ const handlePageChange = (newPage) => {
     <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] p-4">
       <div className="flex flex-col md:flex-row  mx-auto max-w-[1800px] w-4/5">
         {/* Mobile Filter Button */}
-        <div className="md:hidden w-full flex justify-end mb-6">
+        <div className="md:hidden w-full flex justify-end mb-6 mx-4">
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="text-white px-4 py-2 rounded-lg bg-[#041F96] focus:outline-none shadow-md"
@@ -220,16 +220,14 @@ const handlePageChange = (newPage) => {
 
   {/* Filters Modal for Mobile */}
   {showFilters && (
-    <div
-      className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center"
-      onClick={toggleFilters}
-      aria-labelledby="filter-modal-title"
-      role="dialog"
-    >
-      <div
-        className="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm"
-        onClick={(e) => e.stopPropagation()} // Prevent click on modal from closing it
-      >
+   <div
+   className={`fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
+     showFilters ? "block" : "hidden"
+   } md:block`}
+   onClick={toggleFilters}
+ >
+   <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative"
+    onClick={(e) => e.stopPropagation()}>
         <h2 id="filter-modal-title" className="text-lg font-semibold mb-4">Filters</h2>
         <form className="space-y-4">
           <div className="mb-4">
@@ -413,7 +411,7 @@ const handlePageChange = (newPage) => {
         key={index}
         className="shadow-lg rounded-lg border border-blue-400 bg-white p-6 mb-4 w-full flex flex-col md:flex-row hover:shadow-xl transition transform hover:scale-105 duration-300 hover:bg-gray-50"
       >
-        <Link to={`/getOrg/${tutor._id}`} className="flex w-full flex-col md:flex-row">
+        <Link to={`/getOrg/${tutor._id}`} target="_blank"  className="flex w-full flex-col md:flex-row">
           {/* Image Section */}
           <div className="flex-shrink-0 w-full md:w-1/6 flex items-center justify-center mb-4 md:mb-0">
             <img

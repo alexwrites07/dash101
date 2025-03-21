@@ -103,7 +103,7 @@ const TutorFinder = () => {
     );
     setSuggestions1(filteredSuggestions);
   };
-  const toggleFilters = () => setShowFilters((prev) => !prev);
+  const toggleFilters = () => setShowFilters(!showFilters);
   const handleCategorySelect = (category) => {
     setFilters((prev) => ({
       ...prev,
@@ -283,173 +283,164 @@ const TutorFinder = () => {
 
   {/* Mobile Modal Pop-up */}
   {showFilters && (
-  <div
-  className="fixed inset-0 bg-gray-800 bg-opacity-75 z-40 flex justify-center items-center"
+    <div
+  className={`fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
+    showFilters ? "block" : "hidden"
+  } md:block`}
   onClick={toggleFilters}
-  aria-labelledby="filter-modal-title"
-  role="dialog"
 >
   <div
-    className="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm"
-    onClick={(e) => e.stopPropagation()} // Prevent click on modal from closing it
+    className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full 
+              h-[65vh] overflow-y-auto relative flex flex-col"
+    onClick={(e) => e.stopPropagation()}
   >
-    <button
-        onClick={toggleFilters}
-        className=" top-2 right-4 text-red-600 hover:text-red-600 text-2xl font-bold"
-        aria-label="Close"
-      >
-        &times;
-      </button>
-       
-        <form className="space-y-4 ">
-        <div className=" rounded-md bg-white ">
-          <label className="block text-sm font-medium font-bold text-gray-700 mb-1"><strong>Tutor Type</strong></label>
-      <select
-        value={tutorType}
-        onChange={(e) => setTutorType(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded-md"
-      >
-        <option value="All">All</option>
-        <option value="Online">Online</option>
-      </select>
-
-    </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="city">
-             <strong>City</strong> 
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={filters.city}
-              onChange={handleFilterChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-            />
-            <button
-              type="button"
-              onClick={fetchUserCoordinates}
-              className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
-              >
-              Use My Location
-            </button>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="distance">
-             <strong> Distance (in km)</strong>
-            </label>
-            <input
-              type="number"
-              name="distance"
-              id="distance"
-              placeholder="Enter distance in km"
-              value={filters.distance}
-              onChange={handleFilterChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-            />
-          </div>
-       
-          <div className="mb-4 relative">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Categories">
-              <strong>Categories</strong>
-            </label>
-            <input
-              type="text"
-              placeholder="Start typing to search categories..."
-              value={inputText1}
-              onChange={handleCategoryInputChange}
-              className="border p-2 w-full rounded-lg"
-            />
-
-            {/* Suggestions Dropdown */}
-            {suggestions1.length > 0 && (
-              <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
-                {suggestions1.map((cat, idx) => (
-                  <li
-                    key={idx}
-                    onClick={() => handleCategorySelect(cat)}
-                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                  >
-                    {cat}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {/* Selected Categories */}
-            {filters.categories.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {filters.categories.map((category, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
-                  >
-                    {category}
-                    <button
-                      onClick={() => handleCategoryRemove(category)}
-                      className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                    >
-                      &times;
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="experience">
-              <strong>Experience</strong>
-            </label>
-            <input
-              type="number"
-              name="totalExperience"
-              value={filters.totalExperience}
-              onChange={handleFilterChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="qualifications">
-              <strong>Qualifications</strong>
-            </label>
-            <input
-              type="text"
-              name="qualifications"
-              value={filters.qualifications ?? ''}
-              onChange={handleFilterChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="gender">
-              <strong>Gender</strong>
-            </label>
-            <select
-              name="gender"
-              value={filters.gender}
-              onChange={handleFilterChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
-            >
-              <option value="">All</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleApplyFilter}
-            className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
-          >
-            Apply Filters
-          </button>
-        </form>
+    <form className="space-y-4 flex-grow">
+      <div className="rounded-md bg-white">
+        <label className="block text-sm font-medium font-bold text-gray-700 mb-1">
+          <strong>Tutor Type</strong>
+        </label>
+        <select
+          value={tutorType}
+          onChange={(e) => setTutorType(e.target.value)}
+          className="w-full p-2 border border-gray-300 rounded-md"
+        >
+          <option value="All">All</option>
+          <option value="Online">Online</option>
+        </select>
       </div>
-    </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-medium mb-2">
+          <strong>City</strong>
+        </label>
+        <input
+          type="text"
+          name="city"
+          value={filters.city}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+        />
+        <button
+          type="button"
+          onClick={fetchUserCoordinates}
+          className="mt-2 bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-[#041F96] focus:outline-none"
+        >
+          Use My Location
+        </button>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-medium mb-2">
+          <strong>Distance (in km)</strong>
+        </label>
+        <input
+          type="number"
+          name="distance"
+          placeholder="Enter distance in km"
+          value={filters.distance}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+        />
+      </div>
+
+      <div className="mb-4 relative">
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+          <strong>Categories</strong>
+        </label>
+        <input
+          type="text"
+          placeholder="Start typing to search categories..."
+          value={inputText1}
+          onChange={handleCategoryInputChange}
+          className="border p-2 w-full rounded-lg"
+        />
+        {suggestions1.length > 0 && (
+          <ul className="absolute bg-white border border-gray-300 rounded-lg shadow-md mt-1 max-h-60 overflow-y-auto w-full z-10">
+            {suggestions1.map((cat, idx) => (
+              <li
+                key={idx}
+                onClick={() => handleCategorySelect(cat)}
+                className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+              >
+                {cat}
+              </li>
+            ))}
+          </ul>
+        )}
+        {filters.categories.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {filters.categories.map((category, idx) => (
+              <span
+                key={idx}
+                className="bg-blue-100 text-blue-800 text-sm font-medium py-1 px-2 rounded-full flex items-center gap-1"
+              >
+                {category}
+                <button
+                  onClick={() => handleCategoryRemove(category)}
+                  className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-medium mb-2">
+          <strong>Experience</strong>
+        </label>
+        <input
+          type="number"
+          name="totalExperience"
+          value={filters.totalExperience}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-medium mb-2">
+          <strong>Qualifications</strong>
+        </label>
+        <input
+          type="text"
+          name="qualifications"
+          value={filters.qualifications ?? ""}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-medium mb-2">
+          <strong>Gender</strong>
+        </label>
+        <select
+          name="gender"
+          value={filters.gender}
+          onChange={handleFilterChange}
+          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3A506B] focus:outline-none"
+        >
+          <option value="">All</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </form>
+
+    <button
+      type="button"
+      onClick={handleApplyFilter}
+      className="w-full bg-[#041F96] text-white px-4 py-2 rounded-lg hover:bg-primary-600 focus:outline-none"
+    >
+      Apply Filters
+    </button>
+  </div>
+</div>
+
   )}
 
   {/* Desktop Filters */}
@@ -678,7 +669,7 @@ const TutorFinder = () => {
                 />
               </div>
 
-              <Link to={`/getTutor/${tutor._id}`} className="block w-full">
+              <Link to={`/getTutor/${tutor._id}`}  target="_blank" className="block w-full">
                 <div className="flex flex-col w-full ml-2 relative">
                   <h2 className="text-xl font-bold flex items-center text-[#041F96]">
                     {tutor.fullName}

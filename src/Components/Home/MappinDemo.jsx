@@ -52,7 +52,7 @@ const Map = ({ pincode, onCoordinatesChange }) => {
         const { lat, lng } = results[0].geometry.location;
         initializeMap(lat(), lng());
       } else {
-        initializeMap(28.7041, 77.1025); // Default to New Delhi coordinates
+        initializeMap(0, 0); // Default to New Delhi coordinates
       }
     });
   }, [pincode]);

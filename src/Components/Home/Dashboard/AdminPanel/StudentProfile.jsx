@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { HiSearch, HiSortAscending } from "react-icons/hi";
+import { HiSearch } from "react-icons/hi";
 import Header from "../Header";
 import Sidebar from "./AdminSidebar";
 import axios from "axios";
@@ -12,58 +12,65 @@ const StudentProfileView = () => {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
   const [otp, setOtp] = useState("");
   const [isOtpModalVisible, setIsOtpModalVisible] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("type");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (userType === "admin") {
-      const fetchAllData = async () => {
-        try {
-          const headers = { Authorization: `Bearer ${token}` };
-          const { data } = await axios.get(
-            "https://server.avyudha.com/admin/getStudents",
-            { headers }
-          );
-          setAllStudents(data.students);
-          setFilteredStudents(data.students); // Initially, show all students
-        } catch (error) {
-          console.error("Error fetching students:", error);
-        }
-      };
-      fetchAllData();
+      fetchStudents();
     }
-  }, [token, userType]);
+  }, [token, userType, startDate, endDate]);
 
-  // Debounced search effect
+  const fetchStudents = async () => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      let url = "https://server.avyudha.com/admin/getStudents";
+
+      // Append startDate and endDate if they exist
+      if (startDate && endDate) {
+        url += `?startDate=${startDate}&endDate=${endDate}`;
+      }
+
+      const { data } = await axios.get(url, { headers });
+      setAllStudents(data.students);
+      setFilteredStudents(data.students);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchStudents = async () => {
+    const delaySearch = setTimeout(() => {
       if (!searchQuery.trim()) {
         setFilteredStudents(allStudents);
         return;
       }
-
-      try {
-        const headers = { Authorization: `Bearer ${token}` };
-        const { data } = await axios.get(
-          `https://server.avyudha.com/admin/students/search?query=${searchQuery}`,
-          { headers }
-        );
-
-        setFilteredStudents(data || []); // Ensure correct response handling
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-        setFilteredStudents([]); // Clear list if API call fails
-      }
-    };
-
-    // Add debounce to reduce API calls on every keystroke
-    const delaySearch = setTimeout(() => {
-      fetchStudents();
+      searchStudents();
     }, 500);
 
-    return () => clearTimeout(delaySearch); // Cleanup function to avoid multiple calls
-  }, [searchQuery, allStudents, token]);
+    return () => clearTimeout(delaySearch);
+  }, [searchQuery, allStudents]);
+
+  const searchStudents = async () => {
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      let url = `https://server.avyudha.com/admin/students/search?query=${searchQuery}`;
+
+      if (startDate && endDate) {
+        url += `&startDate=${startDate}&endDate=${endDate}`;
+      }
+
+      const { data } = await axios.get(url, { headers });
+      setFilteredStudents(data || []);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setFilteredStudents([]);
+    }
+  };
 
   const handleEditClick = (studentId) => navigate(`/edit-student/${studentId}`);
 
@@ -116,13 +123,29 @@ const StudentProfileView = () => {
           <div className="md:w-1/4">
             <Sidebar />
           </div>
-          <div className="md:w-3/4 w-full flex flex-col md:flex-row justify-start gap-4">
+          <div className="md:w-3/4 w-full flex flex-col md:flex-row gap-4">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search students..."
               className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            Start Date
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              placeholder="Start date..."
+              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            End Date
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              placeholder="End date"
+              className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>

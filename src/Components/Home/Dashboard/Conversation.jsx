@@ -46,7 +46,7 @@ const Conversation = () => {
       })
       .then((response) => {
         setMessages(response.data.messages);
-        setName(response.data.participantName);
+        setName(response.data.receiverName);
         if (response.data.messages.length > 0) {
           const firstMessage = response.data.messages[0];
           const nonMatchingRecipientId = firstMessage.recipients.find((id) => id !== userId);
