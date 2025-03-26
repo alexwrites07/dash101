@@ -426,9 +426,10 @@ const handlePageChange = (newPage) => {
           <h2 className="text-2xl font-semibold text-[#041F96] flex items-center">
   {tutor.name}
   {tutor.identityVerified && (
-    <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
-      ✔
-    </span>
+    <span className="ml-2 bg-green-300 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
+    ✔
+  </span>
+  
   )}
 </h2>
 

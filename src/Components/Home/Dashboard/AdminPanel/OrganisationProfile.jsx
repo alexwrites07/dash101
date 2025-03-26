@@ -52,10 +52,10 @@ const OrgProfileView = () => {
 
     try {
       const response = await axios.get(
-        `https://server.avyudha.com/admin/organizations/search?${queryParams.toString()}`,
+        `https://server.avyudha.com/admin/getOrgs?${queryParams.toString()}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setOrganizations(response.data || []);
+      setOrganizations(response.data.organizations || []);
     } catch (error) {
       console.error("Error searching organizations:", error);
     }
@@ -134,6 +134,7 @@ const OrgProfileView = () => {
               <table className="table-auto w-full border-collapse border border-gray-200">
                 <thead>
                   <tr className="bg-gray-100">
+                  <th className="border border-gray-300 px-4 py-2 text-center">Created</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Email</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Organization ID</th>
@@ -144,6 +145,11 @@ const OrgProfileView = () => {
                 <tbody>
                   {organizations.map((org) => (
                     <tr key={org._id} className="hover:bg-gray-50">
+                                   <td className="border border-gray-300 px-4 py-2">{new Date(org.createdAt).toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+})}</td>
                       <td className="border border-gray-300 px-4 py-2">{org.name}</td>
                       <td className="border border-gray-300 px-4 py-2">{org.email}</td>
                       <td className="border border-gray-300 px-4 py-2">{org._id}</td>

@@ -156,6 +156,7 @@ const StudentProfileView = () => {
               <table className="table-auto w-full border-collapse border border-gray-200">
                 <thead>
                   <tr className="bg-gray-100">
+                  <th className="border border-gray-300 px-4 py-2 text-center">Created</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Full Name</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Email</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Student ID</th>
@@ -167,6 +168,11 @@ const StudentProfileView = () => {
                 <tbody>
                   {filteredStudents.map((student) => (
                     <tr key={student._id} className="hover:bg-gray-50">
+                                   <td className="border border-gray-300 px-4 py-2">{new Date(student.createdAt).toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+})}</td>
                       <td className="border border-gray-300 px-4 py-2">{student.fullName}</td>
                       <td className="border border-gray-300 px-4 py-2">{student.email}</td>
                       <td className="border border-gray-300 px-4 py-2">{student._id}</td>

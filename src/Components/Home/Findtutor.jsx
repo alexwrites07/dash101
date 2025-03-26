@@ -59,9 +59,12 @@ const TutorFinder = () => {
     categories:'',
     tutorType:''
   });
-
+  
+    useEffect(() => {
+      fetchTutors();
+    }, []);
   useEffect(() => {
-    fetchTutors();
+  
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         setShowFilters(false);
@@ -77,8 +80,8 @@ const TutorFinder = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-    
-  }, [showFilters]);
+  
+  }, [showFilters,  filters]);
   const categorySuggestions = [
     "Spoken English",
     "French Language",
@@ -218,7 +221,8 @@ const TutorFinder = () => {
   };
 
   const handleApplyFilter = async () => {
-    setTutors([]); // Clear current tutors
+    console.log("Applying filters...", filters, tutorType, userCoords); // Add this line
+    setTutors([]);
 
     try {
       const { city, totalExperience, distance, qualifications, gender, categories } = filters;
@@ -228,22 +232,28 @@ const TutorFinder = () => {
       if (distance && userCoords) {
         const reversedCoords = [...userCoords].reverse();
         queryString += `&maxDistance=${distance}&coordinates=${reversedCoords.join(",")}&`;
+        console.log("Distance filter added:", distance, userCoords, queryString); // Add this line
       }
 
       if (categories.length > 0) {
         queryString += `&categories=${categories.join(",")}`;
+        console.log("Categories filter added:", categories, queryString); // Add this line
       }
 
       if (tutorType === "Online") {
         queryString += `&tutorType=online`;
+        console.log("Tutor type filter added:", tutorType, queryString); // Add this line
       }
 
       const url = `https://server.avyudha.com/getTutors?${queryString}`;
+      console.log("Fetching URL:", url); // Add this line
       const response = await axios.get(url);
 
       if (response.data && response.data.tutors) {
         setTutors(response.data.tutors);
         setFilteredTutors(response.data.tutors);
+        
+        console.log("Tutors fetched:", response.data.tutors); // Add this line
       } else {
         console.error("No tutors found with the selected filters.");
       }
@@ -251,11 +261,7 @@ const TutorFinder = () => {
       console.error("An error occurred while fetching tutors.", err);
     }
     setCurrentPage(1);
-    
-    
- 
-    setShowFilters(false); 
-   
+    setShowFilters(false);
   };
   
   
@@ -284,16 +290,13 @@ const TutorFinder = () => {
   {/* Mobile Modal Pop-up */}
   {showFilters && (
     <div
-  className={`fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
-    showFilters ? "block" : "hidden"
-  } md:block`}
-  onClick={toggleFilters}
->
-  <div
-    className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full 
-              h-[65vh] overflow-y-auto relative flex flex-col"
-    onClick={(e) => e.stopPropagation()}
+    className={`fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center md:relative md:bg-transparent md:z-auto ${
+      showFilters ? "block" : "hidden"
+    } md:block`}
+    onClick={toggleFilters}
   >
+    <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm md:max-w-[420px] md:w-full relative"
+     onClick={(e) => e.stopPropagation()}>
     <form className="space-y-4 flex-grow">
       <div className="rounded-md bg-white">
         <label className="block text-sm font-medium font-bold text-gray-700 mb-1">
@@ -674,9 +677,10 @@ const TutorFinder = () => {
                   <h2 className="text-xl font-bold flex items-center text-[#041F96]">
                     {tutor.fullName}
                     {tutor.verified && (
-                      <span className="ml-2 bg-blue-500 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
-                      ✔
-                    </span>
+       <span className="ml-2 bg-green-300 text-white text-xs flex items-center justify-center rounded-full w-5 h-5">
+       ✔
+     </span>
+     
                     )}
                   </h2>
 

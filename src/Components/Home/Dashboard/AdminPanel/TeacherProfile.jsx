@@ -144,6 +144,7 @@ const TutorProfileView = () => {
               <table className="table-auto w-full border-collapse border border-gray-200">
                 <thead>
                   <tr className="bg-gray-100">
+                  <th className="border border-gray-300 px-4 py-2 text-center">Created</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Full Name</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Email</th>
                     <th className="border border-gray-300 px-4 py-2 text-left">Tutor ID</th>
@@ -154,6 +155,11 @@ const TutorProfileView = () => {
                 <tbody>
                   {tutors.map((tutor) => (
                     <tr key={tutor._id} className="hover:bg-gray-50">
+                       <td className="border border-gray-300 px-4 py-2">{new Date(tutor.createdAt).toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+})}</td>
                       <td className="border border-gray-300 px-4 py-2">{tutor.fullName}</td>
                       <td className="border border-gray-300 px-4 py-2">{tutor.email}</td>
                       <td className="border border-gray-300 px-4 py-2">{tutor._id}</td>
