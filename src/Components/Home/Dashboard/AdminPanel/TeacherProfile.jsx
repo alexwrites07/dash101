@@ -23,6 +23,7 @@ const TutorProfileView = () => {
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       handleSearch();
+      fetchTutors()
     }, 300); // Debounce API call (300ms delay)
 
     return () => clearTimeout(debounceTimer);
@@ -54,17 +55,20 @@ const TutorProfileView = () => {
 
     try {
       const headers = { Authorization: `Bearer ${token}` };
+      let url = "";
       const queryParams = new URLSearchParams();
-  
-      if (searchQuery.trim()) queryParams.append("query", searchQuery);
-      if (startDate) queryParams.append("startDate", startDate);
-      if (endDate) queryParams.append("endDate", endDate);
-  
-      const url = `https://server.avyudha.com/admin/getTutors?${queryParams.toString()}`;
-  
+    
+      if (searchQuery.trim()) {
+        // Use search endpoint and append query directly
+        queryParams.append("query", searchQuery);
+        url = `https://server.avyudha.com/admin/tutors/search?${queryParams.toString()}`;
+      }
+    
       const response = await axios.get(url, { headers });
-      setTutors(response.data.tutors || []);
-    }catch (error) {
+      setTutors(response.data || []);
+      console.log (tutors);
+    } 
+    catch (error) {
       console.error("Error searching tutors:", error);
     }
   };

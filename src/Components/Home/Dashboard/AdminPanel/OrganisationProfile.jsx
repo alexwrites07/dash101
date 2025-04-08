@@ -23,6 +23,7 @@ const OrgProfileView = () => {
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       handleSearch();
+      fetchOrganizations();
     }, 300);
 
     return () => clearTimeout(debounceTimer);
@@ -45,18 +46,24 @@ const OrgProfileView = () => {
   };
 
   const handleSearch = async () => {
+    let url = "";
     const queryParams = new URLSearchParams();
-    if (searchQuery.trim()) queryParams.append("query", searchQuery);
-    if (startDate) queryParams.append("startDate", startDate);
-    if (endDate) queryParams.append("endDate", endDate);
-
-    try {
-      const response = await axios.get(
-        `https://server.avyudha.com/admin/getOrgs?${queryParams.toString()}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setOrganizations(response.data.organizations || []);
-    } catch (error) {
+    try
+    {
+      const headers = { Authorization: `Bearer ${token}` };
+      let url = "";
+      const queryParams = new URLSearchParams();
+    
+      if (searchQuery.trim()) {
+        // Use search endpoint and append query directly
+        queryParams.append("query", searchQuery);
+        url = `https://server.avyudha.com/admin/organizations/search?${queryParams.toString()}`;
+      }
+    
+      const response = await axios.get(url, { headers });
+      setOrganizations(response.data || []);
+      
+    }  catch (error) {
       console.error("Error searching organizations:", error);
     }
   };
