@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -17,6 +17,7 @@ import './Home.css';
 
 function HomePage() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const handleRedirect = () => {
     navigate('/demo-form');
@@ -28,10 +29,43 @@ function HomePage() {
       easing: 'ease-in-out',
       once: true,
     });
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // simulate loading time
+
+    return () => clearTimeout(timer);
   }, []);
 
+  if (loading) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-white">
+        {/* Spinner */}
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#041F96] mb-6"></div>
+
+        {/* Bar animation */}
+        <div className="w-40 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-full w-1/2 bg-[#041F96] animate-loading-bar rounded-full"></div>
+        </div>
+
+        {/* Animation class */}
+        <style>{`
+          @keyframes loading-bar {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
+          }
+
+          .animate-loading-bar {
+            animation: loading-bar 1.5s infinite ease-in-out;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-12 px-4 md:px-8 lg:px-16 w-full max-w-screen-xl mx-auto" >
+    <div className="mt-12 px-4 md:px-8 lg:px-16 w-full max-w-screen-xl mx-auto">
       <div className="flex flex-col md:flex-row items-center w-full" data-aos="fade-up">
         <div className="md:w-3/5 lg:w-1/2 text-center md:text-left" data-aos="fade-right">
           <h1 className="text-2xl md:text-5xl text-[#041F96] font-bold mb-4">
@@ -60,7 +94,7 @@ function HomePage() {
       {/* Sections */}
       <div className="w-full min-w-full" data-aos="fade-up"><TuitionCards /></div>
       <div className="w-full min-w-full" data-aos="fade-right"><Catagories /></div>
-      <div className="w-full min-w-full" ><FeaturedJobs /></div>
+      <div className="w-full min-w-full"><FeaturedJobs /></div>
       <div className="w-full min-w-full" data-aos="fade-up"><FrequentlyHiringCompanies /></div>
       <div className="w-full min-w-full" data-aos="zoom-in"><HiringSection /></div>
       <div className="w-full min-w-full" data-aos="fade-up"><FeaturedReviews /></div>

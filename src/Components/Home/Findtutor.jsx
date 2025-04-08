@@ -63,25 +63,7 @@ const TutorFinder = () => {
     useEffect(() => {
       fetchTutors();
     }, []);
-  useEffect(() => {
-  
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        setShowFilters(false);
-      }
-    };
-
-    // Add event listener when modal is shown
-    if (showFilters) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    // Cleanup the event listener when modal is closed or component unmounts
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  
-  }, [showFilters,  filters]);
+ 
   const categorySuggestions = [
     "Spoken English",
     "French Language",
@@ -220,52 +202,53 @@ const TutorFinder = () => {
     });
   };
 
-  const handleApplyFilter = async () => {
-    console.log("Applying filters...", filters, tutorType, userCoords); // Add this line
-    setTutors([]);
+ const handleApplyFilter = async () => {
+  console.log("Filter button clicked");
+  console.log("Applying filters...", filters, tutorType, userCoords);
 
-    try {
-      const { city, totalExperience, distance, qualifications, gender, categories } = filters;
+  setTutors([]);
 
-      let queryString = `location.city=${city}&totalExperience=${totalExperience}&qualifications=${qualifications}&gender=${gender}`;
+  try {
+    const { city, totalExperience, distance, qualifications, gender, categories } = filters;
 
-      if (distance && userCoords) {
-        const reversedCoords = [...userCoords].reverse();
-        queryString += `&maxDistance=${distance}&coordinates=${reversedCoords.join(",")}&`;
-        console.log("Distance filter added:", distance, userCoords, queryString); // Add this line
-      }
+    let queryString = `location.city=${city}&totalExperience=${totalExperience}&qualifications=${qualifications}&gender=${gender}`;
 
-      if (categories.length > 0) {
-        queryString += `&categories=${categories.join(",")}`;
-        console.log("Categories filter added:", categories, queryString); // Add this line
-      }
-
-      if (tutorType === "Online") {
-        queryString += `&tutorType=online`;
-        console.log("Tutor type filter added:", tutorType, queryString); // Add this line
-      }
-
-      const url = `https://server.avyudha.com/getTutors?${queryString}`;
-      console.log("Fetching URL:", url); // Add this line
-      const response = await axios.get(url);
-
-      if (response.data && response.data.tutors) {
-        setTutors(response.data.tutors);
-        setFilteredTutors(response.data.tutors);
-        
-        console.log("Tutors fetched:", response.data.tutors); // Add this line
-      } else {
-        console.error("No tutors found with the selected filters.");
-      }
-    } catch (err) {
-      console.error("An error occurred while fetching tutors.", err);
+    if (distance && userCoords) {
+      const reversedCoords = [...userCoords].reverse();
+      queryString += `&maxDistance=${distance}&coordinates=${reversedCoords.join(",")}`;
+      console.log("Distance filter added:", distance, userCoords, queryString);
     }
-    setCurrentPage(1);
-    setShowFilters(false);
-  };
-  
-  
-  
+
+    if (categories.length > 0) {
+      queryString += `&categories=${categories.join(",")}`;
+      console.log("Categories filter added:", categories, queryString);
+    }
+
+    if (tutorType === "Online") {
+      queryString += `&tutorType=online`;
+      console.log("Tutor type filter added:", tutorType, queryString);
+    }
+
+    const url = `https://server.avyudha.com/getTutors?${queryString}`;
+    console.log("Final URL:", url);
+    
+    const response = await axios.get(url);
+
+    if (response.data && response.data.tutors) {
+      setTutors(response.data.tutors);
+      setFilteredTutors(response.data.tutors);
+      console.log("Tutors fetched:", response.data.tutors);
+    } else {
+      console.error("No tutors found with the selected filters.");
+    }
+  } catch (err) {
+    console.error("An error occurred while fetching tutors.", err);
+  }
+
+  setCurrentPage(1);
+  setShowFilters(false);
+};
+
   
   
 
