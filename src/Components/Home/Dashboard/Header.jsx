@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiBell, HiUser } from "react-icons/hi";
-import { Menu, MenuList, MenuButton, MenuItem, MenuLink } from "@reach/menu-button";
+import { Menu, MenuList, MenuButton, MenuItem, MenuLink } from "@radix-ui/react-dropdown-menu";
 import "@reach/menu-button/styles.css";
 import "./Header.css";
 import nm from '../../../assets/av.png'
