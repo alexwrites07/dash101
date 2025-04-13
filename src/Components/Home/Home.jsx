@@ -92,7 +92,7 @@ function HomePage() {
       </div>
 
       {/* Sections */}
-      <div className="w-full min-w-full" data-aos="fade-up"><TuitionCards /></div>
+      {/* <div className="w-full min-w-full" data-aos="fade-up"><TuitionCards /></div> */}
       <div className="w-full min-w-full" data-aos="fade-right"><Catagories /></div>
       <div className="w-full min-w-full"><FeaturedJobs /></div>
       <div className="w-full min-w-full" data-aos="fade-up"><FrequentlyHiringCompanies /></div>

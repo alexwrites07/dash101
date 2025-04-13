@@ -73,11 +73,11 @@ const Categories = () => {
             <div key={tutor._id} className="px-2">
               <Link to={`/getTutor/${tutor._id}`}>
                 <div className="bg-white mb-4 rounded-lg shadow-md p-6 flex flex-col items-center text-center transform hover:scale-105 transition duration-300">
-                  <img
+                  {/* <img
                     src={`https://server.avyudha.com/tutors/download/image/${tutor._id}`}
                     alt={tutor.fullName}
                     className="rounded-full w-24 h-24 mb-4 object-cover shadow-md"
-                  />
+                  /> */}
                   <div className="flex items-center text-[#041F96] text-xl font-semibold mb-2">
                     <FaUserAlt className="mr-2 text-[#041F96]" />
                     <h2>{tutor.fullName}</h2>
