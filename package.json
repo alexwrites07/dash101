@@ -13,8 +13,6 @@
     "@material-tailwind/react": "^2.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.7",
     "@react-google-maps/api": "^2.19.3",
-    "@react-navigation/native": "^6.1.18",
-    "@react-navigation/native-stack": "^6.11.0",
     "@react-pdf/renderer": "^4.1.6",
     "aos": "^2.3.4",
     "axios": "^1.7.9",
